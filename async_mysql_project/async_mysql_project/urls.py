@@ -28,6 +28,7 @@ urlpatterns = [
     path('update_color/<int:row_id>/', views.update_color, name='update_color'),
     path('update_record/<int:row_id>/', views.update_record, name='update_record'),
     path('add_record/', views.add_record, name='add_record'),
+    path('add/', views.add, name='add'),
     path('edit/<int:row_id>/', views.edit, name='edit'),
     path('delete_record/<int:row_id>/', views.delete_record, name='delete_record'),
 ]

@@ -1,11 +1,3 @@
-// function showFlashMessage(event) {
-
-// 	// Показываем сообщение
-// 	const flashMessage = document.getElementById('flash-message');
-// 	flashMessage.style.display = 'block';
-
-// }
-
 // const socket = io();  // Инициализация сокета
 // console.log('Сокет инициализирован'); // Лог инициализации сокета
 
@@ -116,6 +108,14 @@
 
 // });
 
+function showFlashMessage(event) {
+
+	// Показываем сообщение
+	const flashMessage = document.getElementById('flash-message');
+	flashMessage.style.display = 'block';
+
+}
+
 window.onload = function () {
 	window.scrollTo(0, 0);
 };
@@ -207,21 +207,21 @@ window.addEventListener('beforeunload', function () {
 	localStorage.setItem('scrollPosition', window.scrollY);
 });
 
-// // Обработчик нажатия на кнопку сброса фильтров
-// document.getElementById('reset-filters').addEventListener('click', function () {
-// 	resetFilters();
-// });
+// Обработчик нажатия на кнопку сброса фильтров
+document.getElementById('reset-filters').addEventListener('click', function () {
+	resetFilters();
+});
 
-// // Обработчик нажатия на кнопку фильтрации
-// document.getElementById('filter-form').addEventListener('submit', function (event) {
-// 	window.scrollTo(0, 0);
-// 	// Обрезаем пробелы с двух сторон поля ввода 1
-// 	var keywordInput_one = document.getElementById('keyword_one');
-// 	keywordInput_one.value = keywordInput_one.value.trim();
-// 	// Обрезаем пробелы с двух сторон поля ввода 2
-// 	var keywordInput_two = document.getElementById('keyword_two');
-// 	keywordInput_two.value = keywordInput_two.value.trim();
-// });
+// Обработчик нажатия на кнопку фильтрации
+document.getElementById('filter-form').addEventListener('submit', function (event) {
+	window.scrollTo(0, 0);
+	// Обрезаем пробелы с двух сторон поля ввода 1
+	var keywordInput_one = document.getElementById('keyword_one');
+	keywordInput_one.value = keywordInput_one.value.trim();
+	// Обрезаем пробелы с двух сторон поля ввода 2
+	var keywordInput_two = document.getElementById('keyword_two');
+	keywordInput_two.value = keywordInput_two.value.trim();
+});
 
 document.addEventListener('DOMContentLoaded', function () {
 	if (!navigator.userAgent.includes('AppleWebKit')) {

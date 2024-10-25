@@ -425,11 +425,8 @@ def update_record(request, row_id):
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 def add_record(request):
-    print('POPAL')
-
     if request.method == 'POST':
         try:
-            print('FINAL_1')
             total_pages = int(request.GET.get('total_pages', 1))
 
             name = request.POST['name']
@@ -453,14 +450,16 @@ def add_record(request):
             comment = request.POST['comment']
             color = request.POST.get('color')
 
-            print('FINAL_2')
-
             if certificate == '0' and certificate_no == '0':
                 color = '#dff0d8'
 
             # Получаем следующий ID
             latest_service = DataTable.objects.order_by('-id_id').first()
-            id_id = (int(latest_service.id_id) + 1) if latest_service else 1
+            try:
+                id_id = (int(latest_service.id_id) + 1) if latest_service and latest_service.id_id.isdigit() else 1
+            except ValueError:
+                # В случае некорректного значения установить id_id на 1
+                id_id = 1
 
             new_service = DataTable(id_id=id_id, name=name, snils=snils, location=location,
                                 address_p=address_p, address=address, benefit=benefit,

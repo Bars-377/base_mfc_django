@@ -130,7 +130,6 @@
                 <input type="text" class="form-control form-control-neverov" id="comment" name="comment" value="{{ service.comment }}"
                     maxlength="30" title="Максимальное количество значений 30">
             </div>
-            <br>
 
             <input type="hidden" name="color" value="{{ service.color }}">  <!-- Скрытое поле цвета -->
             <!-- Кнопка для отправки формы -->
@@ -143,7 +142,6 @@
 
     <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'script.js' %}"></script>  <!-- Добавьте ваш JS файл -->
 
     <script>
         function formatDate(input) {

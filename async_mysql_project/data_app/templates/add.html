@@ -101,15 +101,14 @@
                 <label for="comment">Комментарий</label>
                 <input type="text" class="form-control" id="comment" name="comment" maxlength="30" title="Максимальное количество значений 30">
             </div>
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  <!-- Скрытое поле для токена -->
-            <button type="submit" class="btn btn-primary">Добавить запись</button>
-            <a href="{% url 'data_table_view' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&year={{ selected_year }}&date_number_no_one={{ selected_date_number_no_one }}" class="btn btn-secondary btn-neverov mt-3">Вернуться назад</a>
+
+            <button type="submit" class="btn btn-primary clear-btn">Добавить запись</button>
+            <a href="{% url 'data_table_view' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&year={{ selected_year }}&date_number_no_one={{ selected_date_number_no_one }}" class="btn btn-secondary btn-neverov mt-3 clear-btn">Вернуться назад</a>
         </form>
     </div>
 
     <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'script.js' %}"></script>  <!-- Добавьте ваш JS файл -->
 
     <script>
         function formatDate(input) {
