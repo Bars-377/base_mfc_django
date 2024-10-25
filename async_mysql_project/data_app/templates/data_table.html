@@ -1,0 +1,178 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <div class="container-fluid-neverov">
+        <div class="scroll-container">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="fixed-width">№ п/п</th>
+                        <th class="stretch-width">ФИО заявителя</th>
+                        <th class="stretch-width">СНИЛС</th>
+                        <th class="fixed-width">Район</th>
+                        <th class="stretch-width">Населённый пункт</th>
+                        <th class="fixed-width">Адрес</th>
+                        <th class="fixed-width">Льгота</th>
+                        <th class="fixed-width-medium">Серия и номер</th>
+                        <th class="fixed-width-date">Дата выдачи сертификата</th>
+                        <th class="stretch-width">Размер выплаты</th>
+                        <th class="fixed-width-small">Сертификат</th>
+                        <th class="fixed-width-date">Дата и номер решения о выдаче</th>
+                        <th class="fixed-width-date">Дата и № решения об аннулировании</th>
+                        <th class="fixed-width-date">Дата решения об отказе в выдаче</th>
+                        <th class="fixed-width-small">№ решения об отказе в выдаче</th>
+                        <th class="fixed-width-small">Отказ в выдаче</th>
+                        <th class="fixed-width-small">Основная причина отказа</th>
+                        <th class="stretch-width">ТРЕК</th>
+                        <th class="fixed-width">Дата отправки почтой</th>
+                        <th class="fixed-width">Комментарий</th>
+                        <th class="fixed-width">Управление</th>
+                        <th class="fixed-width">Выбор цвета</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in data %}
+                    <tr class="service-row" data-id="{% if user.is_authenticated %}{{ item.id }}{% else %}0{% endif %}">
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.id }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.id_id }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.name }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.snils }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.location }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.address_p }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.address }}</td>
+                        <td class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.benefit }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.number }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.year }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.cost }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.certificate }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.date_number_get }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.date_number_cancellation }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_number_no_one }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.date_number_no_two }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.certificate_no }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.reason }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.track }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_post }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.comment }}</td>
+                        <td class="stretch-width">
+                            <!-- Управление -->
+                            <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
+                                <a href="{% url 'edit' row_id=item.id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&year={{ selected_year }}&selected_date_number_no_one={{ selected_date_number_no_one }}"
+                                class="btn btn-sm btn-warning">Edit</a>
+                                <form class="delete-form" data-id="{{ item.id }}" style="display:inline;">
+
+                                    <button type="button" class="btn btn-sm btn-danger delete-button">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                        <td class="stretch-width">
+                            <!-- Выбор цвета -->
+                            <p>User ID: {{ user.id }}</p>
+                            <p>Authenticated: {{ user.is_authenticated }}</p>
+                            <select class="form-control color-select" data-id="{% if user.is_authenticated %}{{ item.id }}{% else %}0{% endif %}">
+                                <option value="#ffffff">Default</option>
+                                <option value="#eaf7ff" {% if item.color == '#eaf7ff' %}selected{% endif %}>Light Blue</option>
+                                <option value="#ffebeb" {% if item.color == '#ffebeb' %}selected{% endif %}>Light Red</option>
+                                <option value="#dff0d8" {% if item.color == '#dff0d8' %}selected{% endif %}>Light Green</option>
+                                <option value="#f5f5f5" {% if item.color == '#f5f5f5' %}selected{% endif %}>Light Grey</option>
+                                <option value="#fff8e1" {% if item.color == '#fff8e1' %}selected{% endif %}>Light Yellow</option>
+                            </select>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="container-fluid-neverov">
+        <div style="display: flex; justify-content: flex-end;">
+            <!-- Pagination Controls -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if page > 1 %}
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="{% url 'data_table_view' %}?year={{ selected_year }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&date_number_no_one={{ selected_date_number_no_one }}&page={{ page|add:"-1" }}"
+                            aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    <!-- Show "Previous" button if not on the first page group -->
+                    {% if start_page > 1 %}
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="{% url 'data_table_view' %}?year={{ selected_year }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&date_number_no_one={{ selected_date_number_no_one }}&page=1">1</a>
+                    </li>
+                        {% if start_page > 2 %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                    {% endif %}
+
+                    <!-- Show a few pages around the current page -->
+                    {% for p in pages %}
+                    <li class="page-item {% if p == page %}active{% endif %}">
+                        <a class="page-link"
+                            href="{% url 'data_table_view' %}?year={{ selected_year }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&date_number_no_one={{ selected_date_number_no_one }}&page={{ p }}">{{ p }}</a>
+                    </li>
+                    {% endfor %}
+
+                    <!-- Show "Next" button if not on the last page group -->
+                    {% if end_page < total_pages %}
+                        {% load custom_tags %}
+                        {% if end_page < total_pages|subtract:1 %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="{% url 'data_table_view' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&date_number_no_one={{ selected_date_number_no_one }}&page={{ total_pages }}">{{ total_pages }}</a>
+                    </li>
+                    {% endif %}
+
+                    {% if page < total_pages %}
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="{% url 'data_table_view' %}?year={{ selected_year }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&date_number_no_one={{ selected_date_number_no_one }}&page={{ page|add:"1" }}"
+                            aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container-fluid-neverov">
+        <h4>Итог выплат за выбранное время: {{ total_cost_1 }}</h4>
+        <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4>
+        <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4>
+        <br>
+        
+        <form action="{% url 'add_record' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="page" value="{{ page }}">
+            <input type="hidden" name="keyword_one" value="{{ keyword_one }}">
+            <input type="hidden" name="keyword_two" value="{{ keyword_two }}">
+            <input type="hidden" name="selected_column_one" value="{{ selected_column_one }}">
+            <input type="hidden" name="selected_column_two" value="{{ selected_column_two }}">
+            <input type="hidden" name="selected_year" value="{{ selected_year }}">
+            <input type="hidden" name="selected_date_number_no_one" value="{{ selected_date_number_no_one }}">
+            <input type="hidden" name="total_pages" value="{{ total_pages }}">
+            <button type="submit" class="btn btn-warning">Добавить данные</button>
+        </form>
+        
+        <br>
+        <h1>Экспорт услуг в Excel</h1>
+        <br>
+
+        <form id="export-form" onsubmit="showFlashMessage(event)">
+            <input type="hidden" name="year" value="{% if selected_year %}{{ selected_year }}{% else %}No{% endif %}">
+            <input type="hidden" name="date_number_no_one" value="{% if selected_date_number_no_one %}{{ selected_date_number_no_one }}{% else %}No{% endif %}">
+            <div class="alert alert-success" id="flash-message" style="display: none;"></div>
+            <button type="submit" class="btn btn-info" id="export-button">Экспорт в Excel</button>
+        </form>
+    </div>
+{% endblock %}
