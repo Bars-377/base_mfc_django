@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход</title>
+    <title>Вход в систему</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'style.css' %}">
@@ -14,11 +14,11 @@
             <h1>Вход в систему</h1>
 
             {% if messages %}
-                <div class="alert alert-{{ category }} mt-3">
-                    {% for message in messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} mt-3">
                         <p>{{ message }}</p>
-                    {% endfor %}
-                </div>
+                    </div>
+                {% endfor %}
             {% endif %}
 
             <form method="post" action="{% url 'login' %}" class="form-group">
