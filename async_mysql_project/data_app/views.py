@@ -149,7 +149,7 @@ async def skeleton(request, user, date_number_no_one, year, keyword_one, keyword
 
         # total_cost_2 = query.aggregate(Sum('certificate'))['certificate__sum'] or 0
         total_cost_2 = await sync_to_async(lambda: query.aggregate(Sum('certificate')))()
-        total_cost_1 = total_cost_2['certificate__sum'] or 0
+        total_cost_2 = total_cost_2['certificate__sum'] or 0
 
         # total_cost_3 = query.aggregate(Sum('certificate_no'))['certificate_no__sum'] or 0
         total_cost_3 = await sync_to_async(lambda: query.aggregate(Sum('certificate_no')))()
