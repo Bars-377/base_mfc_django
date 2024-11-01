@@ -13,25 +13,63 @@
                 <select name="selected_column_one" id="selected_column_one" class="form-control">
                     <option value="">Столбец</option>
                     <option value="id_id" {% if selected_column_one == 'id_id' %}selected{% endif %}>№ п/п</option>
-                    <option value="name" {% if selected_column_one == 'name' %}selected{% endif %}>ФИО заявителя</option>
-                    <option value="snils" {% if selected_column_one == 'snils' %}selected{% endif %}>СНИЛС</option>
-                    <option value="location" {% if selected_column_one == 'location' %}selected{% endif %}>Район</option>
-                    <option value="address_p" {% if selected_column_one == 'address_p' %}selected{% endif %}>Населённый пункт</option>
-                    <option value="address" {% if selected_column_one == 'address' %}selected{% endif %}>Адрес</option>
-                    <option value="benefit" {% if selected_column_one == 'benefit' %}selected{% endif %}>Льгота</option>
-                    <option value="number" {% if selected_column_one == 'number' %}selected{% endif %}>Серия и номер</option>
-                    <option value="year" {% if selected_column_one == 'year' %}selected{% endif %}>Дата выдачи сертификата</option>
-                    <option value="cost" {% if selected_column_one == 'cost' %}selected{% endif %}>Размер выплаты</option>
-                    <option value="certificate" {% if selected_column_one == 'certificate' %}selected{% endif %}>Сертификат</option>
-                    <option value="date_number_get" {% if selected_column_one == 'date_number_get' %}selected{% endif %}>Дата и номер решения о выдаче</option>
-                    <option value="date_number_cancellation" {% if selected_column_one == 'date_number_cancellation'%}selected{% endif %}>Дата и № решения об аннулировании</option>
-                    <option value="date_number_no_one" {% if selected_column_one == 'date_number_no' %}selected{% endif %}>Дата решения об отказе в выдаче</option>
-                    <option value="date_number_no_two" {% if selected_column_one == 'date_number_no' %}selected{% endif %}>№ решения об отказе в выдаче</option>
-                    <option value="certificate_no" {% if selected_column_one == 'certificate_no' %}selected{% endif %}>Отказ в выдаче</option>
-                    <option value="reason" {% if selected_column_one == 'reason' %}selected{% endif %}>Основная причина отказа</option>
-                    <option value="track" {% if selected_column_one == 'track' %}selected{% endif %}>ТРЕК</option>
-                    <option value="date_post" {% if selected_column_one == 'date_post' %}selected{% endif %}>Дата отправки почтой</option>
-                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Комментарий</option>
+                    <option value="name" {% if selected_column_one == 'name' %}selected{% endif %}>Наименование закупки</option>
+                    <option value="snils" {% if selected_column_one == 'snils' %}selected{% endif %}>Статус</option>
+                    <option value="location" {% if selected_column_one == 'location' %}selected{% endif %}>Способ закупки</option>
+                    <option value="address_p" {% if selected_column_one == 'address_p' %}selected{% endif %}>Инициатор закупки (ИТ/АХО)</option>
+                    <option value="address" {% if selected_column_one == 'address' %}selected{% endif %}>КЦСР</option>
+                    <option value="benefit" {% if selected_column_one == 'benefit' %}selected{% endif %}>КОСГУ</option>
+                    <option value="number" {% if selected_column_one == 'number' %}selected{% endif %}>ДопФК</option>
+                    <option value="year" {% if selected_column_one == 'year' %}selected{% endif %}>НМЦК</option>
+                    <option value="cost" {% if selected_column_one == 'cost' %}selected{% endif %}>Экономия</option>
+                    <option value="certificate" {% if selected_column_one == 'certificate' %}selected{% endif %}>Контрагент</option>
+                    <option value="date_number_get" {% if selected_column_one == 'date_number_get' %}selected{% endif %}>Реестровый номер контракта (ЕИС)</option>
+                    <option value="date_number_cancellation" {% if selected_column_one == 'date_number_cancellation'%}selected{% endif %}>Дата контракта</option>
+                    <option value="date_number_no_one" {% if selected_column_one == 'date_number_no' %}selected{% endif %}>Окончание даты исполнения</option>
+                    <option value="date_number_no_two" {% if selected_column_one == 'date_number_no' %}selected{% endif %}>Цена контракта (на 2024 год)</option>
+                    <option value="certificate_no" {% if selected_column_one == 'certificate_no' %}selected{% endif %}>Исполнение контракта (план) (формула)</option>
+                    <option value="reason" {% if selected_column_one == 'reason' %}selected{% endif %}>Январь (план)</option>
+                    <option value="track" {% if selected_column_one == 'track' %}selected{% endif %}>Февраль (план)</option>
+                    <option value="date_post" {% if selected_column_one == 'date_post' %}selected{% endif %}>Март (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Апрель (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Май (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Июнь (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Июль (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Август (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сентябрь (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Октябрь (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Ноябрь (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Декабрь (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Январь (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Исполнение контракта (факт) (формула)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Январь (факт 1)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Январь (факт 1)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Февраль (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Февраль (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Март (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Март (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Апрель (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Апрель (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Май (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Май (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Июнь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Июнь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Июль (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Июль (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Август (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Август (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Сентябрь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Сентябрь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Октябрь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Октябрь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Ноябрь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Ноябрь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Декабрь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Декабрь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Январь (факт 2)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Январь (факт 2)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>% исполнения (формула)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Остаток по контракту (формула)</option>
                 </select>
             </div>
             <div class="form-item">
@@ -43,30 +81,68 @@
                 <label for="selected_column_two">Выберите столбец 2:</label>
                 <select name="selected_column_two" id="selected_column_two" class="form-control">
                     <option value="">Столбец</option>
-                    <option value="id_id" {% if selected_column_two == 'id_id' %}selected{% endif %}>№ п/п</option>
-                    <option value="name" {% if selected_column_two == 'name' %}selected{% endif %}>ФИО заявителя</option>
-                    <option value="snils" {% if selected_column_two == 'snils' %}selected{% endif %}>СНИЛС</option>
-                    <option value="location" {% if selected_column_two == 'location' %}selected{% endif %}>Район</option>
-                    <option value="address_p" {% if selected_column_two == 'address_p' %}selected{% endif %}>Населённый пункт</option>
-                    <option value="address" {% if selected_column_two == 'address' %}selected{% endif %}>Адрес</option>
-                    <option value="benefit" {% if selected_column_two == 'benefit' %}selected{% endif %}>Льгота</option>
-                    <option value="number" {% if selected_column_two == 'number' %}selected{% endif %}>Серия и номер</option>
-                    <option value="year" {% if selected_column_two == 'year' %}selected{% endif %}>Дата выдачи сертификата</option>
-                    <option value="cost" {% if selected_column_two == 'cost' %}selected{% endif %}>Размер выплаты</option>
-                    <option value="certificate" {% if selected_column_two == 'certificate' %}selected{% endif %}>Сертификат</option>
-                    <option value="date_number_get" {% if selected_column_two == 'date_number_get' %}selected{% endif %}>Дата и номер решения о выдаче</option>
-                    <option value="date_number_cancellation" {% if selected_column_two == 'date_number_cancellation' %}selected{% endif %}>Дата и № решения об аннулировании</option>
-                    <option value="date_number_no_one" {% if selected_column_two == 'date_number_no' %}selected{% endif %}>Дата решения об отказе в выдаче</option>
-                    <option value="date_number_no_two" {% if selected_column_two == 'date_number_no' %}selected{% endif %}>№ решения об отказе в выдаче</option>
-                    <option value="certificate_no" {% if selected_column_two == 'certificate_no' %}selected{% endif %}>Отказ в выдаче</option>
-                    <option value="reason" {% if selected_column_two == 'reason' %}selected{% endif %}>Основная причинаотказа</option>
-                    <option value="track" {% if selected_column_two == 'track' %}selected{% endif %}>ТРЕК</option>
-                    <option value="date_post" {% if selected_column_two == 'date_post' %}selected{% endif %}>Дата отправки почтой</option>
-                    <option value="comment" {% if selected_column_two == 'comment' %}selected{% endif %}>Комментарий</option>
+                    <option value="id_id" {% if selected_column_one == 'id_id' %}selected{% endif %}>№ п/п</option>
+                    <option value="name" {% if selected_column_one == 'name' %}selected{% endif %}>Наименование закупки</option>
+                    <option value="snils" {% if selected_column_one == 'snils' %}selected{% endif %}>Статус</option>
+                    <option value="location" {% if selected_column_one == 'location' %}selected{% endif %}>Способ закупки</option>
+                    <option value="address_p" {% if selected_column_one == 'address_p' %}selected{% endif %}>Инициатор закупки (ИТ/АХО)</option>
+                    <option value="address" {% if selected_column_one == 'address' %}selected{% endif %}>КЦСР</option>
+                    <option value="benefit" {% if selected_column_one == 'benefit' %}selected{% endif %}>КОСГУ</option>
+                    <option value="number" {% if selected_column_one == 'number' %}selected{% endif %}>ДопФК</option>
+                    <option value="year" {% if selected_column_one == 'year' %}selected{% endif %}>НМЦК</option>
+                    <option value="cost" {% if selected_column_one == 'cost' %}selected{% endif %}>Экономия</option>
+                    <option value="certificate" {% if selected_column_one == 'certificate' %}selected{% endif %}>Контрагент</option>
+                    <option value="date_number_get" {% if selected_column_one == 'date_number_get' %}selected{% endif %}>Реестровый номер контракта (ЕИС)</option>
+                    <option value="date_number_cancellation" {% if selected_column_one == 'date_number_cancellation'%}selected{% endif %}>Дата контракта</option>
+                    <option value="date_number_no_one" {% if selected_column_one == 'date_number_no' %}selected{% endif %}>Окончание даты исполнения</option>
+                    <option value="date_number_no_two" {% if selected_column_one == 'date_number_no' %}selected{% endif %}>Цена контракта (на 2024 год)</option>
+                    <option value="certificate_no" {% if selected_column_one == 'certificate_no' %}selected{% endif %}>Исполнение контракта (план) (формула)</option>
+                    <option value="reason" {% if selected_column_one == 'reason' %}selected{% endif %}>Январь (план)</option>
+                    <option value="track" {% if selected_column_one == 'track' %}selected{% endif %}>Февраль (план)</option>
+                    <option value="date_post" {% if selected_column_one == 'date_post' %}selected{% endif %}>Март (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Апрель (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Май (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Июнь (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Июль (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Август (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сентябрь (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Октябрь (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Ноябрь (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Декабрь (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Январь (план)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Исполнение контракта (факт) (формула)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Январь (факт 1)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Январь (факт 1)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Февраль (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Февраль (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Март (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Март (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Апрель (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Апрель (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Май (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Май (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Июнь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Июнь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Июль (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Июль (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Август (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Август (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Сентябрь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Сентябрь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Октябрь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Октябрь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Ноябрь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Ноябрь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Декабрь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Декабрь (факт)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Дата оплаты Январь (факт 2)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Сумма оплаты Январь (факт 2)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>% исполнения (формула)</option>
+                    <option value="comment" {% if selected_column_one == 'comment' %}selected{% endif %}>Остаток по контракту (формула)</option>
                 </select>
             </div>
             <div class="form-item">
-                <label for="year">Дата сертификата:</label>
+                <label for="year">Дата Контракта:</label>
                 <select name="year" id="year" class="form-control form-control-year">
                     <option value="No">Год</option>
                     {% for year in service_years %}
@@ -99,14 +175,14 @@
                 <thead>
                     <tr>
                         <th class="fixed-width">№ п/п</th>
-                        <th class="stretch-width">ФИО заявителя</th>
-                        <th class="stretch-width">СНИЛС</th>
-                        <th class="fixed-width">Район</th>
-                        <th class="stretch-width">Населённый пункт</th>
-                        <th class="fixed-width">Адрес</th>
-                        <th class="fixed-width">Льгота</th>
-                        <th class="fixed-width-medium">Серия и номер</th>
-                        <th class="fixed-width-date">Дата выдачи сертификата</th>
+                        <th class="stretch-width">Наименование закупки</th>
+                        <th class="stretch-width">Статус</th>
+                        <th class="fixed-width">Способ закупки</th>
+                        <th class="stretch-width">Инициатор закупки (ИТ/АХО)</th>
+                        <th class="fixed-width">КЦСР</th>
+                        <th class="fixed-width">КОСГУ</th>
+                        <th class="fixed-width-medium">ДопФК</th>
+                        <th class="fixed-width-date">НМЦК</th>
                         <th class="stretch-width">Размер выплаты</th>
                         <th class="fixed-width-small">Сертификат</th>
                         <th class="fixed-width-date">Дата и номер решения о выдаче</th>

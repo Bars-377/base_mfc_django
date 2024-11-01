@@ -1,7 +1,7 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .models import DataTable
+from .models import Services
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -27,10 +27,10 @@ async def skeleton(request, user, date_number_no_one, year, keyword_one, keyword
     pattern_yyyy_mm_dd = r'\b\d{4}-\d{2}-\d{2}\b'
 
     # Получаем все уникальные значения year и date_number_no_one
-    # all_years = await sync_to_async(DataTable.objects.values('year').distinct())
-    all_years = await sync_to_async(lambda: list(DataTable.objects.values('year').distinct()))()
-    # all_date_number_no_one = await sync_to_async(DataTable.objects.values('date_number_no_one').distinct())
-    all_date_number_no_one = await sync_to_async(lambda: list(DataTable.objects.values('date_number_no_one').distinct()))()
+    # all_years = await sync_to_async(Services.objects.values('year').distinct())
+    all_years = await sync_to_async(lambda: list(Services.objects.values('year').distinct()))()
+    # all_date_number_no_one = await sync_to_async(Services.objects.values('date_number_no_one').distinct())
+    all_date_number_no_one = await sync_to_async(lambda: list(Services.objects.values('date_number_no_one').distinct()))()
 
     # Сбор уникальных годов из year
     service_years = set()
@@ -65,8 +65,8 @@ async def skeleton(request, user, date_number_no_one, year, keyword_one, keyword
         service_date_number_no_one.insert(0, None)
 
     # Построение запроса
-    # query = await sync_to_async(DataTable.objects.all)()
-    query = await sync_to_async(lambda: DataTable.objects.all())()
+    # query = await sync_to_async(Services.objects.all)()
+    query = await sync_to_async(lambda: Services.objects.all())()
 
     if year == 'No':
         year = None
@@ -94,20 +94,20 @@ async def skeleton(request, user, date_number_no_one, year, keyword_one, keyword
         query = await sync_to_async(query.filter)(date_number_no_one__icontains=date_number_no_one)
 
     if keyword_one:
-        if selected_column_one and hasattr(DataTable, selected_column_one):
+        if selected_column_one and hasattr(Services, selected_column_one):
             query = await sync_to_async(query.filter)(**{selected_column_one + '__icontains': keyword_one})
         else:
             filters = Q()
-            for field in await sync_to_async(DataTable._meta.get_fields)():
+            for field in await sync_to_async(Services._meta.get_fields)():
                 filters |= Q(**{field.name + '__icontains': keyword_one})
             query = await sync_to_async(query.filter)(filters)
 
     if keyword_two:
-        if selected_column_two and hasattr(DataTable, selected_column_two):
+        if selected_column_two and hasattr(Services, selected_column_two):
             query = await sync_to_async(query.filter)(**{selected_column_two + '__icontains': keyword_two})
         else:
             filters = Q()
-            for field in await sync_to_async(DataTable._meta.get_fields)():
+            for field in await sync_to_async(Services._meta.get_fields)():
                 filters |= Q(**{field.name + '__icontains': keyword_two})
             query = await sync_to_async(query.filter)(filters)
 
@@ -205,8 +205,8 @@ async def data_table_view(request):
 
     if total_pages_full:
         per_page = 20
-        # query = await sync_to_async(DataTable.objects.all())
-        query = await sync_to_async(lambda: DataTable.objects.all())()
+        # query = await sync_to_async(Services.objects.all())
+        query = await sync_to_async(lambda: Services.objects.all())()
         # total_services_full = query.count()
         total_services_full = await sync_to_async(lambda: query.count())()
         page = (total_services_full + per_page - 1) // per_page
@@ -263,12 +263,12 @@ async def update_color(request, row_id):
             color = data.get('color')
 
             # Найдите запись по ID и обновите цвет
-            service = await sync_to_async(DataTable.objects.get)(id=row_id)
+            service = await sync_to_async(Services.objects.get)(id=row_id)
             service.color = color
             await sync_to_async(service.save)()
 
             return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
-        except DataTable.DoesNotExist:
+        except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
@@ -279,7 +279,7 @@ async def delete_record(request, row_id):
     if request.method == 'POST':
         try:
             # Найдите запись по ID и обновите цвет
-            service = await sync_to_async(DataTable.objects.get)(id=row_id)
+            service = await sync_to_async(Services.objects.get)(id=row_id)
 
             # Удаление записи
             await sync_to_async(service.delete)()
@@ -289,7 +289,7 @@ async def delete_record(request, row_id):
 
             # Перенаправление на главную страницу
             return redirect('data_table_view')
-        except DataTable.DoesNotExist:
+        except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
@@ -340,8 +340,8 @@ async def edit(request, row_id):
     user = request.user
 
     # # Получаем объект service по id
-    # service = get_object_or_404(DataTable, id=row_id)  # Измените на id_id, если используете поле id_id
-    service = await sync_to_async(DataTable.objects.get)(id=row_id)
+    # service = get_object_or_404(Services, id=row_id)  # Измените на id_id, если используете поле id_id
+    service = await sync_to_async(Services.objects.get)(id=row_id)
 
     # Подготовка контекста для шаблона
     context = {
@@ -390,7 +390,7 @@ async def update_record(request, row_id):
                 color = '#dff0d8'
 
             # Найдите запись по ID и обновите цвет
-            service = await sync_to_async(DataTable.objects.get)(id=row_id)
+            service = await sync_to_async(Services.objects.get)(id=row_id)
 
             service.id_id = id_id
             service.name = name
@@ -430,7 +430,7 @@ async def update_record(request, row_id):
             user = request.user
 
             return await skeleton(request, user, date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
-        except DataTable.DoesNotExist:
+        except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
@@ -467,14 +467,14 @@ async def add_record(request):
                 color = '#dff0d8'
 
             # Получаем следующий ID
-            latest_service = await sync_to_async(DataTable.objects.order_by('-id_id').first)()
+            latest_service = await sync_to_async(Services.objects.order_by('-id_id').first)()
             try:
                 id_id = (int(latest_service.id_id) + 1) if latest_service and latest_service.id_id.isdigit() else 1
             except ValueError:
                 # В случае некорректного значения установить id_id на 1
                 id_id = 1
 
-            new_service = DataTable(id_id=id_id, name=name, snils=snils, location=location,
+            new_service = Services(id_id=id_id, name=name, snils=snils, location=location,
                                 address_p=address_p, address=address, benefit=benefit,
                                 number=number, year=year, cost=cost,
                                 certificate=certificate, date_number_get=date_number_get,
@@ -496,7 +496,7 @@ async def add_record(request):
             page = total_pages
 
             return await skeleton(request, user, date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
-        except DataTable.DoesNotExist:
+        except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
