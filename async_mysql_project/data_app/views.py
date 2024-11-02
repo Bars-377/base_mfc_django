@@ -12,9 +12,9 @@ import re
 from django.db.models import Sum
 from asgiref.sync import sync_to_async
 
-async def skeleton(request, user, date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page):
+async def skeleton(request, user, date_number_no_one, contract_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page):
     date_number_no_one = None if date_number_no_one == 'None' else date_number_no_one
-    year = None if year == 'None' else year
+    contract_date = None if contract_date == 'None' else contract_date
     keyword_one = None if keyword_one == 'None' else keyword_one
     keyword_two = None if keyword_two == 'None' else keyword_two
     selected_column_one = None if selected_column_one == 'None' else selected_column_one
@@ -28,9 +28,9 @@ async def skeleton(request, user, date_number_no_one, year, keyword_one, keyword
 
     # Получаем все уникальные значения year и date_number_no_one
     # all_years = await sync_to_async(Services.objects.values('year').distinct())
-    all_years = await sync_to_async(lambda: list(Services.objects.values('year').distinct()))()
+    all_years = await sync_to_async(lambda: list(Services.objects.values('contract_date').distinct()))()
     # all_date_number_no_one = await sync_to_async(Services.objects.values('date_number_no_one').distinct())
-    all_date_number_no_one = await sync_to_async(lambda: list(Services.objects.values('date_number_no_one').distinct()))()
+    all_date_number_no_one = await sync_to_async(lambda: list(Services.objects.values('end_date').distinct()))()
 
     # Сбор уникальных годов из year
     service_years = set()

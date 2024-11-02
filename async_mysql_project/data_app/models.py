@@ -105,7 +105,6 @@ class Services(models.Model):
     def __str__(self):
         return self.name
 
-
 class ServicesVault(models.Model):
     id = models.BigAutoField(primary_key=True)  # Поле id как первичный ключ
     id_id = models.TextField(verbose_name='ID', default='Unknown ID')

@@ -174,28 +174,80 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th class="fixed-width">№ п/п</th>
-                        <th class="stretch-width">Наименование закупки</th>
-                        <th class="stretch-width">Статус</th>
-                        <th class="fixed-width">Способ закупки</th>
-                        <th class="stretch-width">Инициатор закупки (ИТ/АХО)</th>
-                        <th class="fixed-width">КЦСР</th>
-                        <th class="fixed-width">КОСГУ</th>
-                        <th class="fixed-width-medium">ДопФК</th>
-                        <th class="fixed-width-date">НМЦК</th>
-                        <th class="stretch-width">Размер выплаты</th>
-                        <th class="fixed-width-small">Сертификат</th>
-                        <th class="fixed-width-date">Дата и номер решения о выдаче</th>
-                        <th class="fixed-width-date">Дата и № решения об аннулировании</th>
-                        <th class="fixed-width-date">Дата решения об отказе в выдаче</th>
-                        <th class="fixed-width-small">№ решения об отказе в выдаче</th>
-                        <th class="fixed-width-small">Отказ в выдаче</th>
-                        <th class="fixed-width-small">Основная причина отказа</th>
-                        <th class="stretch-width">ТРЕК</th>
-                        <th class="fixed-width">Дата отправки почтой</th>
-                        <th class="fixed-width">Комментарий</th>
-                        <th class="fixed-width">Управление</th>
-                        <th class="fixed-width">Выбор цвета</th>
+                        <th rowspan="2" class="fixed-width">№ п/п</th>
+                        <th rowspan="2" class="stretch-width">Наименование закупки</th>
+                        <th rowspan="2" class="stretch-width">Статус</th>
+                        <th rowspan="2" class="fixed-width">Способ закупки</th>
+                        <th rowspan="2" class="stretch-width">Инициатор закупки (ИТ/АХО)</th>
+                        <th rowspan="2" class="fixed-width">КЦСР</th>
+                        <th rowspan="2" class="fixed-width">КОСГУ</th>
+                        <th rowspan="2" class="fixed-width-medium">ДопФК</th>
+                        <th rowspan="2" class="fixed-width-date">НМЦК</th>
+                        <th rowspan="2" class="stretch-width">Экономия</th>
+                        <th rowspan="2" class="fixed-width-small">Контрагент</th>
+                        <th rowspan="2" class="fixed-width-date">Реестровый номер контракта (ЕИС)</th>
+                        <th rowspan="2" class="fixed-width-date">Номер контракта</th>
+                        <th rowspan="2" class="fixed-width-date">Дата контракта</th>
+                        <th rowspan="2" class="fixed-width-small">Окончание даты исполнения</th>
+                        <th rowspan="2" class="fixed-width-small">Цена контракта (на 2024 год)</th>
+                        <th rowspan="2" class="fixed-width-small">Исполнение контракта (план) (формула)</th>
+                        <th rowspan="2" class="stretch-width">Январь (план)</th>
+                        <th rowspan="2" class="fixed-width">Февраль (план)</th>
+                        <th rowspan="2" class="fixed-width">Март (план)</th>
+                        <th rowspan="2" class="fixed-width">Апрель (план)</th>
+                        <th rowspan="2" class="fixed-width">Май (план)</th>
+                        <th rowspan="2" class="fixed-width">Июнь (план)</th>
+                        <th rowspan="2" class="fixed-width">Июль (план)</th>
+                        <th rowspan="2" class="fixed-width">Август (план)</th>
+                        <th rowspan="2" class="fixed-width">Сентябрь (план)</th>
+                        <th rowspan="2" class="fixed-width">Октябрь (план)</th>
+                        <th rowspan="2" class="fixed-width">Ноябрь (план)</th>
+                        <th rowspan="2" class="fixed-width">Декабрь (план)</th>
+                        <th rowspan="2" class="fixed-width">Январь (план)</th>
+                        <th rowspan="2" class="fixed-width">Исполнение контракта (факт) (формула)</th>
+                        <th colspan="2" class="fixed-width">Январь (факт)</th>
+                        <th colspan="2" class="fixed-width">Февраль (факт)</th>
+                        <th colspan="2" class="fixed-width">Март (факт)</th>
+                        <th colspan="2" class="fixed-width">Апрель (факт)</th>
+                        <th colspan="2" class="fixed-width">Май (факт)</th>
+                        <th colspan="2" class="fixed-width">Июнь (факт)</th>
+                        <th colspan="2" class="fixed-width">Июль (факт)</th>
+                        <th colspan="2" class="fixed-width">Август (факт)</th>
+                        <th colspan="2" class="fixed-width">Сентябрь (факт)</th>
+                        <th colspan="2" class="fixed-width">Октябрь (факт)</th>
+                        <th colspan="2" class="fixed-width">Ноябрь (факт)</th>
+                        <th colspan="2" class="fixed-width">Декабрь (факт)</th>
+                        <th colspan="2" class="fixed-width">Январь (факт)</th>
+                        <th rowspan="2" class="fixed-width">% исполнения (формула)</th>
+                        <th rowspan="2" class="fixed-width">Остаток по контракту (формула)</th>
+                    </tr>
+                    <tr>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -203,24 +255,64 @@
                     <tr class="service-row" data-id="{% if user.is_authenticated %}{{ item.id }}{% else %}0{% endif %}">
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.id_id }}</td>
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.name }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.snils }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.location }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.address_p }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.address }}</td>
-                        <td class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.benefit }}</td>
-                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.number }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.year }}</td>
-                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.cost }}</td>
-                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.certificate }}</td>
-                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.date_number_get }}</td>
-                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.date_number_cancellation }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_number_no_one }}</td>
-                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.date_number_no_two }}</td>
-                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.certificate_no }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.reason }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.track }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_post }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.comment }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.status }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.way }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.initiator }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.KTSSR }}</td>
+                        <td class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.NMCC }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.saving }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.counterparty }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.registration_number }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.contract_number }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.contract_date }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.end_date }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.contract_price }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.execution_contract_plan }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.january_one }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.february }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.march }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.april }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.may }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.june }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.july }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.august }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.september }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.october }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.november }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.december }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.january_two }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.execution_contract_fact }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_january_one }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_january_one }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_february }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_february }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_march }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_march }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_april }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_april }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_may }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_may }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_june }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_june }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_july }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_july }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_august }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_august }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_september }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_september }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_october }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_october }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_november }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_november }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_december }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_december }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_january_two }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_january_two }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.execution }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.contract_balance }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.color }}</td>
                         <td class="stretch-width">
                             <!-- Управление -->
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
