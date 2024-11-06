@@ -126,8 +126,8 @@ function resetFilters() {
 	const currentPage = new URLSearchParams(window.location.search).get('page') || 1;
 
 	// Сбрасываем значения фильтров
-	document.getElementById('year').value = '';
-	document.getElementById('date_number_no_one').value = '';
+	document.getElementById('contract_date').value = '';
+	document.getElementById('end_date').value = '';
 	document.getElementById('keyword_one').value = '';
 	document.getElementById('keyword_two').value = '';
 	document.getElementById('selected_column_one').value = '';
