@@ -281,18 +281,18 @@ document.addEventListener('DOMContentLoaded', function () {
 					},
 					body: JSON.stringify({ id: serviceId })  // Отправка данных, если необходимо
 				})
-				.then(response => {
-					if (response.ok) {
-						const row = document.querySelector(`.service-row[data-id="${serviceId}"]`);
-						if (row) {
-							row.remove();
+					.then(response => {
+						if (response.ok) {
+							const row = document.querySelector(`.service-row[data-id="${serviceId}"]`);
+							if (row) {
+								row.remove();
+							}
+							alert('Элемент успешно удален!'); // Уведомление об успешном удалении
+						} else {
+							alert('Ошибка удаления');
 						}
-						alert('Элемент успешно удален!'); // Уведомление об успешном удалении
-					} else {
-						alert('Ошибка удаления');
-					}
-				})
-				.catch(error => console.error('Ошибка:', error));
+					})
+					.catch(error => console.error('Ошибка:', error));
 			}
 		});
 	});

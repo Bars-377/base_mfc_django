@@ -48,6 +48,10 @@
             </div>
         </div>
             {% block content %}{% endblock %}
+
+            {% if user.id == 4 %}
+                {% block content_user %}{% endblock %}
+            {% endif %}
     </div>
 
     <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
