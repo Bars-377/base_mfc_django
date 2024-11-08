@@ -420,8 +420,6 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     #     total_cost_3 = await sync_to_async(lambda: query.aggregate(Sum('certificate_no')))()
     #     total_cost_3 = total_cost_3['certificate_no__sum'] or 0
 
-    """ДОДЕЛАТЬ"""
-
     # Пагинация
     paginator = Paginator(query, per_page)
     services = await sync_to_async(paginator.get_page)(page)
@@ -473,7 +471,7 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
         # 'total_cost_2': total_cost_2,
         # 'total_cost_3': total_cost_3,
         'selected_contract_date': contract_date,
-        'selected_KOSGU': KOSGU_user,
+        'selected_KOSGU_user': KOSGU_user,
         'selected_end_date': end_date,
         'selected_column_one': selected_column_one,
         'selected_column_one_user': selected_column_one_user,

@@ -147,6 +147,33 @@ function resetFilters() {
 	window.scrollTo(0, 0);
 }
 
+// Функция сброса фильтров и прокрутки
+function resetFiltersUser() {
+	// Получаем текущую страницу
+	const currentPage = new URLSearchParams(window.location.search).get('page_user') || 1;
+
+	// Сбрасываем значения фильтров
+	document.getElementById('KOSGU_user').value = '';
+
+	document.getElementById('keyword_one_user').value = '';
+	document.getElementById('keyword_two_user').value = '';
+	document.getElementById('selected_column_one_user').value = '';
+	document.getElementById('selected_column_two_user').value = '';
+
+	// Добавляем текущую страницу как скрытое поле
+	const pageInput = document.createElement('input');
+	pageInput.type = 'hidden';
+	pageInput.name = 'total_pages_full_user';
+	pageInput.value = currentPage;
+
+	const form = document.getElementById('filter-form-user');
+	form.appendChild(pageInput);
+
+	// Отправляем форму
+	form.submit();
+	window.scrollTo(0, 0);
+}
+
 // Функция обновления цвета строки
 function updateColor(rowId, color) {
 	console.log('data');
@@ -162,6 +189,38 @@ function updateColor(rowId, color) {
 			console.log(data); // Добавьте эту строку
 			if (data.success) {
 				const row = document.querySelector(`.service-row[data-id="${data.id}"]`);
+				if (row) {
+					row.style.backgroundColor = data.color;
+					const cells = row.querySelectorAll('td');
+					// Изменение цвета всех ячеек, кроме последних двух
+					const cellsToUpdate = Array.from(cells).slice(0, -2);
+					cellsToUpdate.forEach(cell => {
+						cell.style.backgroundColor = data.color;
+					});
+				}
+			} else {
+				console.log('rowId:', rowId, 'color:', color);
+				alert('Не удалось обновить цвет');
+			}
+		})
+		.catch(error => console.error('Ошибка:', error));
+}
+
+// Функция обновления цвета строки
+function updateColorUser(rowId, color) {
+	console.log('data');
+	fetch(`/update_color/${rowId}/`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ color: color })
+	})
+		.then(response => response.json())
+		.then(data => {
+			console.log(data); // Добавьте эту строку
+			if (data.success) {
+				const row = document.querySelector(`.service-row-user[data-id="${data.id}"]`);
 				if (row) {
 					row.style.backgroundColor = data.color;
 					const cells = row.querySelectorAll('td');
@@ -202,6 +261,25 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+	const colorSelects = document.querySelectorAll('.color-select-user');
+
+	colorSelects.forEach(select => {
+		select.addEventListener('change', function () {
+			const rowId = this.getAttribute('data-id');
+			const selectedColor = this.value;
+
+			updateColorUser(rowId, selectedColor);
+		});
+	});
+
+	// Восстановление позиции скролла
+	const scrollPosition = localStorage.getItem('scrollPosition');
+	if (scrollPosition) {
+		window.scrollTo(0, scrollPosition);
+	}
+});
+
 window.addEventListener('beforeunload', function () {
 	// Сохранение позиции скролла
 	localStorage.setItem('scrollPosition', window.scrollY);
@@ -212,6 +290,11 @@ document.getElementById('reset-filters').addEventListener('click', function () {
 	resetFilters();
 });
 
+// Обработчик нажатия на кнопку сброса фильтров
+document.getElementById('reset-filters-user').addEventListener('click', function () {
+	resetFiltersUser();
+});
+
 // Обработчик нажатия на кнопку фильтрации
 document.getElementById('filter-form').addEventListener('submit', function (event) {
 	window.scrollTo(0, 0);
@@ -220,6 +303,17 @@ document.getElementById('filter-form').addEventListener('submit', function (even
 	keywordInput_one.value = keywordInput_one.value.trim();
 	// Обрезаем пробелы с двух сторон поля ввода 2
 	var keywordInput_two = document.getElementById('keyword_two');
+	keywordInput_two.value = keywordInput_two.value.trim();
+});
+
+// Обработчик нажатия на кнопку фильтрации
+document.getElementById('filter-form-user').addEventListener('submit', function (event) {
+	window.scrollTo(0, 0);
+	// Обрезаем пробелы с двух сторон поля ввода 1
+	var keywordInput_one = document.getElementById('keyword_one_user');
+	keywordInput_one.value = keywordInput_one.value.trim();
+	// Обрезаем пробелы с двух сторон поля ввода 2
+	var keywordInput_two = document.getElementById('keyword_two_user');
 	keywordInput_two.value = keywordInput_two.value.trim();
 });
 
@@ -284,6 +378,40 @@ document.addEventListener('DOMContentLoaded', function () {
 					.then(response => {
 						if (response.ok) {
 							const row = document.querySelector(`.service-row[data-id="${serviceId}"]`);
+							if (row) {
+								row.remove();
+							}
+							alert('Элемент успешно удален!'); // Уведомление об успешном удалении
+						} else {
+							alert('Ошибка удаления');
+						}
+					})
+					.catch(error => console.error('Ошибка:', error));
+			}
+		});
+	});
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+	const deleteButtons = document.querySelectorAll('.delete-button-user');
+
+	deleteButtons.forEach(button => {
+		button.addEventListener('click', function () {
+			const form = this.closest('.delete-form-user');
+			const serviceId = form.getAttribute('data-id');
+			console.log(serviceId);
+
+			if (confirmDelete()) {
+				fetch(`/delete_record/${serviceId}/`, {  // Убедитесь, что здесь правильный путь
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ id: serviceId })  // Отправка данных, если необходимо
+				})
+					.then(response => {
+						if (response.ok) {
+							const row = document.querySelector(`.service-row-user[data-id="${serviceId}"]`);
 							if (row) {
 								row.remove();
 							}

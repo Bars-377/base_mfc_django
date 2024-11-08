@@ -386,7 +386,7 @@
                         {% endif %}
                     <li class="page-item">
                         <a class="page-link"
-                            href="{% url 'data_table_view' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&end_date={{ selected_end_date }}&page={{ total_pages }}">{{ total_pages }}</a>
+                            href="{% url 'data_table_view' %}?contract_date={{ selected_contract_date }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&end_date={{ selected_end_date }}&page={{ total_pages }}">{{ total_pages }}</a>
                     </li>
                     {% endif %}
 
@@ -427,7 +427,7 @@
 
 {% block content_user %}
     <div class="container-fluid-neverov">
-        <form method="GET" action="/" id="filter-form" class="form-group">
+        <form method="GET" action="/" id="filter-form-user" class="form-group">
             <div class="form-item">
                 <label for="keyword_one_user">Поиск по ключевому слову 1:</label>
                 <input type="text" class="form-control" id="keyword_one_user" name="keyword_one_user" placeholder="Ключевое слово"
@@ -487,30 +487,20 @@
                 </select>
             </div>
             <div class="form-item">
-                <label for="contract_date">Дата Контракта:</label>
-                <select name="contract_date" id="contract_date" class="form-control form-control-year">
+                <label for="KOSGU_user">Дата Контракта:</label>
+                <select name="KOSGU_user" id="KOSGU_user" class="form-control form-control-year">
                     <option value="No">Год</option>
-                    {% for contract_date in service_years %}
-                    <option value="{{ contract_date }}" {% if contract_date == selected_contract_date %}selected{% endif %}>
-                        {{ contract_date }}
+                    {% for KOSGU_user in service_KOSGU_user %}
+                    <option value="{{ KOSGU_user }}" {% if KOSGU_user == selected_KOSGU_user %}selected{% endif %}>
+                        {{ KOSGU_user }}
                     </option>
                     {% endfor %}
                 </select>
             </div>
-            <div class="form-item">
-                <label for="end_date">Дата отказа:</label>
-                <select name="end_date" id="end_date" class="form-control form-control-year">
-                    <option value="No">Год</option>
-                    {% for end_date in service_end_date %}
-                    <option value="{{ end_date }}" {% if end_date == selected_end_date %}selected{% endif %}>
-                        {{ end_date }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
+           
             <div class="form-item-neverov">
                 <button type="submit" class="btn btn-primary">Фильтровать</button>
-                <button type="button" class="btn btn-secondary" id="reset-filters">Сбросить всё</button>
+                <button type="button" class="btn btn-secondary" id="reset-filters-user">Сбросить всё</button>
             </div>
         </form>
     </div>
@@ -520,152 +510,62 @@
                 <thead>
                     <tr>
                         <th rowspan="2" class="fixed-width">№ п/п</th>
-                        <th rowspan="2" class="stretch-width">Наименование закупки</th>
-                        <th rowspan="2" class="stretch-width">Статус</th>
-                        <th rowspan="2" class="fixed-width">Способ закупки</th>
-                        <th rowspan="2" class="stretch-width">Инициатор закупки (ИТ/АХО)</th>
-                        <th rowspan="2" class="fixed-width">КЦСР</th>
-                        <th rowspan="2" class="fixed-width">КОСГУ</th>
-                        <th rowspan="2" class="fixed-width-medium">ДопФК</th>
-                        <th rowspan="2" class="fixed-width-date">НМЦК</th>
-                        <th rowspan="2" class="stretch-width">Экономия</th>
-                        <th rowspan="2" class="fixed-width-small">Контрагент</th>
-                        <th rowspan="2" class="fixed-width-date">Реестровый номер контракта (ЕИС)</th>
-                        <th rowspan="2" class="fixed-width-date">Номер контракта</th>
-                        <th rowspan="2" class="fixed-width-date">Дата контракта</th>
-                        <th rowspan="2" class="fixed-width-small">Окончание даты исполнения</th>
-                        <th rowspan="2" class="fixed-width-small">Цена контракта (на 2024 год)</th>
-                        <th rowspan="2" class="fixed-width-small">Исполнение контракта (план) (формула)</th>
-                        <th rowspan="2" class="stretch-width">Январь (план)</th>
-                        <th rowspan="2" class="fixed-width">Февраль (план)</th>
-                        <th rowspan="2" class="fixed-width">Март (план)</th>
-                        <th rowspan="2" class="fixed-width">Апрель (план)</th>
-                        <th rowspan="2" class="fixed-width">Май (план)</th>
-                        <th rowspan="2" class="fixed-width">Июнь (план)</th>
-                        <th rowspan="2" class="fixed-width">Июль (план)</th>
-                        <th rowspan="2" class="fixed-width">Август (план)</th>
-                        <th rowspan="2" class="fixed-width">Сентябрь (план)</th>
-                        <th rowspan="2" class="fixed-width">Октябрь (план)</th>
-                        <th rowspan="2" class="fixed-width">Ноябрь (план)</th>
-                        <th rowspan="2" class="fixed-width">Декабрь (план)</th>
-                        <th rowspan="2" class="fixed-width">Январь (план)</th>
-                        <th rowspan="2" class="fixed-width">Исполнение контракта (факт) (формула)</th>
-                        <th colspan="2" class="fixed-width">Январь (факт)</th>
-                        <th colspan="2" class="fixed-width">Февраль (факт)</th>
-                        <th colspan="2" class="fixed-width">Март (факт)</th>
-                        <th colspan="2" class="fixed-width">Апрель (факт)</th>
-                        <th colspan="2" class="fixed-width">Май (факт)</th>
-                        <th colspan="2" class="fixed-width">Июнь (факт)</th>
-                        <th colspan="2" class="fixed-width">Июль (факт)</th>
-                        <th colspan="2" class="fixed-width">Август (факт)</th>
-                        <th colspan="2" class="fixed-width">Сентябрь (факт)</th>
-                        <th colspan="2" class="fixed-width">Октябрь (факт)</th>
-                        <th colspan="2" class="fixed-width">Ноябрь (факт)</th>
-                        <th colspan="2" class="fixed-width">Декабрь (факт)</th>
-                        <th colspan="2" class="fixed-width">Январь (факт)</th>
-                        <th rowspan="2" class="fixed-width">% исполнения (формула)</th>
-                        <th rowspan="2" class="fixed-width">Остаток по контракту (формула)</th>
+                        <th rowspan="2" class="stretch-width">Наименование</th>
+                        <th rowspan="2" class="stretch-width">КОСГУ</th>
+                        <th rowspan="2" class="fixed-width">ДопФК</th>
+                        <th colspan="2" class="stretch-width">Лимиты</th>
+                        <th colspan="2" class="fixed-width">Запланировано</th>
+                        <th colspan="2" class="fixed-width">Заключено</th>
+                        <th colspan="2" class="fixed-width-medium">Исполнено</th>
+                        <th colspan="2" class="fixed-width-medium">Кассовое исполнение</th>
+                        <th colspan="2" class="fixed-width-date">Остаток</th>
+                        <th rowspan="2" class="stretch-width">Остаток с учетом планов</th>
                     </tr>
                     <tr>
-                        <th class="fixed-width">Дата оплаты</th>
-                        <th class="fixed-width">Сумма оплаты</th>
-                        <th class="fixed-width">Дата оплаты</th>
-                        <th class="fixed-width">Сумма оплаты</th>
-                        <th class="fixed-width">Дата оплаты</th>
-                        <th class="fixed-width">Сумма оплаты</th>
-                        <th class="fixed-width">Дата оплаты</th>
-                        <th class="fixed-width">Сумма оплаты</th>
-                        <th class="fixed-width">Дата оплаты</th>
-                        <th class="fixed-width">Сумма оплаты</th>
-                        <th class="fixed-width">Дата оплаты</th>
-                        <th class="fixed-width">Сумма оплаты</th>
-                        <th class="fixed-width">Дата оплаты</th>
-                        <th class="fixed-width">Сумма оплаты</th>
-                        <th class="fixed-width">Дата оплаты</th>
-                        <th class="fixed-width">Сумма оплаты</th>
-                        <th class="fixed-width">Дата оплаты</th>
-                        <th class="fixed-width">Сумма оплаты</th>
-                        <th class="fixed-width">Дата оплаты</th>
-                        <th class="fixed-width">Сумма оплаты</th>
-                        <th class="fixed-width">Дата оплаты</th>
-                        <th class="fixed-width">Сумма оплаты</th>
-                        <th class="fixed-width">Дата оплаты</th>
-                        <th class="fixed-width">Сумма оплаты</th>
-                        <th class="fixed-width">Дата оплаты</th>
-                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for item in data %}
+                    {% for item in data_user %}
                     <tr class="service-row" data-id="{% if user.is_authenticated %}{{ item.id }}{% else %}0{% endif %}">
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.id_id }}</td>
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.name }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.status }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.way }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.initiator }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.KTSSR }}</td>
-                        <td class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
-                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.NMCC }}</td>
-                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.saving }}</td>
-                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.counterparty }}</td>
-                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.registration_number }}</td>
-                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.contract_number }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.contract_date }}</td>
-                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.end_date }}</td>
-                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.contract_price }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.execution_contract_plan }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.january_one }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.february }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.march }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.april }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.may }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.june }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.july }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.august }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.september }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.october }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.november }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.december }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.january_two }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.execution_contract_fact }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_january_one }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_january_one }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_february }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_february }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_march }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_march }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_april }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_april }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_may }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_may }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_june }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_june }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_july }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_july }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_august }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_august }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_september }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_september }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_october }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_october }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_november }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_november }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_december }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_december }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_january_two }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_january_two }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.execution }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.contract_balance }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.budget_limit }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_limit }}</td>
+                        <td class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.budget_planned }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_planned }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.budget_concluded }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_concluded }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.budget_completed }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_completed }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.budget_execution }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_execution }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.budget_remainder }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_remainder }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.budget_plans }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_plans }}</td>
 
                         <td class="stretch-width">
                             <!-- Управление -->
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                <a href="{% url 'edit' row_id=item.id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}"
+                                <a href="{% url 'edit' row_id=item.id %}?page_user={{ page_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&KOSGU_user={{ selected_KOSGU_user }}"
                                 class="btn btn-sm btn-warning">Edit</a>
-                                <form class="delete-form" data-id="{{ item.id }}" style="display:inline;">
+                                <form class="delete-form-user" data-id="{{ item.id }}" style="display:inline;">
 
-                                    <button type="button" class="btn btn-sm btn-danger delete-button">Delete</button>
+                                    <button type="button" class="btn btn-sm btn-danger delete-button-user">Delete</button>
                                 </form>
                             </div>
                         </td>
@@ -673,7 +573,7 @@
                             <!-- Выбор цвета -->
                             <p>User ID: {{ user.id }}</p>
                             <p>Authenticated: {{ user.is_authenticated }}</p>
-                            <select class="form-control color-select" data-id="{% if user.is_authenticated %}{{ item.id }}{% else %}0{% endif %}">
+                            <select class="form-control color-select-user" data-id="{% if user.is_authenticated %}{{ item.id }}{% else %}0{% endif %}">
                                 <option value="#ffffff">Default</option>
                                 <option value="#eaf7ff" {% if item.color == '#eaf7ff' %}selected{% endif %}>Light Blue</option>
                                 <option value="#ffebeb" {% if item.color == '#ffebeb' %}selected{% endif %}>Light Red</option>
@@ -697,7 +597,7 @@
                     {% if page > 1 %}
                     <li class="page-item">
                         <a class="page-link"
-                            href="{% url 'data_table_view' %}?contract_date={{ selected_contract_date }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&end_date={{ selected_end_date }}&page={{ page|add:"-1" }}"
+                            href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ page_user|add:"-1" }}"
                             aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
@@ -708,7 +608,7 @@
                     {% if start_page > 1 %}
                     <li class="page-item">
                         <a class="page-link"
-                            href="{% url 'data_table_view' %}?contract_date={{ selected_contract_date }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&end_date={{ selected_end_date }}&page=1">1</a>
+                            href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user=1">1</a>
                     </li>
                         {% if start_page > 2 %}
                         <li class="page-item disabled"><span class="page-link">...</span></li>
@@ -717,28 +617,28 @@
 
                     <!-- Show a few pages around the current page -->
                     {% for p in pages %}
-                    <li class="page-item {% if p == page %}active{% endif %}">
+                    <li class="page-item {% if p == page_user %}active{% endif %}">
                         <a class="page-link"
-                            href="{% url 'data_table_view' %}?contract_date={{ selected_contract_date }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&end_date={{ selected_end_date }}&page={{ p }}">{{ p }}</a>
+                            href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ p }}">{{ p }}</a>
                     </li>
                     {% endfor %}
 
                     <!-- Show "Next" button if not on the last page group -->
-                    {% if end_page < total_pages %}
+                    {% if end_page_user < total_pages_user %}
                         {% load custom_tags %}
-                        {% if end_page < total_pages|subtract:1 %}
+                        {% if end_page_user < total_pages_user|subtract:1 %}
                         <li class="page-item disabled"><span class="page-link">...</span></li>
                         {% endif %}
                     <li class="page-item">
                         <a class="page-link"
-                            href="{% url 'data_table_view' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&end_date={{ selected_end_date }}&page={{ total_pages }}">{{ total_pages }}</a>
+                            href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ total_pages_user }}">{{ total_pages_user }}</a>
                     </li>
                     {% endif %}
 
-                    {% if page < total_pages %}
+                    {% if page_user < total_pages_user %}
                     <li class="page-item">
                         <a class="page-link"
-                            href="{% url 'data_table_view' %}?contract_date={{ selected_contract_date }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&end_date={{ selected_end_date }}&page={{ page|add:"1" }}"
+                            href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ page_user|add:"1" }}"
                             aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
