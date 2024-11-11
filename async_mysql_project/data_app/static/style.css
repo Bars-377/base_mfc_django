@@ -172,11 +172,13 @@ h1 {
     width: 100px;
 }
 
-.service-row {
+.service-row,
+.service-row td {
     transition: background-color 0.3s ease;
 }
 
-.service-row td {
+.service-row-user,
+.service-row-user td {
     transition: background-color 0.3s ease;
 }
 

@@ -599,6 +599,25 @@ async def update_color(request, row_id):
     return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
+async def update_color_user(request, row_id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            color = data.get('color')
+
+            # Найдите запись по ID и обновите цвет
+            service = await sync_to_async(ServicesVault.objects.get)(id=row_id)
+            service.color = color
+            await sync_to_async(service.save)()
+
+            return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
+        except ServicesVault.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+@csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def delete_record(request, row_id):
     if request.method == 'POST':
         try:

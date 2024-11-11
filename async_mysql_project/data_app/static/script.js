@@ -209,7 +209,7 @@ function updateColor(rowId, color) {
 // Функция обновления цвета строки
 function updateColorUser(rowId, color) {
 	console.log('data');
-	fetch(`/update_color/${rowId}/`, {
+	fetch(`/update_color_user/${rowId}/`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -255,10 +255,10 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 	// Восстановление позиции скролла
-	const scrollPosition = localStorage.getItem('scrollPosition');
-	if (scrollPosition) {
-		window.scrollTo(0, scrollPosition);
-	}
+	// const scrollPosition = localStorage.getItem('scrollPosition');
+	// if (scrollPosition) {
+	// 	window.scrollTo(0, scrollPosition);
+	// }
 });
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -274,10 +274,10 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 	// Восстановление позиции скролла
-	const scrollPosition = localStorage.getItem('scrollPosition');
-	if (scrollPosition) {
-		window.scrollTo(0, scrollPosition);
-	}
+	// const scrollPosition = localStorage.getItem('scrollPosition');
+	// if (scrollPosition) {
+	// 	window.scrollTo(0, scrollPosition);
+	// }
 });
 
 window.addEventListener('beforeunload', function () {
@@ -325,36 +325,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Прокрутка таблицы при нажатии левой кнопки мыши
 document.addEventListener('DOMContentLoaded', function () {
-	const scrollContainer = document.querySelector('.scroll-container');
-	let isMouseDown = false;
-	let startX;
-	let scrollLeft;
+	const scrollContainers = document.querySelectorAll('.scroll-container');
 
-	scrollContainer.addEventListener('mousedown', (e) => {
-		console.log('Mouse down'); // Добавлено для отладки
-		isMouseDown = true;
-		startX = e.pageX - scrollContainer.offsetLeft;
-		scrollLeft = scrollContainer.scrollLeft;
-		scrollContainer.style.cursor = 'grabbing';
-	});
+	scrollContainers.forEach((scrollContainer) => {
+		let isMouseDown = false;
+		let startX;
+		let scrollLeft;
 
-	scrollContainer.addEventListener('mouseleave', () => {
-		isMouseDown = false;
-		scrollContainer.style.cursor = 'default';
-	});
+		scrollContainer.addEventListener('mousedown', (e) => {
+			console.log('Mouse down'); // Добавлено для отладки
+			isMouseDown = true;
+			startX = e.pageX - scrollContainer.offsetLeft;
+			scrollLeft = scrollContainer.scrollLeft;
+			scrollContainer.style.cursor = 'grabbing';
+		});
 
-	document.addEventListener('mouseup', () => {
-		isMouseDown = false;
-		scrollContainer.style.cursor = 'default';
-	});
+		scrollContainer.addEventListener('mouseleave', () => {
+			isMouseDown = false;
+			scrollContainer.style.cursor = 'default';
+		});
 
-	scrollContainer.addEventListener('mousemove', (e) => {
-		console.log('Mouse move'); // Добавлено для отладки
-		if (!isMouseDown) return;
-		e.preventDefault();
-		const x = e.pageX - scrollContainer.offsetLeft;
-		const walk = (x - startX) * 2; // Скорость прокрутки
-		scrollContainer.scrollLeft = scrollLeft - walk;
+		document.addEventListener('mouseup', () => {
+			isMouseDown = false;
+			scrollContainer.style.cursor = 'default';
+		});
+
+		scrollContainer.addEventListener('mousemove', (e) => {
+			console.log('Mouse move'); // Добавлено для отладки
+			if (!isMouseDown) return;
+			e.preventDefault();
+			const x = e.pageX - scrollContainer.offsetLeft;
+			const walk = (x - startX) * 2; // Скорость прокрутки
+			scrollContainer.scrollLeft = scrollLeft - walk;
+		});
 	});
 });
 

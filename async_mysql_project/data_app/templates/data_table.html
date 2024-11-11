@@ -220,6 +220,8 @@
                         <th colspan="2" class="fixed-width">Январь (факт)</th>
                         <th rowspan="2" class="fixed-width">% исполнения (формула)</th>
                         <th rowspan="2" class="fixed-width">Остаток по контракту (формула)</th>
+                        <th rowspan="2" class="fixed-width">Управление</th>
+                        <th rowspan="2" class="fixed-width">Смена цвета</th>
                     </tr>
                     <tr>
                         <th class="fixed-width">Дата оплаты</th>
@@ -412,9 +414,9 @@
 
         <a href="{% url 'add' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить данные</a>
 
-        <br>
-        <h1>Экспорт услуг в Excel</h1>
-        <br>
+        <!-- <br> -->
+        <!-- <h1>Экспорт услуг в Excel</h1> -->
+        <!-- <br> -->
 
         <!-- <form id="export-form" onsubmit="showFlashMessage(event)"> -->
         <!--     <input type="hidden" name="contract_date" value="{% if selected_contract_date %}{{ selected_contract_date }}{% else %}No{% endif %}"> -->
@@ -497,7 +499,7 @@
                     {% endfor %}
                 </select>
             </div>
-           
+
             <div class="form-item-neverov">
                 <button type="submit" class="btn btn-primary">Фильтровать</button>
                 <button type="button" class="btn btn-secondary" id="reset-filters-user">Сбросить всё</button>
@@ -519,9 +521,13 @@
                         <th colspan="2" class="fixed-width-medium">Исполнено</th>
                         <th colspan="2" class="fixed-width-medium">Кассовое исполнение</th>
                         <th colspan="2" class="fixed-width-date">Остаток</th>
-                        <th rowspan="2" class="stretch-width">Остаток с учетом планов</th>
+                        <th colspan="2" class="stretch-width">Остаток с учетом планов</th>
+                        <th rowspan="2" class="stretch-width">Управление</th>
+                        <th rowspan="2" class="stretch-width">Смена цвета</th>
                     </tr>
                     <tr>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
                         <th class="fixed-width">Бюджет</th>
                         <th class="fixed-width">Внебюджет</th>
                         <th class="fixed-width">Бюджет</th>
@@ -538,7 +544,7 @@
                 </thead>
                 <tbody>
                     {% for item in data_user %}
-                    <tr class="service-row" data-id="{% if user.is_authenticated %}{{ item.id }}{% else %}0{% endif %}">
+                    <tr class="service-row-user" data-id="{% if user.is_authenticated %}{{ item.id }}{% else %}0{% endif %}">
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.id_id }}</td>
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.name }}</td>
                         <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
@@ -657,9 +663,9 @@
 
         <a href="{% url 'add' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить данные</a>
 
-        <br>
-        <h1>Экспорт услуг в Excel</h1>
-        <br>
+        <!-- <br> -->
+        <!-- <h1>Экспорт услуг в Excel</h1> -->
+        <!-- <br> -->
 
         <!-- <form id="export-form" onsubmit="showFlashMessage(event)"> -->
         <!--     <input type="hidden" name="contract_date" value="{% if selected_contract_date %}{{ selected_contract_date }}{% else %}No{% endif %}"> -->

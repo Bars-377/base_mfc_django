@@ -26,6 +26,7 @@ urlpatterns = [
     path('accounts/logout/', LogoutView.as_view(), name='logout'),
     path('', views.data_table_view, name='data_table_view'),
     path('update_color/<int:row_id>/', views.update_color, name='update_color'),
+    path('update_color_user/<int:row_id>/', views.update_color_user, name='update_color_user'),
     path('update_record/<int:row_id>/', views.update_record, name='update_record'),
     path('add_record/', views.add_record, name='add_record'),
     path('add/', views.add, name='add'),
