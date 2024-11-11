@@ -786,28 +786,67 @@ async def add_record(request):
             total_pages = int(request.GET.get('total_pages', 1))
 
             name = request.POST['name']
-            snils = request.POST['snils']
-            location = request.POST['location']
-            address_p = request.POST['address_p']
-            address = request.POST['address']
-            benefit = request.POST['benefit']
-            number = request.POST['number']
-            year = request.POST['year']
-            cost = request.POST['cost']
-            certificate = request.POST['certificate']
-            date_number_get = request.POST['date_number_get']
-            date_number_cancellation = request.POST['date_number_cancellation']
-            date_number_no_one = request.POST['date_number_no_one']
-            date_number_no_two = request.POST['date_number_no_two']
-            certificate_no = request.POST['certificate_no']
-            reason = request.POST['reason']
-            track = request.POST['track']
-            date_post = request.POST['date_post']
-            comment = request.POST['comment']
+            status = request.POST['status']
+            way = request.POST['way']
+            initiator = request.POST['initiator']
+            KTSSR = request.POST['KTSSR']
+            KOSGU = request.POST['KOSGU']
+            DopFC = request.POST['DopFC']
+            NMCC = request.POST['NMCC']
+            saving = request.POST['saving']
+            counterparty = request.POST['counterparty']
+            registration_number = request.POST['registration_number']
+            contract_number = request.POST['contract_number']
+            contract_date = request.POST['contract_date']
+            end_date = request.POST['end_date']
+            contract_price = request.POST['contract_price']
+            execution_contract_plan = request.POST['execution_contract_plan']
+            january_one = request.POST['january_one']
+            february = request.POST['february']
+            march = request.POST['march']
+            april = request.POST['april']
+            may = request.POST['may']
+            june = request.POST['june']
+            july = request.POST['july']
+            august = request.POST['august']
+            september = request.POST['september']
+            october = request.POST['october']
+            november = request.POST['november']
+            december = request.POST['december']
+            january_two = request.POST['january_two']
+            execution_contract_fact = request.POST['execution_contract_fact']
+            date_january_one = request.POST['date_january_one']
+            sum_january_one = request.POST['sum_january_one']
+            date_february = request.POST['date_february']
+            sum_february = request.POST['sum_february']
+            date_march = request.POST['date_march']
+            sum_march = request.POST['sum_march']
+            date_april = request.POST['date_april']
+            sum_april = request.POST['sum_april']
+            date_may = request.POST['date_may']
+            sum_may = request.POST['sum_may']
+            date_june = request.POST['date_june']
+            sum_june = request.POST['sum_june']
+            date_july = request.POST['date_july']
+            sum_july = request.POST['sum_july']
+            date_august = request.POST['date_august']
+            sum_august = request.POST['sum_august']
+            date_september = request.POST['date_september']
+            sum_september = request.POST['sum_september']
+            date_october = request.POST['date_october']
+            sum_october = request.POST['sum_october']
+            date_november = request.POST['date_november']
+            sum_november = request.POST['sum_november']
+            date_december = request.POST['date_december']
+            sum_december = request.POST['sum_december']
+            date_january_two = request.POST['date_january_two']
+            sum_january_two = request.POST['sum_january_two']
+            execution = request.POST['execution']
+            contract_balance = request.POST['contract_balance']
             color = request.POST.get('color')
 
-            if certificate == '0' and certificate_no == '0':
-                color = '#dff0d8'
+            # if certificate == '0' and certificate_no == '0':
+            #     color = '#dff0d8'
 
             # Получаем следующий ID
             latest_service = await sync_to_async(Services.objects.order_by('-id_id').first)()
@@ -817,13 +856,26 @@ async def add_record(request):
                 # В случае некорректного значения установить id_id на 1
                 id_id = 1
 
-            new_service = Services(id_id=id_id, name=name, snils=snils, location=location,
-                                address_p=address_p, address=address, benefit=benefit,
-                                number=number, year=year, cost=cost,
-                                certificate=certificate, date_number_get=date_number_get,
-                                date_number_cancellation=date_number_cancellation,
-                                date_number_no_one=date_number_no_one, date_number_no_two=date_number_no_two, certificate_no=certificate_no,
-                                reason=reason, track=track, date_post=date_post, comment=comment, color=color)
+            new_service = Services(id_id=id_id, name=name, status=status, way=way,
+                                initiator=initiator, KTSSR=KTSSR, KOSGU=KOSGU,
+                                DopFC=DopFC, NMCC=NMCC, saving=saving,
+                                counterparty=counterparty, registration_number=registration_number,
+                                contract_number=contract_number, contract_date=contract_date,
+                                end_date=end_date, contract_price=contract_price, execution_contract_plan=execution_contract_plan,
+                                january_one=january_one, february=february, march=march, april=april,
+                                may=may, june=june, july=july, august=august,
+                                september=september, october=october, november=november, december=december,
+                                january_two=january_two, execution_contract_fact=execution_contract_fact, date_january_one=date_january_one,
+                                sum_january_one=sum_january_one, date_february=date_february, sum_february=sum_february,
+                                date_march=date_march, sum_march=sum_march, date_april=date_april,
+                                sum_april=sum_april, date_may=date_may, sum_may=sum_may,
+                                date_june=date_june, sum_june=sum_june, date_july=date_july,
+                                sum_july=sum_july, date_august=date_august, sum_august=sum_august,
+                                date_september=date_september, sum_september=sum_september, date_october=date_october,
+                                sum_october=sum_october, date_november=date_november, sum_november=sum_november,
+                                date_december=date_december, sum_december=sum_december, date_january_two=date_january_two,
+                                sum_january_two=sum_january_two, execution=execution, contract_balance=contract_balance,
+                                color=color)
 
             await sync_to_async(new_service.save)()
             await sync_to_async(messages.success)(request, 'Данные успешно добавлены!')
