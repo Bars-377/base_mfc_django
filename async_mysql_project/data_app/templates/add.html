@@ -43,221 +43,222 @@
             </div>
             <div class="form-item">
                 <label for="KTSSR">КЦСР</label>
-                <input type="number" step="0.01" class="form-control" id="KTSSR" name="KTSSR" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="KTSSR" name="KTSSR" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="KOSGU">КОСГУ</label>
-                <input type="text" class="form-control" id="KOSGU" name="KOSGU" pattern="\d{1,3}" maxlength="3" title="Максимальное значение 999">
+                <input type="text" class="form-control" id="KOSGU" name="KOSGU" pattern="\d{1,3}" maxlength="3" required title="Максимальное значение 999">
             </div>
             <div class="form-item">
                 <label for="DopFC">ДопФК</label>
-                <input type="number" step="0.01" class="form-control" id="DopFC" name="DopFC" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="DopFC" name="DopFC" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="NMCC">НМЦК</label>
-                <input type="number" step="0.01" class="form-control" id="NMCC" name="NMCC" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="NMCC" name="NMCC" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="saving">Экономия</label>
-                <input type="number" step="0.01" class="form-control" id="saving" name="saving" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="saving" name="saving" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="counterparty">Контрагент</label>
-                <input type="text" class="form-control" id="counterparty" name="counterparty" maxlength="40" title="Максимальное количество значений 40">
+                <input type="text" class="form-control" id="counterparty" name="counterparty" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="registration_number">Реестровый номер контракта (ЕИС)</label>
-                <input type="text" class="form-control" id="registration_number" name="registration_number" pattern="\d{1,20}" maxlength="20" title="Максимальное значение 20 чисел">
+                <input type="text" class="form-control" id="registration_number" name="registration_number" pattern="\d{1,20}" maxlength="20" required title="Максимальное значение 20 чисел">
             </div>
             <div class="form-item">
                 <label for="contract_number">Номер контракта</label>
-                <input type="text" class="form-control" id="contract_number" name="contract_number" maxlength="40" title="Максимальное количество значений 40">
+                <input type="text" class="form-control" id="contract_number" name="contract_number" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="contract_date">Дата контракта</label>
-                <input type="text" class="form-control" id="contract_date" name="contract_date" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+                <input type="text" class="form-control" id="contract_date" name="contract_date" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
             </div>
             <div class="form-item">
                 <label for="end_date">Окончание даты исполнения</label>
-                <input type="text" class="form-control" id="end_date" name="end_date" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+                <input type="text" class="form-control" id="end_date" name="end_date" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
             </div>
             <div class="form-item">
                 <label for="contract_price">Цена контракта (на 2024 год)</label>
-                <input type="number" step="0.01" class="form-control" id="contract_price" name="contract_price" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="contract_price" name="contract_price" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="execution_contract_plan">Исполнение контракта (план) (формула)</label>
-                <input type="number" step="0.01" class="form-control" id="execution_contract_plan" name="execution_contract_plan" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="execution_contract_plan" name="execution_contract_plan" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="january_one">Январь (план)</label>
-                <input type="number" step="0.01" class="form-control" id="january_one" name="january_one" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="january_one" name="january_one" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="february">Февраль (план)</label>
-                <input type="number" step="0.01" class="form-control" id="february" name="february" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="february" name="february" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="march">Март (план)</label>
-                <input type="number" step="0.01" class="form-control" id="march" name="march" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="march" name="march" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="april">Апрель (план)</label>
-                <input type="number" step="0.01" class="form-control" id="april" name="april" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="april" name="april" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="may">Май (план)</label>
-                <input type="number" step="0.01" class="form-control" id="may" name="may" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="may" name="may" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="june">Июнь (план)</label>
-                <input type="number" step="0.01" class="form-control" id="june" name="june" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="june" name="june" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="july">Июль (план)</label>
-                <input type="number" step="0.01" class="form-control" id="july" name="july" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="july" name="july" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="august">Август (план)</label>
-                <input type="number" step="0.01" class="form-control" id="august" name="august" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="august" name="august" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="september">Сентябрь (план)</label>
-                <input type="number" step="0.01" class="form-control" id="september" name="september" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="september" name="september" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="october">Октябрь (план)</label>
-                <input type="number" step="0.01" class="form-control" id="october" name="october" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="october" name="october" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="november">Ноябрь (план)</label>
-                <input type="number" step="0.01" class="form-control" id="november" name="november" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="november" name="november" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="december">Декабрь (план)</label>
-                <input type="number" step="0.01" class="form-control" id="december" name="december" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="december" name="december" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="january_two">Январь 2 (план)</label>
-                <input type="number" step="0.01" class="form-control" id="january_two" name="january_two" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="january_two" name="january_two" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="execution_contract_fact">Исполнение контракта (факт) (формула)</label>
-                <input type="number" step="0.01" class="form-control" id="execution_contract_fact" name="execution_contract_fact" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="number" step="0.01" class="form-control" id="execution_contract_fact" name="execution_contract_fact" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="date_january_one">Дата оплаты Январь (факт)</label>
-                <input type="text" class="form-control" id="date_january_one" name="date_january_one" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="date_january_one" name="date_january_one" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="sum_january_one">Сумма оплаты Январь (факт)</label>
-                <input type="text" class="form-control" id="sum_january_one" name="sum_january_one" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="sum_january_one" name="sum_january_one" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="date_february">Дата оплаты Февраль (факт)</label>
-                <input type="text" class="form-control" id="date_february" name="date_february" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="date_february" name="date_february" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="sum_february">Сумма оплаты Февраль (факт)</label>
-                <input type="text" class="form-control" id="sum_february" name="sum_february" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="sum_february" name="sum_february" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="date_march">Дата оплаты Март (факт)</label>
-                <input type="text" class="form-control" id="date_march" name="date_march" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="date_march" name="date_march" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="sum_march">Сумма оплаты Март (факт)</label>
-                <input type="text" class="form-control" id="sum_march" name="sum_march" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="sum_march" name="sum_march" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="date_april">Дата оплаты Апрель (факт)</label>
-                <input type="text" class="form-control" id="date_april" name="date_april" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="date_april" name="date_april" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="sum_april">Сумма оплаты Май (факт)</label>
-                <input type="text" class="form-control" id="sum_april" name="sum_april" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="sum_april" name="sum_april" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="date_may">Дата оплаты Май (факт)</label>
-                <input type="text" class="form-control" id="date_may" name="date_may" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="date_may" name="date_may" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="sum_may">Сумма оплаты Май (факт)</label>
-                <input type="text" class="form-control" id="sum_may" name="sum_may" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="sum_may" name="sum_may" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="date_june">Дата оплаты Июнь (факт)</label>
-                <input type="text" class="form-control" id="date_june" name="date_june" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="date_june" name="date_june" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="sum_june">Сумма оплаты Июнь (факт)</label>
-                <input type="text" class="form-control" id="sum_june" name="sum_june" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="sum_june" name="sum_june" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="date_july">Дата оплаты Июль (факт)</label>
-                <input type="text" class="form-control" id="date_july" name="date_july" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="date_july" name="date_july" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="sum_july">Сумма оплаты Июль (факт)</label>
-                <input type="text" class="form-control" id="sum_july" name="sum_july" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="sum_july" name="sum_july" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="date_august">Дата оплаты Август (факт)</label>
-                <input type="text" class="form-control" id="date_august" name="date_august" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="date_august" name="date_august" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="sum_august">Сумма оплаты Август (факт)</label>
-                <input type="text" class="form-control" id="sum_august" name="sum_august" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="sum_august" name="sum_august" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="date_september">Дата оплаты Сентябрь (факт)</label>
-                <input type="text" class="form-control" id="date_september" name="date_september" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="date_september" name="date_september" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="sum_september">Сумма оплаты Сентябрь (факт)</label>
-                <input type="text" class="form-control" id="sum_september" name="sum_september" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="sum_september" name="sum_september" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="date_october">Дата оплаты Октябрь (факт)</label>
-                <input type="text" class="form-control" id="date_october" name="date_october" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="date_october" name="date_october" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="sum_october">Сумма оплаты Октябрь (факт)</label>
-                <input type="text" class="form-control" id="sum_october" name="sum_october" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="sum_october" name="sum_october" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="date_november">Дата оплаты Ноябрь (факт)</label>
-                <input type="text" class="form-control" id="date_november" name="date_november" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="date_november" name="date_november" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="sum_november">Сумма оплаты Ноябрь (факт)</label>
-                <input type="text" class="form-control" id="sum_november" name="sum_november" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="sum_november" name="sum_november" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="date_december">Дата оплаты Декабрь (факт)</label>
-                <input type="text" class="form-control" id="date_december" name="date_december" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="date_december" name="date_december" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="sum_december">Сумма оплаты Декабрь (факт)</label>
-                <input type="text" class="form-control" id="sum_december" name="sum_december" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="sum_december" name="sum_december" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="date_january_two">Дата оплаты Январь (факт)</label>
-                <input type="text" class="form-control" id="date_january_two" name="date_january_two" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="date_january_two" name="date_january_two" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="sum_january_two">Сумма оплаты Январь (факт)</label>
-                <input type="text" class="form-control" id="sum_january_two" name="sum_january_two" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="sum_january_two" name="sum_january_two" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="execution">% исполнения (формула)</label>
-                <input type="text" class="form-control" id="execution" name="execution" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="execution" name="execution" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
                 <label for="contract_balance">Остаток по контракту (формула)</label>
-                <input type="text" class="form-control" id="contract_balance" name="contract_balance" maxlength="30" title="Максимальное количество значений 30">
+                <input type="text" class="form-control" id="contract_balance" name="contract_balance" maxlength="40" required title="Максимальное количество значений 40">
             </div>
 
+            <input type="hidden" name="color" value="{{ '' }}">  <!-- Скрытое поле для цвета -->
             <button type="submit" class="btn btn-primary clear-btn">Добавить запись</button>
             <a href="{% url 'data_table_view' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&year={{ selected_year }}&date_number_no_one={{ selected_date_number_no_one }}" class="btn btn-secondary btn-neverov mt-3 clear-btn">Вернуться назад</a>
         </form>

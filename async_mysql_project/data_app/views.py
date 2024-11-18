@@ -241,9 +241,10 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     service_KOSGU_user = set()
     empty_found_KOSGU = False
     for year_value in all_KOSGU_user:
-        year_str = year_value['KOSGU']
+        year_str = year_value.get('KOSGU', None)
         if not year_str:
             empty_found_KOSGU = True
+            continue # Пропустить итерацию, если year_str пустой или None
         matches_dd_mm_yyyy = re.findall(pattern_dd_mm_yyyy, year_str)
         matches_yyyy_mm_dd = re.findall(pattern_yyyy_mm_dd, year_str)
         service_KOSGU_user.update([date_str[-4:] for date_str in matches_dd_mm_yyyy])
@@ -257,9 +258,10 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     service_years = set()
     empty_found_contract_date = False
     for year_value in all_years:
-        year_str = year_value['contract_date']
+        year_str = year_value.get('contract_date', None)
         if not year_str:
             empty_found_contract_date = True
+            continue
         matches_dd_mm_yyyy = re.findall(pattern_dd_mm_yyyy, year_str)
         matches_yyyy_mm_dd = re.findall(pattern_yyyy_mm_dd, year_str)
         service_years.update([date_str[-4:] for date_str in matches_dd_mm_yyyy])
@@ -273,9 +275,10 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     service_end_date = set()
     empty_found_end_date = False
     for date_value in all_end_date:
-        date_str = date_value['end_date']
+        date_str = date_value.get('end_date', None)
         if not date_str:
             empty_found_end_date = True
+            continue
         matches_dd_mm_yyyy = re.findall(pattern_dd_mm_yyyy, date_str)
         matches_yyyy_mm_dd = re.findall(pattern_yyyy_mm_dd, date_str)
         service_end_date.update([date_str[-4:] for date_str in matches_dd_mm_yyyy])
@@ -375,9 +378,8 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
 
     # Преобразование id_id в целое число и contract_date в дату перед сортировкой
     query_user = query_user.annotate(
-        id_id_int=Cast('id_id', IntegerField()),
-        contract_date_date=Cast('KOSGU', DateField())
-    ).order_by('id_id_int', 'contract_date_date')
+        id_id_int=Cast('id_id', IntegerField())
+    ).order_by('id_id_int')
 
     # # Логика подсчета стоимости
     # if contract_date == 'None' and end_date == 'None':
@@ -781,6 +783,7 @@ async def update_record(request, row_id):
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def add_record(request):
+
     if request.method == 'POST':
         try:
             total_pages = int(request.GET.get('total_pages', 1))
@@ -848,6 +851,29 @@ async def add_record(request):
             # if certificate == '0' and certificate_no == '0':
             #     color = '#dff0d8'
 
+            if way == 'п.4 ч.1 ст.93':
+
+                # Найдите запись по ID и обновите цвет
+                ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(KOSGU=KOSGU)
+
+                # ServicesVault.DopFC = 'DopFC'
+                # ServicesVault.budget_limit = 'budget_limit'
+                # ServicesVault.off_budget_limit = 'off_budget_limit'
+                # ServicesVault.budget_planned = 'budget_planned'
+                # ServicesVault.off_budget_planned = 'off_budget_planned'
+                ServicesVault_.budget_concluded = contract_price
+                # ServicesVault.off_budget_concluded = 'off_budget_concluded'
+                # ServicesVault.budget_completed = 'budget_completed'
+                # ServicesVault.off_budget_completed = 'off_budget_completed'
+                # ServicesVault.budget_execution = 'budget_execution'
+                # ServicesVault.off_budget_execution = 'off_budget_execution'
+                # ServicesVault.budget_remainder = 'budget_remainder'
+                # ServicesVault.off_budget_remainder = 'off_budget_remainder'
+                # ServicesVault.budget_plans = 'budget_plans'
+                # ServicesVault.off_budget_plans = 'off_budget_plans'
+
+                await sync_to_async(ServicesVault_.save)()
+
             # Получаем следующий ID
             latest_service = await sync_to_async(Services.objects.order_by('-id_id').first)()
             try:
@@ -882,15 +908,23 @@ async def add_record(request):
 
             user = request.user
 
-            year = None
-            date_number_no_one = None
             keyword_one = None
             keyword_two = None
             selected_column_one=None
             selected_column_two=None
             page = total_pages
 
-            return await skeleton(request, user, date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+            # return await skeleton(request, user, date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+
+            page_user = 1
+
+            KOSGU_user = request.GET.get('KOSGU_user', None)
+            keyword_one_user = request.GET.get('keyword_one_user', None)
+            keyword_two_user = request.GET.get('keyword_two_user', None)
+            selected_column_one_user = request.GET.get('selected_column_one_user', None)
+            selected_column_two_user = request.GET.get('selected_column_two_user', None)
+
+            return await skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user)
         except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
         except json.JSONDecodeError:
