@@ -649,8 +649,8 @@ async def add(request):
     keyword_two = request.GET.get('keyword_two', None)
     selected_column_one = request.GET.get('selected_column_one', None)
     selected_column_two = request.GET.get('selected_column_two', None)
-    selected_year = request.GET.get('selected_year', "No")
-    date_number_no_one = request.GET.get('date_number_no_one', "No")
+    selected_contract_date = request.GET.get('contract_date', "No")
+    selected_end_date = request.GET.get('end_date', "No")
     total_pages = int(request.GET.get('total_pages', 1))
 
     # return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
@@ -664,8 +664,8 @@ async def add(request):
         'keyword_two': keyword_two,
         'selected_column_one': selected_column_one,
         'selected_column_two': selected_column_two,
-        'selected_year': selected_year,
-        'selected_date_number_no_one': date_number_no_one,
+        'selected_contract_date': selected_contract_date,
+        'selected_end_date': selected_end_date,
         'total_pages': total_pages
     }
 
@@ -678,8 +678,8 @@ async def edit(request, row_id):
     keyword_two = request.GET.get('keyword_two', None)
     selected_column_one = request.GET.get('selected_column_one', None)
     selected_column_two = request.GET.get('selected_column_two', None)
-    selected_year = request.GET.get('selected_year', "No")
-    date_number_no_one = request.GET.get('date_number_no_one', "No")
+    selected_contract_date = request.GET.get('contract_date', "No")
+    selected_end_date = request.GET.get('end_date', "No")
 
     # return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
     user = request.user
@@ -698,11 +698,13 @@ async def edit(request, row_id):
         'keyword_two': keyword_two,
         'selected_column_one': selected_column_one,
         'selected_column_two': selected_column_two,
-        'selected_year': selected_year,
-        'selected_date_number_no_one': date_number_no_one
+        'selected_contract_date': selected_contract_date,
+        'selected_end_date': selected_end_date
     }
 
     return await sync_to_async(render)(request, 'edit.html', context)
+
+from urllib.parse import urlencode
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_record(request, row_id):
@@ -712,51 +714,127 @@ async def update_record(request, row_id):
 
             id_id = data.get('id_id')
             name = data.get('name')
-            snils = data.get('snils')
-            location = data.get('location')
-            address_p = data.get('address_p')
-            address = data.get('address')
-            benefit = data.get('benefit')
-            number = data.get('number')
-            year = data.get('year')
-            cost = data.get('cost')
-            certificate = data.get('certificate')
-            date_number_get = data.get('date_number_get')
-            date_number_cancellation = data.get('date_number_cancellation')
-            date_number_no_one = data.get('date_number_no_one')
-            date_number_no_two = data.get('date_number_no_two')
-            certificate_no = data.get('certificate_no')
-            reason = data.get('reason')
-            track = data.get('track')
-            date_post = data.get('date_post')
-            comment = data.get('comment')
+            status = data.get('status')
+            way = data.get('way')
+            initiator = data.get('initiator')
+            KTSSR = data.get('KTSSR')
+            KOSGU = data.get('KOSGU')
+            DopFC = data.get('DopFC')
+            NMCC = data.get('NMCC')
+            saving = data.get('saving')
+            counterparty = data.get('counterparty')
+            registration_number = data.get('registration_number')
+            contract_number = data.get('contract_number')
+            contract_date = data.get('contract_date')
+            end_date = data.get('end_date')
+            contract_price = data.get('contract_price')
+            execution_contract_plan = data.get('execution_contract_plan')
+            january_one = data.get('january_one')
+            february = data.get('february')
+            march = data.get('march')
+            april = data.get('april')
+            may = data.get('may')
+            june = data.get('june')
+            july = data.get('july')
+            august = data.get('august')
+            september = data.get('september')
+            october = data.get('october')
+            november = data.get('november')
+            december = data.get('december')
+            january_two = data.get('january_two')
+            execution_contract_fact = data.get('execution_contract_fact')
+            date_january_one = data.get('date_january_one')
+            sum_january_one = data.get('sum_january_one')
+            date_february = data.get('date_february')
+            sum_february = data.get('sum_february')
+            date_march = data.get('date_march')
+            sum_march = data.get('sum_march')
+            date_april = data.get('date_april')
+            sum_april = data.get('sum_april')
+            date_may = data.get('date_may')
+            sum_may = data.get('sum_may')
+            date_june = data.get('date_june')
+            sum_june = data.get('sum_june')
+            date_july = data.get('date_july')
+            sum_july = data.get('sum_july')
+            date_august = data.get('date_august')
+            sum_august = data.get('sum_august')
+            date_september = data.get('date_september')
+            sum_september = data.get('sum_september')
+            date_october = data.get('date_october')
+            sum_october = data.get('sum_october')
+            date_november = data.get('date_november')
+            sum_november = data.get('sum_november')
+            date_december = data.get('date_december')
+            sum_december = data.get('sum_december')
+            date_january_two = data.get('date_january_two')
+            sum_january_two = data.get('sum_january_two')
+            execution = data.get('execution')
+            contract_balance = data.get('contract_balance')
             color = data.get('color')
-            if certificate == '0' and certificate_no == '0':
-                color = '#dff0d8'
 
             # Найдите запись по ID и обновите цвет
             service = await sync_to_async(Services.objects.get)(id=row_id)
 
             service.id_id = id_id
             service.name = name
-            service.snils = snils
-            service.location = location
-            service.address_p = address_p
-            service.address = address
-            service.benefit = benefit
-            service.number = number
-            service.year = year
-            service.cost = cost
-            service.certificate = certificate
-            service.date_number_get = date_number_get
-            service.date_number_cancellation = date_number_cancellation
-            service.date_number_no_one = date_number_no_one
-            service.date_number_no_two = date_number_no_two
-            service.certificate_no = certificate_no
-            service.reason = reason
-            service.track = track
-            service.date_post = date_post
-            service.comment = comment
+            service.status = status
+            service.way = way
+            service.initiator = initiator
+            service.KTSSR = KTSSR
+            service.KOSGU = KOSGU
+            service.DopFC = DopFC
+            service.NMCC = NMCC
+            service.saving = saving
+            service.counterparty = counterparty
+            service.registration_number = registration_number
+            service.contract_number = contract_number
+            service.contract_date = contract_date
+            service.end_date = end_date
+            service.contract_price = contract_price
+            service.execution_contract_plan = execution_contract_plan
+            service.january_one = january_one
+            service.february = february
+            service.march = march
+            service.april = april
+            service.may = may
+            service.june = june
+            service.july = july
+            service.august = august
+            service.september = september
+            service.october = october
+            service.november = november
+            service.december = december
+            service.january_two = january_two
+            service.execution_contract_fact = execution_contract_fact
+            service.date_january_one = date_january_one
+            service.sum_january_one = sum_january_one
+            service.date_february = date_february
+            service.sum_february = sum_february
+            service.date_march = date_march
+            service.sum_march = sum_march
+            service.date_april = date_april
+            service.sum_april = sum_april
+            service.date_may = date_may
+            service.sum_may = sum_may
+            service.date_june = date_june
+            service.sum_june = sum_june
+            service.date_july = date_july
+            service.sum_july = sum_july
+            service.date_august = date_august
+            service.sum_august = sum_august
+            service.date_september = date_september
+            service.sum_september = sum_september
+            service.date_october = date_october
+            service.sum_october = sum_october
+            service.date_november = date_november
+            service.sum_november = sum_november
+            service.date_december = date_december
+            service.sum_december = sum_december
+            service.date_january_two = date_january_two
+            service.sum_january_two = sum_january_two
+            service.execution = execution
+            service.contract_balance = contract_balance
             service.color = color
 
             await sync_to_async(service.save)()
@@ -768,13 +846,46 @@ async def update_record(request, row_id):
             keyword_two = request.GET.get('keyword_two', None)
             selected_column_one = request.GET.get('selected_column_one', None)
             selected_column_two = request.GET.get('selected_column_two', None)
-            year = request.GET.get('year', "")
-            date_number_no_one = request.GET.get('date_number_no_one', "")
 
-            # return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
-            user = request.user
+            # keyword_one = None
+            # keyword_two = None
+            # selected_column_one=None
+            # selected_column_two=None
+            # page = 2
 
-            return await skeleton(request, user, date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+            # # return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
+            # user = request.user
+
+            # return await skeleton(request, user, date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+
+            page_user = 1
+
+            KOSGU_user = request.GET.get('KOSGU_user', None)
+            keyword_one_user = request.GET.get('keyword_one_user', None)
+            keyword_two_user = request.GET.get('keyword_two_user', None)
+            selected_column_one_user = request.GET.get('selected_column_one_user', None)
+            selected_column_two_user = request.GET.get('selected_column_two_user', None)
+
+            # Формирование строки запроса
+            query_params = {
+                'page': page,
+                'keyword_one': keyword_one,
+                'keyword_two': keyword_two,
+                'selected_column_one': selected_column_one,
+                'selected_column_two': selected_column_two,
+                'page_user': page_user,
+                'KOSGU_user': KOSGU_user,
+                'keyword_one_user': keyword_one_user,
+                'keyword_two_user': keyword_two_user,
+                'selected_column_one_user': selected_column_one_user,
+                'selected_column_two_user': selected_column_two_user
+            }
+
+            # Перенаправление с несколькими параметрами
+            return redirect(f"/?{urlencode(query_params)}")
+
+            # return await skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user)
+
         except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
         except json.JSONDecodeError:
@@ -906,7 +1017,7 @@ async def add_record(request):
             await sync_to_async(new_service.save)()
             await sync_to_async(messages.success)(request, 'Данные успешно добавлены!')
 
-            user = request.user
+            # user = request.user
 
             keyword_one = None
             keyword_two = None
@@ -924,7 +1035,25 @@ async def add_record(request):
             selected_column_one_user = request.GET.get('selected_column_one_user', None)
             selected_column_two_user = request.GET.get('selected_column_two_user', None)
 
-            return await skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user)
+            # Формирование строки запроса
+            query_params = {
+                'page': page,
+                'keyword_one': keyword_one,
+                'keyword_two': keyword_two,
+                'selected_column_one': selected_column_one,
+                'selected_column_two': selected_column_two,
+                'page_user': page_user,
+                'KOSGU_user': KOSGU_user,
+                'keyword_one_user': keyword_one_user,
+                'keyword_two_user': keyword_two_user,
+                'selected_column_one_user': selected_column_one_user,
+                'selected_column_two_user': selected_column_two_user
+            }
+
+            # Перенаправление с несколькими параметрами
+            return redirect(f"/?{urlencode(query_params)}")
+
+            # return await skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user)
         except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
         except json.JSONDecodeError:

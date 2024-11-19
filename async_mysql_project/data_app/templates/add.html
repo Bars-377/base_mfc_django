@@ -23,7 +23,7 @@
         {% endif %}
 
         <!-- Форма для добавления новой услуги -->
-        <form method="POST" action="{% url 'add_record' %}?total_pages={{ total_pages }}" class="form-group">
+        <form method="POST" action="{% url 'add_record' %}?page={{ total_pages }}" class="form-group">
             <!-- Пример изменения отступов в форме с помощью классов -->
             <div class="form-item">
                 <label for="name">Наименование закупки</label>
@@ -147,7 +147,7 @@
             </div>
             <div class="form-item">
                 <label for="date_january_one">Дата оплаты Январь (факт)</label>
-                <input type="text" class="form-control" id="date_january_one" name="date_january_one" maxlength="40" required title="Максимальное количество значений 40">
+                <input type="text" class="form-control" id="date_january_one" name="date_january_one" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
             </div>
             <div class="form-item">
                 <label for="sum_january_one">Сумма оплаты Январь (факт)</label>
@@ -155,7 +155,7 @@
             </div>
             <div class="form-item">
                 <label for="date_february">Дата оплаты Февраль (факт)</label>
-                <input type="text" class="form-control" id="date_february" name="date_february" maxlength="40" required title="Максимальное количество значений 40">
+                <input type="text" class="form-control" id="date_february" name="date_february" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
             </div>
             <div class="form-item">
                 <label for="sum_february">Сумма оплаты Февраль (факт)</label>
@@ -163,7 +163,7 @@
             </div>
             <div class="form-item">
                 <label for="date_march">Дата оплаты Март (факт)</label>
-                <input type="text" class="form-control" id="date_march" name="date_march" maxlength="40" required title="Максимальное количество значений 40">
+                <input type="text" class="form-control" id="date_march" name="date_march" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
             </div>
             <div class="form-item">
                 <label for="sum_march">Сумма оплаты Март (факт)</label>
@@ -171,7 +171,7 @@
             </div>
             <div class="form-item">
                 <label for="date_april">Дата оплаты Апрель (факт)</label>
-                <input type="text" class="form-control" id="date_april" name="date_april" maxlength="40" required title="Максимальное количество значений 40">
+                <input type="text" class="form-control" id="date_april" name="date_april" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
             </div>
             <div class="form-item">
                 <label for="sum_april">Сумма оплаты Май (факт)</label>
@@ -179,7 +179,7 @@
             </div>
             <div class="form-item">
                 <label for="date_may">Дата оплаты Май (факт)</label>
-                <input type="text" class="form-control" id="date_may" name="date_may" maxlength="40" required title="Максимальное количество значений 40">
+                <input type="text" class="form-control" id="date_may" name="date_may" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
             </div>
             <div class="form-item">
                 <label for="sum_may">Сумма оплаты Май (факт)</label>
@@ -187,7 +187,7 @@
             </div>
             <div class="form-item">
                 <label for="date_june">Дата оплаты Июнь (факт)</label>
-                <input type="text" class="form-control" id="date_june" name="date_june" maxlength="40" required title="Максимальное количество значений 40">
+                <input type="text" class="form-control" id="date_june" name="date_june" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
             </div>
             <div class="form-item">
                 <label for="sum_june">Сумма оплаты Июнь (факт)</label>
@@ -195,7 +195,7 @@
             </div>
             <div class="form-item">
                 <label for="date_july">Дата оплаты Июль (факт)</label>
-                <input type="text" class="form-control" id="date_july" name="date_july" maxlength="40" required title="Максимальное количество значений 40">
+                <input type="text" class="form-control" id="date_july" name="date_july" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
             </div>
             <div class="form-item">
                 <label for="sum_july">Сумма оплаты Июль (факт)</label>
@@ -203,7 +203,7 @@
             </div>
             <div class="form-item">
                 <label for="date_august">Дата оплаты Август (факт)</label>
-                <input type="text" class="form-control" id="date_august" name="date_august" maxlength="40" required title="Максимальное количество значений 40">
+                <input type="text" class="form-control" id="date_august" name="date_august" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
             </div>
             <div class="form-item">
                 <label for="sum_august">Сумма оплаты Август (факт)</label>
@@ -211,7 +211,7 @@
             </div>
             <div class="form-item">
                 <label for="date_september">Дата оплаты Сентябрь (факт)</label>
-                <input type="text" class="form-control" id="date_september" name="date_september" maxlength="40" required title="Максимальное количество значений 40">
+                <input type="text" class="form-control" id="date_september" name="date_september" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
             </div>
             <div class="form-item">
                 <label for="sum_september">Сумма оплаты Сентябрь (факт)</label>
@@ -219,7 +219,7 @@
             </div>
             <div class="form-item">
                 <label for="date_october">Дата оплаты Октябрь (факт)</label>
-                <input type="text" class="form-control" id="date_october" name="date_october" maxlength="40" required title="Максимальное количество значений 40">
+                <input type="text" class="form-control" id="date_october" name="date_october" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
             </div>
             <div class="form-item">
                 <label for="sum_october">Сумма оплаты Октябрь (факт)</label>
@@ -227,7 +227,7 @@
             </div>
             <div class="form-item">
                 <label for="date_november">Дата оплаты Ноябрь (факт)</label>
-                <input type="text" class="form-control" id="date_november" name="date_november" maxlength="40" required title="Максимальное количество значений 40">
+                <input type="text" class="form-control" id="date_november" name="date_november" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
             </div>
             <div class="form-item">
                 <label for="sum_november">Сумма оплаты Ноябрь (факт)</label>
@@ -235,7 +235,7 @@
             </div>
             <div class="form-item">
                 <label for="date_december">Дата оплаты Декабрь (факт)</label>
-                <input type="text" class="form-control" id="date_december" name="date_december" maxlength="40" required title="Максимальное количество значений 40">
+                <input type="text" class="form-control" id="date_december" name="date_december" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
             </div>
             <div class="form-item">
                 <label for="sum_december">Сумма оплаты Декабрь (факт)</label>
@@ -243,7 +243,7 @@
             </div>
             <div class="form-item">
                 <label for="date_january_two">Дата оплаты Январь (факт)</label>
-                <input type="text" class="form-control" id="date_january_two" name="date_january_two" maxlength="40" required title="Максимальное количество значений 40">
+                <input type="text" class="form-control" id="date_january_two" name="date_january_two" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
             </div>
             <div class="form-item">
                 <label for="sum_january_two">Сумма оплаты Январь (факт)</label>
@@ -260,7 +260,7 @@
 
             <input type="hidden" name="color" value="{{ '' }}">  <!-- Скрытое поле для цвета -->
             <button type="submit" class="btn btn-primary clear-btn">Добавить запись</button>
-            <a href="{% url 'data_table_view' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&year={{ selected_year }}&date_number_no_one={{ selected_date_number_no_one }}" class="btn btn-secondary btn-neverov mt-3 clear-btn">Вернуться назад</a>
+            <a href="{% url 'data_table_view' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" class="btn btn-secondary btn-neverov mt-3 clear-btn">Вернуться назад</a>
         </form>
     </div>
 
