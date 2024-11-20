@@ -115,6 +115,8 @@ class ServicesVault(models.Model):
     off_budget_limit = models.TextField(verbose_name='Off Budget Limit', default='Unknown Off Budget Limit')
     budget_planned = models.TextField(verbose_name='Budget Planned', default='Unknown Budget Planned')
     off_budget_planned = models.TextField(verbose_name='Off Budget Planned', default='Unknown Off Budget Planned')
+    budget_bargaining = models.TextField(verbose_name='Budget Bargaining', default='Unknown Budget Bargaining')
+    off_budget_bargaining = models.TextField(verbose_name='Off Budget Bargaining', default='Unknown Off Budget Bargaining')
     budget_concluded = models.TextField(verbose_name='Budget Concluded', default='Unknown Budget Concluded')
     off_budget_concluded = models.TextField(verbose_name='Off Budget Concluded', default='Unknown Off Budget Concluded')
     budget_completed = models.TextField(verbose_name='Budget Completed', default='Unknown Budget Completed')

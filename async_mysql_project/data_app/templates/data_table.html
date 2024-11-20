@@ -517,6 +517,7 @@
                         <th rowspan="2" class="fixed-width">ДопФК</th>
                         <th colspan="2" class="stretch-width">Лимиты</th>
                         <th colspan="2" class="fixed-width">Запланировано</th>
+                        <th colspan="2" class="fixed-width">В торгах</th>
                         <th colspan="2" class="fixed-width">Заключено</th>
                         <th colspan="2" class="fixed-width-medium">Исполнено</th>
                         <th colspan="2" class="fixed-width-medium">Кассовое исполнение</th>
@@ -526,6 +527,8 @@
                         <th rowspan="2" class="stretch-width">Смена цвета</th>
                     </tr>
                     <tr>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
                         <th class="fixed-width">Бюджет</th>
                         <th class="fixed-width">Внебюджет</th>
                         <th class="fixed-width">Бюджет</th>
@@ -553,6 +556,8 @@
                         <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_limit }}</td>
                         <td class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.budget_planned }}</td>
                         <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_planned }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.bargaining_limit }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.off_bargaining_limit }}</td>
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.budget_concluded }}</td>
                         <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_concluded }}</td>
                         <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.budget_completed }}</td>
@@ -656,12 +661,27 @@
     </div>
 
     <div class="container-fluid-neverov">
-        <!-- <h4>Итог выплат за выбранное время: {{ total_cost_1 }}</h4> -->
+        <h4>Итого Лимиты (Бюджет): {{ total_cost_1 }}</h4>
+        <h4>Итого Лимиты (Внебюджет): {{ total_cost_2 }}</h4>
+        <h4>Итого Запланировано (Бюджет): {{ total_cost_3 }}</h4>
+        <h4>Итого Запланировано (Внебюджет): {{ total_cost_4 }}</h4>
+        <h4>Итого В торгах (Бюджет): {{ total_cost_5 }}</h4>
+        <h4>Итого В торгах (Внебюджет): {{ total_cost_6 }}</h4>
+        <h4>Итого Заключено (Бюджет): {{ total_cost_7 }}</h4>
+        <h4>Итого Заключено (Внебюджет): {{ total_cost_8 }}</h4>
+        <h4>Итого Исполнено (Бюджет): {{ total_cost_9 }}</h4>
+        <h4>Итого Исполнено (Внебюджет): {{ total_cost_10 }}</h4>
+        <h4>Итого Кассовое исполнение (Бюджет): {{ total_cost_11 }}</h4>
+        <h4>Итого Кассовое исполнение (Внебюджет): {{ total_cost_12 }}</h4>
+        <h4>Итого Остаток (Бюджет): {{ total_cost_13 }}</h4>
+        <h4>Итого Остаток (Внебюджет): {{ total_cost_14 }}</h4>
+        <h4>Итого Остаток с учетом планов (Бюджет): {{ total_cost_15 }}</h4>
+        <h4>Итого Остаток с учетом планов (Внебюджет): {{ total_cost_16 }}</h4>
         <!-- <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4> -->
         <!-- <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4> -->
-        <br>
+        <!-- <br> -->
 
-        <a href="{% url 'add' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить данные</a>
+        <!-- <a href="{% url 'add' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить данные</a> -->
 
         <!-- <br> -->
         <!-- <h1>Экспорт услуг в Excel</h1> -->

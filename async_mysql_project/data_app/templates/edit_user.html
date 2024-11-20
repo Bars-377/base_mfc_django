@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование записи</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body>
+    <!-- Контейнер для основного контента страницы -->
+    <div class="container-fluid-neverov">
+        <!-- Заголовок страницы -->
+        <h1 class="mt-5">Редактирование записи</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} mt-3">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Форма для редактирования услуги -->
+        <form method="POST" action="{% url 'update_record_user' row_id=row_id %}?page_user={{ page_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&KOSGU_user={{ selected_KOSGU_user }}" class="form-group">
+            <!-- Поле для ввода названия услуги -->
+            <div class="form-item">
+                <label for="id_id">№ п/п</label>
+                <input type="text" class="form-control form-control-neverov" id="id_id" name="id_id" value="{{ service_user.id_id }}"
+                    pattern="\d{1,4}" maxlength="4" required title="Максимальное значение 9999">
+            </div>
+            <div class="form-item">
+                <label for="name">Наименование закупки</label>
+                <input type="text" class="form-control form-control-neverov" id="name" name="name" value="{{ service_user.name }}"
+                    maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="status">Статус</label>
+                <input type="text" class="form-control form-control-neverov" id="status" name="status" value="{{ service_user.status }}" maxlength="40"
+                    required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="way">Способ закупки</label>
+                <input type="text" class="form-control form-control-neverov" id="way" name="way" value="{{ service_user.way }}"
+                    maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="initiator">Инициатор закупки (ИТ/АХО)</label>
+                <input type="text" class="form-control form-control-neverov" id="initiator" name="initiator" value="{{ service_user.initiator }}"
+                    maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="KTSSR">КЦСР</label>
+                <input type="text" class="form-control form-control-neverov" id="KTSSR" name="KTSSR" value="{{ service_user.KTSSR }}"
+                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="KOSGU">КОСГУ</label>
+                <input type="text" class="form-control form-control-neverov" id="KOSGU" name="KOSGU" value="{{ service_user.KOSGU }}"
+                    pattern="\d{1,3}" maxlength="3" required title="Максимальное значение 999">
+            </div>
+            <div class="form-item">
+                <label for="DopFC">ДопФК</label>
+                <input type="text" class="form-control form-control-neverov" id="DopFC" name="DopFC" value="{{ service_user.DopFC }}"
+                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="NMCC">НМЦК</label>
+                <input type="text" class="form-control form-control-neverov" id="NMCC" name="NMCC" value="{{ service_user.NMCC }}"
+                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="saving">Экономия</label>
+                <input type="text" class="form-control form-control-neverov" id="saving" name="saving" value="{{ service_user.saving }}"
+                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="counterparty">Контрагент</label>
+                <input type="text" class="form-control" id="counterparty" name="counterparty" value="{{ service_user.counterparty }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="registration_number">Реестровый номер контракта (ЕИС)</label>
+                <input type="text" class="form-control" id="registration_number" name="registration_number" value="{{ service_user.registration_number }}" pattern="\d{1,20}" maxlength="20" required title="Максимальное значение 20 чисел">
+            </div>
+            <div class="form-item">
+                <label for="contract_number">Номер контракта</label>
+                <input type="text" class="form-control form-control-neverov" id="contract_number" name="contract_number"
+                    value="{{ service_user.contract_number }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="contract_date">Дата контракта</label>
+                <input type="text" class="form-control form-control-neverov" id="contract_date" name="contract_date"
+                    value="{{ service_user.contract_date }}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
+            </div>
+            <div class="form-item">
+                <label for="end_date">Окончание даты исполнения</label>
+                <input type="text" class="form-control form-control-neverov" id="end_date" name="end_date" value="{{ service_user.end_date }}"
+                    required title="Введите дату в формате ДД.ММ.ГГГГ" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)">
+            </div>
+            <div class="form-item">
+                <label for="contract_price">Цена контракта (на 2024 год)</label>
+                <input type="text" class="form-control form-control-neverov" id="contract_price" name="contract_price"
+                    required value="{{ service_user.contract_price }}" step="0.01" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="execution_contract_plan">Исполнение контракта (план) (формула)</label>
+                <input type="text" class="form-control form-control-neverov" id="execution_contract_plan" name="execution_contract_plan" value="{{ service_user.execution_contract_plan }}"
+                step="0.01" min="0" max="99999999.99"
+                required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="january_one">Январь (план)</label>
+                <input type="text" class="form-control form-control-neverov" id="january_one" name="january_one" value="{{ service_user.january_one }}"
+                step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="february">Февраль (план)</label>
+                <input type="text" class="form-control form-control-neverov" id="february" name="february" value="{{ service_user.february }}"
+                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="march">Март (план)</label>
+                <input type="text" class="form-control form-control-neverov" id="march" name="march" value="{{ service_user.march }}"
+                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="april">Апрель (план)</label>
+                <input type="text" class="form-control form-control-neverov" id="april" name="april" value="{{ service_user.april }}"
+                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="may">Май (план)</label>
+                <input type="text" class="form-control form-control-neverov" id="may" name="may" value="{{ service_user.may }}"
+                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="june">Июнь (план)</label>
+                <input type="text" class="form-control form-control-neverov" id="june" name="june" value="{{ service_user.june }}"
+                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="july">Июль (план)</label>
+                <input type="text" class="form-control form-control-neverov" id="july" name="july" value="{{ service_user.july }}"
+                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="august">Август (план)</label>
+                <input type="text" class="form-control form-control-neverov" id="august" name="august" value="{{ service_user.august }}"
+                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="september">Сентябрь (план)</label>
+                <input type="text" class="form-control form-control-neverov" id="september" name="september" value="{{ service_user.september }}"
+                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="october">Октябрь (план)</label>
+                <input type="text" class="form-control form-control-neverov" id="october" name="october" value="{{ service_user.october }}"
+                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="november">Ноябрь (план)</label>
+                <input type="text" class="form-control form-control-neverov" id="november" name="november" value="{{ service_user.november }}"
+                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="december">Декабрь (план)</label>
+                <input type="text" class="form-control form-control-neverov" id="december" name="december" value="{{ service_user.december }}"
+                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="january_two">Январь 2 (план)</label>
+                <input type="text" class="form-control form-control-neverov" id="january_two" name="january_two" value="{{ service_user.january_two }}"
+                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="execution_contract_fact">Исполнение контракта (факт) (формула)</label>
+                <input type="number" step="0.01" class="form-control" id="execution_contract_fact" name="execution_contract_fact" value="{{ service_user.execution_contract_fact }}" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="date_january_one">Дата оплаты Январь (факт)</label>
+                <input type="text" class="form-control" id="date_january_one" name="date_january_one" value="{{ service_user.date_january_one }}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
+            </div>
+            <div class="form-item">
+                <label for="sum_january_one">Сумма оплаты Январь (факт)</label>
+                <input type="text" class="form-control" id="sum_january_one" name="sum_january_one" value="{{ service_user.sum_january_one }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="date_february">Дата оплаты Февраль (факт)</label>
+                <input type="text" class="form-control" id="date_february" name="date_february" value="{{ service_user.date_february }}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
+            </div>
+            <div class="form-item">
+                <label for="sum_february">Сумма оплаты Февраль (факт)</label>
+                <input type="text" class="form-control" id="sum_february" name="sum_february" value="{{ service_user.sum_february }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="date_march">Дата оплаты Март (факт)</label>
+                <input type="text" class="form-control" id="date_march" name="date_march" value="{{ service_user.date_march }}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
+            </div>
+            <div class="form-item">
+                <label for="sum_march">Сумма оплаты Март (факт)</label>
+                <input type="text" class="form-control" id="sum_march" name="sum_march" value="{{ service_user.sum_march }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="date_april">Дата оплаты Апрель (факт)</label>
+                <input type="text" class="form-control" id="date_april" name="date_april" value="{{ service_user.date_april }}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
+            </div>
+            <div class="form-item">
+                <label for="sum_april">Сумма оплаты Май (факт)</label>
+                <input type="text" class="form-control" id="sum_april" name="sum_april" value="{{ service_user.sum_april }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="date_may">Дата оплаты Май (факт)</label>
+                <input type="text" class="form-control" id="date_may" name="date_may" value="{{ service_user.date_may }}" maxlength="40" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
+            </div>
+            <div class="form-item">
+                <label for="sum_may">Сумма оплаты Май (факт)</label>
+                <input type="text" class="form-control" id="sum_may" name="sum_may" value="{{ service_user.sum_may }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="date_june">Дата оплаты Июнь (факт)</label>
+                <input type="text" class="form-control" id="date_june" name="date_june" value="{{ service_user.date_june }}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
+            </div>
+            <div class="form-item">
+                <label for="sum_june">Сумма оплаты Июнь (факт)</label>
+                <input type="text" class="form-control" id="sum_june" name="sum_june" value="{{ service_user.sum_june }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="date_july">Дата оплаты Июль (факт)</label>
+                <input type="text" class="form-control" id="date_july" name="date_july" value="{{ service_user.date_july }}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
+            </div>
+            <div class="form-item">
+                <label for="sum_july">Сумма оплаты Июль (факт)</label>
+                <input type="text" class="form-control" id="sum_july" name="sum_july" value="{{ service_user.sum_july }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="date_august">Дата оплаты Август (факт)</label>
+                <input type="text" class="form-control" id="date_august" name="date_august" value="{{ service_user.date_august }}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
+            </div>
+            <div class="form-item">
+                <label for="sum_august">Сумма оплаты Август (факт)</label>
+                <input type="text" class="form-control" id="sum_august" name="sum_august" value="{{ service_user.sum_august }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="date_september">Дата оплаты Сентябрь (факт)</label>
+                <input type="text" class="form-control" id="date_september" name="date_september" value="{{ service_user.date_september }}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
+            </div>
+            <div class="form-item">
+                <label for="sum_september">Сумма оплаты Сентябрь (факт)</label>
+                <input type="text" class="form-control" id="sum_september" name="sum_september" value="{{ service_user.sum_september }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="date_october">Дата оплаты Октябрь (факт)</label>
+                <input type="text" class="form-control" id="date_october" name="date_october" value="{{ service_user.date_october }}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
+            </div>
+            <div class="form-item">
+                <label for="sum_october">Сумма оплаты Октябрь (факт)</label>
+                <input type="text" class="form-control" id="sum_october" name="sum_october" value="{{ service_user.sum_october }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="date_november">Дата оплаты Ноябрь (факт)</label>
+                <input type="text" class="form-control" id="date_november" name="date_november" value="{{ service_user.date_november }}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
+            </div>
+            <div class="form-item">
+                <label for="sum_november">Сумма оплаты Ноябрь (факт)</label>
+                <input type="text" class="form-control" id="sum_november" name="sum_november" value="{{ service_user.sum_november }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="date_december">Дата оплаты Декабрь (факт)</label>
+                <input type="text" class="form-control" id="date_december" name="date_december" value="{{ service_user.date_december }}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
+            </div>
+            <div class="form-item">
+                <label for="sum_december">Сумма оплаты Декабрь (факт)</label>
+                <input type="text" class="form-control" id="sum_december" name="sum_december" value="{{ service_user.sum_december }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="date_january_two">Дата оплаты Январь (факт)</label>
+                <input type="text" class="form-control" id="date_january_two" name="date_january_two" value="{{ service_user.date_january_two }}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
+            </div>
+            <div class="form-item">
+                <label for="sum_january_two">Сумма оплаты Январь (факт)</label>
+                <input type="text" class="form-control" id="sum_january_two" name="sum_january_two" value="{{ service_user.sum_january_two }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="execution">% исполнения (формула)</label>
+                <input type="text" class="form-control" id="execution" name="execution" value="{{ service_user.execution }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+            <div class="form-item">
+                <label for="contract_balance">Остаток по контракту (формула)</label>
+                <input type="text" class="form-control" id="contract_balance" name="contract_balance" value="{{ service_user.contract_balance }}" maxlength="40" required title="Максимальное количество значений 40">
+            </div>
+
+            <input type="hidden" name="color" value="{{ service_user.color }}">  <!-- Скрытое поле цвета -->
+            <!-- Кнопка для отправки формы -->
+            <button type="submit" class="btn btn-primary btn-neverov">Внести изменения</button>
+            <!-- Ссылка для возврата на главную страницу -->
+            <a href="{% url 'data_table_view' %}?page_user={{ page_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&KOSGU_user={{ selected_KOSGU_user }}" class="btn btn-secondary btn-neverov mt-3">Вернуться назад</a>
+        </form>
+
+    </div>
+
+    <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+    <script>
+        function formatDate(input) {
+            let value = input.value.replace(/\D/g, '');  // Убираем все нецифровые символы
+            if (value.length >= 5) {
+                input.value = value.substring(0, 2) + '.' + value.substring(2, 4) + (value.length > 4 ? '.' + value.substring(4, 8) : '');
+            } else if (value.length >= 3) {
+                input.value = value.substring(0, 2) + '.' + value.substring(2, 4);
+            } else {
+                input.value = value;
+            }
+        }
+    </script>
+
+</body>
+
+</html>

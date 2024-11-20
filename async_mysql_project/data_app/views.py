@@ -422,6 +422,39 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     #     total_cost_3 = await sync_to_async(lambda: query.aggregate(Sum('certificate_no')))()
     #     total_cost_3 = total_cost_3['certificate_no__sum'] or 0
 
+    total_cost_1 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_limit')))()
+    total_cost_1 = total_cost_1['budget_limit__sum'] or 0
+    total_cost_2 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_limit')))()
+    total_cost_2 = total_cost_2['off_budget_limit__sum'] or 0
+    total_cost_3 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_planned')))()
+    total_cost_3 = total_cost_3['budget_planned__sum'] or 0
+    total_cost_4 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_planned')))()
+    total_cost_4 = total_cost_4['off_budget_planned__sum'] or 0
+    total_cost_5 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_bargaining')))()
+    total_cost_5 = total_cost_5['budget_bargaining__sum'] or 0
+    total_cost_6 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_bargaining')))()
+    total_cost_6 = total_cost_6['off_budget_bargaining__sum'] or 0
+    total_cost_7 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_concluded')))()
+    total_cost_7 = total_cost_7['budget_concluded__sum'] or 0
+    total_cost_8 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_concluded')))()
+    total_cost_8 = total_cost_8['off_budget_concluded__sum'] or 0
+    total_cost_9 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_completed')))()
+    total_cost_9 = total_cost_9['budget_completed__sum'] or 0
+    total_cost_10 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_completed')))()
+    total_cost_10 = total_cost_10['off_budget_completed__sum'] or 0
+    total_cost_11 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_execution')))()
+    total_cost_11 = total_cost_11['budget_execution__sum'] or 0
+    total_cost_12 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_execution')))()
+    total_cost_12 = total_cost_12['off_budget_execution__sum'] or 0
+    total_cost_13 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_remainder')))()
+    total_cost_13 = total_cost_13['budget_remainder__sum'] or 0
+    total_cost_14 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_remainder')))()
+    total_cost_14 = total_cost_14['off_budget_remainder__sum'] or 0
+    total_cost_15 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_plans')))()
+    total_cost_15 = total_cost_15['budget_plans__sum'] or 0
+    total_cost_16 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_plans')))()
+    total_cost_16 = total_cost_16['off_budget_plans__sum'] or 0
+
     # Пагинация
     paginator = Paginator(query, per_page)
     services = await sync_to_async(paginator.get_page)(page)
@@ -469,9 +502,22 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
         'user': user,
         'pages': pages,
         'pages_user': pages_user,
-        # 'total_cost_1': total_cost_1,
-        # 'total_cost_2': total_cost_2,
-        # 'total_cost_3': total_cost_3,
+        'total_cost_1': total_cost_1,
+        'total_cost_2': total_cost_2,
+        'total_cost_3': total_cost_3,
+        'total_cost_4': total_cost_4,
+        'total_cost_5': total_cost_5,
+        'total_cost_6': total_cost_6,
+        'total_cost_7': total_cost_7,
+        'total_cost_8': total_cost_8,
+        'total_cost_9': total_cost_9,
+        'total_cost_10': total_cost_10,
+        'total_cost_11': total_cost_11,
+        'total_cost_12': total_cost_12,
+        'total_cost_13': total_cost_13,
+        'total_cost_14': total_cost_14,
+        'total_cost_15': total_cost_15,
+        'total_cost_16': total_cost_16,
         'selected_contract_date': contract_date,
         'selected_KOSGU_user': KOSGU_user,
         'selected_end_date': end_date,
@@ -704,6 +750,39 @@ async def edit(request, row_id):
 
     return await sync_to_async(render)(request, 'edit.html', context)
 
+@csrf_exempt  # Необходимо, если вы не используете CSRF-токены
+async def edit_user(request, row_id):
+    page_user = int(request.GET.get('page_user', 1))
+    keyword_one_user = request.GET.get('keyword_one_user', None)
+    keyword_two_user = request.GET.get('keyword_two_user', None)
+    selected_column_one_user = request.GET.get('selected_column_one_user', None)
+    selected_column_two_user = request.GET.get('selected_column_two_user', None)
+    selected_contract_date_user = request.GET.get('selected_contract_date_user', "No")
+    selected_end_date_user = request.GET.get('selected_end_date_user', "No")
+
+    # return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
+    user = request.user
+
+    # # Получаем объект service по id
+    # service = get_object_or_404(Services, id=row_id)  # Измените на id_id, если используете поле id_id
+    service_user = await sync_to_async(ServicesVault.objects.get)(id=row_id)
+
+    # Подготовка контекста для шаблона
+    context = {
+        'service_user': service_user,
+        'user': user,
+        'row_id_user': row_id,
+        'page_user': page_user,
+        'keyword_one_user': keyword_one_user,
+        'keyword_two_user': keyword_two_user,
+        'selected_column_one_user': selected_column_one_user,
+        'selected_column_two_user': selected_column_two_user,
+        'selected_contract_date_user': selected_contract_date_user,
+        'selected_end_date_user': selected_end_date_user
+    }
+
+    return await sync_to_async(render)(request, 'edit_user.html', context)
+
 from urllib.parse import urlencode
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
@@ -859,7 +938,113 @@ async def update_record(request, row_id):
             # return await skeleton(request, user, date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
             page_user = 1
+            KOSGU_user = None
+            keyword_one_user = None
+            keyword_two_user = None
+            selected_column_one_user = None
+            selected_column_two_user = None
 
+            # Формирование строки запроса
+            query_params = {
+                'page': page,
+                'keyword_one': keyword_one,
+                'keyword_two': keyword_two,
+                'selected_column_one': selected_column_one,
+                'selected_column_two': selected_column_two,
+                'page_user': page_user,
+                'KOSGU_user': KOSGU_user,
+                'keyword_one_user': keyword_one_user,
+                'keyword_two_user': keyword_two_user,
+                'selected_column_one_user': selected_column_one_user,
+                'selected_column_two_user': selected_column_two_user
+            }
+
+            # Перенаправление с несколькими параметрами
+            return redirect(f"/?{urlencode(query_params)}")
+
+            # return await skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user)
+
+        except Services.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+@csrf_exempt  # Необходимо, если вы не используете CSRF-токены
+async def update_record_user(request, row_id):
+    if request.method == 'POST':
+        try:
+            data = request.POST
+
+            id_id = data.get('id_id')
+            name = data.get('name')
+            KOSGU = data.get('KOSGU')
+            DopFC = data.get('DopFC')
+            budget_limit = data.get('budget_limit')
+            off_budget_limit = data.get('off_budget_limit')
+            budget_planned = data.get('budget_planned')
+            off_budget_planned = data.get('off_budget_planned')
+            budget_bargaining = data.get('budget_bargaining')
+            off_budget_bargaining = data.get('off_budget_bargaining')
+            budget_concluded = data.get('budget_concluded')
+            off_budget_concluded = data.get('off_budget_concluded')
+            budget_completed = data.get('budget_completed')
+            off_budget_completed = data.get('off_budget_completed')
+            budget_execution = data.get('budget_execution')
+            off_budget_execution = data.get('off_budget_execution')
+            budget_remainder = data.get('budget_remainder')
+            off_budget_remainder = data.get('off_budget_remainder')
+            budget_plans = data.get('budget_plans')
+            off_budget_plans = data.get('off_budget_plans')
+            color = data.get('color')
+
+            # Найдите запись по ID и обновите цвет
+            service = await sync_to_async(ServicesVault.objects.get)(id=row_id)
+
+            service.id_id = id_id
+            service.name = name
+            service.KOSGU = KOSGU
+            service.DopFC = DopFC
+            service.budget_limit = budget_limit
+            service.off_budget_limit = off_budget_limit
+            service.budget_planned = budget_planned
+            service.off_budget_planned = off_budget_planned
+            service.budget_bargaining = budget_bargaining
+            service.off_budget_bargaining = off_budget_bargaining
+            service.budget_concluded = budget_concluded
+            service.off_budget_concluded = off_budget_concluded
+            service.budget_completed = budget_completed
+            service.off_budget_completed = off_budget_completed
+            service.budget_execution = budget_execution
+            service.off_budget_execution = off_budget_execution
+            service.budget_remainder = budget_remainder
+            service.off_budget_remainder = off_budget_remainder
+            service.budget_plans = budget_plans
+            service.off_budget_plans = off_budget_plans
+            service.color = color
+
+            await sync_to_async(service.save)()
+
+            await sync_to_async(messages.success)(request, "Редактирование прошло успешно.")
+
+            page = 1
+            keyword_one = None
+            keyword_two = None
+            selected_column_one = None
+            selected_column_two = None
+
+            # keyword_one = None
+            # keyword_two = None
+            # selected_column_one=None
+            # selected_column_two=None
+            # page = 2
+
+            # # return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
+            # user = request.user
+
+            # return await skeleton(request, user, date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+
+            page_user = int(request.GET.get('page_user', 1))
             KOSGU_user = request.GET.get('KOSGU_user', None)
             keyword_one_user = request.GET.get('keyword_one_user', None)
             keyword_two_user = request.GET.get('keyword_two_user', None)
