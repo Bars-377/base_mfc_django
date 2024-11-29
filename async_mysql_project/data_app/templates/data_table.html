@@ -572,7 +572,7 @@
                         <td class="stretch-width">
                             <!-- Управление -->
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                <a href="{% url 'edit' row_id=item.id %}?page_user={{ page_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&KOSGU_user={{ selected_KOSGU_user }}"
+                                <a href="{% url 'edit_user' row_id=item.id %}?page_user={{ page_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&KOSGU_user={{ selected_KOSGU_user }}"
                                 class="btn btn-sm btn-warning">Edit</a>
                                 <form class="delete-form-user" data-id="{{ item.id }}" style="display:inline;">
 
