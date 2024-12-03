@@ -238,6 +238,38 @@ function updateColorUser(rowId, color) {
 		.catch(error => console.error('Ошибка:', error));
 }
 
+// Функция обновления цвета строки
+function updateColorUserTwo(rowId, color) {
+	console.log('data');
+	fetch(`/update_color_user/${rowId}/`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ color: color })
+	})
+		.then(response => response.json())
+		.then(data => {
+			console.log(data); // Добавьте эту строку
+			if (data.success) {
+				const row = document.querySelector(`.service-row-user-two[data-id="${data.id}"]`);
+				if (row) {
+					row.style.backgroundColor = data.color;
+					const cells = row.querySelectorAll('td');
+					// Изменение цвета всех ячеек, кроме последних двух
+					const cellsToUpdate = Array.from(cells).slice(0, -2);
+					cellsToUpdate.forEach(cell => {
+						cell.style.backgroundColor = data.color;
+					});
+				}
+			} else {
+				console.log('rowId:', rowId, 'color:', color);
+				alert('Не удалось обновить цвет');
+			}
+		})
+		.catch(error => console.error('Ошибка:', error));
+}
+
 function confirmDelete() {
 	return confirm('Вы уверены, что хотите удалить этот элемент?');
 }
@@ -270,6 +302,25 @@ document.addEventListener('DOMContentLoaded', function () {
 			const selectedColor = this.value;
 
 			updateColorUser(rowId, selectedColor);
+		});
+	});
+
+	// Восстановление позиции скролла
+	// const scrollPosition = localStorage.getItem('scrollPosition');
+	// if (scrollPosition) {
+	// 	window.scrollTo(0, scrollPosition);
+	// }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+	const colorSelects = document.querySelectorAll('.color-select-user-two');
+
+	colorSelects.forEach(select => {
+		select.addEventListener('change', function () {
+			const rowId = this.getAttribute('data-id');
+			const selectedColor = this.value;
+
+			updateColorUserTwo(rowId, selectedColor);
 		});
 	});
 

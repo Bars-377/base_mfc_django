@@ -455,6 +455,9 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     total_cost_16 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_plans')))()
     total_cost_16 = total_cost_16['off_budget_plans__sum'] or 0
 
+    total_cost_17 = total_cost_1 + total_cost_2
+    total_cost_18 = (total_cost_11 + total_cost_12) / total_cost_17
+
     # Пагинация
     paginator = Paginator(query, per_page)
     services = await sync_to_async(paginator.get_page)(page)
@@ -518,6 +521,8 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
         'total_cost_14': total_cost_14,
         'total_cost_15': total_cost_15,
         'total_cost_16': total_cost_16,
+        'total_cost_17': total_cost_17,
+        'total_cost_18': total_cost_18,
         'selected_contract_date': contract_date,
         'selected_KOSGU_user': KOSGU_user,
         'selected_end_date': end_date,
@@ -782,6 +787,39 @@ async def edit_user(request, row_id):
     }
 
     return await sync_to_async(render)(request, 'edit_user.html', context)
+
+@csrf_exempt  # Необходимо, если вы не используете CSRF-токены
+async def edit_user_two(request, row_id):
+    page_user = int(request.GET.get('page_user', 1))
+    keyword_one_user = request.GET.get('keyword_one_user', None)
+    keyword_two_user = request.GET.get('keyword_two_user', None)
+    selected_column_one_user = request.GET.get('selected_column_one_user', None)
+    selected_column_two_user = request.GET.get('selected_column_two_user', None)
+    selected_contract_date_user = request.GET.get('selected_contract_date_user', "No")
+    selected_end_date_user = request.GET.get('selected_end_date_user', "No")
+
+    # return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
+    user = request.user
+
+    # # Получаем объект service по id
+    # service = get_object_or_404(Services, id=row_id)  # Измените на id_id, если используете поле id_id
+    service_user = await sync_to_async(ServicesVault.objects.get)(id=row_id)
+
+    # Подготовка контекста для шаблона
+    context = {
+        'service_user': service_user,
+        'user': user,
+        'row_id_user': row_id,
+        'page_user': page_user,
+        'keyword_one_user': keyword_one_user,
+        'keyword_two_user': keyword_two_user,
+        'selected_column_one_user': selected_column_one_user,
+        'selected_column_two_user': selected_column_two_user,
+        'selected_contract_date_user': selected_contract_date_user,
+        'selected_end_date_user': selected_end_date_user
+    }
+
+    return await sync_to_async(render)(request, 'edit_user_two.html', context)
 
 from urllib.parse import urlencode
 
@@ -1147,61 +1185,6 @@ async def add_record(request):
             # if certificate == '0' and certificate_no == '0':
             #     color = '#dff0d8'
 
-            if way == 'п.4 ч.1 ст.93':
-
-                # Найдите запись по ID и обновите цвет
-                ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(KOSGU=KOSGU)
-
-                # ServicesVault.DopFC = 'DopFC'
-                # ServicesVault.budget_limit = 'budget_limit'
-                # ServicesVault.off_budget_limit = 'off_budget_limit'
-                # ServicesVault.budget_planned = 'budget_planned'
-                # ServicesVault.off_budget_planned = 'off_budget_planned'
-                ServicesVault_.budget_concluded = contract_price
-                # ServicesVault.off_budget_concluded = 'off_budget_concluded'
-                # ServicesVault.budget_completed = 'budget_completed'
-                # ServicesVault.off_budget_completed = 'off_budget_completed'
-                # ServicesVault.budget_execution = 'budget_execution'
-                # ServicesVault.off_budget_execution = 'off_budget_execution'
-                # ServicesVault.budget_remainder = 'budget_remainder'
-                # ServicesVault.off_budget_remainder = 'off_budget_remainder'
-                # ServicesVault.budget_plans = 'budget_plans'
-                # ServicesVault.off_budget_plans = 'off_budget_plans'
-
-                await sync_to_async(ServicesVault_.save)()
-
-            # Получаем следующий ID
-            latest_service = await sync_to_async(Services.objects.order_by('-id_id').first)()
-            try:
-                id_id = (int(latest_service.id_id) + 1) if latest_service and latest_service.id_id.isdigit() else 1
-            except ValueError:
-                # В случае некорректного значения установить id_id на 1
-                id_id = 1
-
-            new_service = Services(id_id=id_id, name=name, status=status, way=way,
-                                initiator=initiator, KTSSR=KTSSR, KOSGU=KOSGU,
-                                DopFC=DopFC, NMCC=NMCC, saving=saving,
-                                counterparty=counterparty, registration_number=registration_number,
-                                contract_number=contract_number, contract_date=contract_date,
-                                end_date=end_date, contract_price=contract_price, execution_contract_plan=execution_contract_plan,
-                                january_one=january_one, february=february, march=march, april=april,
-                                may=may, june=june, july=july, august=august,
-                                september=september, october=october, november=november, december=december,
-                                january_two=january_two, execution_contract_fact=execution_contract_fact, date_january_one=date_january_one,
-                                sum_january_one=sum_january_one, date_february=date_february, sum_february=sum_february,
-                                date_march=date_march, sum_march=sum_march, date_april=date_april,
-                                sum_april=sum_april, date_may=date_may, sum_may=sum_may,
-                                date_june=date_june, sum_june=sum_june, date_july=date_july,
-                                sum_july=sum_july, date_august=date_august, sum_august=sum_august,
-                                date_september=date_september, sum_september=sum_september, date_october=date_october,
-                                sum_october=sum_october, date_november=date_november, sum_november=sum_november,
-                                date_december=date_december, sum_december=sum_december, date_january_two=date_january_two,
-                                sum_january_two=sum_january_two, execution=execution, contract_balance=contract_balance,
-                                color=color)
-
-            await sync_to_async(new_service.save)()
-            await sync_to_async(messages.success)(request, 'Данные успешно добавлены!')
-
             # user = request.user
 
             keyword_one = None
@@ -1234,6 +1217,99 @@ async def add_record(request):
                 'selected_column_one_user': selected_column_one_user,
                 'selected_column_two_user': selected_column_two_user
             }
+
+            from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
+
+            try:
+                ServicesVault_ = await sync_to_async(Services.objects.get)(name=name)
+                await sync_to_async(messages.error)(request, 'Вы добавляете дубликат в Наименовании')
+
+
+                # Перенаправление с несколькими параметрами
+                return redirect(f"/?{urlencode(query_params)}")
+            except MultipleObjectsReturned:
+                ServicesVault_ = await sync_to_async(lambda: Services.objects.filter(name=name).first())()
+                await sync_to_async(messages.error)(request, 'Вы добавляете дубликат в Ниименовании')
+
+
+                # Перенаправление с несколькими параметрами
+                return redirect(f"/?{urlencode(query_params)}")
+            except ObjectDoesNotExist:
+                pass
+
+            if way == 'п.4 ч.1 ст.93':
+
+                from django.db.models import Q
+                # Найдите запись по ID
+                # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(KOSGU=KOSGU)
+                ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
+                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                )
+
+                # ServicesVault.DopFC = 'DopFC'
+                # ServicesVault.budget_limit = 'budget_limit'
+                # ServicesVault.off_budget_limit = 'off_budget_limit'
+                # ServicesVault.budget_planned = 'budget_planned'
+                # ServicesVault.off_budget_planned = 'off_budget_planned'
+                ServicesVault_.budget_concluded = contract_price
+                # ServicesVault.off_budget_concluded = 'off_budget_concluded'
+                # ServicesVault.budget_completed = 'budget_completed'
+                # ServicesVault.off_budget_completed = 'off_budget_completed'
+                # ServicesVault.budget_execution = 'budget_execution'
+                # ServicesVault.off_budget_execution = 'off_budget_execution'
+                # ServicesVault.budget_remainder = 'budget_remainder'
+                # ServicesVault.off_budget_remainder = 'off_budget_remainder'
+                # ServicesVault.budget_plans = 'budget_plans'
+                # ServicesVault.off_budget_plans = 'off_budget_plans'
+
+                await sync_to_async(ServicesVault_.save)()
+
+            # Получаем следующий ID
+            # latest_service = await sync_to_async(Services.objects.order_by('-id_id').first)()
+            from django.db import connection
+
+            def get_latest_service():
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        SELECT id_id FROM services
+                        WHERE id_id REGEXP '^[0-9]+$'
+                        ORDER BY CAST(id_id AS UNSIGNED) DESC
+                        LIMIT 1
+                    """)
+                    row = cursor.fetchone()
+                    return row
+
+            latest_service = await sync_to_async(get_latest_service)()
+
+            try:
+                id_id = (int(latest_service[0]) + 1) if latest_service and latest_service[0].isdigit() else 1
+            except ValueError:
+                # В случае некорректного значения установить id_id на 1
+                id_id = 1
+
+            new_service = Services(id_id=id_id, name=name, status=status, way=way,
+                                initiator=initiator, KTSSR=KTSSR, KOSGU=KOSGU,
+                                DopFC=DopFC, NMCC=NMCC, saving=saving,
+                                counterparty=counterparty, registration_number=registration_number,
+                                contract_number=contract_number, contract_date=contract_date,
+                                end_date=end_date, contract_price=contract_price, execution_contract_plan=execution_contract_plan,
+                                january_one=january_one, february=february, march=march, april=april,
+                                may=may, june=june, july=july, august=august,
+                                september=september, october=october, november=november, december=december,
+                                january_two=january_two, execution_contract_fact=execution_contract_fact, date_january_one=date_january_one,
+                                sum_january_one=sum_january_one, date_february=date_february, sum_february=sum_february,
+                                date_march=date_march, sum_march=sum_march, date_april=date_april,
+                                sum_april=sum_april, date_may=date_may, sum_may=sum_may,
+                                date_june=date_june, sum_june=sum_june, date_july=date_july,
+                                sum_july=sum_july, date_august=date_august, sum_august=sum_august,
+                                date_september=date_september, sum_september=sum_september, date_october=date_october,
+                                sum_october=sum_october, date_november=date_november, sum_november=sum_november,
+                                date_december=date_december, sum_december=sum_december, date_january_two=date_january_two,
+                                sum_january_two=sum_january_two, execution=execution, contract_balance=contract_balance,
+                                color=color)
+
+            await sync_to_async(new_service.save)()
+            await sync_to_async(messages.success)(request, 'Данные успешно добавлены!')
 
             # Перенаправление с несколькими параметрами
             return redirect(f"/?{urlencode(query_params)}")

@@ -33,6 +33,7 @@ urlpatterns = [
     path('add/', views.add, name='add'),
     path('edit/<int:row_id>/', views.edit, name='edit'),
     path('edit_user/<int:row_id>/', views.edit_user, name='edit_user'),
+    path('edit_user_two/<int:row_id>/', views.edit_user_two, name='edit_user_two'),
     path('delete_record/<int:row_id>/', views.delete_record, name='delete_record'),
 ]
 

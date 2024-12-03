@@ -17,7 +17,7 @@
 
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} mt-3">
+                    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} mt-3">
                         {{ message }}
                     </div>
                 {% endfor %}
@@ -51,6 +51,7 @@
 
             {% if user.id == 4 %}
                 {% block content_user %}{% endblock %}
+                {% block content_user_two %}{% endblock %}
             {% endif %}
     </div>
 
