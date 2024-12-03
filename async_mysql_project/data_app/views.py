@@ -1137,7 +1137,7 @@ async def add_record(request):
             contract_date = request.POST['contract_date']
             end_date = request.POST['end_date']
             contract_price = request.POST['contract_price']
-            execution_contract_plan = request.POST['execution_contract_plan']
+            # execution_contract_plan = request.POST['execution_contract_plan']
             january_one = request.POST['january_one']
             february = request.POST['february']
             march = request.POST['march']
@@ -1151,7 +1151,7 @@ async def add_record(request):
             november = request.POST['november']
             december = request.POST['december']
             january_two = request.POST['january_two']
-            execution_contract_fact = request.POST['execution_contract_fact']
+            # execution_contract_fact = request.POST['execution_contract_fact']
             date_january_one = request.POST['date_january_one']
             sum_january_one = request.POST['sum_january_one']
             date_february = request.POST['date_february']
@@ -1178,9 +1178,23 @@ async def add_record(request):
             sum_december = request.POST['sum_december']
             date_january_two = request.POST['date_january_two']
             sum_january_two = request.POST['sum_january_two']
-            execution = request.POST['execution']
-            contract_balance = request.POST['contract_balance']
+            # execution = request.POST['execution']
+            # contract_balance = request.POST['contract_balance']
             color = request.POST.get('color')
+
+            execution_contract_plan = float(january_one) + float(february) + float(march)
+            + float(april) + float(may) + float(june) + float(july) + float(august)
+            + float(september) + float(october) + float(november) + float(december)
+            + float(january_two)
+
+            execution_contract_fact = float(sum_january_one) + float(sum_february) + float(sum_march)
+            + float(sum_april) + float(sum_may) + float(sum_june) + float(sum_july) + float(sum_august)
+            + float(sum_september) + float(sum_october) + float(sum_november) + float(sum_december)
+            + float(sum_january_two)
+
+            execution = float(execution_contract_fact) / float(contract_price)
+
+            contract_balance = float(contract_price) - float(execution_contract_fact)
 
             # if certificate == '0' and certificate_no == '0':
             #     color = '#dff0d8'
@@ -1237,32 +1251,98 @@ async def add_record(request):
             except ObjectDoesNotExist:
                 pass
 
-            if way == 'п.4 ч.1 ст.93':
+            from django.db.models import Q
+            # Services_ = await sync_to_async(Services.objects.get)(
+            #     Q(KOSGU='221') & Q(DopFC='0000000')
+            # )
+            Services_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR=KTSSR) & Q(status=status)
+            ))
+            contract_price_sum = 0
+            execution_contract_fact_sum = 0
+            for service in Services_:
+                contract_price_sum += float(service.contract_price)
+                execution_contract_fact_sum += float(service.execution_contract_fact)
 
-                from django.db.models import Q
-                # Найдите запись по ID
-                # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(KOSGU=KOSGU)
+            # # Найдите запись по ID
+            # # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(KOSGU=KOSGU)
+
+            try:
                 ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
                     Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
                 )
+            except:
+                await sync_to_async(messages.error)(request, 'Нет сопоставления КОСГУ с ДопФК')
 
-                # ServicesVault.DopFC = 'DopFC'
-                # ServicesVault.budget_limit = 'budget_limit'
-                # ServicesVault.off_budget_limit = 'off_budget_limit'
-                # ServicesVault.budget_planned = 'budget_planned'
-                # ServicesVault.off_budget_planned = 'off_budget_planned'
-                ServicesVault_.budget_concluded = contract_price
-                # ServicesVault.off_budget_concluded = 'off_budget_concluded'
-                # ServicesVault.budget_completed = 'budget_completed'
-                # ServicesVault.off_budget_completed = 'off_budget_completed'
-                # ServicesVault.budget_execution = 'budget_execution'
-                # ServicesVault.off_budget_execution = 'off_budget_execution'
-                # ServicesVault.budget_remainder = 'budget_remainder'
-                # ServicesVault.off_budget_remainder = 'off_budget_remainder'
-                # ServicesVault.budget_plans = 'budget_plans'
-                # ServicesVault.off_budget_plans = 'off_budget_plans'
+                # Перенаправление с несколькими параметрами
+                return redirect(f"/?{urlencode(query_params)}")
+            # ServicesVault_ = await sync_to_async(list)(ServicesVault.objects.filter(
+            #     Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+            # ))
 
-                await sync_to_async(ServicesVault_.save)()
+            # print(KOSGU)
+            # print(DopFC)
+            # print('POPAL', ServicesVault_)
+            # exit()
+
+            if status == 'В торгах' and KTSSR == '2016100092':
+                ServicesVault_.off_budget_bargaining = contract_price_sum
+            elif status == 'В торгах' and KTSSR == '2016100000':
+                ServicesVault_.budget_bargaining = contract_price_sum
+            elif status == 'Запланировано' and KTSSR == '2016100092':
+                ServicesVault_.off_budget_planned = contract_price_sum
+            elif status == 'Запланировано' and KTSSR == '2016100000':
+                ServicesVault_.budget_planned = contract_price_sum
+            elif status == 'Заключено' and KTSSR == '2016100092':
+                ServicesVault_.off_budget_concluded = contract_price_sum
+            elif status == 'Заключено' and KTSSR == '2016100000':
+                ServicesVault_.budget_concluded = contract_price_sum
+            elif status == 'Исполнено' and KTSSR == '2016100092':
+                ServicesVault_.off_budget_completed = contract_price_sum
+            elif status == 'Исполнено' and KTSSR == '2016100000':
+                ServicesVault_.budget_completed = contract_price_sum
+
+            if KTSSR == '2016100092':
+                ServicesVault_.off_budget_execution = execution_contract_fact_sum
+            elif KTSSR == '2016100000':
+                ServicesVault_.budget_execution = execution_contract_fact_sum
+
+            ServicesVault_.budget_remainder = float(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None'] else 0) - float(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None'] else 0)
+            - float(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None'] else 0) - float(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None'] else 0)
+            ServicesVault_.off_budget_remainder = float(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None'] else 0) - float(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None'] else 0)
+            - float(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None'] else 0) - float(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None'] else 0)
+
+            ServicesVault_.budget_plans = float(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None'] else 0) - float(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None'] else 0)
+            ServicesVault_.off_budget_plans = float(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None'] else 0) - float(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None'] else 0)
+
+            if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
+                ServicesVault_.color = '#ffebeb'
+                color = '#ffebeb'
+            else:
+                ServicesVault_.color = ''
+                color = ''
+
+            await sync_to_async(ServicesVault_.save)()
+
+            # if way == 'п.4 ч.1 ст.93':
+
+            #     # ServicesVault.DopFC = 'DopFC'
+            #     # ServicesVault.budget_limit = 'budget_limit'
+            #     # ServicesVault.off_budget_limit = 'off_budget_limit'
+            #     # ServicesVault.budget_planned = 'budget_planned'
+            #     # ServicesVault.off_budget_planned = 'off_budget_planned'
+            #     ServicesVault_.budget_concluded = contract_price
+            #     # ServicesVault.off_budget_concluded = 'off_budget_concluded'
+            #     # ServicesVault.budget_completed = 'budget_completed'
+            #     # ServicesVault.off_budget_completed = 'off_budget_completed'
+            #     # ServicesVault.budget_execution = 'budget_execution'
+            #     # ServicesVault.off_budget_execution = 'off_budget_execution'
+            #     # ServicesVault.budget_remainder = 'budget_remainder'
+            #     # ServicesVault.off_budget_remainder = 'off_budget_remainder'
+            #     # ServicesVault.budget_plans = 'budget_plans'
+            #     # ServicesVault.off_budget_plans = 'off_budget_plans'
+
+            #     await sync_to_async(ServicesVault_.save)()
 
             # Получаем следующий ID
             # latest_service = await sync_to_async(Services.objects.order_by('-id_id').first)()
