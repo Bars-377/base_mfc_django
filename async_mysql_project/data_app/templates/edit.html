@@ -39,8 +39,13 @@
             </div>
             <div class="form-item">
                 <label for="status">Статус</label>
-                <input type="text" class="form-control form-control-neverov" id="status" name="status" value="{{ service.status }}" maxlength="40"
-                    required title="Максимальное количество значений 40">
+                <select class="form-control" id="status" name="status" required title="Выберите статус">
+                    <option value="" {% if service.status == "" %}selected{% endif %}>Выберите статус</option>
+                    <option value="В торгах" {% if service.status == "В торгах" %}selected{% endif %}>В торгах</option>
+                    <option value="Запланировано" {% if service.status == "Запланировано" %}selected{% endif %}>Запланировано</option>
+                    <option value="Заключено" {% if service.status == "Заключено" %}selected{% endif %}>Заключено</option>
+                    <option value="Исполнено" {% if service.status == "Исполнено" %}selected{% endif %}>Исполнено</option>
+                </select>
             </div>
             <div class="form-item">
                 <label for="way">Способ закупки</label>
@@ -54,18 +59,47 @@
             </div>
             <div class="form-item">
                 <label for="KTSSR">КЦСР</label>
-                <input type="text" class="form-control form-control-neverov" id="KTSSR" name="KTSSR" value="{{ service.KTSSR }}"
-                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+                <select class="form-control" id="KTSSR" name="KTSSR" required title="Выберите КЦСР">
+                    <option value="" {% if service.KTSSR == "" %}selected{% endif %}>Выберите КЦСР</option>
+                    <option value="2016100000" {% if service.KTSSR == "2016100000" %}selected{% endif %}>2016100000</option>
+                    <option value="2016100092" {% if service.KTSSR == "2016100092" %}selected{% endif %}>2016100092</option>
+                </select>
             </div>
             <div class="form-item">
                 <label for="KOSGU">КОСГУ</label>
-                <input type="text" class="form-control form-control-neverov" id="KOSGU" name="KOSGU" value="{{ service.KOSGU }}"
-                    pattern="\d{1,3}" maxlength="3" required title="Максимальное значение 999">
+                <select class="form-control" id="KOSGU" name="KOSGU" required title="Выберите КОСГУ">
+                    <option value="" {% if service.KOSGU == "" %}selected{% endif %}>Выберите КОСГУ</option>
+                    <option value="221" {% if service.KOSGU == "221" %}selected{% endif %}>221</option>
+                    <option value="222" {% if service.KOSGU == "222" %}selected{% endif %}>222</option>
+                    <option value="223" {% if service.KOSGU == "223" %}selected{% endif %}>223</option>
+                    <option value="224" {% if service.KOSGU == "224" %}selected{% endif %}>224</option>
+                    <option value="225" {% if service.KOSGU == "225" %}selected{% endif %}>225</option>
+                    <option value="226" {% if service.KOSGU == "226" %}selected{% endif %}>226</option>
+                    <option value="227" {% if service.KOSGU == "227" %}selected{% endif %}>227</option>
+                    <option value="229" {% if service.KOSGU == "229" %}selected{% endif %}>229</option>
+                    <option value="267" {% if service.KOSGU == "267" %}selected{% endif %}>267</option>
+                    <option value="244" {% if service.KOSGU == "244" %}selected{% endif %}>244</option>
+                    <option value="310" {% if service.KOSGU == "310" %}selected{% endif %}>310</option>
+                    <option value="341" {% if service.KOSGU == "341" %}selected{% endif %}>341</option>
+                    <option value="342" {% if service.KOSGU == "342" %}selected{% endif %}>342</option>
+                    <option value="343" {% if service.KOSGU == "343" %}selected{% endif %}>343</option>
+                    <option value="344" {% if service.KOSGU == "344" %}selected{% endif %}>344</option>
+                    <option value="345" {% if service.KOSGU == "345" %}selected{% endif %}>345</option>
+                    <option value="346" {% if service.KOSGU == "346" %}selected{% endif %}>346</option>
+                    <option value="349" {% if service.KOSGU == "349" %}selected{% endif %}>349</option>
+                </select>
             </div>
             <div class="form-item">
                 <label for="DopFC">ДопФК</label>
-                <input type="text" class="form-control form-control-neverov" id="DopFC" name="DopFC" value="{{ service.DopFC }}"
-                    step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
+                <select class="form-control" id="DopFC" name="DopFC" required title="Выберите ДопФК">
+                    <option value="" {% if service.DopFC == "" %}selected{% endif %}>Выберите ДопФК</option>
+                    <option value="0000000" {% if service.DopFC == "0000000" %}selected{% endif %}>0000000</option>
+                    <option value="0000021" {% if service.DopFC == "0000021" %}selected{% endif %}>0000021</option>
+                    <option value="0000025" {% if service.DopFC == "0000025" %}selected{% endif %}>0000025</option>
+                    <option value="0000026" {% if service.DopFC == "0000026" %}selected{% endif %}>0000026</option>
+                    <option value="0000028" {% if service.DopFC == "0000028" %}selected{% endif %}>0000028</option>
+                    <option value="0000029" {% if service.DopFC == "0000029" %}selected{% endif %}>0000029</option>
+                </select>
             </div>
             <div class="form-item">
                 <label for="NMCC">НМЦК</label>
@@ -105,12 +139,7 @@
                 <input type="text" class="form-control form-control-neverov" id="contract_price" name="contract_price"
                     required value="{{ service.contract_price }}" step="0.01" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
             </div>
-            <div class="form-item">
-                <label for="execution_contract_plan">Исполнение контракта (план) (формула)</label>
-                <input type="text" class="form-control form-control-neverov" id="execution_contract_plan" name="execution_contract_plan" value="{{ service.execution_contract_plan }}"
-                step="0.01" min="0" max="99999999.99"
-                required title="Максимальное значение 99999999.99">
-            </div>
+            <input type="hidden" name="execution_contract_plan" value="{{ '' }}">  <!-- Скрытое поле для Исполнение контракта (план) (формула) -->
             <div class="form-item">
                 <label for="january_one">Январь (план)</label>
                 <input type="text" class="form-control form-control-neverov" id="january_one" name="january_one" value="{{ service.january_one }}"
@@ -176,10 +205,7 @@
                 <input type="text" class="form-control form-control-neverov" id="january_two" name="january_two" value="{{ service.january_two }}"
                     step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
-            <div class="form-item">
-                <label for="execution_contract_fact">Исполнение контракта (факт) (формула)</label>
-                <input type="number" step="0.01" class="form-control" id="execution_contract_fact" name="execution_contract_fact" value="{{ service.execution_contract_fact }}" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
-            </div>
+            <input type="hidden" name="execution_contract_fact" value="{{ '' }}">  <!-- Скрытое поле для Исполнение контракта (факт) (формула) -->
             <div class="form-item">
                 <label for="date_january_one">Дата оплаты Январь (факт)</label>
                 <input type="text" class="form-control" id="date_january_one" name="date_january_one" value="{{ service.date_january_one }}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
@@ -209,7 +235,7 @@
                 <input type="text" class="form-control" id="date_april" name="date_april" value="{{ service.date_april }}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" required title="Введите дату в формате ДД.ММ.ГГГГ">
             </div>
             <div class="form-item">
-                <label for="sum_april">Сумма оплаты Май (факт)</label>
+                <label for="sum_april">Сумма оплаты Апрель (факт)</label>
                 <input type="text" class="form-control" id="sum_april" name="sum_april" value="{{ service.sum_april }}" maxlength="40" required title="Максимальное количество значений 40">
             </div>
             <div class="form-item">
@@ -284,14 +310,8 @@
                 <label for="sum_january_two">Сумма оплаты Январь (факт)</label>
                 <input type="text" class="form-control" id="sum_january_two" name="sum_january_two" value="{{ service.sum_january_two }}" maxlength="40" required title="Максимальное количество значений 40">
             </div>
-            <div class="form-item">
-                <label for="execution">% исполнения (формула)</label>
-                <input type="text" class="form-control" id="execution" name="execution" value="{{ service.execution }}" maxlength="40" required title="Максимальное количество значений 40">
-            </div>
-            <div class="form-item">
-                <label for="contract_balance">Остаток по контракту (формула)</label>
-                <input type="text" class="form-control" id="contract_balance" name="contract_balance" value="{{ service.contract_balance }}" maxlength="40" required title="Максимальное количество значений 40">
-            </div>
+            <input type="hidden" name="execution" value="{{ '' }}">  <!-- Скрытое поле для % исполнения (формула) -->
+            <input type="hidden" name="contract_balance" value="{{ '' }}">  <!-- Скрытое поле для Остаток по контракту (формула) -->
 
             <input type="hidden" name="color" value="{{ service.color }}">  <!-- Скрытое поле цвета -->
             <!-- Кнопка для отправки формы -->

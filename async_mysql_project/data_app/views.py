@@ -755,38 +755,38 @@ async def edit(request, row_id):
 
     return await sync_to_async(render)(request, 'edit.html', context)
 
-@csrf_exempt  # Необходимо, если вы не используете CSRF-токены
-async def edit_user(request, row_id):
-    page_user = int(request.GET.get('page_user', 1))
-    keyword_one_user = request.GET.get('keyword_one_user', None)
-    keyword_two_user = request.GET.get('keyword_two_user', None)
-    selected_column_one_user = request.GET.get('selected_column_one_user', None)
-    selected_column_two_user = request.GET.get('selected_column_two_user', None)
-    selected_contract_date_user = request.GET.get('selected_contract_date_user', "No")
-    selected_end_date_user = request.GET.get('selected_end_date_user', "No")
+# @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
+# async def edit_user(request, row_id):
+#     page_user = int(request.GET.get('page_user', 1))
+#     keyword_one_user = request.GET.get('keyword_one_user', None)
+#     keyword_two_user = request.GET.get('keyword_two_user', None)
+#     selected_column_one_user = request.GET.get('selected_column_one_user', None)
+#     selected_column_two_user = request.GET.get('selected_column_two_user', None)
+#     selected_contract_date_user = request.GET.get('selected_contract_date_user', "No")
+#     selected_end_date_user = request.GET.get('selected_end_date_user', "No")
 
-    # return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
-    user = request.user
+#     # return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
+#     user = request.user
 
-    # # Получаем объект service по id
-    # service = get_object_or_404(Services, id=row_id)  # Измените на id_id, если используете поле id_id
-    service_user = await sync_to_async(ServicesVault.objects.get)(id=row_id)
+#     # # Получаем объект service по id
+#     # service = get_object_or_404(Services, id=row_id)  # Измените на id_id, если используете поле id_id
+#     service_user = await sync_to_async(ServicesVault.objects.get)(id=row_id)
 
-    # Подготовка контекста для шаблона
-    context = {
-        'service_user': service_user,
-        'user': user,
-        'row_id_user': row_id,
-        'page_user': page_user,
-        'keyword_one_user': keyword_one_user,
-        'keyword_two_user': keyword_two_user,
-        'selected_column_one_user': selected_column_one_user,
-        'selected_column_two_user': selected_column_two_user,
-        'selected_contract_date_user': selected_contract_date_user,
-        'selected_end_date_user': selected_end_date_user
-    }
+#     # Подготовка контекста для шаблона
+#     context = {
+#         'service_user': service_user,
+#         'user': user,
+#         'row_id_user': row_id,
+#         'page_user': page_user,
+#         'keyword_one_user': keyword_one_user,
+#         'keyword_two_user': keyword_two_user,
+#         'selected_column_one_user': selected_column_one_user,
+#         'selected_column_two_user': selected_column_two_user,
+#         'selected_contract_date_user': selected_contract_date_user,
+#         'selected_end_date_user': selected_end_date_user
+#     }
 
-    return await sync_to_async(render)(request, 'edit_user.html', context)
+#     return await sync_to_async(render)(request, 'edit_user.html', context)
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit_user_two(request, row_id):
@@ -845,7 +845,7 @@ async def update_record(request, row_id):
             contract_date = data.get('contract_date')
             end_date = data.get('end_date')
             contract_price = data.get('contract_price')
-            execution_contract_plan = data.get('execution_contract_plan')
+            # execution_contract_plan = data.get('execution_contract_plan')
             january_one = data.get('january_one')
             february = data.get('february')
             march = data.get('march')
@@ -859,7 +859,7 @@ async def update_record(request, row_id):
             november = data.get('november')
             december = data.get('december')
             january_two = data.get('january_two')
-            execution_contract_fact = data.get('execution_contract_fact')
+            # execution_contract_fact = data.get('execution_contract_fact')
             date_january_one = data.get('date_january_one')
             sum_january_one = data.get('sum_january_one')
             date_february = data.get('date_february')
@@ -889,6 +889,156 @@ async def update_record(request, row_id):
             execution = data.get('execution')
             contract_balance = data.get('contract_balance')
             color = data.get('color')
+
+            execution_contract_plan = float(january_one) + float(february) + float(march)
+            + float(april) + float(may) + float(june) + float(july) + float(august)
+            + float(september) + float(october) + float(november) + float(december)
+            + float(january_two)
+
+            execution_contract_fact = float(sum_january_one) + float(sum_february) + float(sum_march)
+            + float(sum_april) + float(sum_may) + float(sum_june) + float(sum_july) + float(sum_august)
+            + float(sum_september) + float(sum_october) + float(sum_november) + float(sum_december)
+            + float(sum_january_two)
+
+            execution = float(execution_contract_fact) / float(contract_price)
+
+            contract_balance = float(contract_price) - float(execution_contract_fact)
+
+            # if certificate == '0' and certificate_no == '0':
+            #     color = '#dff0d8'
+
+            # user = request.user
+
+            page = int(request.GET.get('page', 1))
+            keyword_one = request.GET.get('keyword_one', None)
+            keyword_two = request.GET.get('keyword_two', None)
+            selected_column_one = request.GET.get('selected_column_one', None)
+            selected_column_two = request.GET.get('selected_column_two', None)
+
+            # keyword_one = None
+            # keyword_two = None
+            # selected_column_one=None
+            # selected_column_two=None
+            # page = 2
+
+            # # return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
+            # user = request.user
+
+            # return await skeleton(request, user, date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+
+            page_user = 1
+            KOSGU_user = None
+            keyword_one_user = None
+            keyword_two_user = None
+            selected_column_one_user = None
+            selected_column_two_user = None
+
+            # Формирование строки запроса
+            query_params = {
+                'page': page,
+                'keyword_one': keyword_one,
+                'keyword_two': keyword_two,
+                'selected_column_one': selected_column_one,
+                'selected_column_two': selected_column_two,
+                'page_user': page_user,
+                'KOSGU_user': KOSGU_user,
+                'keyword_one_user': keyword_one_user,
+                'keyword_two_user': keyword_two_user,
+                'selected_column_one_user': selected_column_one_user,
+                'selected_column_two_user': selected_column_two_user
+            }
+
+            from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
+
+            try:
+                ServicesVault_ = await sync_to_async(Services.objects.get)(name=name)
+                # await sync_to_async(messages.error)(request, 'Вы добавляете дубликат в Наименовании')
+
+
+                # # Перенаправление с несколькими параметрами
+                # return redirect(f"/?{urlencode(query_params)}")
+            except MultipleObjectsReturned:
+                ServicesVault_ = await sync_to_async(lambda: Services.objects.filter(name=name).first())()
+                await sync_to_async(messages.error)(request, 'Вы добавляете дубликат в Ниименовании')
+
+
+                # Перенаправление с несколькими параметрами
+                return redirect(f"/?{urlencode(query_params)}")
+            except ObjectDoesNotExist:
+                pass
+
+            from django.db.models import Q
+            # Services_ = await sync_to_async(Services.objects.get)(
+            #     Q(KOSGU='221') & Q(DopFC='0000000')
+            # )
+            Services_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR=KTSSR) & Q(status=status)
+            ))
+            contract_price_sum = 0
+            execution_contract_fact_sum = 0
+            for service in Services_:
+                contract_price_sum += float(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+                execution_contract_fact_sum += float(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
+
+            # # Найдите запись по ID
+            # # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(KOSGU=KOSGU)
+
+            try:
+                ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
+                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                )
+            except:
+                await sync_to_async(messages.error)(request, 'Нет сопоставления КОСГУ с ДопФК')
+
+                # Перенаправление с несколькими параметрами
+                return redirect(f"/?{urlencode(query_params)}")
+            # ServicesVault_ = await sync_to_async(list)(ServicesVault.objects.filter(
+            #     Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+            # ))
+
+            # print(KOSGU)
+            # print(DopFC)
+            # print('POPAL', ServicesVault_)
+            # exit()
+
+            if status == 'В торгах' and KTSSR == '2016100092':
+                ServicesVault_.off_budget_bargaining = contract_price_sum
+            elif status == 'В торгах' and KTSSR == '2016100000':
+                ServicesVault_.budget_bargaining = contract_price_sum
+            elif status == 'Запланировано' and KTSSR == '2016100092':
+                ServicesVault_.off_budget_planned = contract_price_sum
+            elif status == 'Запланировано' and KTSSR == '2016100000':
+                ServicesVault_.budget_planned = contract_price_sum
+            elif status == 'Заключено' and KTSSR == '2016100092':
+                ServicesVault_.off_budget_concluded = contract_price_sum
+            elif status == 'Заключено' and KTSSR == '2016100000':
+                ServicesVault_.budget_concluded = contract_price_sum
+            elif status == 'Исполнено' and KTSSR == '2016100092':
+                ServicesVault_.off_budget_completed = contract_price_sum
+            elif status == 'Исполнено' and KTSSR == '2016100000':
+                ServicesVault_.budget_completed = contract_price_sum
+
+            if KTSSR == '2016100092':
+                ServicesVault_.off_budget_execution = execution_contract_fact_sum
+            elif KTSSR == '2016100000':
+                ServicesVault_.budget_execution = execution_contract_fact_sum
+
+            ServicesVault_.budget_remainder = float(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
+            - float(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
+            ServicesVault_.off_budget_remainder = float(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
+            - float(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
+
+            ServicesVault_.budget_plans = float(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
+            ServicesVault_.off_budget_plans = float(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
+
+            if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
+                ServicesVault_.color = '#ffebeb'
+                color = '#ffebeb'
+            else:
+                ServicesVault_.color = ''
+                color = ''
+
+            await sync_to_async(ServicesVault_.save)()
 
             # Найдите запись по ID и обновите цвет
             service = await sync_to_async(Services.objects.get)(id=row_id)
@@ -957,45 +1107,6 @@ async def update_record(request, row_id):
             await sync_to_async(service.save)()
 
             await sync_to_async(messages.success)(request, "Редактирование прошло успешно.")
-
-            page = int(request.GET.get('page', 1))
-            keyword_one = request.GET.get('keyword_one', None)
-            keyword_two = request.GET.get('keyword_two', None)
-            selected_column_one = request.GET.get('selected_column_one', None)
-            selected_column_two = request.GET.get('selected_column_two', None)
-
-            # keyword_one = None
-            # keyword_two = None
-            # selected_column_one=None
-            # selected_column_two=None
-            # page = 2
-
-            # # return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
-            # user = request.user
-
-            # return await skeleton(request, user, date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
-
-            page_user = 1
-            KOSGU_user = None
-            keyword_one_user = None
-            keyword_two_user = None
-            selected_column_one_user = None
-            selected_column_two_user = None
-
-            # Формирование строки запроса
-            query_params = {
-                'page': page,
-                'keyword_one': keyword_one,
-                'keyword_two': keyword_two,
-                'selected_column_one': selected_column_one,
-                'selected_column_two': selected_column_two,
-                'page_user': page_user,
-                'KOSGU_user': KOSGU_user,
-                'keyword_one_user': keyword_one_user,
-                'keyword_two_user': keyword_two_user,
-                'selected_column_one_user': selected_column_one_user,
-                'selected_column_two_user': selected_column_two_user
-            }
 
             # Перенаправление с несколькими параметрами
             return redirect(f"/?{urlencode(query_params)}")
@@ -1261,8 +1372,8 @@ async def add_record(request):
             contract_price_sum = 0
             execution_contract_fact_sum = 0
             for service in Services_:
-                contract_price_sum += float(service.contract_price)
-                execution_contract_fact_sum += float(service.execution_contract_fact)
+                contract_price_sum += float(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+                execution_contract_fact_sum += float(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
 
             # # Найдите запись по ID
             # # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(KOSGU=KOSGU)
@@ -1307,13 +1418,13 @@ async def add_record(request):
             elif KTSSR == '2016100000':
                 ServicesVault_.budget_execution = execution_contract_fact_sum
 
-            ServicesVault_.budget_remainder = float(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None'] else 0) - float(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None'] else 0)
-            - float(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None'] else 0) - float(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None'] else 0)
-            ServicesVault_.off_budget_remainder = float(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None'] else 0) - float(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None'] else 0)
-            - float(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None'] else 0) - float(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None'] else 0)
+            ServicesVault_.budget_remainder = float(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
+            - float(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
+            ServicesVault_.off_budget_remainder = float(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
+            - float(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
 
-            ServicesVault_.budget_plans = float(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None'] else 0) - float(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None'] else 0)
-            ServicesVault_.off_budget_plans = float(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None'] else 0) - float(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None'] else 0)
+            ServicesVault_.budget_plans = float(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
+            ServicesVault_.off_budget_plans = float(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
 
             if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
                 ServicesVault_.color = '#ffebeb'
