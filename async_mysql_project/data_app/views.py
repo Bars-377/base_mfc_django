@@ -1,7 +1,7 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .models import Services, ServicesVault
+from .models import Services, ServicesVault, ServicesTwo
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -208,7 +208,7 @@ from asgiref.sync import sync_to_async
 
 #     return await sync_to_async(render)(request, 'data_table.html', context)
 
-async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user):
+async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user, KOSGU_user_two, keyword_one_user_two, keyword_two_user_two, selected_column_one_user_two, selected_column_two_user_two, page_user_two):
     contract_date = None if contract_date == 'None' else contract_date
     end_date = None if end_date == 'None' else end_date
     keyword_one = None if keyword_one == 'None' else keyword_one
@@ -217,11 +217,16 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     selected_column_two = None if selected_column_two == 'None' else selected_column_two
 
     KOSGU_user = None if KOSGU_user == 'None' else KOSGU_user
-
     keyword_one_user = None if keyword_one_user == 'None' else keyword_one_user
     keyword_two_user = None if keyword_two_user == 'None' else keyword_two_user
     selected_column_one_user = None if selected_column_one_user == 'None' else selected_column_one_user
     selected_column_two_user = None if selected_column_two_user == 'None' else selected_column_two_user
+
+    KOSGU_user_two = None if KOSGU_user_two == 'None' else KOSGU_user_two
+    keyword_one_user_two = None if keyword_one_user_two == 'None' else keyword_one_user_two
+    keyword_two_user_two = None if keyword_two_user_two == 'None' else keyword_two_user_two
+    selected_column_one_user_two = None if selected_column_one_user_two == 'None' else selected_column_one_user_two
+    selected_column_two_user_two = None if selected_column_two_user_two == 'None' else selected_column_two_user_two
 
     per_page = 20
 
@@ -236,6 +241,8 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     all_end_date = await sync_to_async(lambda: list(Services.objects.values('end_date').distinct()))()
 
     all_KOSGU_user = await sync_to_async(lambda: list(ServicesVault.objects.values('KOSGU').distinct()))()
+
+    all_KOSGU_user_two = await sync_to_async(lambda: list(ServicesTwo.objects.values('KOSGU').distinct()))()
 
     # Сбор уникальных all_KOSGU_user
     service_KOSGU_user = set()
@@ -253,6 +260,23 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     service_KOSGU_user = sorted({str(int(KOSGU)) for KOSGU in service_KOSGU_user if KOSGU.isdigit()})
     if empty_found_KOSGU:
         service_KOSGU_user.insert(0, None)
+
+    # Сбор уникальных all_KOSGU_user_two
+    service_KOSGU_user_two = set()
+    empty_found_KOSGU = False
+    for year_value in all_KOSGU_user_two:
+        year_str = year_value.get('KOSGU', None)
+        if not year_str:
+            empty_found_KOSGU = True
+            continue # Пропустить итерацию, если year_str пустой или None
+        matches_dd_mm_yyyy = re.findall(pattern_dd_mm_yyyy, year_str)
+        matches_yyyy_mm_dd = re.findall(pattern_yyyy_mm_dd, year_str)
+        service_KOSGU_user_two.update([date_str[-4:] for date_str in matches_dd_mm_yyyy])
+        service_KOSGU_user_two.update([date_str[:4] for date_str in matches_yyyy_mm_dd])
+
+    service_KOSGU_user_two = sorted({str(int(KOSGU)) for KOSGU in service_KOSGU_user_two if KOSGU.isdigit()})
+    if empty_found_KOSGU:
+        service_KOSGU_user_two.insert(0, None)
 
     # Сбор уникальных годов из year
     service_years = set()
@@ -292,6 +316,7 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     # query = await sync_to_async(Services.objects.all)()
     query = await sync_to_async(lambda: Services.objects.all())()
     query_user = await sync_to_async(lambda: ServicesVault.objects.all())()
+    query_user_two = await sync_to_async(lambda: ServicesTwo.objects.all())()
 
     if contract_date == 'No':
         contract_date = None
@@ -318,14 +343,21 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     elif not contract_date and end_date:
         query = await sync_to_async(query.filter)(end_date__icontains=end_date)
 
-
     if KOSGU_user == 'No':
         KOSGU_user = None
+
+    if KOSGU_user_two == 'No':
+        KOSGU_user_two = None
 
     if KOSGU_user == 'None':
         query_user = await sync_to_async(query_user.exclude)(Q(KOSGU__regex=pattern_dd_mm_yyyy) | Q(KOSGU__regex=pattern_yyyy_mm_dd))
     elif KOSGU_user:
         query_user = await sync_to_async(query_user.filter)(KOSGU__icontains=KOSGU_user)
+
+    if KOSGU_user_two == 'None':
+        query_user_two = await sync_to_async(query_user_two.exclude)(Q(KOSGU__regex=pattern_dd_mm_yyyy) | Q(KOSGU__regex=pattern_yyyy_mm_dd))
+    elif KOSGU_user_two:
+        query_user_two = await sync_to_async(query_user_two.filter)(KOSGU__icontains=KOSGU_user_two)
 
     if keyword_one:
         if selected_column_one and hasattr(Services, selected_column_one):
@@ -363,6 +395,23 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
                 filters |= Q(**{field.name + '__icontains': keyword_two_user})
             query_user = await sync_to_async(query_user.filter)(filters)
 
+    if keyword_one_user_two:
+        if selected_column_one_user_two and hasattr(ServicesTwo, selected_column_one_user_two):
+            query_user_two = await sync_to_async(query_user_two.filter)(**{selected_column_one_user_two + '__icontains': keyword_one_user_two})
+        else:
+            filters = Q()
+            for field in await sync_to_async(ServicesTwo._meta.get_fields)():
+                filters |= Q(**{field.name + '__icontains': keyword_one_user_two})
+            query_user_two = await sync_to_async(query_user_two.filter)(filters)
+
+    if keyword_two_user_two:
+        if selected_column_two_user and hasattr(ServicesTwo, selected_column_two_user_two):
+            query_user_two = await sync_to_async(query_user_two.filter)(**{selected_column_two_user_two + '__icontains': keyword_two_user_two})
+        else:
+            filters = Q()
+            for field in await sync_to_async(ServicesTwo._meta.get_fields)():
+                filters |= Q(**{field.name + '__icontains': keyword_two_user_two})
+            query_user_two = await sync_to_async(query_user_two.filter)(filters)
 
     # Сортировка
     # query = query.order_by('id_id', 'contract_date')
@@ -378,6 +427,11 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
 
     # Преобразование id_id в целое число и contract_date в дату перед сортировкой
     query_user = query_user.annotate(
+        id_id_int=Cast('id_id', IntegerField())
+    ).order_by('id_id_int')
+
+    # Преобразование id_id в целое число и contract_date в дату перед сортировкой
+    query_user_two = query_user_two.annotate(
         id_id_int=Cast('id_id', IntegerField())
     ).order_by('id_id_int')
 
@@ -463,14 +517,21 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     services = await sync_to_async(paginator.get_page)(page)
 
     # Пагинация
-    paginator_user = Paginator(query_user, per_page)
+    paginator_user = Paginator(query_user, 30)
     services_user = await sync_to_async(paginator_user.get_page)(page_user)
+
+    # Пагинация
+    paginator_user_two = Paginator(query_user_two, per_page)
+    services_user_two = await sync_to_async(paginator_user_two.get_page)(page_user_two)
 
     # Получаем общее количество страниц
     total_pages = paginator.num_pages
 
     # Получаем общее количество страниц
     total_pages_user = paginator_user.num_pages
+
+    # Получаем общее количество страниц
+    total_pages_user_two = paginator_user_two.num_pages
 
     # Определяем максимальное количество кнопок для навигации
     max_page_buttons = 5
@@ -481,6 +542,11 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     max_page_buttons_user = 5
     start_page_user = max(1, page_user - max_page_buttons_user // 2)
     end_page_user = min(total_pages_user, page_user + max_page_buttons_user // 2)
+
+    # Определяем максимальное количество кнопок для навигации
+    max_page_buttons_user_two = 5
+    start_page_user_two = max(1, page_user_two - max_page_buttons_user_two // 2)
+    end_page_user_two = min(total_pages_user_two, page_user + max_page_buttons_user_two // 2)
 
     if end_page - start_page < max_page_buttons - 1:
         if start_page > 1:
@@ -494,17 +560,27 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
         else:
             start_page_user = max(1, end_page_user - (max_page_buttons_user - (end_page_user - start_page_user)))
 
+    if end_page_user_two - start_page_user_two < max_page_buttons_user_two - 1:
+        if start_page_user_two > 1:
+            end_page_user_two = min(total_pages_user_two, end_page_user_two + (max_page_buttons_user_two - (end_page_user_two - start_page_user_two)))
+        else:
+            start_page_user_two = max(1, end_page_user_two - (max_page_buttons_user_two - (end_page_user_two - start_page_user_two)))
+
     pages = range(start_page, end_page + 1)  # Создаем диапазон страниц
 
     pages_user = range(start_page_user, end_page_user + 1)  # Создаем диапазон страниц
+
+    pages_user_two = range(start_page_user_two, end_page_user_two + 1)  # Создаем диапазон страниц
 
     # Подготовка контекста для шаблона
     context = {
         'data': services,
         'data_user': services_user,
+        'data_user_two': services_user_two,
         'user': user,
         'pages': pages,
         'pages_user': pages_user,
+        'pages_user_two': pages_user_two,
         'total_cost_1': total_cost_1,
         'total_cost_2': total_cost_2,
         'total_cost_3': total_cost_3,
@@ -525,25 +601,35 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
         'total_cost_18': total_cost_18,
         'selected_contract_date': contract_date,
         'selected_KOSGU_user': KOSGU_user,
+        'selected_KOSGU_user_two': KOSGU_user_two,
         'selected_end_date': end_date,
         'selected_column_one': selected_column_one,
         'selected_column_one_user': selected_column_one_user,
+        'selected_column_one_user_two': selected_column_one_user_two,
         'selected_column_two': selected_column_two,
         'selected_column_two_user': selected_column_two_user,
+        'selected_column_two_user_two': selected_column_two_user_two,
         'keyword_one': keyword_one,
         'keyword_one_user': keyword_one_user,
+        'keyword_one_user_two': keyword_one_user_two,
         'keyword_two': keyword_two,
         'keyword_two_user': keyword_two_user,
+        'keyword_two_user_two': keyword_two_user_two,
         'page': page,
         'page_user': page_user,
+        'page_user_two': page_user_two,
         'total_pages': total_pages,
         'total_pages_user': total_pages_user,
+        'total_pages_user_two': total_pages_user_two,
         'start_page': start_page,
         'start_page_user': start_page_user,
+        'start_page_user_two': start_page_user_two,
         'end_page': end_page,
         'end_page_user': end_page_user,
+        'end_page_user_two': end_page_user_two,
         'service_years': service_years,
         'service_KOSGU_user': service_KOSGU_user,
+        'service_KOSGU_user_two': service_KOSGU_user_two,
         'service_end_date': service_end_date
     }
 
@@ -593,13 +679,31 @@ async def data_table_view(request):
     else:
         page_user = int(request.GET.get('page_user', 1))
 
+    total_pages_full_user_two = request.GET.get('total_pages_full_user_two', None)
+
+    if total_pages_full_user_two:
+        per_page = 20
+        # query = await sync_to_async(Services.objects.all())
+        query_user_two = await sync_to_async(lambda: ServicesTwo.objects.all())()
+        # total_services_full = query.count()
+        total_services_full_user_two = await sync_to_async(lambda: query_user_two.count())()
+        page_user_two = (total_services_full_user_two + per_page - 1) // per_page
+    else:
+        page_user_two = int(request.GET.get('page_user_two', 1))
+
     KOSGU_user = request.GET.get('KOSGU_user', None)
     keyword_one_user = request.GET.get('keyword_one_user', None)
     keyword_two_user = request.GET.get('keyword_two_user', None)
     selected_column_one_user = request.GET.get('selected_column_one_user', None)
     selected_column_two_user = request.GET.get('selected_column_two_user', None)
 
-    return await skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user)
+    KOSGU_user_two = request.GET.get('KOSGU_user_two', None)
+    keyword_one_user_two = request.GET.get('keyword_one_user_two', None)
+    keyword_two_user_two = request.GET.get('keyword_two_user_two', None)
+    selected_column_one_user_two = request.GET.get('selected_column_one_user_two', None)
+    selected_column_two_user_two = request.GET.get('selected_column_two_user_two', None)
+
+    return await skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user, KOSGU_user_two, keyword_one_user_two, keyword_two_user_two, selected_column_one_user_two, selected_column_two_user_two, page_user_two)
 
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -660,6 +764,25 @@ async def update_color_user(request, row_id):
 
             # Найдите запись по ID и обновите цвет
             service = await sync_to_async(ServicesVault.objects.get)(id=row_id)
+            service.color = color
+            await sync_to_async(service.save)()
+
+            return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
+        except ServicesVault.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+@csrf_exempt  # Необходимо, если вы не используете CSRF-токены
+async def update_color_user_two(request, row_id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            color = data.get('color')
+
+            # Найдите запись по ID и обновите цвет
+            service = await sync_to_async(ServicesTwo.objects.get)(id=row_id)
             service.color = color
             await sync_to_async(service.save)()
 
@@ -803,13 +926,13 @@ async def edit_user_two(request, row_id):
 
     # # Получаем объект service по id
     # service = get_object_or_404(Services, id=row_id)  # Измените на id_id, если используете поле id_id
-    service_user = await sync_to_async(ServicesVault.objects.get)(id=row_id)
+    service_user_two = await sync_to_async(ServicesTwo.objects.get)(id=row_id)
 
     # Подготовка контекста для шаблона
     context = {
-        'service_user': service_user,
+        'service_user_two': service_user_two,
         'user': user,
-        'row_id_user': row_id,
+        'row_id_user_two': row_id,
         'page_user': page_user,
         'keyword_one_user': keyword_one_user,
         'keyword_two_user': keyword_two_user,
@@ -933,6 +1056,13 @@ async def update_record(request, row_id):
             selected_column_one_user = None
             selected_column_two_user = None
 
+            page_user_two = 1
+            KOSGU_user_two = None
+            keyword_one_user_two = None
+            keyword_two_user_two = None
+            selected_column_one_user_two = None
+            selected_column_two_user_two = None
+
             # Формирование строки запроса
             query_params = {
                 'page': page,
@@ -945,7 +1075,13 @@ async def update_record(request, row_id):
                 'keyword_one_user': keyword_one_user,
                 'keyword_two_user': keyword_two_user,
                 'selected_column_one_user': selected_column_one_user,
-                'selected_column_two_user': selected_column_two_user
+                'selected_column_two_user': selected_column_two_user,
+                'page_user_two': page_user_two,
+                'KOSGU_user_two': KOSGU_user_two,
+                'keyword_one_user_two': keyword_one_user_two,
+                'keyword_two_user_two': keyword_two_user_two,
+                'selected_column_one_user_two': selected_column_one_user_two,
+                'selected_column_two_user_two': selected_column_two_user_two
             }
 
             from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
@@ -1120,56 +1256,32 @@ async def update_record(request, row_id):
     return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
-async def update_record_user(request, row_id):
+async def update_record_user_two(request, row_id):
     if request.method == 'POST':
         try:
             data = request.POST
 
             id_id = data.get('id_id')
-            name = data.get('name')
             KOSGU = data.get('KOSGU')
-            DopFC = data.get('DopFC')
-            budget_limit = data.get('budget_limit')
-            off_budget_limit = data.get('off_budget_limit')
             budget_planned = data.get('budget_planned')
             off_budget_planned = data.get('off_budget_planned')
-            budget_bargaining = data.get('budget_bargaining')
-            off_budget_bargaining = data.get('off_budget_bargaining')
             budget_concluded = data.get('budget_concluded')
             off_budget_concluded = data.get('off_budget_concluded')
-            budget_completed = data.get('budget_completed')
-            off_budget_completed = data.get('off_budget_completed')
-            budget_execution = data.get('budget_execution')
-            off_budget_execution = data.get('off_budget_execution')
             budget_remainder = data.get('budget_remainder')
             off_budget_remainder = data.get('off_budget_remainder')
-            budget_plans = data.get('budget_plans')
-            off_budget_plans = data.get('off_budget_plans')
             color = data.get('color')
 
             # Найдите запись по ID и обновите цвет
-            service = await sync_to_async(ServicesVault.objects.get)(id=row_id)
+            service = await sync_to_async(ServicesTwo.objects.get)(id=row_id)
 
             service.id_id = id_id
-            service.name = name
             service.KOSGU = KOSGU
-            service.DopFC = DopFC
-            service.budget_limit = budget_limit
-            service.off_budget_limit = off_budget_limit
             service.budget_planned = budget_planned
             service.off_budget_planned = off_budget_planned
-            service.budget_bargaining = budget_bargaining
-            service.off_budget_bargaining = off_budget_bargaining
             service.budget_concluded = budget_concluded
             service.off_budget_concluded = off_budget_concluded
-            service.budget_completed = budget_completed
-            service.off_budget_completed = off_budget_completed
-            service.budget_execution = budget_execution
-            service.off_budget_execution = off_budget_execution
             service.budget_remainder = budget_remainder
             service.off_budget_remainder = off_budget_remainder
-            service.budget_plans = budget_plans
-            service.off_budget_plans = off_budget_plans
             service.color = color
 
             await sync_to_async(service.save)()
@@ -1200,6 +1312,13 @@ async def update_record_user(request, row_id):
             selected_column_one_user = request.GET.get('selected_column_one_user', None)
             selected_column_two_user = request.GET.get('selected_column_two_user', None)
 
+            page_user_two = int(request.GET.get('page_user_two', 1))
+            KOSGU_user_two = request.GET.get('KOSGU_user_two', None)
+            keyword_one_user_two = request.GET.get('keyword_one_user_two', None)
+            keyword_two_user_two = request.GET.get('keyword_two_user_two', None)
+            selected_column_one_user_two = request.GET.get('selected_column_one_user_two', None)
+            selected_column_two_user_two = request.GET.get('selected_column_two_user_two', None)
+
             # Формирование строки запроса
             query_params = {
                 'page': page,
@@ -1212,7 +1331,13 @@ async def update_record_user(request, row_id):
                 'keyword_one_user': keyword_one_user,
                 'keyword_two_user': keyword_two_user,
                 'selected_column_one_user': selected_column_one_user,
-                'selected_column_two_user': selected_column_two_user
+                'selected_column_two_user': selected_column_two_user,
+                'page_user_two': page_user_two,
+                'KOSGU_user_two': KOSGU_user_two,
+                'keyword_one_user_two': keyword_one_user_two,
+                'keyword_two_user_two': keyword_two_user_two,
+                'selected_column_one_user_two': selected_column_one_user_two,
+                'selected_column_two_user_two': selected_column_two_user_two
             }
 
             # Перенаправление с несколькими параметрами
@@ -1328,6 +1453,14 @@ async def add_record(request):
             selected_column_one_user = request.GET.get('selected_column_one_user', None)
             selected_column_two_user = request.GET.get('selected_column_two_user', None)
 
+            page_user_two = 1
+
+            KOSGU_user_two = request.GET.get('KOSGU_user_two', None)
+            keyword_one_user_two = request.GET.get('keyword_one_user_two', None)
+            keyword_two_user_two = request.GET.get('keyword_two_user_two', None)
+            selected_column_one_user_two = request.GET.get('selected_column_one_user_two', None)
+            selected_column_two_user_two = request.GET.get('selected_column_two_user_two', None)
+
             # Формирование строки запроса
             query_params = {
                 'page': page,
@@ -1340,7 +1473,13 @@ async def add_record(request):
                 'keyword_one_user': keyword_one_user,
                 'keyword_two_user': keyword_two_user,
                 'selected_column_one_user': selected_column_one_user,
-                'selected_column_two_user': selected_column_two_user
+                'selected_column_two_user': selected_column_two_user,
+                'page_user_two': page_user_two,
+                'KOSGU_user_two': KOSGU_user_two,
+                'keyword_one_user_two': keyword_one_user_two,
+                'keyword_two_user_two': keyword_two_user_two,
+                'selected_column_one_user_two': selected_column_one_user_two,
+                'selected_column_two_user_two': selected_column_two_user_two
             }
 
             from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist

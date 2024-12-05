@@ -25,7 +25,7 @@
         {% endif %}
 
         <!-- Форма для редактирования услуги -->
-        <form method="POST" action="{% url 'update_record_user' row_id=row_id_user %}?page_user={{ page_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&KOSGU_user={{ selected_KOSGU_user }}" class="form-group">
+        <form method="POST" action="{% url 'update_record_user_two' row_id=row_id_user_two %}?page_user={{ page_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&KOSGU_user={{ selected_KOSGU_user }}" class="form-group">
             <!-- Поле для ввода названия услуги -->
             <div class="form-item">
                 <label for="budget_planned">Бюджет (Запланировано)</label>

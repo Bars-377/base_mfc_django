@@ -105,6 +105,26 @@ class Services(models.Model):
     def __str__(self):
         return self.name
 
+class ServicesTwo(models.Model):
+    id = models.BigAutoField(primary_key=True)  # Поле id как первичный ключ
+    id_id = models.TextField(verbose_name='ID', default='Unknown ID')
+    KOSGU = models.TextField(verbose_name='KOSGU', default='Unknown KOSGU')
+    budget_planned = models.TextField(verbose_name='Budget Planned', default='Unknown Budget Planned')
+    off_budget_planned = models.TextField(verbose_name='Off Budget Planned', default='Unknown Off Budget Planned')
+    budget_concluded = models.TextField(verbose_name='Budget Concluded', default='Unknown Budget Concluded')
+    off_budget_concluded = models.TextField(verbose_name='Off Budget Concluded', default='Unknown Off Budget Concluded')
+    budget_remainder = models.TextField(verbose_name='Budget Remainder', default='Unknown Budget Remainder')
+    off_budget_remainder = models.TextField(verbose_name='Off Budget Remainder', default='Unknown Off Budget Remainder')
+    color = models.TextField(verbose_name='Color', default='Unknown Color')
+
+    class Meta:
+        db_table = 'services_two'  # Указываем имя таблицы в базе данных
+        verbose_name = 'Service Two'
+        verbose_name_plural = 'Services Two'
+
+    def __str__(self):
+        return self.name
+
 class ServicesVault(models.Model):
     id = models.BigAutoField(primary_key=True)  # Поле id как первичный ключ
     id_id = models.TextField(verbose_name='ID', default='Unknown ID')

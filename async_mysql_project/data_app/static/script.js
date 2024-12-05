@@ -174,6 +174,33 @@ function resetFiltersUser() {
 	window.scrollTo(0, 0);
 }
 
+// Функция сброса фильтров и прокрутки
+function resetFiltersUserTwo() {
+	// Получаем текущую страницу
+	const currentPage = new URLSearchParams(window.location.search).get('page_user_two') || 1;
+
+	// Сбрасываем значения фильтров
+	document.getElementById('KOSGU_user_two').value = '';
+
+	document.getElementById('keyword_one_user_two').value = '';
+	document.getElementById('keyword_two_user_two').value = '';
+	document.getElementById('selected_column_one_user_two').value = '';
+	document.getElementById('selected_column_two_user_two').value = '';
+
+	// Добавляем текущую страницу как скрытое поле
+	const pageInput = document.createElement('input');
+	pageInput.type = 'hidden';
+	pageInput.name = 'total_pages_full_user_two';
+	pageInput.value = currentPage;
+
+	const form = document.getElementById('filter-form-user-two');
+	form.appendChild(pageInput);
+
+	// Отправляем форму
+	form.submit();
+	window.scrollTo(0, 0);
+}
+
 // Функция обновления цвета строки
 function updateColor(rowId, color) {
 	console.log('data');
@@ -241,7 +268,7 @@ function updateColorUser(rowId, color) {
 // Функция обновления цвета строки
 function updateColorUserTwo(rowId, color) {
 	console.log('data');
-	fetch(`/update_color_user/${rowId}/`, {
+	fetch(`/update_color_user_two/${rowId}/`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -346,6 +373,11 @@ document.getElementById('reset-filters-user').addEventListener('click', function
 	resetFiltersUser();
 });
 
+// Обработчик нажатия на кнопку сброса фильтров
+document.getElementById('reset-filters-user-two').addEventListener('click', function () {
+	resetFiltersUserTwo();
+});
+
 // Обработчик нажатия на кнопку фильтрации
 document.getElementById('filter-form').addEventListener('submit', function (event) {
 	window.scrollTo(0, 0);
@@ -365,6 +397,17 @@ document.getElementById('filter-form-user').addEventListener('submit', function 
 	keywordInput_one.value = keywordInput_one.value.trim();
 	// Обрезаем пробелы с двух сторон поля ввода 2
 	var keywordInput_two = document.getElementById('keyword_two_user');
+	keywordInput_two.value = keywordInput_two.value.trim();
+});
+
+// Обработчик нажатия на кнопку фильтрации
+document.getElementById('filter-form-user-two').addEventListener('submit', function (event) {
+	window.scrollTo(0, 0);
+	// Обрезаем пробелы с двух сторон поля ввода 1
+	var keywordInput_one = document.getElementById('keyword_one_user_two');
+	keywordInput_one.value = keywordInput_one.value.trim();
+	// Обрезаем пробелы с двух сторон поля ввода 2
+	var keywordInput_two = document.getElementById('keyword_two_user_two');
 	keywordInput_two.value = keywordInput_two.value.trim();
 });
 
@@ -446,36 +489,36 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-	const deleteButtons = document.querySelectorAll('.delete-button-user');
+// document.addEventListener('DOMContentLoaded', function () {
+// 	const deleteButtons = document.querySelectorAll('.delete-button-user');
 
-	deleteButtons.forEach(button => {
-		button.addEventListener('click', function () {
-			const form = this.closest('.delete-form-user');
-			const serviceId = form.getAttribute('data-id');
-			console.log(serviceId);
+// 	deleteButtons.forEach(button => {
+// 		button.addEventListener('click', function () {
+// 			const form = this.closest('.delete-form-user');
+// 			const serviceId = form.getAttribute('data-id');
+// 			console.log(serviceId);
 
-			if (confirmDelete()) {
-				fetch(`/delete_record/${serviceId}/`, {  // Убедитесь, что здесь правильный путь
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({ id: serviceId })  // Отправка данных, если необходимо
-				})
-					.then(response => {
-						if (response.ok) {
-							const row = document.querySelector(`.service-row-user[data-id="${serviceId}"]`);
-							if (row) {
-								row.remove();
-							}
-							alert('Элемент успешно удален!'); // Уведомление об успешном удалении
-						} else {
-							alert('Ошибка удаления');
-						}
-					})
-					.catch(error => console.error('Ошибка:', error));
-			}
-		});
-	});
-});
+// 			if (confirmDelete()) {
+// 				fetch(`/delete_record/${serviceId}/`, {  // Убедитесь, что здесь правильный путь
+// 					method: 'POST',
+// 					headers: {
+// 						'Content-Type': 'application/json'
+// 					},
+// 					body: JSON.stringify({ id: serviceId })  // Отправка данных, если необходимо
+// 				})
+// 					.then(response => {
+// 						if (response.ok) {
+// 							const row = document.querySelector(`.service-row-user[data-id="${serviceId}"]`);
+// 							if (row) {
+// 								row.remove();
+// 							}
+// 							alert('Элемент успешно удален!'); // Уведомление об успешном удалении
+// 						} else {
+// 							alert('Ошибка удаления');
+// 						}
+// 					})
+// 					.catch(error => console.error('Ошибка:', error));
+// 			}
+// 		});
+// 	});
+// });
