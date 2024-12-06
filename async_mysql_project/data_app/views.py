@@ -1485,14 +1485,14 @@ async def add_record(request):
             from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
             try:
-                ServicesVault_ = await sync_to_async(Services.objects.get)(name=name)
+                Services = await sync_to_async(Services.objects.get)(name=name)
                 await sync_to_async(messages.error)(request, 'Вы добавляете дубликат в Наименовании')
 
 
                 # Перенаправление с несколькими параметрами
                 return redirect(f"/?{urlencode(query_params)}")
             except MultipleObjectsReturned:
-                ServicesVault_ = await sync_to_async(lambda: Services.objects.filter(name=name).first())()
+                Services = await sync_to_async(lambda: Services.objects.filter(name=name).first())()
                 await sync_to_async(messages.error)(request, 'Вы добавляете дубликат в Ниименовании')
 
 
@@ -1565,14 +1565,28 @@ async def add_record(request):
             ServicesVault_.budget_plans = float(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
             ServicesVault_.off_budget_plans = float(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
 
+            ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
+                Q(KOSGU=KOSGU)
+            )
+
+            ServicesTwo_.budget_concluded =
+            ServicesTwo_.off_budget_concluded =
+            ServicesTwo_.budget_remainder =
+            ServicesTwo_.off_budget_remainder =
+
             if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
                 ServicesVault_.color = '#ffebeb'
+                ServicesTwo_.color = '#ffebeb'
                 color = '#ffebeb'
             else:
                 ServicesVault_.color = ''
+                ServicesTwo_.color = ''
                 color = ''
 
+            await sync_to_async(ServicesTwo_.save)()
+
             await sync_to_async(ServicesVault_.save)()
+
 
             # if way == 'п.4 ч.1 ст.93':
 

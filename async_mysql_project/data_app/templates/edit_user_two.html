@@ -29,34 +29,22 @@
             <!-- Поле для ввода названия услуги -->
             <div class="form-item">
                 <label for="budget_planned">Бюджет (Запланировано)</label>
-                <input type="text" class="form-control form-control-neverov" id="budget_planned" name="budget_planned" value="{{ service_user.budget_planned }}"
+                <input type="text" class="form-control form-control-neverov" id="budget_planned" name="budget_planned" value="{{ service_user_two.budget_planned }}"
                     step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="off_budget_planned">Внебюджет (Запланировано)</label>
-                <input type="text" class="form-control form-control-neverov" id="off_budget_planned" name="off_budget_planned" value="{{ service_user.off_budget_planned }}"
+                <input type="text" class="form-control form-control-neverov" id="off_budget_planned" name="off_budget_planned" value="{{ service_user_two.off_budget_planned }}"
                     step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
 
-            <input type="hidden" name="id_id" value="{{ service_user.id_id }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="name" value="{{ service_user.name }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="KOSGU" value="{{ service_user.KOSGU }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="DopFC" value="{{ service_user.DopFC }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="budget_limit" value="{{ service_user.budget_limit }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="off_budget_limit" value="{{ service_user.off_budget_limit }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="budget_bargaining" value="{{ service_user.budget_bargaining }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="off_budget_bargaining" value="{{ service_user.off_budget_bargaining }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="budget_concluded" value="{{ service_user.budget_concluded }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="off_budget_concluded" value="{{ service_user.off_budget_concluded }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="budget_completed" value="{{ service_user.budget_completed }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="off_budget_completed" value="{{ service_user.off_budget_completed }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="budget_execution" value="{{ service_user.budget_execution }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="off_budget_execution" value="{{ service_user.off_budget_execution }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="budget_remainder" value="{{ service_user.budget_remainder }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="off_budget_remainder" value="{{ service_user.off_budget_remainder }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="cobudget_planslor" value="{{ service_user.budget_plans }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="off_budget_plans" value="{{ service_user.off_budget_plans }}">  <!-- Скрытое поле цвета -->
-            <input type="hidden" name="color" value="{{ service_user.color }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="id_id" value="{{ service_user_two.id_id }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="KOSGU" value="{{ service_user_two.KOSGU }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="budget_concluded" value="{{ service_user_two.budget_concluded }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="off_budget_concluded" value="{{ service_user_two.off_budget_concluded }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="budget_remainder" value="{{ service_user_two.budget_remainder }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="off_budget_remainder" value="{{ service_user_two.off_budget_remainder }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="color" value="{{ service_user_two.color }}">  <!-- Скрытое поле цвета -->
             <!-- Кнопка для отправки формы -->
             <button type="submit" class="btn btn-primary btn-neverov">Внести изменения</button>
             <!-- Ссылка для возврата на главную страницу -->
