@@ -509,8 +509,12 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     total_cost_16 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_plans')))()
     total_cost_16 = total_cost_16['off_budget_plans__sum'] or 0
 
-    total_cost_17 = total_cost_1 + total_cost_2
-    total_cost_18 = (total_cost_11 + total_cost_12) / total_cost_17
+    try:
+        total_cost_17 = total_cost_1 + total_cost_2
+        total_cost_18 = (total_cost_11 + total_cost_12) / total_cost_17
+    except:
+        total_cost_17 = 0
+        total_cost_18 = 0
 
     # Пагинация
     paginator = Paginator(query, per_page)
@@ -1656,23 +1660,25 @@ async def add_record(request):
             # ))
 
             try:
-                ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
-                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
-                )
 
-                if status == 'Заключено' and KTSSR == '2016100092':
-                    ServicesTwo_.off_budget_concluded = contract_price_sum
-                    ServicesTwo_.off_budget_remainder = float(ServicesTwo_.off_budget_planned) - float(contract_price_sum)
-                elif status == 'Заключено' and KTSSR == '2016100000':
-                    ServicesTwo_.budget_concluded = contract_price_sum
-                    ServicesTwo_.budget_remainder = float(ServicesTwo_.budget_planned) - float(contract_price_sum)
+                if way == 'п.4 ч.1 ст.93':
+                    ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
+                        Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                    )
 
-                if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
-                    ServicesTwo_.color = '#ffebeb'
-                else:
-                    ServicesTwo_.color = ''
+                    if status == 'Заключено' and KTSSR == '2016100092':
+                        ServicesTwo_.off_budget_concluded = contract_price_sum
+                        ServicesTwo_.off_budget_remainder = float(ServicesTwo_.off_budget_planned) - float(contract_price_sum)
+                    elif status == 'Заключено' and KTSSR == '2016100000':
+                        ServicesTwo_.budget_concluded = contract_price_sum
+                        ServicesTwo_.budget_remainder = float(ServicesTwo_.budget_planned) - float(contract_price_sum)
 
-                await sync_to_async(ServicesTwo_.save)()
+                    if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
+                        ServicesTwo_.color = '#ffebeb'
+                    else:
+                        ServicesTwo_.color = ''
+
+                    await sync_to_async(ServicesTwo_.save)()
 
             except:
                 pass
@@ -1815,8 +1821,31 @@ async def delete_record(request, row_id):
 
             status = service.status
 
-            # Удаление записи
-            await sync_to_async(service.delete)()
+            way = service.way
+
+            try:
+
+                if way == 'п.4 ч.1 ст.93':
+                    ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
+                        Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                    )
+
+                    if status == 'Заключено' and KTSSR == '2016100092':
+                        ServicesTwo_.off_budget_concluded = contract_price_sum
+                        ServicesTwo_.off_budget_remainder = float(ServicesTwo_.off_budget_planned) - float(contract_price_sum)
+                    elif status == 'Заключено' and KTSSR == '2016100000':
+                        ServicesTwo_.budget_concluded = contract_price_sum
+                        ServicesTwo_.budget_remainder = float(ServicesTwo_.budget_planned) - float(contract_price_sum)
+
+                    if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
+                        ServicesTwo_.color = '#ffebeb'
+                    else:
+                        ServicesTwo_.color = ''
+
+                    await sync_to_async(ServicesTwo_.save)()
+
+            except:
+                pass
 
             try:
                 from django.db.models import Q
@@ -1835,24 +1864,6 @@ async def delete_record(request, row_id):
                 ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
                     Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
                 )
-
-                ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
-                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
-                )
-
-                if status == 'Заключено' and KTSSR == '2016100092':
-                    ServicesTwo_.off_budget_concluded = contract_price_sum
-                    ServicesTwo_.off_budget_remainder = float(ServicesTwo_.off_budget_planned) - float(contract_price_sum)
-                elif status == 'Заключено' and KTSSR == '2016100000':
-                    ServicesTwo_.budget_concluded = contract_price_sum
-                    ServicesTwo_.budget_remainder = float(ServicesTwo_.budget_planned) - float(contract_price_sum)
-
-                if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
-                    ServicesTwo_.color = '#ffebeb'
-                else:
-                    ServicesTwo_.color = ''
-
-                await sync_to_async(ServicesTwo_.save)()
 
                 if status == 'В торгах' and KTSSR == '2016100092':
                     ServicesVault_.off_budget_bargaining = contract_price_sum
@@ -1895,6 +1906,9 @@ async def delete_record(request, row_id):
 
             except:
                 pass
+
+            # Удаление записи
+            await sync_to_async(service.delete)()
 
             # Сообщение об успешном удалении
             await sync_to_async(messages.success)(request, 'Данные успешно удалены!')
