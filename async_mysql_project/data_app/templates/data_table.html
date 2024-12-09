@@ -567,7 +567,7 @@
                         <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_remainder }}</td>
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.budget_plans }}</td>
                         <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_plans }}</td>
-                        
+
                         <td class="stretch-width">
                             <!-- Управление -->
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
@@ -583,65 +583,65 @@
         </div>
     </div>
 
-    <div class="container-fluid-neverov">
-        <div style="display: flex; justify-content: flex-end;">
+    <!--<div class="container-fluid-neverov"> -->
+    <!--    <div style="display: flex; justify-content: flex-end;"> -->
             <!-- Pagination Controls -->
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    {% if page_user > 1 %}
-                    <li class="page-item">
-                        <a class="page-link"
-                            href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ page_user|add:"-1" }}"
-                            aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    {% endif %}
+    <!--        <nav aria-label="Page navigation"> -->
+    <!--            <ul class="pagination"> -->
+    <!--                {% if page_user > 1 %} -->
+    <!--                <li class="page-item"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ page_user|add:"-1" }}" -->
+    <!--                        aria-label="Previous"> -->
+    <!--                        <span aria-hidden="true">&laquo;</span> -->
+    <!--                    </a> -->
+    <!--                </li> -->
+    <!--                {% endif %} -->
 
                     <!-- Show "Previous" button if not on the first page group -->
-                    {% if start_page_user > 1 %}
-                    <li class="page-item">
-                        <a class="page-link"
-                            href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user=1">1</a>
-                    </li>
-                        {% if start_page_user > 2 %}
-                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                        {% endif %}
-                    {% endif %}
+    <!--                {% if start_page_user > 1 %} -->
+    <!--                <li class="page-item"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user=1">1</a> -->
+    <!--                </li> -->
+    <!--                    {% if start_page_user > 2 %} -->
+    <!--                    <li class="page-item disabled"><span class="page-link">...</span></li> -->
+    <!--                    {% endif %} -->
+    <!--                {% endif %} -->
 
                     <!-- Show a few pages around the current page -->
-                    {% for p in pages_user %}
-                    <li class="page-item {% if p == page_user %}active{% endif %}">
-                        <a class="page-link"
-                            href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ p }}">{{ p }}</a>
-                    </li>
-                    {% endfor %}
+    <!--                {% for p in pages_user %} -->
+    <!--                <li class="page-item {% if p == page_user %}active{% endif %}"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ p }}">{{ p }}</a> -->
+    <!--                </li> -->
+    <!--                {% endfor %} -->
 
                     <!-- Show "Next" button if not on the last page group -->
-                    {% if end_page_user < total_pages_user %}
-                        {% load custom_tags %}
-                        {% if end_page_user < total_pages_user|subtract:1 %}
-                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                        {% endif %}
-                    <li class="page-item">
-                        <a class="page-link"
-                            href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ total_pages_user }}">{{ total_pages_user }}</a>
-                    </li>
-                    {% endif %}
+    <!--                {% if end_page_user < total_pages_user %} -->
+    <!--                    {% load custom_tags %} -->
+    <!--                    {% if end_page_user < total_pages_user|subtract:1 %} -->
+    <!--                    <li class="page-item disabled"><span class="page-link">...</span></li> -->
+    <!--                    {% endif %} -->
+    <!--                <li class="page-item"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ total_pages_user }}">{{ total_pages_user }}</a> -->
+    <!--                </li> -->
+    <!--                {% endif %} -->
 
-                    {% if page_user < total_pages_user %}
-                    <li class="page-item">
-                        <a class="page-link"
-                            href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ page_user|add:"1" }}"
-                            aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-    </div>
+    <!--                {% if page_user < total_pages_user %} -->
+    <!--                <li class="page-item"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ page_user|add:"1" }}" -->
+    <!--                        aria-label="Next"> -->
+    <!--                        <span aria-hidden="true">&raquo;</span> -->
+    <!--                    </a> -->
+    <!--                </li> -->
+    <!--                {% endif %} -->
+    <!--            </ul> -->
+    <!--        </nav> -->
+    <!--    </div> -->
+    <!--</div> -->
 
     <div class="container-fluid-neverov text-content">
         <h4>Итого Лимиты (Бюджет): {{ total_cost_1 }}</h4>
@@ -696,6 +696,7 @@
                 <select name="selected_column_one_user_two" id="selected_column_one_user_two" class="form-control">
                     <option value="">Столбец</option>
                     <option value="KOSGU" {% if selected_column_one_user == 'KOSGU' %}selected{% endif %}>КОСГУ</option>
+                    <option value="DopFC" {% if selected_column_two_user == 'DopFC' %}selected{% endif %}>ДопФК</option>
                     <option value="budget_planned" {% if selected_column_one_user == 'budget_planned' %}selected{% endif %}>Бюджет (Запланировано)</option>
                     <option value="off_budget_planned" {% if selected_column_one_user == 'off_budget_planned' %}selected{% endif %}>Внебюджет (Запланировано)</option>
                     <option value="budget_concluded" {% if selected_column_one_user == 'budget_concluded' %}selected{% endif %}>Бюджет (Заключено)</option>
@@ -714,6 +715,7 @@
                 <select name="selected_column_two_user_two" id="selected_column_two_user_two" class="form-control">
                     <option value="">Столбец</option>
                     <option value="KOSGU" {% if selected_column_two_user == 'KOSGU' %}selected{% endif %}>КОСГУ</option>
+                    <option value="DopFC" {% if selected_column_two_user == 'DopFC' %}selected{% endif %}>ДопФК</option>
                     <option value="budget_planned" {% if selected_column_two_user == 'budget_planned' %}selected{% endif %}>Бюджет (Запланировано)</option>
                     <option value="off_budget_planned" {% if selected_column_two_user == 'off_budget_planned' %}selected{% endif %}>Внебюджет (Запланировано)</option>
                     <option value="budget_concluded" {% if selected_column_two_user == 'budget_concluded' %}selected{% endif %}>Бюджет (Заключено)</option>
@@ -746,6 +748,7 @@
                 <thead>
                     <tr>
                         <th rowspan="2" class="stretch-width">КОСГУ</th>
+                        <th rowspan="2" class="stretch-width">ДопФК</th>
                         <th colspan="2" class="fixed-width">Запланировано</th>
                         <th colspan="2" class="fixed-width">Заключено</th>
                         <th colspan="2" class="fixed-width-date">Остаток</th>
@@ -764,6 +767,7 @@
                     {% for item in data_user_two %}
                     <tr class="service-row-user-two" data-id="{% if user.is_authenticated %}{{ item.id }}{% else %}0{% endif %}">
                         <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
                         <td class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.budget_planned }}</td>
                         <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_planned }}</td>
                         <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.budget_concluded }}</td>
@@ -787,65 +791,65 @@
         </div>
     </div>
 
-    <div class="container-fluid-neverov">
-        <div style="display: flex; justify-content: flex-end;">
+    <!--<div class="container-fluid-neverov"> -->
+    <!--    <div style="display: flex; justify-content: flex-end;"> -->
             <!-- Pagination Controls -->
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    {% if page_user_two > 1 %}
-                    <li class="page-item">
-                        <a class="page-link"
-                            href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two={{ page_user_two|add:"-1" }}"
-                            aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    {% endif %}
+    <!--        <nav aria-label="Page navigation"> -->
+    <!--            <ul class="pagination"> -->
+    <!--                {% if page_user_two > 1 %} -->
+    <!--                <li class="page-item"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two={{ page_user_two|add:"-1" }}" -->
+    <!--                        aria-label="Previous"> -->
+    <!--                        <span aria-hidden="true">&laquo;</span> -->
+    <!--                    </a> -->
+    <!--                </li> -->
+    <!--                {% endif %} -->
 
                     <!-- Show "Previous" button if not on the first page group -->
-                    {% if start_page_user_two > 1 %}
-                    <li class="page-item">
-                        <a class="page-link"
-                            href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two=1">1</a>
-                    </li>
-                        {% if start_page_user_two > 2 %}
-                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                        {% endif %}
-                    {% endif %}
+    <!--                {% if start_page_user_two > 1 %} -->
+    <!--                <li class="page-item"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two=1">1</a> -->
+    <!--                </li> -->
+    <!--                    {% if start_page_user_two > 2 %} -->
+    <!--                    <li class="page-item disabled"><span class="page-link">...</span></li> -->
+    <!--                    {% endif %} -->
+    <!--                {% endif %} -->
 
                     <!-- Show a few pages around the current page -->
-                    {% for p in pages_user_two %}
-                    <li class="page-item {% if p == page_user_two %}active{% endif %}">
-                        <a class="page-link"
-                            href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two={{ p }}">{{ p }}</a>
-                    </li>
-                    {% endfor %}
+    <!--                {% for p in pages_user_two %} -->
+    <!--                <li class="page-item {% if p == page_user_two %}active{% endif %}"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two={{ p }}">{{ p }}</a> -->
+    <!--                </li> -->
+    <!--                {% endfor %} -->
 
                     <!-- Show "Next" button if not on the last page group -->
-                    {% if end_page_user_two < total_pages_user_two %}
-                        {% load custom_tags %}
-                        {% if end_page_user_two < total_pages_user_two|subtract:1 %}
-                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                        {% endif %}
-                    <li class="page-item">
-                        <a class="page-link"
-                            href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two={{ total_pages_user_two }}">{{ total_pages_user_two }}</a>
-                    </li>
-                    {% endif %}
+    <!--                {% if end_page_user_two < total_pages_user_two %} -->
+    <!--                    {% load custom_tags %} -->
+    <!--                    {% if end_page_user_two < total_pages_user_two|subtract:1 %} -->
+    <!--                    <li class="page-item disabled"><span class="page-link">...</span></li> -->
+    <!--                    {% endif %} -->
+    <!--                <li class="page-item"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two={{ total_pages_user_two }}">{{ total_pages_user_two }}</a> -->
+    <!--                </li> -->
+    <!--                {% endif %} -->
 
-                    {% if page_user_two < total_pages_user_two %}
-                    <li class="page-item">
-                        <a class="page-link"
-                            href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two={{ page_user_two|add:"1" }}"
-                            aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-    </div>
+    <!--                {% if page_user_two < total_pages_user_two %} -->
+    <!--                <li class="page-item"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two={{ page_user_two|add:"1" }}" -->
+    <!--                        aria-label="Next"> -->
+    <!--                        <span aria-hidden="true">&raquo;</span> -->
+    <!--                    </a> -->
+    <!--                </li> -->
+    <!--                {% endif %} -->
+    <!--            </ul> -->
+    <!--        </nav> -->
+    <!--    </div> -->
+    <!--</div> -->
 
     <div class="container-fluid-neverov">
 

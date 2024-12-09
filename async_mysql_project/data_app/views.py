@@ -525,7 +525,7 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     services_user = await sync_to_async(paginator_user.get_page)(page_user)
 
     # Пагинация
-    paginator_user_two = Paginator(query_user_two, per_page)
+    paginator_user_two = Paginator(query_user_two, 30)
     services_user_two = await sync_to_async(paginator_user_two.get_page)(page_user_two)
 
     # Получаем общее количество страниц
@@ -927,6 +927,13 @@ async def edit_user_two(request, row_id):
 
     return await sync_to_async(render)(request, 'edit_user_two.html', context)
 
+async def clean_number(value):
+    if isinstance(value, (int, float)):
+        return float(value)  # Уже число, возвращаем как есть
+    if not value or value.strip() == '':
+        return 0.0  # Пустая строка обрабатывается как 0.0
+    return float(value.replace(' ', '').replace(',', '.'))
+
 from urllib.parse import urlencode
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
@@ -996,19 +1003,19 @@ async def update_record(request, row_id):
             contract_balance = data.get('contract_balance')
             color = data.get('color')
 
-            execution_contract_plan = float(january_one) + float(february) + float(march)
-            + float(april) + float(may) + float(june) + float(july) + float(august)
-            + float(september) + float(october) + float(november) + float(december)
-            + float(january_two)
+            execution_contract_plan = await clean_number(january_one) + await clean_number(february) + await clean_number(march)
+            + await clean_number(april) + await clean_number(may) + await clean_number(june) + await clean_number(july) + await clean_number(august)
+            + await clean_number(september) + await clean_number(october) + await clean_number(november) + await clean_number(december)
+            + await clean_number(january_two)
 
-            execution_contract_fact = float(sum_january_one) + float(sum_february) + float(sum_march)
-            + float(sum_april) + float(sum_may) + float(sum_june) + float(sum_july) + float(sum_august)
-            + float(sum_september) + float(sum_october) + float(sum_november) + float(sum_december)
-            + float(sum_january_two)
+            execution_contract_fact = await clean_number(sum_january_one) + await clean_number(sum_february) + await clean_number(sum_march)
+            + await clean_number(sum_april) + await clean_number(sum_may) + await clean_number(sum_june) + await clean_number(sum_july) + await clean_number(sum_august)
+            + await clean_number(sum_september) + await clean_number(sum_october) + await clean_number(sum_november) + await clean_number(sum_december)
+            + await clean_number(sum_january_two)
 
-            execution = float(execution_contract_fact) / float(contract_price)
+            execution = await clean_number(execution_contract_fact) / await clean_number(contract_price)
 
-            contract_balance = float(contract_price) - float(execution_contract_fact)
+            contract_balance = await clean_number(contract_price) - await clean_number(execution_contract_fact)
 
             # if certificate == '0' and certificate_no == '0':
             #     color = '#dff0d8'
@@ -1070,14 +1077,14 @@ async def update_record(request, row_id):
             from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
             try:
-                ServicesVault_ = await sync_to_async(Services.objects.get)(name=name)
+                Services_ = await sync_to_async(Services.objects.get)(name=name)
                 # await sync_to_async(messages.error)(request, 'Вы добавляете дубликат в Наименовании')
 
 
                 # # Перенаправление с несколькими параметрами
                 # return redirect(f"/?{urlencode(query_params)}")
             except MultipleObjectsReturned:
-                ServicesVault_ = await sync_to_async(lambda: Services.objects.filter(name=name).first())()
+                Services_ = await sync_to_async(lambda: Services.objects.filter(name=name).first())()
                 await sync_to_async(messages.error)(request, 'Вы добавляете дубликат в Ниименовании')
 
 
@@ -1096,8 +1103,8 @@ async def update_record(request, row_id):
             contract_price_sum = 0
             execution_contract_fact_sum = 0
             for service in Services_:
-                contract_price_sum += float(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
-                execution_contract_fact_sum += float(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
+                contract_price_sum += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+                execution_contract_fact_sum += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
 
             # # Найдите запись по ID
             # # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(KOSGU=KOSGU)
@@ -1142,15 +1149,15 @@ async def update_record(request, row_id):
             elif KTSSR == '2016100000':
                 ServicesVault_.budget_execution = execution_contract_fact_sum
 
-            ServicesVault_.budget_remainder = float(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
-            - float(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
-            ServicesVault_.off_budget_remainder = float(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
-            - float(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
+            ServicesVault_.budget_remainder = await clean_number(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
+            - await clean_number(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
+            ServicesVault_.off_budget_remainder = await clean_number(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
+            - await clean_number(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
 
-            ServicesVault_.budget_plans = float(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
-            ServicesVault_.off_budget_plans = float(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
+            ServicesVault_.budget_plans = await clean_number(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
+            ServicesVault_.off_budget_plans = await clean_number(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
 
-            if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
+            if any(x < 0 for x in [await clean_number(ServicesVault_.budget_remainder), await clean_number(ServicesVault_.off_budget_remainder), await clean_number(ServicesVault_.budget_plans), await clean_number(ServicesVault_.off_budget_plans)]):
                 ServicesVault_.color = '#ffebeb'
                 color = '#ffebeb'
             else:
@@ -1225,6 +1232,44 @@ async def update_record(request, row_id):
 
             await sync_to_async(service.save)()
 
+            try:
+
+                if way == 'п.4 ч.1 ст.93':
+
+                    ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
+                        Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                    )
+
+                    ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
+                        Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                    )
+
+                    if status == 'Заключено' and KTSSR == '2016100092':
+                        ServicesTwo_.off_budget_concluded = contract_price_sum
+                        ServicesTwo_.off_budget_remainder = await clean_number(ServicesVault_.off_budget_planned) - await clean_number(contract_price_sum)
+                    elif status == 'Заключено' and KTSSR == '2016100000':
+                        ServicesTwo_.budget_concluded = contract_price_sum
+                        ServicesTwo_.budget_remainder = await clean_number(ServicesVault_.budget_planned) - await clean_number(contract_price_sum)
+
+                    if any(x < 0 for x in [await clean_number(ServicesVault_.budget_remainder), await clean_number(ServicesVault_.off_budget_remainder), await clean_number(ServicesVault_.budget_plans), await clean_number(ServicesVault_.off_budget_plans)]):
+                        ServicesTwo_.color = '#ffebeb'
+                    else:
+                        ServicesTwo_.color = ''
+
+                    print('POPAL')
+                    print(contract_price_sum)
+                    print(await clean_number(ServicesVault_.off_budget_planned) - await clean_number(contract_price_sum))
+
+                    await sync_to_async(ServicesTwo_.save)()
+
+            except Exception as e:
+                # Вывод подробной информации об ошибке
+                print(f"Поймано исключение: {type(e).__name__}")
+                print(f"Сообщение об ошибке: {str(e)}")
+                import traceback
+                print("Трассировка стека (stack trace):")
+                traceback.print_exc()
+
             await sync_to_async(messages.success)(request, "Редактирование прошло успешно.")
 
             # Перенаправление с несколькими параметрами
@@ -1298,14 +1343,19 @@ async def update_record_user(request, row_id):
                     Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
                 )
 
-                ServicesVault_.budget_remainder = float(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
-                - float(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
-                ServicesVault_.off_budget_remainder = float(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
-                - float(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
+                ServicesVault_.budget_remainder = await clean_number(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
+                - await clean_number(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
+                ServicesVault_.off_budget_remainder = await clean_number(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
+                - await clean_number(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
 
                 await sync_to_async(ServicesVault_.save)()
-            except:
-                pass
+            except Exception as e:
+                # Вывод подробной информации об ошибке
+                print(f"Поймано исключение: {type(e).__name__}")
+                print(f"Сообщение об ошибке: {str(e)}")
+                import traceback
+                print("Трассировка стека (stack trace):")
+                traceback.print_exc()
 
             await sync_to_async(messages.success)(request, "Редактирование прошло успешно.")
 
@@ -1410,12 +1460,18 @@ async def update_record_user_two(request, row_id):
                     Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
                 )
 
-                ServicesVault_.budget_plans = float(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
-                ServicesVault_.off_budget_plans = float(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
+                ServicesVault_.budget_plans = await clean_number(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
+                ServicesVault_.off_budget_plans = await clean_number(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
 
                 await sync_to_async(ServicesVault_.save)()
-            except:
-                pass
+
+            except Exception as e:
+                # Вывод подробной информации об ошибке
+                print(f"Поймано исключение: {type(e).__name__}")
+                print(f"Сообщение об ошибке: {str(e)}")
+                import traceback
+                print("Трассировка стека (stack trace):")
+                traceback.print_exc()
 
             await sync_to_async(messages.success)(request, "Редактирование прошло успешно.")
 
@@ -1549,19 +1605,19 @@ async def add_record(request):
             # contract_balance = request.POST['contract_balance']
             color = request.POST.get('color')
 
-            execution_contract_plan = float(january_one) + float(february) + float(march)
-            + float(april) + float(may) + float(june) + float(july) + float(august)
-            + float(september) + float(october) + float(november) + float(december)
-            + float(january_two)
+            execution_contract_plan = await clean_number(january_one) + await clean_number(february) + await clean_number(march)
+            + await clean_number(april) + await clean_number(may) + await clean_number(june) + await clean_number(july) + await clean_number(august)
+            + await clean_number(september) + await clean_number(october) + await clean_number(november) + await clean_number(december)
+            + await clean_number(january_two)
 
-            execution_contract_fact = float(sum_january_one) + float(sum_february) + float(sum_march)
-            + float(sum_april) + float(sum_may) + float(sum_june) + float(sum_july) + float(sum_august)
-            + float(sum_september) + float(sum_october) + float(sum_november) + float(sum_december)
-            + float(sum_january_two)
+            execution_contract_fact = await clean_number(sum_january_one) + await clean_number(sum_february) + await clean_number(sum_march)
+            + await clean_number(sum_april) + await clean_number(sum_may) + await clean_number(sum_june) + await clean_number(sum_july) + await clean_number(sum_august)
+            + await clean_number(sum_september) + await clean_number(sum_october) + await clean_number(sum_november) + await clean_number(sum_december)
+            + await clean_number(sum_january_two)
 
-            execution = float(execution_contract_fact) / float(contract_price)
+            execution = await clean_number(execution_contract_fact) / await clean_number(contract_price)
 
-            contract_balance = float(contract_price) - float(execution_contract_fact)
+            contract_balance = await clean_number(contract_price) - await clean_number(execution_contract_fact)
 
             # if certificate == '0' and certificate_no == '0':
             #     color = '#dff0d8'
@@ -1640,8 +1696,8 @@ async def add_record(request):
             contract_price_sum = 0
             execution_contract_fact_sum = 0
             for service in Services_:
-                contract_price_sum += float(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
-                execution_contract_fact_sum += float(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
+                contract_price_sum += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+                execution_contract_fact_sum += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
 
             # # Найдите запись по ID
             # # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(KOSGU=KOSGU)
@@ -1658,30 +1714,6 @@ async def add_record(request):
             # ServicesVault_ = await sync_to_async(list)(ServicesVault.objects.filter(
             #     Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
             # ))
-
-            try:
-
-                if way == 'п.4 ч.1 ст.93':
-                    ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
-                        Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
-                    )
-
-                    if status == 'Заключено' and KTSSR == '2016100092':
-                        ServicesTwo_.off_budget_concluded = contract_price_sum
-                        ServicesTwo_.off_budget_remainder = float(ServicesTwo_.off_budget_planned) - float(contract_price_sum)
-                    elif status == 'Заключено' and KTSSR == '2016100000':
-                        ServicesTwo_.budget_concluded = contract_price_sum
-                        ServicesTwo_.budget_remainder = float(ServicesTwo_.budget_planned) - float(contract_price_sum)
-
-                    if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
-                        ServicesTwo_.color = '#ffebeb'
-                    else:
-                        ServicesTwo_.color = ''
-
-                    await sync_to_async(ServicesTwo_.save)()
-
-            except:
-                pass
 
             # print(KOSGU)
             # print(DopFC)
@@ -1710,21 +1742,19 @@ async def add_record(request):
             elif KTSSR == '2016100000':
                 ServicesVault_.budget_execution = execution_contract_fact_sum
 
-            ServicesVault_.budget_remainder = float(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
-            - float(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
-            ServicesVault_.off_budget_remainder = float(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
-            - float(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
+            ServicesVault_.budget_remainder = await clean_number(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
+            - await clean_number(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
+            ServicesVault_.off_budget_remainder = await clean_number(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
+            - await clean_number(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
 
-            ServicesVault_.budget_plans = float(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
-            ServicesVault_.off_budget_plans = float(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
+            ServicesVault_.budget_plans = await clean_number(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
+            ServicesVault_.off_budget_plans = await clean_number(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
 
-            if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
+            if any(x < 0 for x in [await clean_number(ServicesVault_.budget_remainder), await clean_number(ServicesVault_.off_budget_remainder), await clean_number(ServicesVault_.budget_plans), await clean_number(ServicesVault_.off_budget_plans)]):
                 ServicesVault_.color = '#ffebeb'
-                ServicesTwo_.color = '#ffebeb'
                 color = '#ffebeb'
             else:
                 ServicesVault_.color = ''
-                ServicesTwo_.color = ''
                 color = ''
 
             await sync_to_async(ServicesVault_.save)()
@@ -1794,6 +1824,40 @@ async def add_record(request):
                                 color=color)
 
             await sync_to_async(new_service.save)()
+
+            try:
+
+                if way == 'п.4 ч.1 ст.93':
+                    ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
+                        Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                    )
+
+                    ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
+                        Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                    )
+
+                    if status == 'Заключено' and KTSSR == '2016100092':
+                        ServicesTwo_.off_budget_concluded = contract_price_sum
+                        ServicesTwo_.off_budget_remainder = await clean_number(ServicesTwo_.off_budget_planned) - await clean_number(contract_price_sum)
+                    elif status == 'Заключено' and KTSSR == '2016100000':
+                        ServicesTwo_.budget_concluded = contract_price_sum
+                        ServicesTwo_.budget_remainder = await clean_number(ServicesTwo_.budget_planned) - await clean_number(contract_price_sum)
+
+                    if any(x < 0 for x in [await clean_number(ServicesVault_.budget_remainder), await clean_number(ServicesVault_.off_budget_remainder), await clean_number(ServicesVault_.budget_plans), await clean_number(ServicesVault_.off_budget_plans)]):
+                        ServicesTwo_.color = '#ffebeb'
+                    else:
+                        ServicesTwo_.color = ''
+
+                    await sync_to_async(ServicesTwo_.save)()
+
+            except Exception as e:
+                # Вывод подробной информации об ошибке
+                print(f"Поймано исключение: {type(e).__name__}")
+                print(f"Сообщение об ошибке: {str(e)}")
+                import traceback
+                print("Трассировка стека (stack trace):")
+                traceback.print_exc()
+
             await sync_to_async(messages.success)(request, 'Данные успешно добавлены!')
 
             # Перенаправление с несколькими параметрами
@@ -1824,30 +1888,6 @@ async def delete_record(request, row_id):
             way = service.way
 
             try:
-
-                if way == 'п.4 ч.1 ст.93':
-                    ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
-                        Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
-                    )
-
-                    if status == 'Заключено' and KTSSR == '2016100092':
-                        ServicesTwo_.off_budget_concluded = contract_price_sum
-                        ServicesTwo_.off_budget_remainder = float(ServicesTwo_.off_budget_planned) - float(contract_price_sum)
-                    elif status == 'Заключено' and KTSSR == '2016100000':
-                        ServicesTwo_.budget_concluded = contract_price_sum
-                        ServicesTwo_.budget_remainder = float(ServicesTwo_.budget_planned) - float(contract_price_sum)
-
-                    if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
-                        ServicesTwo_.color = '#ffebeb'
-                    else:
-                        ServicesTwo_.color = ''
-
-                    await sync_to_async(ServicesTwo_.save)()
-
-            except:
-                pass
-
-            try:
                 from django.db.models import Q
                 # Services_ = await sync_to_async(Services.objects.get)(
                 #     Q(KOSGU='221') & Q(DopFC='0000000')
@@ -1858,8 +1898,8 @@ async def delete_record(request, row_id):
                 contract_price_sum = 0
                 execution_contract_fact_sum = 0
                 for service in Services_:
-                    contract_price_sum += float(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
-                    execution_contract_fact_sum += float(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
+                    contract_price_sum += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+                    execution_contract_fact_sum += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
 
                 ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
                     Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
@@ -1887,15 +1927,15 @@ async def delete_record(request, row_id):
                 elif KTSSR == '2016100000':
                     ServicesVault_.budget_execution = execution_contract_fact_sum
 
-                ServicesVault_.budget_remainder = float(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
-                - float(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
-                ServicesVault_.off_budget_remainder = float(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
-                - float(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
+                ServicesVault_.budget_remainder = await clean_number(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
+                - await clean_number(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
+                ServicesVault_.off_budget_remainder = await clean_number(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
+                - await clean_number(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
 
-                ServicesVault_.budget_plans = float(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
-                ServicesVault_.off_budget_plans = float(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
+                ServicesVault_.budget_plans = await clean_number(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
+                ServicesVault_.off_budget_plans = await clean_number(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
 
-                if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
+                if any(x < 0 for x in [await clean_number(ServicesVault_.budget_remainder), await clean_number(ServicesVault_.off_budget_remainder), await clean_number(ServicesVault_.budget_plans), await clean_number(ServicesVault_.off_budget_plans)]):
                     ServicesVault_.color = '#ffebeb'
                     ServicesTwo_.color = '#ffebeb'
                 else:
@@ -1904,11 +1944,49 @@ async def delete_record(request, row_id):
 
                 await sync_to_async(ServicesVault_.save)()
 
-            except:
-                pass
+            except Exception as e:
+                # Вывод подробной информации об ошибке
+                print(f"Поймано исключение: {type(e).__name__}")
+                print(f"Сообщение об ошибке: {str(e)}")
+                import traceback
+                print("Трассировка стека (stack trace):")
+                traceback.print_exc()
 
             # Удаление записи
             await sync_to_async(service.delete)()
+
+            try:
+
+                if way == 'п.4 ч.1 ст.93':
+                    ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
+                        Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                    )
+
+                    ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
+                        Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                    )
+
+                    if status == 'Заключено' and KTSSR == '2016100092':
+                        ServicesTwo_.off_budget_concluded = contract_price_sum
+                        ServicesTwo_.off_budget_remainder = await clean_number(ServicesTwo_.off_budget_planned) - await clean_number(contract_price_sum)
+                    elif status == 'Заключено' and KTSSR == '2016100000':
+                        ServicesTwo_.budget_concluded = contract_price_sum
+                        ServicesTwo_.budget_remainder = await clean_number(ServicesTwo_.budget_planned) - await clean_number(contract_price_sum)
+
+                    if any(x < 0 for x in [await clean_number(ServicesVault_.budget_remainder), await clean_number(ServicesVault_.off_budget_remainder), await clean_number(ServicesVault_.budget_plans), await clean_number(ServicesVault_.off_budget_plans)]):
+                        ServicesTwo_.color = '#ffebeb'
+                    else:
+                        ServicesTwo_.color = ''
+
+                    await sync_to_async(ServicesTwo_.save)()
+
+            except Exception as e:
+                # Вывод подробной информации об ошибке
+                print(f"Поймано исключение: {type(e).__name__}")
+                print(f"Сообщение об ошибке: {str(e)}")
+                import traceback
+                print("Трассировка стека (stack trace):")
+                traceback.print_exc()
 
             # Сообщение об успешном удалении
             await sync_to_async(messages.success)(request, 'Данные успешно удалены!')

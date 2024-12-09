@@ -124,7 +124,7 @@ class ServicesTwo(models.Model):
         verbose_name_plural = 'Services Two'
 
     def __str__(self):
-        return self.name
+        return self.id_id
 
 class ServicesVault(models.Model):
     id = models.BigAutoField(primary_key=True)  # Поле id как первичный ключ
