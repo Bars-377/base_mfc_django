@@ -109,6 +109,7 @@ class ServicesTwo(models.Model):
     id = models.BigAutoField(primary_key=True)  # Поле id как первичный ключ
     id_id = models.TextField(verbose_name='ID', default='Unknown ID')
     KOSGU = models.TextField(verbose_name='KOSGU', default='Unknown KOSGU')
+    DopFC = models.TextField(verbose_name='DopFC', default='Unknown DopFC')
     budget_planned = models.TextField(verbose_name='Budget Planned', default='Unknown Budget Planned')
     off_budget_planned = models.TextField(verbose_name='Off Budget Planned', default='Unknown Off Budget Planned')
     budget_concluded = models.TextField(verbose_name='Budget Concluded', default='Unknown Budget Concluded')

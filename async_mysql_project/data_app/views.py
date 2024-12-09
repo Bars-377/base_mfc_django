@@ -793,27 +793,6 @@ async def update_color_user_two(request, row_id):
             return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
     return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
 
-@csrf_exempt  # Необходимо, если вы не используете CSRF-токены
-async def delete_record(request, row_id):
-    if request.method == 'POST':
-        try:
-            # Найдите запись по ID и обновите цвет
-            service = await sync_to_async(Services.objects.get)(id=row_id)
-
-            # Удаление записи
-            await sync_to_async(service.delete)()
-
-            # Сообщение об успешном удалении
-            await sync_to_async(messages.success)(request, 'Данные успешно удалены!')
-
-            # Перенаправление на главную страницу
-            return redirect('data_table_view')
-        except Services.DoesNotExist:
-            return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
-        except json.JSONDecodeError:
-            return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
-    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
-
 # from django.shortcuts import get_object_or_404
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
@@ -878,38 +857,38 @@ async def edit(request, row_id):
 
     return await sync_to_async(render)(request, 'edit.html', context)
 
-# @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
-# async def edit_user(request, row_id):
-#     page_user = int(request.GET.get('page_user', 1))
-#     keyword_one_user = request.GET.get('keyword_one_user', None)
-#     keyword_two_user = request.GET.get('keyword_two_user', None)
-#     selected_column_one_user = request.GET.get('selected_column_one_user', None)
-#     selected_column_two_user = request.GET.get('selected_column_two_user', None)
-#     selected_contract_date_user = request.GET.get('selected_contract_date_user', "No")
-#     selected_end_date_user = request.GET.get('selected_end_date_user', "No")
+@csrf_exempt  # Необходимо, если вы не используете CSRF-токены
+async def edit_user(request, row_id):
+    page_user = int(request.GET.get('page_user', 1))
+    keyword_one_user = request.GET.get('keyword_one_user', None)
+    keyword_two_user = request.GET.get('keyword_two_user', None)
+    selected_column_one_user = request.GET.get('selected_column_one_user', None)
+    selected_column_two_user = request.GET.get('selected_column_two_user', None)
+    selected_contract_date_user = request.GET.get('selected_contract_date_user', "No")
+    selected_end_date_user = request.GET.get('selected_end_date_user', "No")
 
-#     # return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
-#     user = request.user
+    # return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
+    user = request.user
 
-#     # # Получаем объект service по id
-#     # service = get_object_or_404(Services, id=row_id)  # Измените на id_id, если используете поле id_id
-#     service_user = await sync_to_async(ServicesVault.objects.get)(id=row_id)
+    # # Получаем объект service по id
+    # service = get_object_or_404(Services, id=row_id)  # Измените на id_id, если используете поле id_id
+    service_user = await sync_to_async(ServicesVault.objects.get)(id=row_id)
 
-#     # Подготовка контекста для шаблона
-#     context = {
-#         'service_user': service_user,
-#         'user': user,
-#         'row_id_user': row_id,
-#         'page_user': page_user,
-#         'keyword_one_user': keyword_one_user,
-#         'keyword_two_user': keyword_two_user,
-#         'selected_column_one_user': selected_column_one_user,
-#         'selected_column_two_user': selected_column_two_user,
-#         'selected_contract_date_user': selected_contract_date_user,
-#         'selected_end_date_user': selected_end_date_user
-#     }
+    # Подготовка контекста для шаблона
+    context = {
+        'service_user': service_user,
+        'user': user,
+        'row_id_user': row_id,
+        'page_user': page_user,
+        'keyword_one_user': keyword_one_user,
+        'keyword_two_user': keyword_two_user,
+        'selected_column_one_user': selected_column_one_user,
+        'selected_column_two_user': selected_column_two_user,
+        'selected_contract_date_user': selected_contract_date_user,
+        'selected_end_date_user': selected_end_date_user
+    }
 
-#     return await sync_to_async(render)(request, 'edit_user.html', context)
+    return await sync_to_async(render)(request, 'edit_user.html', context)
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit_user_two(request, row_id):
@@ -1256,6 +1235,140 @@ async def update_record(request, row_id):
     return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
+async def update_record_user(request, row_id):
+    if request.method == 'POST':
+        try:
+            data = request.POST
+
+            id_id = data.get('id_id')
+            name = data.get('name')
+            KOSGU = data.get('KOSGU')
+            DopFC = data.get('DopFC')
+            budget_limit = data.get('budget_limit')
+            off_budget_limit = data.get('off_budget_limit')
+            budget_planned = data.get('budget_planned')
+            off_budget_planned = data.get('off_budget_planned')
+            budget_bargaining = data.get('budget_bargaining')
+            off_budget_bargaining = data.get('off_budget_bargaining')
+            budget_concluded = data.get('budget_concluded')
+            off_budget_concluded = data.get('off_budget_concluded')
+            budget_completed = data.get('budget_completed')
+            off_budget_completed = data.get('off_budget_completed')
+            budget_execution = data.get('budget_execution')
+            off_budget_execution = data.get('off_budget_execution')
+            budget_remainder = data.get('budget_remainder')
+            off_budget_remainder = data.get('off_budget_remainder')
+            budget_plans = data.get('budget_plans')
+            off_budget_plans = data.get('off_budget_plans')
+            color = data.get('color')
+
+            # Найдите запись по ID и обновите цвет
+            service = await sync_to_async(ServicesVault.objects.get)(id=row_id)
+
+            service.id_id = id_id
+            service.name = name
+            service.KOSGU = KOSGU
+            service.DopFC = DopFC
+            service.budget_limit = budget_limit
+            service.off_budget_limit = off_budget_limit
+            service.budget_planned = budget_planned
+            service.off_budget_planned = off_budget_planned
+            service.budget_bargaining = budget_bargaining
+            service.off_budget_bargaining = off_budget_bargaining
+            service.budget_concluded = budget_concluded
+            service.off_budget_concluded = off_budget_concluded
+            service.budget_completed = budget_completed
+            service.off_budget_completed = off_budget_completed
+            service.budget_execution = budget_execution
+            service.off_budget_execution = off_budget_execution
+            service.budget_remainder = budget_remainder
+            service.off_budget_remainder = off_budget_remainder
+            service.budget_plans = budget_plans
+            service.off_budget_plans = off_budget_plans
+            service.color = color
+
+            await sync_to_async(service.save)()
+
+            try:
+                ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
+                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                )
+
+                ServicesVault_.budget_remainder = float(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
+                - float(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
+                ServicesVault_.off_budget_remainder = float(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
+                - float(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
+
+                await sync_to_async(ServicesVault_.save)()
+            except:
+                pass
+
+            await sync_to_async(messages.success)(request, "Редактирование прошло успешно.")
+
+            page = 1
+            keyword_one = None
+            keyword_two = None
+            selected_column_one = None
+            selected_column_two = None
+
+            # keyword_one = None
+            # keyword_two = None
+            # selected_column_one=None
+            # selected_column_two=None
+            # page = 2
+
+            # # return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
+            # user = request.user
+
+            # return await skeleton(request, user, date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+
+            page_user = int(request.GET.get('page_user', 1))
+            KOSGU_user = request.GET.get('KOSGU_user', None)
+            keyword_one_user = request.GET.get('keyword_one_user', None)
+            keyword_two_user = request.GET.get('keyword_two_user', None)
+            selected_column_one_user = request.GET.get('selected_column_one_user', None)
+            selected_column_two_user = request.GET.get('selected_column_two_user', None)
+
+            page_user_two = int(request.GET.get('page_user_two', 1))
+            KOSGU_user_two = request.GET.get('KOSGU_user_two', None)
+            keyword_one_user_two = request.GET.get('keyword_one_user_two', None)
+            keyword_two_user_two = request.GET.get('keyword_two_user_two', None)
+            selected_column_one_user_two = request.GET.get('selected_column_one_user_two', None)
+            selected_column_two_user_two = request.GET.get('selected_column_two_user_two', None)
+
+            # Формирование строки запроса
+            query_params = {
+                'page': page,
+                'keyword_one': keyword_one,
+                'keyword_two': keyword_two,
+                'selected_column_one': selected_column_one,
+                'selected_column_two': selected_column_two,
+                'page_user': page_user,
+                'KOSGU_user': KOSGU_user,
+                'keyword_one_user': keyword_one_user,
+                'keyword_two_user': keyword_two_user,
+                'selected_column_one_user': selected_column_one_user,
+                'selected_column_two_user': selected_column_two_user,
+                'page_user_two': page_user_two,
+                'KOSGU_user_two': KOSGU_user_two,
+                'keyword_one_user_two': keyword_one_user_two,
+                'keyword_two_user_two': keyword_two_user_two,
+                'selected_column_one_user_two': selected_column_one_user_two,
+                'selected_column_two_user_two': selected_column_two_user_two
+            }
+
+            # Перенаправление с несколькими параметрами
+            return redirect(f"/?{urlencode(query_params)}")
+
+            # return await skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user)
+
+        except Services.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+@csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_record_user_two(request, row_id):
     if request.method == 'POST':
         try:
@@ -1263,6 +1376,7 @@ async def update_record_user_two(request, row_id):
 
             id_id = data.get('id_id')
             KOSGU = data.get('KOSGU')
+            DopFC = data.get('DopFC')
             budget_planned = data.get('budget_planned')
             off_budget_planned = data.get('off_budget_planned')
             budget_concluded = data.get('budget_concluded')
@@ -1285,6 +1399,19 @@ async def update_record_user_two(request, row_id):
             service.color = color
 
             await sync_to_async(service.save)()
+
+            try:
+
+                ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
+                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                )
+
+                ServicesVault_.budget_plans = float(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
+                ServicesVault_.off_budget_plans = float(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
+
+                await sync_to_async(ServicesVault_.save)()
+            except:
+                pass
 
             await sync_to_async(messages.success)(request, "Редактирование прошло успешно.")
 
@@ -1485,16 +1612,14 @@ async def add_record(request):
             from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
             try:
-                Services = await sync_to_async(Services.objects.get)(name=name)
+                Services_ = await sync_to_async(Services.objects.get)(name=name)
                 await sync_to_async(messages.error)(request, 'Вы добавляете дубликат в Наименовании')
-
 
                 # Перенаправление с несколькими параметрами
                 return redirect(f"/?{urlencode(query_params)}")
             except MultipleObjectsReturned:
-                Services = await sync_to_async(lambda: Services.objects.filter(name=name).first())()
+                Services_ = await sync_to_async(lambda: Services.objects.filter(name=name).first())()
                 await sync_to_async(messages.error)(request, 'Вы добавляете дубликат в Ниименовании')
-
 
                 # Перенаправление с несколькими параметрами
                 return redirect(f"/?{urlencode(query_params)}")
@@ -1529,6 +1654,28 @@ async def add_record(request):
             # ServicesVault_ = await sync_to_async(list)(ServicesVault.objects.filter(
             #     Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
             # ))
+
+            try:
+                ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
+                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                )
+
+                if status == 'Заключено' and KTSSR == '2016100092':
+                    ServicesTwo_.off_budget_concluded = contract_price_sum
+                    ServicesTwo_.off_budget_remainder = float(ServicesTwo_.off_budget_planned) - float(contract_price_sum)
+                elif status == 'Заключено' and KTSSR == '2016100000':
+                    ServicesTwo_.budget_concluded = contract_price_sum
+                    ServicesTwo_.budget_remainder = float(ServicesTwo_.budget_planned) - float(contract_price_sum)
+
+                if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
+                    ServicesTwo_.color = '#ffebeb'
+                else:
+                    ServicesTwo_.color = ''
+
+                await sync_to_async(ServicesTwo_.save)()
+
+            except:
+                pass
 
             # print(KOSGU)
             # print(DopFC)
@@ -1565,15 +1712,6 @@ async def add_record(request):
             ServicesVault_.budget_plans = float(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
             ServicesVault_.off_budget_plans = float(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
 
-            ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
-                Q(KOSGU=KOSGU)
-            )
-
-            ServicesTwo_.budget_concluded =
-            ServicesTwo_.off_budget_concluded =
-            ServicesTwo_.budget_remainder =
-            ServicesTwo_.off_budget_remainder =
-
             if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
                 ServicesVault_.color = '#ffebeb'
                 ServicesTwo_.color = '#ffebeb'
@@ -1583,10 +1721,7 @@ async def add_record(request):
                 ServicesTwo_.color = ''
                 color = ''
 
-            await sync_to_async(ServicesTwo_.save)()
-
             await sync_to_async(ServicesVault_.save)()
-
 
             # if way == 'п.4 ч.1 ст.93':
 
@@ -1659,6 +1794,113 @@ async def add_record(request):
             return redirect(f"/?{urlencode(query_params)}")
 
             # return await skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user)
+        except Services.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+@csrf_exempt  # Необходимо, если вы не используете CSRF-токены
+async def delete_record(request, row_id):
+    if request.method == 'POST':
+        try:
+            # Найдите запись по ID и обновите цвет
+            service = await sync_to_async(Services.objects.get)(id=row_id)
+
+            KOSGU = service.KOSGU
+
+            DopFC = service.DopFC
+
+            KTSSR = service.KTSSR
+
+            status = service.status
+
+            # Удаление записи
+            await sync_to_async(service.delete)()
+
+            try:
+                from django.db.models import Q
+                # Services_ = await sync_to_async(Services.objects.get)(
+                #     Q(KOSGU='221') & Q(DopFC='0000000')
+                # )
+                Services_ = await sync_to_async(list)(Services.objects.filter(
+                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR=KTSSR) & Q(status=status)
+                ))
+                contract_price_sum = 0
+                execution_contract_fact_sum = 0
+                for service in Services_:
+                    contract_price_sum += float(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+                    execution_contract_fact_sum += float(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
+
+                ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
+                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                )
+
+                ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
+                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                )
+
+                if status == 'Заключено' and KTSSR == '2016100092':
+                    ServicesTwo_.off_budget_concluded = contract_price_sum
+                    ServicesTwo_.off_budget_remainder = float(ServicesTwo_.off_budget_planned) - float(contract_price_sum)
+                elif status == 'Заключено' and KTSSR == '2016100000':
+                    ServicesTwo_.budget_concluded = contract_price_sum
+                    ServicesTwo_.budget_remainder = float(ServicesTwo_.budget_planned) - float(contract_price_sum)
+
+                if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
+                    ServicesTwo_.color = '#ffebeb'
+                else:
+                    ServicesTwo_.color = ''
+
+                await sync_to_async(ServicesTwo_.save)()
+
+                if status == 'В торгах' and KTSSR == '2016100092':
+                    ServicesVault_.off_budget_bargaining = contract_price_sum
+                elif status == 'В торгах' and KTSSR == '2016100000':
+                    ServicesVault_.budget_bargaining = contract_price_sum
+                elif status == 'Запланировано' and KTSSR == '2016100092':
+                    ServicesVault_.off_budget_planned = contract_price_sum
+                elif status == 'Запланировано' and KTSSR == '2016100000':
+                    ServicesVault_.budget_planned = contract_price_sum
+                elif status == 'Заключено' and KTSSR == '2016100092':
+                    ServicesVault_.off_budget_concluded = contract_price_sum
+                elif status == 'Заключено' and KTSSR == '2016100000':
+                    ServicesVault_.budget_concluded = contract_price_sum
+                elif status == 'Исполнено' and KTSSR == '2016100092':
+                    ServicesVault_.off_budget_completed = contract_price_sum
+                elif status == 'Исполнено' and KTSSR == '2016100000':
+                    ServicesVault_.budget_completed = contract_price_sum
+
+                if KTSSR == '2016100092':
+                    ServicesVault_.off_budget_execution = execution_contract_fact_sum
+                elif KTSSR == '2016100000':
+                    ServicesVault_.budget_execution = execution_contract_fact_sum
+
+                ServicesVault_.budget_remainder = float(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
+                - float(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
+                ServicesVault_.off_budget_remainder = float(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
+                - float(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
+
+                ServicesVault_.budget_plans = float(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
+                ServicesVault_.off_budget_plans = float(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - float(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
+
+                if any(x < 0 for x in [ServicesVault_.budget_remainder, ServicesVault_.off_budget_remainder, ServicesVault_.budget_plans, ServicesVault_.off_budget_plans]):
+                    ServicesVault_.color = '#ffebeb'
+                    ServicesTwo_.color = '#ffebeb'
+                else:
+                    ServicesVault_.color = ''
+                    ServicesTwo_.color = ''
+
+                await sync_to_async(ServicesVault_.save)()
+
+            except:
+                pass
+
+            # Сообщение об успешном удалении
+            await sync_to_async(messages.success)(request, 'Данные успешно удалены!')
+
+            # Перенаправление на главную страницу
+            return redirect('data_table_view')
         except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
         except json.JSONDecodeError:
