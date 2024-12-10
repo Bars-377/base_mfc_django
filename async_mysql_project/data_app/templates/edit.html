@@ -49,8 +49,20 @@
             </div>
             <div class="form-item">
                 <label for="way">Способ закупки</label>
-                <input type="text" class="form-control form-control-neverov" id="way" name="way" value="{{ service.way }}"
-                    maxlength="40" required title="Максимальное количество значений 40">
+                <select class="form-control" id="way" name="way" required title="Выберите статус">
+                    <option value="" {% if service.way == "" %}selected{% endif %}>Выберите cпособ закупки</option>
+                    <option value="Запрос котировок" {% if service.way == "Запрос котировок" %}selected{% endif %}>Запрос котировок</option>
+                    <option value="ОАЭФ" {% if service.way == "ОАЭФ" %}selected{% endif %}>ОАЭФ</option>
+                    <option value="п.1 ч.1 ст.93" {% if service.way == "п.1 ч.1 ст.93" %}selected{% endif %}>п.1 ч.1 ст.93</option>
+                    <option value="п.4 ч.1 ст.93" {% if service.way == "п.4 ч.1 ст.93" %}selected{% endif %}>п.4 ч.1 ст.93</option>
+                    <option value="п.8 ч.1 ст.93" {% if service.way == "п.8 ч.1 ст.93" %}selected{% endif %}>п.8 ч.1 ст.93</option>
+                    <option value="п.9 ч.1 ст.93" {% if service.way == "п.9 ч.1 ст.93" %}selected{% endif %}>п.9 ч.1 ст.93</option>
+                    <option value="п.12 ч.1 ст.93" {% if service.way == "п.12 ч.1 ст.93" %}selected{% endif %}>п.12 ч.1 ст.93</option>
+                    <option value="п.23 ч.1 ст.93" {% if service.way == "п.23 ч.1 ст.93" %}selected{% endif %}>п.23 ч.1 ст.93</option>
+                    <option value="п.25 ч.1 ст.93" {% if service.way == "п.25 ч.1 ст.93" %}selected{% endif %}>п.25 ч.1 ст.93</option>
+                    <option value="п.29 ч.1 ст.93" {% if service.way == "п.29 ч.1 ст.93" %}selected{% endif %}>п.29 ч.1 ст.93</option>
+                    <option value="п.32 ч.1 ст.93" {% if service.way == "п.32 ч.1 ст.93" %}selected{% endif %}>п.32 ч.1 ст.93</option>
+                </select>
             </div>
             <div class="form-item">
                 <label for="initiator">Инициатор закупки (ИТ/АХО)</label>

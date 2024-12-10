@@ -496,6 +496,7 @@ document.addEventListener('DOMContentLoaded', function () {
 								row.remove();
 							}
 							alert('Элемент успешно удален!'); // Уведомление об успешном удалении
+							window.location.reload(); // Обновление страницы
 						} else {
 							alert('Ошибка удаления');
 						}
