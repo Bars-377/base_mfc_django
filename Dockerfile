@@ -10,7 +10,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
     libffi-dev \
     libmariadb-dev \
-    pkg-config \
     gcc \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -40,4 +39,4 @@ RUN chmod +x /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Команда для запуска приложения
-CMD ["sh", "-c", "cd async_mysql_project && uvicorn asgi:application --host 0.0.0.0 --port 8500"]
+CMD ["sh", "-c", "cd async_mysql_project && uvicorn async_mysql_project.asgi:application --host 0.0.0.0 --port 8500"]

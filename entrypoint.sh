@@ -9,7 +9,7 @@ import mysql.connector
 
 # Получаем параметры подключения из переменных окружения
 db_config = {
-    "host": os.getenv("DB_HOST", "localhost"),
+    "host": os.getenv("DB_HOST", "172.18.11.104"),
     "user": os.getenv("DB_USER", "root"),
     "password": os.getenv("DB_PASSWORD", "enigma1418"),
     "database": os.getenv("DB_NAME", "mdtomskbot"),
@@ -38,8 +38,8 @@ if check_tables_exist; then
     echo "Таблицы найдены. Пропускаем миграции."
 else
     echo "Таблицы отсутствуют. Выполняем миграции..."
-    python manage.py makemigrations
-    python manage.py migrate
+    python async_mysql_project/manage.py makemigrations
+    python async_mysql_project/manage.py migrate
 fi
 
 # Запускаем приложение

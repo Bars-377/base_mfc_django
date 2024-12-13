@@ -114,7 +114,7 @@ DATABASES = {
         'NAME': 'mdtomskbot',
         'USER': 'root',
         'PASSWORD': 'enigma1418',
-        'HOST': 'localhost',  # или IP, если база на удалённом сервере
+        'HOST': '172.18.11.104',  # или IP, если база на удалённом сервере
         'PORT': '3306',
     }
 }
