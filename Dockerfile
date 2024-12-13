@@ -4,12 +4,13 @@ FROM python:3.12-slim
 # Устанавливаем рабочую директорию в контейнере
 WORKDIR /app
 
-# Устанавливаем системные зависимости
+# Устанавливаем системные зависимости для mysqlclient
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libssl-dev \
     libffi-dev \
     libmariadb-dev \
+    pkg-config \  # Добавлен pkg-config
     gcc \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
