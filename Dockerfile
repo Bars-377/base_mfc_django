@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
     libffi-dev \
     libmariadb-dev \
-    pkg-config \  # Добавлен pkg-config
+    pkg-config \
     gcc \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
