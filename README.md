@@ -23,7 +23,9 @@
 
 3. Запустить приложение:
 
-         uvicorn async_mysql_project.asgi:application --host 127.0.0.1 --port 8000
+   Зайти в дирректорию async_mysql_project
+
+         uvicorn async_mysql_project.asgi:application --host 127.0.0.1 --port 8500
 
 ## Дополнительно:
 
