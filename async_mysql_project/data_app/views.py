@@ -725,6 +725,11 @@ async def login_view(request):
             await sync_to_async(messages.error)(request, "Неверное имя пользователя или пароль")
     return await sync_to_async(render)(request, 'login.html')  # Ваш шаблон для входа
 
+# Асинхронная обертка для создания пользователя
+@sync_to_async
+def create_user(username, email, password):
+    return User.objects.create_user(username=username, email=email, password=password)
+
 async def register_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -733,7 +738,7 @@ async def register_view(request):
         confirm_password = request.POST['confirm_password']
 
         if password == confirm_password:
-            await User.objects.create_user(username=username, email=email, password=password)
+            await create_user(username=username, email=email, password=password)
             await sync_to_async(messages.success)(request, "Регистрация прошла успешно. Вы можете войти.")
             return redirect('login')
         else:
