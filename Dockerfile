@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libssl-dev \
     libffi-dev \
-    libmysqlclient-dev \
+    libmariadb-dev \
     pkg-config \
     gcc \
     && apt-get clean \
