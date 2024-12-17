@@ -235,85 +235,38 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     pattern_yyyy_mm_dd = r'\b\d{4}-\d{2}-\d{2}\b'
 
     # Получаем все уникальные значения year и date_number_no_one
-    # all_years = await sync_to_async(Services.objects.values('year').distinct())
     all_years = await sync_to_async(lambda: list(Services.objects.values('contract_date').distinct()))()
-    # all_date_number_no_one = await sync_to_async(Services.objects.values('date_number_no_one').distinct())
     all_end_date = await sync_to_async(lambda: list(Services.objects.values('end_date').distinct()))()
-
     all_KOSGU_user = await sync_to_async(lambda: list(ServicesVault.objects.values('KOSGU').distinct()))()
-
     all_KOSGU_user_two = await sync_to_async(lambda: list(ServicesTwo.objects.values('KOSGU').distinct()))()
 
-    # Сбор уникальных all_KOSGU_user
-    service_KOSGU_user = set()
-    empty_found_KOSGU = False
-    for year_value in all_KOSGU_user:
-        year_str = year_value.get('KOSGU', None)
-        if not year_str:
-            empty_found_KOSGU = True
-            continue # Пропустить итерацию, если year_str пустой или None
-        matches_dd_mm_yyyy = re.findall(pattern_dd_mm_yyyy, year_str)
-        matches_yyyy_mm_dd = re.findall(pattern_yyyy_mm_dd, year_str)
-        service_KOSGU_user.update([date_str[-4:] for date_str in matches_dd_mm_yyyy])
-        service_KOSGU_user.update([date_str[:4] for date_str in matches_yyyy_mm_dd])
+    async def process_service_data(all_data, field_name):
+        service_data = set()
+        empty_found = False
 
-    service_KOSGU_user = sorted({str(int(KOSGU)) for KOSGU in service_KOSGU_user if KOSGU.isdigit()})
-    if empty_found_KOSGU:
-        service_KOSGU_user.insert(0, None)
+        for item in all_data:
+            field_value = item.get(field_name, None)
+            if not field_value:
+                empty_found = True
+                continue
 
-    # Сбор уникальных all_KOSGU_user_two
-    service_KOSGU_user_two = set()
-    empty_found_KOSGU = False
-    for year_value in all_KOSGU_user_two:
-        year_str = year_value.get('KOSGU', None)
-        if not year_str:
-            empty_found_KOSGU = True
-            continue # Пропустить итерацию, если year_str пустой или None
-        matches_dd_mm_yyyy = re.findall(pattern_dd_mm_yyyy, year_str)
-        matches_yyyy_mm_dd = re.findall(pattern_yyyy_mm_dd, year_str)
-        service_KOSGU_user_two.update([date_str[-4:] for date_str in matches_dd_mm_yyyy])
-        service_KOSGU_user_two.update([date_str[:4] for date_str in matches_yyyy_mm_dd])
+            matches_dd_mm_yyyy = re.findall(pattern_dd_mm_yyyy, field_value)
+            matches_yyyy_mm_dd = re.findall(pattern_yyyy_mm_dd, field_value)
 
-    service_KOSGU_user_two = sorted({str(int(KOSGU)) for KOSGU in service_KOSGU_user_two if KOSGU.isdigit()})
-    if empty_found_KOSGU:
-        service_KOSGU_user_two.insert(0, None)
+            service_data.update([date_str[-4:] for date_str in matches_dd_mm_yyyy])
+            service_data.update([date_str[:4] for date_str in matches_yyyy_mm_dd])
 
-    # Сбор уникальных годов из year
-    service_years = set()
-    empty_found_contract_date = False
-    for year_value in all_years:
-        year_str = year_value.get('contract_date', None)
-        if not year_str:
-            empty_found_contract_date = True
-            continue
-        matches_dd_mm_yyyy = re.findall(pattern_dd_mm_yyyy, year_str)
-        matches_yyyy_mm_dd = re.findall(pattern_yyyy_mm_dd, year_str)
-        service_years.update([date_str[-4:] for date_str in matches_dd_mm_yyyy])
-        service_years.update([date_str[:4] for date_str in matches_yyyy_mm_dd])
+        service_data = sorted({str(int(year)) for year in service_data if year.isdigit()})
+        if empty_found:
+            service_data.insert(0, None)
+        return service_data
 
-    service_years = sorted({str(int(contract_date)) for contract_date in service_years if contract_date.isdigit()})
-    if empty_found_contract_date:
-        service_years.insert(0, None)
-
-    # Сбор уникальных годов из date_number_no_one
-    service_end_date = set()
-    empty_found_end_date = False
-    for date_value in all_end_date:
-        date_str = date_value.get('end_date', None)
-        if not date_str:
-            empty_found_end_date = True
-            continue
-        matches_dd_mm_yyyy = re.findall(pattern_dd_mm_yyyy, date_str)
-        matches_yyyy_mm_dd = re.findall(pattern_yyyy_mm_dd, date_str)
-        service_end_date.update([date_str[-4:] for date_str in matches_dd_mm_yyyy])
-        service_end_date.update([date_str[:4] for date_str in matches_yyyy_mm_dd])
-
-    service_end_date = sorted({str(int(end_date)) for end_date in service_end_date if end_date.isdigit()})
-    if empty_found_end_date:
-        service_end_date.insert(0, None)
+    service_years = await process_service_data(all_years, 'contract_date')
+    service_end_date = await process_service_data(all_end_date, 'end_date')
+    service_KOSGU_user = await process_service_data(all_KOSGU_user, 'KOSGU')
+    service_KOSGU_user_two = await process_service_data(all_KOSGU_user_two, 'KOSGU')
 
     # Построение запроса
-    # query = await sync_to_async(Services.objects.all)()
     query = await sync_to_async(lambda: Services.objects.all())()
     query_user = await sync_to_async(lambda: ServicesVault.objects.all())()
     query_user_two = await sync_to_async(lambda: ServicesTwo.objects.all())()
@@ -323,25 +276,30 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     if end_date == 'No':
         end_date = None
 
+    async def apply_filters(query, filters):
+        for filter_func in filters:
+            query = await sync_to_async(filter_func)(query)
+        return query
+
+    filters = []
     if contract_date == 'None' and end_date == 'None':
-        query = await sync_to_async(query.exclude)(Q(contract_date__regex=pattern_dd_mm_yyyy) | Q(contract_date__regex=pattern_yyyy_mm_dd) |
-                            Q(end_date__regex=pattern_dd_mm_yyyy) | Q(end_date__regex=pattern_yyyy_mm_dd))
-    elif contract_date == 'None' and end_date:
-        query = await sync_to_async(query.exclude)(Q(contract_date__regex=pattern_dd_mm_yyyy) | Q(contract_date__regex=pattern_yyyy_mm_dd))
-        query = await sync_to_async(query.filter)(end_date__icontains=end_date)
-    elif contract_date == 'None' and not end_date:
-        query = await sync_to_async(query.exclude)(Q(contract_date__regex=pattern_dd_mm_yyyy) | Q(contract_date__regex=pattern_yyyy_mm_dd))
-    elif contract_date and end_date == 'None':
-        query = await sync_to_async(query.exclude)(Q(end_date__regex=pattern_dd_mm_yyyy) | Q(end_date__regex=pattern_yyyy_mm_dd))
-        query = await sync_to_async(query.filter)(contract_date__icontains=contract_date)
-    elif not contract_date and end_date == 'None':
-        query = await sync_to_async(query.exclude)(Q(end_date__regex=pattern_dd_mm_yyyy) | Q(end_date__regex=pattern_yyyy_mm_dd))
+        filters.append(lambda q: q.exclude(Q(contract_date__regex=pattern_dd_mm_yyyy) | Q(contract_date__regex=pattern_yyyy_mm_dd) | Q(end_date__regex=pattern_dd_mm_yyyy) | Q(end_date__regex=pattern_yyyy_mm_dd)))
+    elif contract_date == 'None':
+        filters.append(lambda q: q.exclude(Q(contract_date__regex=pattern_dd_mm_yyyy) | Q(contract_date__regex=pattern_yyyy_mm_dd)))
+        if end_date:
+            filters.append(lambda q: q.filter(end_date__icontains=end_date))
+    elif end_date == 'None':
+        filters.append(lambda q: q.exclude(Q(end_date__regex=pattern_dd_mm_yyyy) | Q(end_date__regex=pattern_yyyy_mm_dd)))
+        if contract_date:
+            filters.append(lambda q: q.filter(contract_date__icontains=contract_date))
     elif contract_date and end_date:
-        query = await sync_to_async(query.filter)(Q(contract_date__icontains=contract_date) | Q(end_date__icontains=end_date))
-    elif contract_date and not end_date:
-        query = await sync_to_async(query.filter)(contract_date__icontains=contract_date)
-    elif not contract_date and end_date:
-        query = await sync_to_async(query.filter)(end_date__icontains=end_date)
+        filters.append(lambda q: q.filter(Q(contract_date__icontains=contract_date) | Q(end_date__icontains=end_date)))
+    elif contract_date:
+        filters.append(lambda q: q.filter(contract_date__icontains=contract_date))
+    elif end_date:
+        filters.append(lambda q: q.filter(end_date__icontains=end_date))
+
+    query = await apply_filters(query, filters)
 
     if KOSGU_user == 'No':
         KOSGU_user = None
@@ -359,59 +317,23 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     elif KOSGU_user_two:
         query_user_two = await sync_to_async(query_user_two.filter)(KOSGU__icontains=KOSGU_user_two)
 
-    if keyword_one:
-        if selected_column_one and hasattr(Services, selected_column_one):
-            query = await sync_to_async(query.filter)(**{selected_column_one + '__icontains': keyword_one})
-        else:
-            filters = Q()
-            for field in await sync_to_async(Services._meta.get_fields)():
-                filters |= Q(**{field.name + '__icontains': keyword_one})
-            query = await sync_to_async(query.filter)(filters)
+    async def apply_keyword_filter(query, keyword, column, model):
+        if keyword:
+            if column and hasattr(model, column):
+                query = await sync_to_async(query.filter)(**{column + '__icontains': keyword})
+            else:
+                filters = Q()
+                for field in await sync_to_async(model._meta.get_fields)():
+                    filters |= Q(**{field.name + '__icontains': keyword})
+                query = await sync_to_async(query.filter)(filters)
+        return query
 
-    if keyword_two:
-        if selected_column_two and hasattr(Services, selected_column_two):
-            query = await sync_to_async(query.filter)(**{selected_column_two + '__icontains': keyword_two})
-        else:
-            filters = Q()
-            for field in await sync_to_async(Services._meta.get_fields)():
-                filters |= Q(**{field.name + '__icontains': keyword_two})
-            query = await sync_to_async(query.filter)(filters)
-
-    if keyword_one_user:
-        if selected_column_one_user and hasattr(Services, selected_column_one_user):
-            query_user = await sync_to_async(query_user.filter)(**{selected_column_one_user + '__icontains': keyword_one_user})
-        else:
-            filters = Q()
-            for field in await sync_to_async(Services._meta.get_fields)():
-                filters |= Q(**{field.name + '__icontains': keyword_one_user})
-            query_user = await sync_to_async(query_user.filter)(filters)
-
-    if keyword_two_user:
-        if selected_column_two_user and hasattr(Services, selected_column_two_user):
-            query_user = await sync_to_async(query_user.filter)(**{selected_column_two_user + '__icontains': keyword_two_user})
-        else:
-            filters = Q()
-            for field in await sync_to_async(Services._meta.get_fields)():
-                filters |= Q(**{field.name + '__icontains': keyword_two_user})
-            query_user = await sync_to_async(query_user.filter)(filters)
-
-    if keyword_one_user_two:
-        if selected_column_one_user_two and hasattr(ServicesTwo, selected_column_one_user_two):
-            query_user_two = await sync_to_async(query_user_two.filter)(**{selected_column_one_user_two + '__icontains': keyword_one_user_two})
-        else:
-            filters = Q()
-            for field in await sync_to_async(ServicesTwo._meta.get_fields)():
-                filters |= Q(**{field.name + '__icontains': keyword_one_user_two})
-            query_user_two = await sync_to_async(query_user_two.filter)(filters)
-
-    if keyword_two_user_two:
-        if selected_column_two_user and hasattr(ServicesTwo, selected_column_two_user_two):
-            query_user_two = await sync_to_async(query_user_two.filter)(**{selected_column_two_user_two + '__icontains': keyword_two_user_two})
-        else:
-            filters = Q()
-            for field in await sync_to_async(ServicesTwo._meta.get_fields)():
-                filters |= Q(**{field.name + '__icontains': keyword_two_user_two})
-            query_user_two = await sync_to_async(query_user_two.filter)(filters)
+    query = await apply_keyword_filter(query, keyword_one, selected_column_one, Services)
+    query = await apply_keyword_filter(query, keyword_two, selected_column_two, Services)
+    query_user = await apply_keyword_filter(query_user, keyword_one_user, selected_column_one_user, ServicesVault)
+    query_user = await apply_keyword_filter(query_user, keyword_two_user, selected_column_two_user, ServicesVault)
+    query_user_two = await apply_keyword_filter(query_user_two, keyword_one_user_two, selected_column_one_user_two, ServicesTwo)
+    query_user_two = await apply_keyword_filter(query_user_two, keyword_two_user_two, selected_column_two_user_two, ServicesTwo)
 
     # Сортировка
     # query = query.order_by('id_id', 'contract_date')
