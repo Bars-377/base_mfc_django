@@ -956,7 +956,7 @@ async def update_record(request, row_id):
             KOSGU = data.get('KOSGU')
             DopFC = data.get('DopFC')
             NMCC = data.get('NMCC')
-            saving = data.get('saving')
+            # saving = data.get('saving')
             counterparty = data.get('counterparty')
             registration_number = data.get('registration_number')
             contract_number = data.get('contract_number')
@@ -1018,7 +1018,12 @@ async def update_record(request, row_id):
             + await clean_number(sum_september) + await clean_number(sum_october) + await clean_number(sum_november) + await clean_number(sum_december)
             + await clean_number(sum_january_two)
 
-            execution = await clean_number(execution_contract_fact) / await clean_number(contract_price)
+            saving = await clean_number(NMCC) - await clean_number(contract_price)
+
+            if await clean_number(contract_price) == 0:
+                execution = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
+            else:
+                execution = await clean_number(execution_contract_fact) / await clean_number(contract_price)
 
             contract_balance = await clean_number(contract_price) - await clean_number(execution_contract_fact)
 
