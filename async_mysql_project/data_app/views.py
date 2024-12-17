@@ -1552,7 +1552,7 @@ async def add_record(request):
             KOSGU = request.POST['KOSGU']
             DopFC = request.POST['DopFC']
             NMCC = request.POST['NMCC']
-            saving = request.POST['saving']
+            # saving = request.POST['saving']
             counterparty = request.POST['counterparty']
             registration_number = request.POST['registration_number']
             contract_number = request.POST['contract_number']
@@ -1614,7 +1614,12 @@ async def add_record(request):
             + await clean_number(sum_september) + await clean_number(sum_october) + await clean_number(sum_november) + await clean_number(sum_december)
             + await clean_number(sum_january_two)
 
-            execution = await clean_number(execution_contract_fact) / await clean_number(contract_price)
+            saving = await clean_number(NMCC) - await clean_number(contract_price)
+
+            if await clean_number(contract_price) == 0:
+                execution = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
+            else:
+                execution = await clean_number(execution_contract_fact) / await clean_number(contract_price)
 
             contract_balance = await clean_number(contract_price) - await clean_number(execution_contract_fact)
 

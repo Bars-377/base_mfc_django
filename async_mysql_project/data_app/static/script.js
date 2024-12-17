@@ -364,52 +364,88 @@ window.addEventListener('beforeunload', function () {
 });
 
 // Обработчик нажатия на кнопку сброса фильтров
-document.getElementById('reset-filters').addEventListener('click', function () {
-	resetFilters();
-});
+const resetButton = document.getElementById('reset-filters');
+if (resetButton) {
+	resetButton.addEventListener('click', function () {
+		resetFilters();
+	});
+}
 
 // Обработчик нажатия на кнопку сброса фильтров
-document.getElementById('reset-filters-user').addEventListener('click', function () {
-	resetFiltersUser();
-});
+const resetButtonOne = document.getElementById('reset-filters-user');
+if (resetButton) {
+	resetButton.addEventListener('click', function () {
+		resetFiltersUser();
+	});
+}
 
 // Обработчик нажатия на кнопку сброса фильтров
-document.getElementById('reset-filters-user-two').addEventListener('click', function () {
-	resetFiltersUserTwo();
-});
+const resetButtonTwo = document.getElementById('reset-filters-user-two');
+if (resetButton) {
+	resetButton.addEventListener('click', function () {
+		resetFiltersUserTwo();
+	});
+}
 
 // Обработчик нажатия на кнопку фильтрации
-document.getElementById('filter-form').addEventListener('submit', function (event) {
-	window.scrollTo(0, 0);
-	// Обрезаем пробелы с двух сторон поля ввода 1
-	var keywordInput_one = document.getElementById('keyword_one');
-	keywordInput_one.value = keywordInput_one.value.trim();
-	// Обрезаем пробелы с двух сторон поля ввода 2
-	var keywordInput_two = document.getElementById('keyword_two');
-	keywordInput_two.value = keywordInput_two.value.trim();
-});
+const filterForm = document.getElementById('filter-form');
+if (filterForm) {
+	filterForm.addEventListener('submit', function (event) {
+		window.scrollTo(0, 0);
+
+		// Проверяем существование поля ввода 1 перед обрезкой пробелов
+		const keywordInputOne = document.getElementById('keyword_one');
+		if (keywordInputOne) {
+			keywordInputOne.value = keywordInputOne.value.trim();
+		}
+
+		// Проверяем существование поля ввода 2 перед обрезкой пробелов
+		const keywordInputTwo = document.getElementById('keyword_two');
+		if (keywordInputTwo) {
+			keywordInputTwo.value = keywordInputTwo.value.trim();
+		}
+	});
+}
 
 // Обработчик нажатия на кнопку фильтрации
-document.getElementById('filter-form-user').addEventListener('submit', function (event) {
-	window.scrollTo(0, 0);
-	// Обрезаем пробелы с двух сторон поля ввода 1
-	var keywordInput_one = document.getElementById('keyword_one_user');
-	keywordInput_one.value = keywordInput_one.value.trim();
-	// Обрезаем пробелы с двух сторон поля ввода 2
-	var keywordInput_two = document.getElementById('keyword_two_user');
-	keywordInput_two.value = keywordInput_two.value.trim();
-});
+const filterFormOne = document.getElementById('filter-form-user');
+if (filterForm) {
+	filterForm.addEventListener('submit', function (event) {
+		window.scrollTo(0, 0);
+
+		// Проверяем существование поля ввода 1 перед обрезкой пробелов
+		const keywordInputOne = document.getElementById('keyword_one_user');
+		if (keywordInputOne) {
+			keywordInputOne.value = keywordInputOne.value.trim();
+		}
+
+		// Проверяем существование поля ввода 2 перед обрезкой пробелов
+		const keywordInputTwo = document.getElementById('keyword_two_user');
+		if (keywordInputTwo) {
+			keywordInputTwo.value = keywordInputTwo.value.trim();
+		}
+	});
+}
 
 // Обработчик нажатия на кнопку фильтрации
-document.getElementById('filter-form-user-two').addEventListener('submit', function (event) {
-	window.scrollTo(0, 0);
-	// Обрезаем пробелы с двух сторон поля ввода 1
-	var keywordInput_one = document.getElementById('keyword_one_user_two');
-	keywordInput_one.value = keywordInput_one.value.trim();
-	// Обрезаем пробелы с двух сторон поля ввода 2
-	var keywordInput_two = document.getElementById('keyword_two_user_two');
-	keywordInput_two.value = keywordInput_two.value.trim();
-});
+const filterFormTwo = document.getElementById('filter-form-user-two');
+if (filterForm) {
+	filterForm.addEventListener('submit', function (event) {
+		window.scrollTo(0, 0);
+
+		// Проверяем существование поля ввода 1 перед обрезкой пробелов
+		const keywordInputOne = document.getElementById('keyword_one_user_two');
+		if (keywordInputOne) {
+			keywordInputOne.value = keywordInputOne.value.trim();
+		}
+
+		// Проверяем существование поля ввода 2 перед обрезкой пробелов
+		const keywordInputTwo = document.getElementById('keyword_two_user_two');
+		if (keywordInputTwo) {
+			keywordInputTwo.value = keywordInputTwo.value.trim();
+		}
+	});
+}
 
 document.addEventListener('DOMContentLoaded', function () {
 	if (!navigator.userAgent.includes('AppleWebKit')) {
