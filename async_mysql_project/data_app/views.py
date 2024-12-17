@@ -1692,7 +1692,7 @@ async def add_record(request):
             def get_latest_service():
                 with connection.cursor() as cursor:
                     cursor.execute("""
-                        SELECT id_id FROM services
+                        SELECT id_id FROM services_base
                         WHERE id_id REGEXP '^[0-9]+$'
                         ORDER BY CAST(id_id AS UNSIGNED) DESC
                         LIMIT 1
