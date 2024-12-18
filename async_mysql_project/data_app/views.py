@@ -12,6 +12,8 @@ import re
 from django.db.models import Sum
 from asgiref.sync import sync_to_async
 
+import asyncio
+
 # async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page):
 #     contract_date = None if contract_date == 'None' else contract_date
 #     end_date = None if end_date == 'None' else end_date
@@ -930,22 +932,38 @@ async def update_record(request, row_id):
             contract_balance = data.get('contract_balance')
             color = data.get('color')
 
-            execution_contract_plan = await clean_number(january_one) + await clean_number(february) + await clean_number(march)
-            + await clean_number(april) + await clean_number(may) + await clean_number(june) + await clean_number(july) + await clean_number(august)
-            + await clean_number(september) + await clean_number(october) + await clean_number(november) + await clean_number(december)
-            + await clean_number(january_two)
+            # Создаем список месяцев
+            months = [
+                january_one, february, march, april, may, june,
+                july, august, september, october, november, december,
+                january_two
+            ]
 
-            execution_contract_fact = await clean_number(sum_january_one) + await clean_number(sum_february) + await clean_number(sum_march)
-            + await clean_number(sum_april) + await clean_number(sum_may) + await clean_number(sum_june) + await clean_number(sum_july) + await clean_number(sum_august)
-            + await clean_number(sum_september) + await clean_number(sum_october) + await clean_number(sum_november) + await clean_number(sum_december)
-            + await clean_number(sum_january_two)
+            # Асинхронно обрабатываем все месяцы
+            cleaned_numbers = await asyncio.gather(*(clean_number(month) for month in months))
+
+            # Суммируем результат
+            execution_contract_plan = sum(cleaned_numbers)
+
+            # Создаем список сумм месяцев
+            sum_months = [
+                sum_january_one, sum_february, sum_march, sum_april, sum_may, sum_june,
+                sum_july, sum_august, sum_september, sum_october, sum_november, sum_december,
+                sum_january_two
+            ]
+
+            # Асинхронно обрабатываем все месяцы
+            cleaned_numbers = await asyncio.gather(*(clean_number(month) for month in sum_months))
+
+            # Суммируем результат
+            execution_contract_fact = sum(cleaned_numbers)
 
             saving = await clean_number(NMCC) - await clean_number(contract_price)
 
             if await clean_number(contract_price) == 0:
                 execution = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
             else:
-                execution = await clean_number(execution_contract_fact) / await clean_number(contract_price)
+                execution = round(await clean_number(execution_contract_fact) / await clean_number(contract_price), 2) * 100
 
             contract_balance = await clean_number(contract_price) - await clean_number(execution_contract_fact)
 
@@ -1012,18 +1030,82 @@ async def update_record(request, row_id):
                 Services_ = await sync_to_async(Services.objects.get)(name=name)
                 # await sync_to_async(messages.error)(request, 'Вы добавляете дубликат в Наименовании')
 
-
                 # # Перенаправление с несколькими параметрами
                 # return redirect(f"/?{urlencode(query_params)}")
             except MultipleObjectsReturned:
                 Services_ = await sync_to_async(lambda: Services.objects.filter(name=name).first())()
                 await sync_to_async(messages.error)(request, 'Вы добавляете дубликат в Ниименовании')
 
-
                 # Перенаправление с несколькими параметрами
                 return redirect(f"/?{urlencode(query_params)}")
             except ObjectDoesNotExist:
                 pass
+
+            # Найдите запись по ID и обновите цвет
+            service = await sync_to_async(Services.objects.get)(id=row_id)
+
+            service.id_id = id_id
+            service.name = name
+            service.status = status
+            service.way = way
+            service.initiator = initiator
+            service.KTSSR = KTSSR
+            service.KOSGU = KOSGU
+            service.DopFC = DopFC
+            service.NMCC = NMCC
+            service.saving = saving
+            service.counterparty = counterparty
+            service.registration_number = registration_number
+            service.contract_number = contract_number
+            service.contract_date = contract_date
+            service.end_date = end_date
+            service.contract_price = contract_price
+            service.execution_contract_plan = execution_contract_plan
+            service.january_one = january_one
+            service.february = february
+            service.march = march
+            service.april = april
+            service.may = may
+            service.june = june
+            service.july = july
+            service.august = august
+            service.september = september
+            service.october = october
+            service.november = november
+            service.december = december
+            service.january_two = january_two
+            service.execution_contract_fact = execution_contract_fact
+            service.date_january_one = date_january_one
+            service.sum_january_one = sum_january_one
+            service.date_february = date_february
+            service.sum_february = sum_february
+            service.date_march = date_march
+            service.sum_march = sum_march
+            service.date_april = date_april
+            service.sum_april = sum_april
+            service.date_may = date_may
+            service.sum_may = sum_may
+            service.date_june = date_june
+            service.sum_june = sum_june
+            service.date_july = date_july
+            service.sum_july = sum_july
+            service.date_august = date_august
+            service.sum_august = sum_august
+            service.date_september = date_september
+            service.sum_september = sum_september
+            service.date_october = date_october
+            service.sum_october = sum_october
+            service.date_november = date_november
+            service.sum_november = sum_november
+            service.date_december = date_december
+            service.sum_december = sum_december
+            service.date_january_two = date_january_two
+            service.sum_january_two = sum_january_two
+            service.execution = execution
+            service.contract_balance = contract_balance
+            service.color = color
+
+            await sync_to_async(service.save)()
 
             from django.db.models import Q
             # Services_ = await sync_to_async(Services.objects.get)(
@@ -1097,72 +1179,6 @@ async def update_record(request, row_id):
                 color = ''
 
             await sync_to_async(ServicesVault_.save)()
-
-            # Найдите запись по ID и обновите цвет
-            service = await sync_to_async(Services.objects.get)(id=row_id)
-
-            service.id_id = id_id
-            service.name = name
-            service.status = status
-            service.way = way
-            service.initiator = initiator
-            service.KTSSR = KTSSR
-            service.KOSGU = KOSGU
-            service.DopFC = DopFC
-            service.NMCC = NMCC
-            service.saving = saving
-            service.counterparty = counterparty
-            service.registration_number = registration_number
-            service.contract_number = contract_number
-            service.contract_date = contract_date
-            service.end_date = end_date
-            service.contract_price = contract_price
-            service.execution_contract_plan = execution_contract_plan
-            service.january_one = january_one
-            service.february = february
-            service.march = march
-            service.april = april
-            service.may = may
-            service.june = june
-            service.july = july
-            service.august = august
-            service.september = september
-            service.october = october
-            service.november = november
-            service.december = december
-            service.january_two = january_two
-            service.execution_contract_fact = execution_contract_fact
-            service.date_january_one = date_january_one
-            service.sum_january_one = sum_january_one
-            service.date_february = date_february
-            service.sum_february = sum_february
-            service.date_march = date_march
-            service.sum_march = sum_march
-            service.date_april = date_april
-            service.sum_april = sum_april
-            service.date_may = date_may
-            service.sum_may = sum_may
-            service.date_june = date_june
-            service.sum_june = sum_june
-            service.date_july = date_july
-            service.sum_july = sum_july
-            service.date_august = date_august
-            service.sum_august = sum_august
-            service.date_september = date_september
-            service.sum_september = sum_september
-            service.date_october = date_october
-            service.sum_october = sum_october
-            service.date_november = date_november
-            service.sum_november = sum_november
-            service.date_december = date_december
-            service.sum_december = sum_december
-            service.date_january_two = date_january_two
-            service.sum_january_two = sum_january_two
-            service.execution = execution
-            service.contract_balance = contract_balance
-            service.color = color
-
-            await sync_to_async(service.save)()
 
             try:
 
@@ -1531,22 +1547,38 @@ async def add_record(request):
             # contract_balance = request.POST['contract_balance']
             color = request.POST.get('color')
 
-            execution_contract_plan = await clean_number(january_one) + await clean_number(february) + await clean_number(march)
-            + await clean_number(april) + await clean_number(may) + await clean_number(june) + await clean_number(july) + await clean_number(august)
-            + await clean_number(september) + await clean_number(october) + await clean_number(november) + await clean_number(december)
-            + await clean_number(january_two)
+            # Создаем список месяцев
+            months = [
+                january_one, february, march, april, may, june,
+                july, august, september, october, november, december,
+                january_two
+            ]
 
-            execution_contract_fact = await clean_number(sum_january_one) + await clean_number(sum_february) + await clean_number(sum_march)
-            + await clean_number(sum_april) + await clean_number(sum_may) + await clean_number(sum_june) + await clean_number(sum_july) + await clean_number(sum_august)
-            + await clean_number(sum_september) + await clean_number(sum_october) + await clean_number(sum_november) + await clean_number(sum_december)
-            + await clean_number(sum_january_two)
+            # Асинхронно обрабатываем все месяцы
+            cleaned_numbers = await asyncio.gather(*(clean_number(month) for month in months))
+
+            # Суммируем результат
+            execution_contract_plan = sum(cleaned_numbers)
+
+            # Создаем список сумм месяцев
+            sum_months = [
+                sum_january_one, sum_february, sum_march, sum_april, sum_may, sum_june,
+                sum_july, sum_august, sum_september, sum_october, sum_november, sum_december,
+                sum_january_two
+            ]
+
+            # Асинхронно обрабатываем все месяцы
+            cleaned_numbers = await asyncio.gather(*(clean_number(month) for month in sum_months))
+
+            # Суммируем результат
+            execution_contract_fact = sum(cleaned_numbers)
 
             saving = await clean_number(NMCC) - await clean_number(contract_price)
 
             if await clean_number(contract_price) == 0:
                 execution = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
             else:
-                execution = await clean_number(execution_contract_fact) / await clean_number(contract_price)
+                execution = round(await clean_number(execution_contract_fact) / await clean_number(contract_price), 2) * 100
 
             contract_balance = await clean_number(contract_price) - await clean_number(execution_contract_fact)
 
@@ -1614,13 +1646,63 @@ async def add_record(request):
             except ObjectDoesNotExist:
                 pass
 
+            # Получаем следующий ID
+            # latest_service = await sync_to_async(Services.objects.order_by('-id_id').first)()
+            from django.db import connection
+
+            def get_latest_service():
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        SELECT id_id FROM services_base
+                        WHERE id_id REGEXP '^[0-9]+$'
+                        ORDER BY CAST(id_id AS UNSIGNED) DESC
+                        LIMIT 1
+                    """)
+                    row = cursor.fetchone()
+                    return row
+
+            latest_service = await sync_to_async(get_latest_service)()
+
+            try:
+                id_id = (int(latest_service[0]) + 1) if latest_service and latest_service[0].isdigit() else 1
+            except ValueError:
+                # В случае некорректного значения установить id_id на 1
+                id_id = 1
+
+            new_service = Services(id_id=id_id, name=name, status=status, way=way,
+                                initiator=initiator, KTSSR=KTSSR, KOSGU=KOSGU,
+                                DopFC=DopFC, NMCC=NMCC, saving=saving,
+                                counterparty=counterparty, registration_number=registration_number,
+                                contract_number=contract_number, contract_date=contract_date,
+                                end_date=end_date, contract_price=contract_price, execution_contract_plan=execution_contract_plan,
+                                january_one=january_one, february=february, march=march, april=april,
+                                may=may, june=june, july=july, august=august,
+                                september=september, october=october, november=november, december=december,
+                                january_two=january_two, execution_contract_fact=execution_contract_fact, date_january_one=date_january_one,
+                                sum_january_one=sum_january_one, date_february=date_february, sum_february=sum_february,
+                                date_march=date_march, sum_march=sum_march, date_april=date_april,
+                                sum_april=sum_april, date_may=date_may, sum_may=sum_may,
+                                date_june=date_june, sum_june=sum_june, date_july=date_july,
+                                sum_july=sum_july, date_august=date_august, sum_august=sum_august,
+                                date_september=date_september, sum_september=sum_september, date_october=date_october,
+                                sum_october=sum_october, date_november=date_november, sum_november=sum_november,
+                                date_december=date_december, sum_december=sum_december, date_january_two=date_january_two,
+                                sum_january_two=sum_january_two, execution=execution, contract_balance=contract_balance,
+                                color=color)
+
+            await sync_to_async(new_service.save)()
+
             from django.db.models import Q
             # Services_ = await sync_to_async(Services.objects.get)(
             #     Q(KOSGU='221') & Q(DopFC='0000000')
             # )
+
+            from django.db import connection
+
             Services_ = await sync_to_async(list)(Services.objects.filter(
                 Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR=KTSSR) & Q(status=status)
             ))
+
             contract_price_sum = 0
             execution_contract_fact_sum = 0
             for service in Services_:
@@ -1684,52 +1766,6 @@ async def add_record(request):
                 color = ''
 
             await sync_to_async(ServicesVault_.save)()
-
-            # Получаем следующий ID
-            # latest_service = await sync_to_async(Services.objects.order_by('-id_id').first)()
-            from django.db import connection
-
-            def get_latest_service():
-                with connection.cursor() as cursor:
-                    cursor.execute("""
-                        SELECT id_id FROM services_base
-                        WHERE id_id REGEXP '^[0-9]+$'
-                        ORDER BY CAST(id_id AS UNSIGNED) DESC
-                        LIMIT 1
-                    """)
-                    row = cursor.fetchone()
-                    return row
-
-            latest_service = await sync_to_async(get_latest_service)()
-
-            try:
-                id_id = (int(latest_service[0]) + 1) if latest_service and latest_service[0].isdigit() else 1
-            except ValueError:
-                # В случае некорректного значения установить id_id на 1
-                id_id = 1
-
-            new_service = Services(id_id=id_id, name=name, status=status, way=way,
-                                initiator=initiator, KTSSR=KTSSR, KOSGU=KOSGU,
-                                DopFC=DopFC, NMCC=NMCC, saving=saving,
-                                counterparty=counterparty, registration_number=registration_number,
-                                contract_number=contract_number, contract_date=contract_date,
-                                end_date=end_date, contract_price=contract_price, execution_contract_plan=execution_contract_plan,
-                                january_one=january_one, february=february, march=march, april=april,
-                                may=may, june=june, july=july, august=august,
-                                september=september, october=october, november=november, december=december,
-                                january_two=january_two, execution_contract_fact=execution_contract_fact, date_january_one=date_january_one,
-                                sum_january_one=sum_january_one, date_february=date_february, sum_february=sum_february,
-                                date_march=date_march, sum_march=sum_march, date_april=date_april,
-                                sum_april=sum_april, date_may=date_may, sum_may=sum_may,
-                                date_june=date_june, sum_june=sum_june, date_july=date_july,
-                                sum_july=sum_july, date_august=date_august, sum_august=sum_august,
-                                date_september=date_september, sum_september=sum_september, date_october=date_october,
-                                sum_october=sum_october, date_november=date_november, sum_november=sum_november,
-                                date_december=date_december, sum_december=sum_december, date_january_two=date_january_two,
-                                sum_january_two=sum_january_two, execution=execution, contract_balance=contract_balance,
-                                color=color)
-
-            await sync_to_async(new_service.save)()
 
             try:
 
@@ -1852,10 +1888,8 @@ async def delete_record(request, row_id):
 
                 if any(x < 0 for x in [await clean_number(ServicesVault_.budget_remainder), await clean_number(ServicesVault_.off_budget_remainder), await clean_number(ServicesVault_.budget_plans), await clean_number(ServicesVault_.off_budget_plans)]):
                     ServicesVault_.color = '#ffebeb'
-                    ServicesTwo_.color = '#ffebeb'
                 else:
                     ServicesVault_.color = ''
-                    ServicesTwo_.color = ''
 
                 await sync_to_async(ServicesVault_.save)()
 
