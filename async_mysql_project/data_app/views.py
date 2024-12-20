@@ -1163,10 +1163,38 @@ async def update_record(request, row_id):
             elif KTSSR == '2016100000':
                 ServicesVault_.budget_execution = execution_contract_fact_sum
 
-            ServicesVault_.budget_remainder = await clean_number(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
-            - await clean_number(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
-            ServicesVault_.off_budget_remainder = await clean_number(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
-            - await clean_number(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
+            # Создаем список месяцев
+            budget = [
+                ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0,
+                ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0,
+                ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0,
+                ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0
+            ]
+
+            # Асинхронно обрабатываем все месяцы
+            cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in budget))
+
+            # Суммируем результат
+            ServicesVault_.budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
+
+            # Создаем список месяцев
+            off_budget = [
+                ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0,
+                ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0,
+                ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0,
+                ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0
+            ]
+
+            # Асинхронно обрабатываем все месяцы
+            cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in off_budget))
+
+            # Суммируем результат
+            ServicesVault_.off_budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
+
+            # ServicesVault_.budget_remainder = await clean_number(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
+            # - await clean_number(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
+            # ServicesVault_.off_budget_remainder = await clean_number(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
+            # - await clean_number(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
 
             ServicesVault_.budget_plans = await clean_number(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
             ServicesVault_.off_budget_plans = await clean_number(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
@@ -1285,10 +1313,38 @@ async def update_record_user(request, row_id):
                     Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
                 )
 
-                ServicesVault_.budget_remainder = await clean_number(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
-                - await clean_number(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
-                ServicesVault_.off_budget_remainder = await clean_number(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
-                - await clean_number(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
+                # Создаем список месяцев
+                budget = [
+                    ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0,
+                    ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0,
+                    ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0,
+                    ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0
+                ]
+
+                # Асинхронно обрабатываем все месяцы
+                cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in budget))
+
+                # Суммируем результат
+                ServicesVault_.budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
+
+                # Создаем список месяцев
+                off_budget = [
+                    ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0,
+                    ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0,
+                    ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0,
+                    ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0
+                ]
+
+                # Асинхронно обрабатываем все месяцы
+                cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in off_budget))
+
+                # Суммируем результат
+                ServicesVault_.off_budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
+
+                # ServicesVault_.budget_remainder = await clean_number(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
+                # - await clean_number(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
+                # ServicesVault_.off_budget_remainder = await clean_number(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
+                # - await clean_number(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
 
                 await sync_to_async(ServicesVault_.save)()
             except Exception as e:
@@ -1750,10 +1806,38 @@ async def add_record(request):
             elif KTSSR == '2016100000':
                 ServicesVault_.budget_execution = execution_contract_fact_sum
 
-            ServicesVault_.budget_remainder = await clean_number(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
-            - await clean_number(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
-            ServicesVault_.off_budget_remainder = await clean_number(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
-            - await clean_number(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
+            # Создаем список месяцев
+            budget = [
+                ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0,
+                ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0,
+                ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0,
+                ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0
+            ]
+
+            # Асинхронно обрабатываем все месяцы
+            cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in budget))
+
+            # Суммируем результат
+            ServicesVault_.budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
+
+            # Создаем список месяцев
+            off_budget = [
+                ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0,
+                ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0,
+                ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0,
+                ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0
+            ]
+
+            # Асинхронно обрабатываем все месяцы
+            cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in off_budget))
+
+            # Суммируем результат
+            ServicesVault_.off_budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
+
+            # ServicesVault_.budget_remainder = await clean_number(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
+            # - await clean_number(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
+            # ServicesVault_.off_budget_remainder = await clean_number(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
+            # - await clean_number(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
 
             ServicesVault_.budget_plans = await clean_number(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
             ServicesVault_.off_budget_plans = await clean_number(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
@@ -1878,10 +1962,38 @@ async def delete_record(request, row_id):
                 elif KTSSR == '2016100000':
                     ServicesVault_.budget_execution = execution_contract_fact_sum
 
-                ServicesVault_.budget_remainder = await clean_number(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
-                - await clean_number(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
-                ServicesVault_.off_budget_remainder = await clean_number(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
-                - await clean_number(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
+                # Создаем список месяцев
+                budget = [
+                    ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0,
+                    ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0,
+                    ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0,
+                    ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0
+                ]
+
+                # Асинхронно обрабатываем все месяцы
+                cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in budget))
+
+                # Суммируем результат
+                ServicesVault_.budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
+
+                # Создаем список месяцев
+                off_budget = [
+                    ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0,
+                    ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0,
+                    ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0,
+                    ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0
+                ]
+
+                # Асинхронно обрабатываем все месяцы
+                cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in off_budget))
+
+                # Суммируем результат
+                ServicesVault_.off_budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
+
+                # ServicesVault_.budget_remainder = await clean_number(ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0)
+                # - await clean_number(ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0)
+                # ServicesVault_.off_budget_remainder = await clean_number(ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0)
+                # - await clean_number(ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0)
 
                 ServicesVault_.budget_plans = await clean_number(ServicesVault_.budget_remainder if ServicesVault_.budget_remainder not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.budget_planned if ServicesVault_.budget_planned not in [None, 'None', ''] else 0)
                 ServicesVault_.off_budget_plans = await clean_number(ServicesVault_.off_budget_remainder if ServicesVault_.off_budget_remainder not in [None, 'None', ''] else 0) - await clean_number(ServicesVault_.off_budget_planned if ServicesVault_.off_budget_planned not in [None, 'None', ''] else 0)
