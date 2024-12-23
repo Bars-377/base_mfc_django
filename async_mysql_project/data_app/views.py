@@ -1111,14 +1111,86 @@ async def update_record(request, row_id):
             # Services_ = await sync_to_async(Services.objects.get)(
             #     Q(KOSGU='221') & Q(DopFC='0000000')
             # )
-            Services_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR=KTSSR) & Q(status=status)
+
+            Services_2016100000_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000')
             ))
-            contract_price_sum = 0
-            execution_contract_fact_sum = 0
-            for service in Services_:
-                contract_price_sum += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
-                execution_contract_fact_sum += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
+
+            execution_contract_fact_sum_2016100000 = 0
+            for service in Services_2016100000_:
+                execution_contract_fact_sum_2016100000 += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
+
+            Services_2016100092_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092')
+            ))
+
+            execution_contract_fact_sum_2016100092 = 0
+            for service in Services_2016100092_:
+                execution_contract_fact_sum_2016100092 += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
+
+            Services_planned_2016100000_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000') & Q(status='Запланировано')
+            ))
+
+            contract_price_sum_planned_2016100000 = 0
+            for service in Services_planned_2016100000_:
+                contract_price_sum_planned_2016100000 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+
+            Services_off_planned_2016100092_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092') & Q(status='Запланировано')
+            ))
+
+            contract_price_sum_off_planned_2016100092 = 0
+            for service in Services_off_planned_2016100092_:
+                contract_price_sum_off_planned_2016100092 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+
+            Services_bargaining_2016100000_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000') & Q(status='В торгах')
+            ))
+
+            contract_price_sum_bargaining_2016100000 = 0
+            for service in Services_bargaining_2016100000_:
+                contract_price_sum_bargaining_2016100000 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+
+            Services_off_bargaining_2016100092_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092') & Q(status='В торгах')
+            ))
+
+            contract_price_sum_off_bargaining_2016100092 = 0
+            for service in Services_off_bargaining_2016100092_:
+                contract_price_sum_off_bargaining_2016100092 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+
+            Services_concluded_2016100000_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000') & Q(status='Заключено')
+            ))
+
+            contract_price_sum_concluded_2016100000 = 0
+            for service in Services_concluded_2016100000_:
+                contract_price_sum_concluded_2016100000 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+
+            Services_off_concluded_2016100092_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092') & Q(status='Заключено')
+            ))
+
+            contract_price_sum_off_concluded_2016100092 = 0
+            for service in Services_off_concluded_2016100092_:
+                contract_price_sum_off_concluded_2016100092 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+
+            Services_completed_2016100000_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000') & Q(status='Исполнено')
+            ))
+
+            contract_price_sum_completed_2016100000 = 0
+            for service in Services_completed_2016100000_:
+                contract_price_sum_completed_2016100000 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+
+            Services_off_completed_2016100092_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092') & Q(status='Исполнено')
+            ))
+
+            contract_price_sum_off_completed_2016100092 = 0
+            for service in Services_off_completed_2016100092_:
+                contract_price_sum_off_completed_2016100092 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_way_ = await sync_to_async(list)(Services.objects.filter(
                 Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR=KTSSR) & Q(status=status) & Q(way='п.4 ч.1 ст.93')
@@ -1141,27 +1213,40 @@ async def update_record(request, row_id):
                 # Перенаправление с несколькими параметрами
                 return redirect(f"/?{urlencode(query_params)}")
 
-            if status == 'В торгах' and KTSSR == '2016100092':
-                ServicesVault_.off_budget_bargaining = contract_price_sum
-            elif status == 'В торгах' and KTSSR == '2016100000':
-                ServicesVault_.budget_bargaining = contract_price_sum
-            elif status == 'Запланировано' and KTSSR == '2016100092':
-                ServicesVault_.off_budget_planned = contract_price_sum
-            elif status == 'Запланировано' and KTSSR == '2016100000':
-                ServicesVault_.budget_planned = contract_price_sum
-            elif status == 'Заключено' and KTSSR == '2016100092':
-                ServicesVault_.off_budget_concluded = contract_price_sum
-            elif status == 'Заключено' and KTSSR == '2016100000':
-                ServicesVault_.budget_concluded = contract_price_sum
-            elif status == 'Исполнено' and KTSSR == '2016100092':
-                ServicesVault_.off_budget_completed = contract_price_sum
-            elif status == 'Исполнено' and KTSSR == '2016100000':
-                ServicesVault_.budget_completed = contract_price_sum
+            ServicesVault_.off_budget_planned = contract_price_sum_off_planned_2016100092
+
+            ServicesVault_.budget_planned = contract_price_sum_planned_2016100000
+
+            ServicesVault_.off_budget_bargaining = contract_price_sum_off_bargaining_2016100092
+
+            ServicesVault_.budget_bargaining = contract_price_sum_bargaining_2016100000
+
+            ServicesVault_.off_budget_concluded = contract_price_sum_off_concluded_2016100092
+
+            ServicesVault_.budget_concluded = contract_price_sum_concluded_2016100000
+
+            ServicesVault_.off_budget_completed = contract_price_sum_off_completed_2016100092
+
+            ServicesVault_.budget_completed = contract_price_sum_completed_2016100000
 
             if KTSSR == '2016100092':
-                ServicesVault_.off_budget_execution = execution_contract_fact_sum
+                ServicesVault_.off_budget_execution = execution_contract_fact_sum_2016100092
             elif KTSSR == '2016100000':
-                ServicesVault_.budget_execution = execution_contract_fact_sum
+                ServicesVault_.budget_execution = execution_contract_fact_sum_2016100000
+
+            await sync_to_async(ServicesVault_.save)()
+
+            try:
+                ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
+                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                )
+            except:
+                await sync_to_async(messages.error)(request, 'Нет сопоставления КОСГУ с ДопФК')
+
+                # Перенаправление с несколькими параметрами
+                return redirect(f"/?{urlencode(query_params)}")
+
+            print(ServicesVault_.budget_bargaining)
 
             # Создаем список месяцев
             budget = [
@@ -1753,17 +1838,85 @@ async def add_record(request):
             #     Q(KOSGU='221') & Q(DopFC='0000000')
             # )
 
-            from django.db import connection
-
-            Services_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR=KTSSR) & Q(status=status)
+            Services_2016100000_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000')
             ))
 
-            contract_price_sum = 0
-            execution_contract_fact_sum = 0
-            for service in Services_:
-                contract_price_sum += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
-                execution_contract_fact_sum += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
+            execution_contract_fact_sum_2016100000 = 0
+            for service in Services_2016100000_:
+                execution_contract_fact_sum_2016100000 += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
+
+            Services_2016100092_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092')
+            ))
+
+            execution_contract_fact_sum_2016100092 = 0
+            for service in Services_2016100092_:
+                execution_contract_fact_sum_2016100092 += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
+
+            Services_planned_2016100000_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000') & Q(status='Запланировано')
+            ))
+
+            contract_price_sum_planned_2016100000 = 0
+            for service in Services_planned_2016100000_:
+                contract_price_sum_planned_2016100000 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+
+            Services_off_planned_2016100092_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092') & Q(status='Запланировано')
+            ))
+
+            contract_price_sum_off_planned_2016100092 = 0
+            for service in Services_off_planned_2016100092_:
+                contract_price_sum_off_planned_2016100092 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+
+            Services_bargaining_2016100000_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000') & Q(status='В торгах')
+            ))
+
+            contract_price_sum_bargaining_2016100000 = 0
+            for service in Services_bargaining_2016100000_:
+                contract_price_sum_bargaining_2016100000 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+
+            Services_off_bargaining_2016100092_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092') & Q(status='В торгах')
+            ))
+
+            contract_price_sum_off_bargaining_2016100092 = 0
+            for service in Services_off_bargaining_2016100092_:
+                contract_price_sum_off_bargaining_2016100092 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+
+            Services_concluded_2016100000_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000') & Q(status='Заключено')
+            ))
+
+            contract_price_sum_concluded_2016100000 = 0
+            for service in Services_concluded_2016100000_:
+                contract_price_sum_concluded_2016100000 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+
+            Services_off_concluded_2016100092_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092') & Q(status='Заключено')
+            ))
+
+            contract_price_sum_off_concluded_2016100092 = 0
+            for service in Services_off_concluded_2016100092_:
+                contract_price_sum_off_concluded_2016100092 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+
+            Services_completed_2016100000_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000') & Q(status='Исполнено')
+            ))
+
+            contract_price_sum_completed_2016100000 = 0
+            for service in Services_completed_2016100000_:
+                contract_price_sum_completed_2016100000 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+
+            Services_off_completed_2016100092_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092') & Q(status='Исполнено')
+            ))
+
+            contract_price_sum_off_completed_2016100092 = 0
+            for service in Services_off_completed_2016100092_:
+                contract_price_sum_off_completed_2016100092 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_way_ = await sync_to_async(list)(Services.objects.filter(
                 Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR=KTSSR) & Q(status=status) & Q(way='п.4 ч.1 ст.93')
@@ -1784,27 +1937,26 @@ async def add_record(request):
                 # Перенаправление с несколькими параметрами
                 return redirect(f"/?{urlencode(query_params)}")
 
-            if status == 'В торгах' and KTSSR == '2016100092':
-                ServicesVault_.off_budget_bargaining = contract_price_sum
-            elif status == 'В торгах' and KTSSR == '2016100000':
-                ServicesVault_.budget_bargaining = contract_price_sum
-            elif status == 'Запланировано' and KTSSR == '2016100092':
-                ServicesVault_.off_budget_planned = contract_price_sum
-            elif status == 'Запланировано' and KTSSR == '2016100000':
-                ServicesVault_.budget_planned = contract_price_sum
-            elif status == 'Заключено' and KTSSR == '2016100092':
-                ServicesVault_.off_budget_concluded = contract_price_sum
-            elif status == 'Заключено' and KTSSR == '2016100000':
-                ServicesVault_.budget_concluded = contract_price_sum
-            elif status == 'Исполнено' and KTSSR == '2016100092':
-                ServicesVault_.off_budget_completed = contract_price_sum
-            elif status == 'Исполнено' and KTSSR == '2016100000':
-                ServicesVault_.budget_completed = contract_price_sum
+            ServicesVault_.off_budget_planned = contract_price_sum_off_planned_2016100092
+
+            ServicesVault_.budget_planned = contract_price_sum_planned_2016100000
+
+            ServicesVault_.off_budget_bargaining = contract_price_sum_off_bargaining_2016100092
+
+            ServicesVault_.budget_bargaining = contract_price_sum_bargaining_2016100000
+
+            ServicesVault_.off_budget_concluded = contract_price_sum_off_concluded_2016100092
+
+            ServicesVault_.budget_concluded = contract_price_sum_concluded_2016100000
+
+            ServicesVault_.off_budget_completed = contract_price_sum_off_completed_2016100092
+
+            ServicesVault_.budget_completed = contract_price_sum_completed_2016100000
 
             if KTSSR == '2016100092':
-                ServicesVault_.off_budget_execution = execution_contract_fact_sum
+                ServicesVault_.off_budget_execution = execution_contract_fact_sum_2016100092
             elif KTSSR == '2016100000':
-                ServicesVault_.budget_execution = execution_contract_fact_sum
+                ServicesVault_.budget_execution = execution_contract_fact_sum_2016100000
 
             # Создаем список месяцев
             budget = [

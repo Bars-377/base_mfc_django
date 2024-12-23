@@ -373,16 +373,16 @@ if (resetButton) {
 
 // Обработчик нажатия на кнопку сброса фильтров
 const resetButtonOne = document.getElementById('reset-filters-user');
-if (resetButton) {
-	resetButton.addEventListener('click', function () {
+if (resetButtonOne) {
+	resetButtonOne.addEventListener('click', function () {
 		resetFiltersUser();
 	});
 }
 
 // Обработчик нажатия на кнопку сброса фильтров
 const resetButtonTwo = document.getElementById('reset-filters-user-two');
-if (resetButton) {
-	resetButton.addEventListener('click', function () {
+if (resetButtonTwo) {
+	resetButtonTwo.addEventListener('click', function () {
 		resetFiltersUserTwo();
 	});
 }

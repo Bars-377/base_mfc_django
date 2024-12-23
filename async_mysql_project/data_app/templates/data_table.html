@@ -488,17 +488,6 @@
                     <option value="off_budget_plans" {% if selected_column_two_user == 'off_budget_plans' %}selected{% endif %}>Внебюджет (Остаток с учетом планов)</option>
                 </select>
             </div>
-            <div class="form-item">
-                <label for="KOSGU_user">Дата Контракта:</label>
-                <select name="KOSGU_user" id="KOSGU_user" class="form-control form-control-year">
-                    <option value="No">Год</option>
-                    {% for KOSGU_user in service_KOSGU_user %}
-                    <option value="{{ KOSGU_user }}" {% if KOSGU_user == selected_KOSGU_user %}selected{% endif %}>
-                        {{ KOSGU_user }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
 
             <div class="form-item-neverov">
                 <button type="submit" class="btn btn-primary">Фильтровать</button>
@@ -555,8 +544,8 @@
                         <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_limit }}</td>
                         <td class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.budget_planned }}</td>
                         <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_planned }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.bargaining_limit }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.off_bargaining_limit }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.budget_bargaining }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_bargaining }}</td>
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.budget_concluded }}</td>
                         <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_concluded }}</td>
                         <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.budget_completed }}</td>
@@ -722,17 +711,6 @@
                     <option value="off_budget_concluded" {% if selected_column_two_user == 'off_budget_concluded' %}selected{% endif %}>Внебюджет (Заключено)</option>
                     <option value="budget_remainder" {% if selected_column_two_user == 'budget_remainder' %}selected{% endif %}>Бюджет (Остаток)</option>
                     <option value="off_budget_remainder" {% if selected_column_two_user == 'off_budget_remainder' %}selected{% endif %}>Внебюджет (Остаток)</option>
-                </select>
-            </div>
-            <div class="form-item">
-                <label for="KOSGU_user_two">Дата Контракта:</label>
-                <select name="KOSGU_user_two" id="KOSGU_user_two" class="form-control form-control-year">
-                    <option value="No">Год</option>
-                    {% for KOSGU_user_two in service_KOSGU_user_two %}
-                    <option value="{{ KOSGU_user_two }}" {% if KOSGU_user_two == selected_KOSGU_user_two %}selected{% endif %}>
-                        {{ KOSGU_user_two }}
-                    </option>
-                    {% endfor %}
                 </select>
             </div>
 
