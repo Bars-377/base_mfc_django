@@ -15,11 +15,11 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Дамп структуры базы данных mdtomskbot
-CREATE DATABASE IF NOT EXISTS `mdtomskbot` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `mdtomskbot`;
+-- Дамп структуры базы данных basemfcdjango
+CREATE DATABASE IF NOT EXISTS `basemfcdjango` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `basemfcdjango`;
 
--- Дамп структуры для таблица mdtomskbot.services_two
+-- Дамп структуры для таблица basemfcdjango.services_two
 CREATE TABLE IF NOT EXISTS `services_two` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `id_id` text COLLATE utf8mb4_general_ci,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `services_two` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Дамп данных таблицы mdtomskbot.services_two: ~21 rows (приблизительно)
+-- Дамп данных таблицы basemfcdjango.services_two: ~21 rows (приблизительно)
 INSERT INTO `services_two` (`id`, `id_id`, `KOSGU`, `DopFC`, `budget_planned`, `off_budget_planned`, `budget_concluded`, `off_budget_concluded`, `budget_remainder`, `off_budget_remainder`, `color`) VALUES
 	(1, '1', '221', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 	(2, '2', '222', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL),

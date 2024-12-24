@@ -15,11 +15,11 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Дамп структуры базы данных mdtomskbot
-CREATE DATABASE IF NOT EXISTS `mdtomskbot` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `mdtomskbot`;
+-- Дамп структуры базы данных basemfcdjango
+CREATE DATABASE IF NOT EXISTS `basemfcdjango` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `basemfcdjango`;
 
--- Дамп структуры для таблица mdtomskbot.services_vault
+-- Дамп структуры для таблица basemfcdjango.services_vault
 CREATE TABLE IF NOT EXISTS `services_vault` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `id_id` text COLLATE utf8mb4_general_ci,
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `services_vault` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Дамп данных таблицы mdtomskbot.services_vault: ~22 rows (приблизительно)
+-- Дамп данных таблицы basemfcdjango.services_vault: ~22 rows (приблизительно)
 INSERT INTO `services_vault` (`id`, `id_id`, `name`, `KOSGU`, `DopFC`, `budget_limit`, `off_budget_limit`, `budget_planned`, `off_budget_planned`, `budget_bargaining`, `off_budget_bargaining`, `budget_concluded`, `off_budget_concluded`, `budget_completed`, `off_budget_completed`, `budget_execution`, `off_budget_execution`, `budget_remainder`, `off_budget_remainder`, `budget_plans`, `off_budget_plans`, `color`) VALUES
 	(1, '1', 'Связь', '221', '0000000', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
 	(2, '2', 'Транспортные расходы', '222', '0000000', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),

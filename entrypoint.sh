@@ -12,7 +12,7 @@ db_config = {
     "host": os.getenv("DB_HOST", "172.18.11.104"),
     "user": os.getenv("DB_USER", "root"),
     "password": os.getenv("DB_PASSWORD", "enigma1418"),
-    "database": os.getenv("DB_NAME", "mdtomskbot"),
+    "database": os.getenv("DB_NAME", "basemfcdjango"),
 }
 
 try:
