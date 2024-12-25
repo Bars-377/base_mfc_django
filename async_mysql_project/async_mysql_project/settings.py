@@ -114,7 +114,7 @@ DATABASES = {
         'NAME': 'basemfcdjango',
         'USER': 'root',
         'PASSWORD': 'enigma1418',
-        'HOST': '172.18.11.104',  # или IP, если база на удалённом сервере
+        'HOST': 'localhost',  # или IP, если база на удалённом сервере
         'PORT': '3306',
         # 'OPTIONS': {
         #     'charset': 'utf8mb4',

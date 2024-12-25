@@ -567,6 +567,42 @@
                         </td>
                     </tr>
                     {% endfor %}
+                    <tr class="service-row-user">
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width">Итого:</td>
+                        <td class="fixed-width">{{ total_cost_1 }}</td>
+                        <td class="fixed-width">{{ total_cost_2 }}</td>
+                        <td class="fixed-width">{{ total_cost_3 }}</td>
+                        <td class="fixed-width">{{ total_cost_4 }}</td>
+                        <td class="fixed-width">{{ total_cost_5 }}</td>
+                        <td class="fixed-width">{{ total_cost_6 }}</td>
+                        <td class="fixed-width">{{ total_cost_7 }}</td>
+                        <td class="fixed-width">{{ total_cost_8 }}</td>
+                        <td class="fixed-width">{{ total_cost_9 }}</td>
+                        <td class="fixed-width">{{ total_cost_10 }}</td>
+                        <td class="fixed-width">{{ total_cost_11 }}</td>
+                        <td class="fixed-width">{{ total_cost_12 }}</td>
+                        <td class="fixed-width">{{ total_cost_13 }}</td>
+                        <td class="fixed-width">{{ total_cost_14 }}</td>
+                        <td class="fixed-width">{{ total_cost_15 }}</td>
+                        <td class="fixed-width">{{ total_cost_16 }}</td>
+                    </tr>
+                    <tr>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width">Итого СГОЗ:</td>
+                        <td class="fixed-width">{{ total_cost_17 }}</td>
+                    </tr>
+                    <tr>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width">Итого Кассовое исполнение:</td>
+                        <td class="fixed-width">{{ total_cost_18 }}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -633,25 +669,25 @@
     <!--</div> -->
 
     <div class="container-fluid-neverov text-content">
-        <h4>Итого Лимиты (Бюджет): {{ total_cost_1 }}</h4>
-        <h4>Итого Лимиты (Внебюджет): {{ total_cost_2 }}</h4>
-        <h4>Итого Запланировано (Бюджет): {{ total_cost_3 }}</h4>
-        <h4>Итого Запланировано (Внебюджет): {{ total_cost_4 }}</h4>
-        <h4>Итого В торгах (Бюджет): {{ total_cost_5 }}</h4>
-        <h4>Итого В торгах (Внебюджет): {{ total_cost_6 }}</h4>
-        <h4>Итого Заключено (Бюджет): {{ total_cost_7 }}</h4>
-        <h4>Итого Заключено (Внебюджет): {{ total_cost_8 }}</h4>
-        <h4>Итого Исполнено (Бюджет): {{ total_cost_9 }}</h4>
-        <h4>Итого Исполнено (Внебюджет): {{ total_cost_10 }}</h4>
-        <h4>Итого Кассовое исполнение (Бюджет): {{ total_cost_11 }}</h4>
-        <h4>Итого Кассовое исполнение (Внебюджет): {{ total_cost_12 }}</h4>
-        <h4>Итого Остаток (Бюджет): {{ total_cost_13 }}</h4>
-        <h4>Итого Остаток (Внебюджет): {{ total_cost_14 }}</h4>
-        <h4>Итого Остаток с учетом планов (Бюджет): {{ total_cost_15 }}</h4>
-        <h4>Итого Остаток с учетом планов (Внебюджет): {{ total_cost_16 }}</h4>
+    <!--    <h4>Итого Лимиты (Бюджет): {{ total_cost_1 }}</h4> -->
+    <!--    <h4>Итого Лимиты (Внебюджет): {{ total_cost_2 }}</h4> -->
+    <!--    <h4>Итого Запланировано (Бюджет): {{ total_cost_3 }}</h4> -->
+    <!--    <h4>Итого Запланировано (Внебюджет): {{ total_cost_4 }}</h4> -->
+    <!--    <h4>Итого В торгах (Бюджет): {{ total_cost_5 }}</h4> -->
+    <!--    <h4>Итого В торгах (Внебюджет): {{ total_cost_6 }}</h4> -->
+    <!--    <h4>Итого Заключено (Бюджет): {{ total_cost_7 }}</h4> -->
+    <!--    <h4>Итого Заключено (Внебюджет): {{ total_cost_8 }}</h4> -->
+    <!--    <h4>Итого Исполнено (Бюджет): {{ total_cost_9 }}</h4> -->
+    <!--    <h4>Итого Исполнено (Внебюджет): {{ total_cost_10 }}</h4> -->
+    <!--    <h4>Итого Кассовое исполнение (Бюджет): {{ total_cost_11 }}</h4> -->
+    <!--    <h4>Итого Кассовое исполнение (Внебюджет): {{ total_cost_12 }}</h4> -->
+    <!--    <h4>Итого Остаток (Бюджет): {{ total_cost_13 }}</h4> -->
+    <!--    <h4>Итого Остаток (Внебюджет): {{ total_cost_14 }}</h4> -->
+    <!--    <h4>Итого Остаток с учетом планов (Бюджет): {{ total_cost_15 }}</h4> -->
+    <!--    <h4>Итого Остаток с учетом планов (Внебюджет): {{ total_cost_16 }}</h4> -->
 
-        <h4>Итого СГОЗ: {{ total_cost_17 }}</h4>
-        <h4>Итого Кассовое исполнение: {{ total_cost_18 }}</h4>
+    <!--    <h4>Итого СГОЗ: {{ total_cost_17 }}</h4> -->
+    <!--    <h4>Итого Кассовое исполнение: {{ total_cost_18 }}</h4> -->
 
         <!-- <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4> -->
         <!-- <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4> -->

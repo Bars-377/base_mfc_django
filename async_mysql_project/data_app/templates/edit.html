@@ -141,11 +141,6 @@
                 <input type="text" class="form-control form-control-neverov" id="end_date" name="end_date" value="{{ service.end_date }}"
                     title="Введите дату в формате ДД.ММ.ГГГГ" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)">
             </div>
-            <div class="form-item">
-                <label for="contract_price">Цена контракта (на 2024 год)</label>
-                <input type="text" class="form-control form-control-neverov" id="contract_price" name="contract_price"
-                    value="{{ service.contract_price }}" step="0.01" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
-            </div>
             <input type="hidden" name="execution_contract_plan" value="{{ '' }}">  <!-- Скрытое поле для Исполнение контракта (план) (формула) -->
             <div class="form-item">
                 <label for="january_one">Январь (план)</label>
@@ -317,11 +312,12 @@
                 <label for="sum_january_two">Сумма оплаты Январь (факт)</label>
                 <input type="text" class="form-control" id="sum_january_two" name="sum_january_two" value="{{ service.sum_january_two }}" maxlength="255" title="Максимальное количество значений 255">
             </div>
+            <input type="hidden" name="contract_price" value="{{ '' }}">  <!-- Скрытое поле для Цена контракта 2024 -->
             <input type="hidden" name="execution" value="{{ '' }}">  <!-- Скрытое поле для % исполнения (формула) -->
             <input type="hidden" name="contract_balance" value="{{ '' }}">  <!-- Скрытое поле для Остаток по контракту (формула) -->
             <input type="hidden" name="execution_contract_fact" value="{{ '' }}">
             <input type="hidden" name="execution_contract_plan" value="{{ '' }}">
-            <input type="hidden" name="saving" value="{{ '' }}">
+            <input type="hidden" name="saving" value="{{ '' }}"> 
 
             <input type="hidden" name="color" value="{{ service.color }}">  <!-- Скрытое поле цвета -->
             <!-- Кнопка для отправки формы -->
@@ -345,6 +341,23 @@
             } else {
                 input.value = value;
             }
+        }
+
+        function checkMandatoryFields() {
+            const status = document.getElementById('status').value;
+            const isMandatory = status === 'Заключено' || status === 'Исполнено';
+
+            // Получаем все обязательные поля
+            const mandatoryFields = ['counterparty', 'contract_number', 'contract_date', 'end_date'];
+
+            mandatoryFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (isMandatory) {
+                    field.setAttribute('required', 'required'); // Устанавливаем обязательность
+                } else {
+                    field.removeAttribute('required'); // Убираем обязательность
+                }
+            });
         }
     </script>
 

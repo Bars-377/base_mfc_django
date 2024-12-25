@@ -435,10 +435,11 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
 
     try:
         total_cost_17 = total_cost_1 + total_cost_2
-        total_cost_18 = (total_cost_11 + total_cost_12) / total_cost_17
+        total_cost_18 = ((total_cost_11 + total_cost_12) / total_cost_17) * 100
+        total_cost_18 = round(total_cost_18, 2)  # Округляем до двух знаков после запятой
     except:
         total_cost_17 = 0
-        total_cost_18 = 0
+        total_cost_18 = 0.00
 
     # Пагинация
     paginator = Paginator(query, per_page)
@@ -886,7 +887,7 @@ async def update_record(request, row_id):
             contract_number = data.get('contract_number')
             contract_date = data.get('contract_date')
             end_date = data.get('end_date')
-            contract_price = data.get('contract_price')
+            # contract_price = data.get('contract_price')
             # execution_contract_plan = data.get('execution_contract_plan')
             january_one = data.get('january_one')
             february = data.get('february')
@@ -932,6 +933,8 @@ async def update_record(request, row_id):
             contract_balance = data.get('contract_balance')
             color = data.get('color')
 
+            contract_price = NMCC
+
             # Создаем список месяцев
             months = [
                 january_one, february, march, april, may, june,
@@ -944,33 +947,6 @@ async def update_record(request, row_id):
 
             # Суммируем результат
             execution_contract_plan = sum(cleaned_numbers)
-
-            # Создаем список сумм месяцев
-            sum_months = [
-                sum_january_one, sum_february, sum_march, sum_april, sum_may, sum_june,
-                sum_july, sum_august, sum_september, sum_october, sum_november, sum_december,
-                sum_january_two
-            ]
-
-            # Асинхронно обрабатываем все месяцы
-            cleaned_numbers = await asyncio.gather(*(clean_number(month) for month in sum_months))
-
-            # Суммируем результат
-            execution_contract_fact = sum(cleaned_numbers)
-
-            saving = await clean_number(NMCC) - await clean_number(contract_price)
-
-            if await clean_number(contract_price) == 0:
-                execution = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
-            else:
-                execution = round(await clean_number(execution_contract_fact) / await clean_number(contract_price), 2) * 100
-
-            contract_balance = await clean_number(contract_price) - await clean_number(execution_contract_fact)
-
-            # if certificate == '0' and certificate_no == '0':
-            #     color = '#dff0d8'
-
-            # user = request.user
 
             page = int(request.GET.get('page', 1))
             keyword_one = request.GET.get('keyword_one', None)
@@ -1023,6 +999,39 @@ async def update_record(request, row_id):
                 'selected_column_one_user_two': selected_column_one_user_two,
                 'selected_column_two_user_two': selected_column_two_user_two
             }
+
+            if execution_contract_plan != contract_price:
+                await sync_to_async(messages.error)(request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
+
+                # Перенаправление с несколькими параметрами
+                return redirect(f"/?{urlencode(query_params)}")
+
+            # Создаем список сумм месяцев
+            sum_months = [
+                sum_january_one, sum_february, sum_march, sum_april, sum_may, sum_june,
+                sum_july, sum_august, sum_september, sum_october, sum_november, sum_december,
+                sum_january_two
+            ]
+
+            # Асинхронно обрабатываем все месяцы
+            cleaned_numbers = await asyncio.gather(*(clean_number(month) for month in sum_months))
+
+            # Суммируем результат
+            execution_contract_fact = sum(cleaned_numbers)
+
+            saving = await clean_number(NMCC) - await clean_number(contract_price)
+
+            if await clean_number(contract_price) == 0:
+                execution = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
+            else:
+                execution = round(await clean_number(execution_contract_fact) / await clean_number(contract_price), 2) * 100
+
+            contract_balance = await clean_number(contract_price) - await clean_number(execution_contract_fact)
+
+            # if certificate == '0' and certificate_no == '0':
+            #     color = '#dff0d8'
+
+            # user = request.user
 
             from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
@@ -1642,7 +1651,7 @@ async def add_record(request):
             contract_number = request.POST['contract_number']
             contract_date = request.POST['contract_date']
             end_date = request.POST['end_date']
-            contract_price = request.POST['contract_price']
+            # contract_price = request.POST['contract_price']
             # execution_contract_plan = request.POST['execution_contract_plan']
             january_one = request.POST['january_one']
             february = request.POST['february']
@@ -1688,6 +1697,8 @@ async def add_record(request):
             # contract_balance = request.POST['contract_balance']
             color = request.POST.get('color')
 
+            contract_price = NMCC
+
             # Создаем список месяцев
             months = [
                 january_one, february, march, april, may, june,
@@ -1700,30 +1711,6 @@ async def add_record(request):
 
             # Суммируем результат
             execution_contract_plan = sum(cleaned_numbers)
-
-            # Создаем список сумм месяцев
-            sum_months = [
-                sum_january_one, sum_february, sum_march, sum_april, sum_may, sum_june,
-                sum_july, sum_august, sum_september, sum_october, sum_november, sum_december,
-                sum_january_two
-            ]
-
-            # Асинхронно обрабатываем все месяцы
-            cleaned_numbers = await asyncio.gather(*(clean_number(month) for month in sum_months))
-
-            # Суммируем результат
-            execution_contract_fact = sum(cleaned_numbers)
-
-            saving = await clean_number(NMCC) - await clean_number(contract_price)
-
-            if await clean_number(contract_price) == 0:
-                execution = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
-            else:
-                execution = round(await clean_number(execution_contract_fact) / await clean_number(contract_price), 2) * 100
-
-            contract_balance = await clean_number(contract_price) - await clean_number(execution_contract_fact)
-
-            # user = request.user
 
             keyword_one = None
             keyword_two = None
@@ -1769,6 +1756,36 @@ async def add_record(request):
                 'selected_column_one_user_two': selected_column_one_user_two,
                 'selected_column_two_user_two': selected_column_two_user_two
             }
+
+            if execution_contract_plan != contract_price:
+                await sync_to_async(messages.error)(request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
+
+                # Перенаправление с несколькими параметрами
+                return redirect(f"/?{urlencode(query_params)}")
+
+            # Создаем список сумм месяцев
+            sum_months = [
+                sum_january_one, sum_february, sum_march, sum_april, sum_may, sum_june,
+                sum_july, sum_august, sum_september, sum_october, sum_november, sum_december,
+                sum_january_two
+            ]
+
+            # Асинхронно обрабатываем все месяцы
+            cleaned_numbers = await asyncio.gather(*(clean_number(month) for month in sum_months))
+
+            # Суммируем результат
+            execution_contract_fact = sum(cleaned_numbers)
+
+            saving = await clean_number(NMCC) - await clean_number(contract_price)
+
+            if await clean_number(contract_price) == 0:
+                execution = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
+            else:
+                execution = round(await clean_number(execution_contract_fact) / await clean_number(contract_price), 2) * 100
+
+            contract_balance = await clean_number(contract_price) - await clean_number(execution_contract_fact)
+
+            # user = request.user
 
             from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
