@@ -1019,6 +1019,12 @@ async def update_record(request, row_id):
             # Суммируем результат
             execution_contract_fact = sum(cleaned_numbers)
 
+            if execution_contract_plan != execution_contract_fact and status == 'Исполнено':
+                await sync_to_async(messages.error)(request, 'Нельзя выставить статус "Исполнено" при неравенстве ячеек «Исполнение контракта (факт)» и «Исполнение контракта (план)»')
+
+                # Перенаправление с несколькими параметрами
+                return redirect(f"/?{urlencode(query_params)}")
+
             saving = await clean_number(NMCC) - await clean_number(contract_price)
 
             if await clean_number(contract_price) == 0:
@@ -1776,6 +1782,12 @@ async def add_record(request):
             # Суммируем результат
             execution_contract_fact = sum(cleaned_numbers)
 
+            if execution_contract_plan != execution_contract_fact and status == 'Исполнено':
+                await sync_to_async(messages.error)(request, 'Нельзя выставить статус "Исполнено" при неравенстве ячеек «Исполнение контракта (факт)» и «Исполнение контракта (план)»')
+
+                # Перенаправление с несколькими параметрами
+                return redirect(f"/?{urlencode(query_params)}")
+
             saving = await clean_number(NMCC) - await clean_number(contract_price)
 
             if await clean_number(contract_price) == 0:
@@ -1849,6 +1861,42 @@ async def add_record(request):
                                 color=color)
 
             await sync_to_async(new_service.save)()
+
+            query_user = await sync_to_async(lambda: ServicesVault.objects.all())()
+
+            total_cost_1 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_limit')))()
+            total_cost_1 = total_cost_1['budget_limit__sum'] or 0
+            total_cost_2 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_limit')))()
+            total_cost_2 = total_cost_2['off_budget_limit__sum'] or 0
+
+            total_cost_3 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_planned')))()
+            total_cost_3 = total_cost_3['budget_planned__sum'] or 0
+            total_cost_4 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_planned')))()
+            total_cost_4 = total_cost_4['off_budget_planned__sum'] or 0
+            total_cost_5 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_bargaining')))()
+            total_cost_5 = total_cost_5['budget_bargaining__sum'] or 0
+            total_cost_6 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_bargaining')))()
+            total_cost_6 = total_cost_6['off_budget_bargaining__sum'] or 0
+            total_cost_7 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_concluded')))()
+            total_cost_7 = total_cost_7['budget_concluded__sum'] or 0
+            total_cost_8 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_concluded')))()
+            total_cost_8 = total_cost_8['off_budget_concluded__sum'] or 0
+            total_cost_9 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_completed')))()
+            total_cost_9 = total_cost_9['budget_completed__sum'] or 0
+            total_cost_10 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_completed')))()
+            total_cost_10 = total_cost_10['off_budget_completed__sum'] or 0
+
+            if total_cost_1 < (total_cost_3 or total_cost_5 or total_cost_7 or total_cost_9):
+                await sync_to_async(new_service.delete)()
+                await sync_to_async(messages.error)(request, 'Запрещено внесить новую строку, если после ее ввода сумма контактов по соответствующему КЦСР, КОСГУ и ДопФК превысит значение поля «Лимиты»')
+                # Перенаправление с несколькими параметрами
+                return redirect(f"/?{urlencode(query_params)}")
+
+            if total_cost_2 < (total_cost_4 or total_cost_5 or total_cost_8 or total_cost_10):
+                await sync_to_async(new_service.delete)()
+                await sync_to_async(messages.error)(request, 'Запрещено внесить новую строку, если после ее ввода сумма контактов по соответствующему КЦСР, КОСГУ и ДопФК превысит значение поля «Лимиты»')
+                # Перенаправление с несколькими параметрами
+                return redirect(f"/?{urlencode(query_params)}")
 
             from django.db.models import Q
             # Services_ = await sync_to_async(Services.objects.get)(
