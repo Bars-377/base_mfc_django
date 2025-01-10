@@ -887,7 +887,7 @@ async def update_record(request, row_id):
             contract_number = data.get('contract_number')
             contract_date = data.get('contract_date')
             end_date = data.get('end_date')
-            # contract_price = data.get('contract_price')
+            contract_price = data.get('contract_price')
             # execution_contract_plan = data.get('execution_contract_plan')
             january_one = data.get('january_one')
             february = data.get('february')
@@ -933,7 +933,7 @@ async def update_record(request, row_id):
             contract_balance = data.get('contract_balance')
             color = data.get('color')
 
-            contract_price = NMCC
+            # contract_price = NMCC
 
             # Создаем список месяцев
             months = [
@@ -1000,11 +1000,13 @@ async def update_record(request, row_id):
                 'selected_column_two_user_two': selected_column_two_user_two
             }
 
-            if execution_contract_plan != contract_price:
-                await sync_to_async(messages.error)(request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
+            if contract_price:
+                print('POPAL update')
+                if execution_contract_plan != contract_price:
+                    await sync_to_async(messages.error)(request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
 
-                # Перенаправление с несколькими параметрами
-                return redirect(f"/?{urlencode(query_params)}")
+                    # Перенаправление с несколькими параметрами
+                    return redirect(f"/?{urlencode(query_params)}")
 
             # Создаем список сумм месяцев
             sum_months = [
@@ -1657,7 +1659,7 @@ async def add_record(request):
             contract_number = request.POST['contract_number']
             contract_date = request.POST['contract_date']
             end_date = request.POST['end_date']
-            # contract_price = request.POST['contract_price']
+            contract_price = request.POST['contract_price']
             # execution_contract_plan = request.POST['execution_contract_plan']
             january_one = request.POST['january_one']
             february = request.POST['february']
@@ -1703,7 +1705,7 @@ async def add_record(request):
             # contract_balance = request.POST['contract_balance']
             color = request.POST.get('color')
 
-            contract_price = NMCC
+            # contract_price = NMCC
 
             # Создаем список месяцев
             months = [
@@ -1763,11 +1765,13 @@ async def add_record(request):
                 'selected_column_two_user_two': selected_column_two_user_two
             }
 
-            if execution_contract_plan != contract_price:
-                await sync_to_async(messages.error)(request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
+            if contract_price:
+                print('POPAL add', type(contract_price), contract_price)
+                if execution_contract_plan != contract_price:
+                    await sync_to_async(messages.error)(request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
 
-                # Перенаправление с несколькими параметрами
-                return redirect(f"/?{urlencode(query_params)}")
+                    # Перенаправление с несколькими параметрами
+                    return redirect(f"/?{urlencode(query_params)}")
 
             # Создаем список сумм месяцев
             sum_months = [
