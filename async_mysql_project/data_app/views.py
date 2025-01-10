@@ -1001,7 +1001,6 @@ async def update_record(request, row_id):
             }
 
             if contract_price:
-                print('POPAL update')
                 if execution_contract_plan != contract_price:
                     await sync_to_async(messages.error)(request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
 
@@ -1766,7 +1765,6 @@ async def add_record(request):
             }
 
             if contract_price:
-                print('POPAL add', type(contract_price), contract_price)
                 if execution_contract_plan != contract_price:
                     await sync_to_async(messages.error)(request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
 
