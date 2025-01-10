@@ -22,22 +22,22 @@ USE `basemfcdjango`;
 -- Дамп структуры для таблица basemfcdjango.services_two
 CREATE TABLE IF NOT EXISTS `services_two` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `id_id` text COLLATE utf8mb4_general_ci,
-  `KOSGU` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `DopFC` text COLLATE utf8mb4_general_ci,
-  `budget_planned` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `off_budget_planned` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `budget_concluded` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `off_budget_concluded` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `budget_remainder` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `off_budget_remainder` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `color` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `id_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `KOSGU` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `DopFC` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `budget_planned` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `off_budget_planned` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `budget_concluded` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `off_budget_concluded` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `budget_remainder` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `off_budget_remainder` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Дамп данных таблицы basemfcdjango.services_two: ~21 rows (приблизительно)
+-- Дамп данных таблицы basemfcdjango.services_two: ~26 rows (приблизительно)
 INSERT INTO `services_two` (`id`, `id_id`, `KOSGU`, `DopFC`, `budget_planned`, `off_budget_planned`, `budget_concluded`, `off_budget_concluded`, `budget_remainder`, `off_budget_remainder`, `color`) VALUES
-	(1, '1', '221', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(1, '1', '221', '0000000', NULL, NULL, '0', NULL, '0', NULL, ''),
 	(2, '2', '222', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 	(3, '3', '223', '0000021', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 	(4, '4', '223', '0000025', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
@@ -45,10 +45,10 @@ INSERT INTO `services_two` (`id`, `id_id`, `KOSGU`, `DopFC`, `budget_planned`, `
 	(6, '6', '223', '0000028', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 	(7, '7', '223', '0000029', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 	(8, '8', '224', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-	(9, '9', '225', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-	(10, '10', '226', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(9, '9', '225', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, ''),
+	(10, '10', '226', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, ''),
 	(11, '11', '227', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-	(12, '12', '229', '0000000', NULL, NULL, '', '', '', '', ''),
+	(12, '12', '229', '0000000', NULL, NULL, '', '', '', '', '0'),
 	(13, '13', '267', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 	(14, '14', '244', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 	(15, '15', '310', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
@@ -58,7 +58,11 @@ INSERT INTO `services_two` (`id`, `id_id`, `KOSGU`, `DopFC`, `budget_planned`, `
 	(19, '19', '344', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 	(20, '20', '345', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 	(21, '21', '346', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-	(22, '22', '349', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+	(22, '22', '349', '0000000', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(23, '23', '221', '0000150', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(24, '24', '226', '0000150', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(25, '25', '310', '0000150', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(26, '26', '346', '0000150', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

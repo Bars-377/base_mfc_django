@@ -1001,7 +1001,7 @@ async def update_record(request, row_id):
             }
 
             if contract_price:
-                if execution_contract_plan != contract_price:
+                if f"{execution_contract_plan:g}" != contract_price:
                     await sync_to_async(messages.error)(request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
 
                     # Перенаправление с несколькими параметрами
@@ -1765,7 +1765,7 @@ async def add_record(request):
             }
 
             if contract_price:
-                if execution_contract_plan != contract_price:
+                if f"{execution_contract_plan:g}" != contract_price:
                     await sync_to_async(messages.error)(request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
 
                     # Перенаправление с несколькими параметрами
