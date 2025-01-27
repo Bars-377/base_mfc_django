@@ -11,296 +11,305 @@
 </head>
 
 <body>
-    <div class="container-fluid-neverov">
-        <h1 class="mt-5">Добавление новой записи</h1>
+    <div class="center-content">
+        <div class="container-fluid-neverov">
+            <h1 class="mt-5">Добавление новой записи</h1>
 
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} mt-3">
-                    {{ message }}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} mt-3">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Форма для добавления новой услуги -->
+            <form method="POST" action="{% url 'add_record' %}?page={{ total_pages }}" class="form-group">
+                <!-- Пример изменения отступов в форме с помощью классов -->
+                <div class="form-item">
+                    <label for="name">Наименование закупки</label>
+                    <input type="text" class="form-control" id="name" name="name" maxlength="255" required title="Максимальное количество значений 255" value="{{ name }}">
                 </div>
-            {% endfor %}
-        {% endif %}
+                <div class="form-item">
+                    <label for="status">Статус</label>
+                    <select class="form-control" id="status" name="status" required title="Выберите статус">
+                        <option value="" {% if status == "" %}selected{% endif %}>Выберите статус</option>
+                        <option value="В торгах" {% if status == "В торгах" %}selected{% endif %}>В торгах</option>
+                        <option value="Запланировано" {% if status == "Запланировано" %}selected{% endif %}>Запланировано</option>
+                        <option value="Заключено" {% if status == "Заключено" %}selected{% endif %}>Заключено</option>
+                        <option value="Исполнено" {% if status == "Исполнено" %}selected{% endif %}>Исполнено</option>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <label for="way">Способ закупки</label>
+                    <select class="form-control" id="way" name="way" required title="Выберите статус">
+                        <option value="" {% if way == "" %}selected{% endif %}>Выберите cпособ закупки</option>
+                        <option value="Запрос котировок" {% if status == "Запрос котировок" %}selected{% endif %}>Запрос котировок</option>
+                        <option value="ОАЭФ" {% if status == "ОАЭФ" %}selected{% endif %}>ОАЭФ</option>
+                        <option value="п.1 ч.1 ст.93" {% if status == "п.1 ч.1 ст.93" %}selected{% endif %}>п.1 ч.1 ст.93</option>
+                        <option value="п.4 ч.1 ст.93" {% if status == "п.4 ч.1 ст.93" %}selected{% endif %}>п.4 ч.1 ст.93</option>
+                        <option value="п.8 ч.1 ст.93" {% if status == "п.8 ч.1 ст.93" %}selected{% endif %}>п.8 ч.1 ст.93</option>
+                        <option value="п.9 ч.1 ст.93" {% if status == "п.9 ч.1 ст.93" %}selected{% endif %}>п.9 ч.1 ст.93</option>
+                        <option value="п.12 ч.1 ст.93" {% if status == "п.12 ч.1 ст.93" %}selected{% endif %}>п.12 ч.1 ст.93</option>
+                        <option value="п.23 ч.1 ст.93" {% if status == "п.23 ч.1 ст.93" %}selected{% endif %}>п.23 ч.1 ст.93</option>
+                        <option value="п.25 ч.1 ст.93" {% if status == "п.25 ч.1 ст.93" %}selected{% endif %}>п.25 ч.1 ст.93</option>
+                        <option value="п.29 ч.1 ст.93" {% if status == "п.29 ч.1 ст.93" %}selected{% endif %}>п.29 ч.1 ст.93</option>
+                        <option value="п.32 ч.1 ст.93" {% if status == "п.32 ч.1 ст.93" %}selected{% endif %}>п.32 ч.1 ст.93</option>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <label for="initiator">Инициатор закупки (ИТ/АХО)</label>
+                    <input type="text" class="form-control" id="initiator" name="initiator" maxlength="255" title="Максимальное количество значений 255" value="{{ initiator }}">
+                </div>
+                <div class="form-item">
+                    <label for="KTSSR">КЦСР</label>
+                    <select class="form-control" id="KTSSR" name="KTSSR" required title="Выберите статус">
+                        <option value="" {% if KTSSR == "" %}selected{% endif %}>Выберите КЦСР</option>
+                        <option value="2016100000" {% if KTSSR == "2016100000" %}selected{% endif %}>2016100000</option>
+                        <option value="2016100092" {% if KTSSR == "2016100092" %}selected{% endif %}>2016100092</option>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <label for="KOSGU">КОСГУ</label>
+                    <select class="form-control" id="KOSGU" name="KOSGU" required title="Выберите статус">
+                        <option value="" {% if KOSGU == "" %}selected{% endif %}>Выберите КОСГУ</option>
+                        <option value="221" {% if KOSGU == "221" %}selected{% endif %}>221</option>
+                        <option value="222" {% if KOSGU == "222" %}selected{% endif %}>222</option>
+                        <option value="223" {% if KOSGU == "223" %}selected{% endif %}>223</option>
+                        <option value="224" {% if KOSGU == "224" %}selected{% endif %}>224</option>
+                        <option value="225" {% if KOSGU == "225" %}selected{% endif %}>225</option>
+                        <option value="226" {% if KOSGU == "226" %}selected{% endif %}>226</option>
+                        <option value="227" {% if KOSGU == "227" %}selected{% endif %}>227</option>
+                        <option value="229" {% if KOSGU == "229" %}selected{% endif %}>229</option>
+                        <option value="267" {% if KOSGU == "267" %}selected{% endif %}>267</option>
+                        <option value="244" {% if KOSGU == "244" %}selected{% endif %}>244</option>
+                        <option value="310" {% if KOSGU == "310" %}selected{% endif %}>310</option>
+                        <option value="341" {% if KOSGU == "341" %}selected{% endif %}>341</option>
+                        <option value="342" {% if KOSGU == "342" %}selected{% endif %}>342</option>
+                        <option value="343" {% if KOSGU == "343" %}selected{% endif %}>343</option>
+                        <option value="344" {% if KOSGU == "344" %}selected{% endif %}>344</option>
+                        <option value="345" {% if KOSGU == "345" %}selected{% endif %}>345</option>
+                        <option value="346" {% if KOSGU == "346" %}selected{% endif %}>346</option>
+                        <option value="349" {% if KOSGU == "349" %}selected{% endif %}>349</option>
 
-        <!-- Форма для добавления новой услуги -->
-        <form method="POST" action="{% url 'add_record' %}?page={{ total_pages }}" class="form-group">
-            <!-- Пример изменения отступов в форме с помощью классов -->
-            <div class="form-item">
-                <label for="name">Наименование закупки</label>
-                <input type="text" class="form-control" id="name" name="name" maxlength="255" required title="Максимальное количество значений 255">
-            </div>
-            <div class="form-item">
-                <label for="status">Статус</label>
-                <select class="form-control" id="status" name="status" required title="Выберите статус">
-                    <option value="">Выберите статус</option>
-                    <option value="В торгах">В торгах</option>
-                    <option value="Запланировано">Запланировано</option>
-                    <option value="Заключено">Заключено</option>
-                    <option value="Исполнено">Исполнено</option>
-                </select>
-            </div>
-            <div class="form-item">
-                <label for="way">Способ закупки</label>
-                <select class="form-control" id="way" name="way" required title="Выберите статус">
-                    <option value="">Выберите cпособ закупки</option>
-                    <option value="Запрос котировок">Запрос котировок</option>
-                    <option value="ОАЭФ">ОАЭФ</option>
-                    <option value="п.1 ч.1 ст.93">п.1 ч.1 ст.93</option>
-                    <option value="п.4 ч.1 ст.93">п.4 ч.1 ст.93</option>
-                    <option value="п.8 ч.1 ст.93">п.8 ч.1 ст.93</option>
-                    <option value="п.9 ч.1 ст.93">п.9 ч.1 ст.93</option>
-                    <option value="п.12 ч.1 ст.93">п.12 ч.1 ст.93</option>
-                    <option value="п.23 ч.1 ст.93">п.23 ч.1 ст.93</option>
-                    <option value="п.25 ч.1 ст.93">п.25 ч.1 ст.93</option>
-                    <option value="п.29 ч.1 ст.93">п.29 ч.1 ст.93</option>
-                    <option value="п.32 ч.1 ст.93">п.32 ч.1 ст.93</option>
-                </select>
-            </div>
-            <div class="form-item">
-                <label for="initiator">Инициатор закупки (ИТ/АХО)</label>
-                <input type="text" class="form-control" id="initiator" name="initiator" maxlength="255" title="Максимальное количество значений 255">
-            </div>
-            <div class="form-item">
-                <label for="KTSSR">КЦСР</label>
-                <select class="form-control" id="KTSSR" name="KTSSR" required title="Выберите статус">
-                    <option value="">Выберите КЦСР</option>
-                    <option value="2016100000">2016100000</option>
-                    <option value="2016100092">2016100092</option>
-                </select>
-            </div>
-            <div class="form-item">
-                <label for="KOSGU">КОСГУ</label>
-                <select class="form-control" id="KOSGU" name="KOSGU" required title="Выберите статус">
-                    <option value="">Выберите КОСГУ</option>
-                    <option value="221">221</option>
-                    <option value="222">222</option>
-                    <option value="223">223</option>
-                    <option value="224">224</option>
-                    <option value="225">225</option>
-                    <option value="226">226</option>
-                    <option value="227">227</option>
-                    <option value="229">229</option>
-                    <option value="267">267</option>
-                    <option value="244">244</option>
-                    <option value="310">310</option>
-                    <option value="341">341</option>
-                    <option value="342">342</option>
-                    <option value="343">343</option>
-                    <option value="344">344</option>
-                    <option value="345">345</option>
-                    <option value="346">346</option>
-                    <option value="349">349</option>
-                </select>
-            </div>
-            <div class="form-item">
-                <label for="DopFC">ДопФК</label>
-                <select class="form-control" id="DopFC" name="DopFC" required title="Выберите статус">
-                    <option value="">Выберите КОСГУ</option>
-                    <option value="0000000">0000000</option>
-                    <option value="0000021">0000021</option>
-                    <option value="0000025">0000025</option>
-                    <option value="0000026">0000026</option>
-                    <option value="0000028">0000028</option>
-                    <option value="0000029">0000029</option>
-                </select>
-            </div>
-            <div class="form-item">
-                <label for="NMCC">НМЦК</label>
-                <input type="number" step="0.01" class="form-control" id="NMCC" name="NMCC" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
-            </div>
-            <div class="form-item">
-                <label for="counterparty">Контрагент</label>
-                <input type="text" class="form-control" id="counterparty" name="counterparty" maxlength="255" title="Максимальное количество значений 255">
-            </div>
-            <div class="form-item">
-                <label for="registration_number">Реестровый номер контракта (ЕИС)</label>
-                <input type="text" class="form-control" id="registration_number" name="registration_number" pattern="\d{1,20}" maxlength="20" title="Максимальное значение 20 чисел">
-            </div>
-            <div class="form-item">
-                <label for="contract_number">Номер контракта</label>
-                <input type="text" class="form-control" id="contract_number" name="contract_number" maxlength="255" title="Максимальное количество значений 255">
-            </div>
-            <div class="form-item">
-                <label for="contract_date">Дата контракта</label>
-                <input type="text" class="form-control" id="contract_date" name="contract_date" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
-            </div>
-            <div class="form-item">
-                <label for="end_date">Окончание даты исполнения</label>
-                <input type="text" class="form-control" id="end_date" name="end_date" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
-            </div>
-            <div class="form-item">
-                <label for="contract_price">Цена контракта</label>
-                <input type="number" step="0.01" class="form-control" id="contract_price" name="contract_price" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
-            </div>
-            <input type="hidden" name="execution_contract_plan" value="{{ '' }}">  <!-- Скрытое поле для Исполнение контракта (план) (формула) -->
-            <div class="form-item">
-                <label for="january_one">Январь (план)</label>
-                <input type="number" step="0.01" class="form-control" id="january_one" name="january_one" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
-            </div>
-            <div class="form-item">
-                <label for="february">Февраль (план)</label>
-                <input type="number" step="0.01" class="form-control" id="february" name="february" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
-            </div>
-            <div class="form-item">
-                <label for="march">Март (план)</label>
-                <input type="number" step="0.01" class="form-control" id="march" name="march" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
-            </div>
-            <div class="form-item">
-                <label for="april">Апрель (план)</label>
-                <input type="number" step="0.01" class="form-control" id="april" name="april" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
-            </div>
-            <div class="form-item">
-                <label for="may">Май (план)</label>
-                <input type="number" step="0.01" class="form-control" id="may" name="may" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
-            </div>
-            <div class="form-item">
-                <label for="june">Июнь (план)</label>
-                <input type="number" step="0.01" class="form-control" id="june" name="june" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
-            </div>
-            <div class="form-item">
-                <label for="july">Июль (план)</label>
-                <input type="number" step="0.01" class="form-control" id="july" name="july" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
-            </div>
-            <div class="form-item">
-                <label for="august">Август (план)</label>
-                <input type="number" step="0.01" class="form-control" id="august" name="august" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
-            </div>
-            <div class="form-item">
-                <label for="september">Сентябрь (план)</label>
-                <input type="number" step="0.01" class="form-control" id="september" name="september" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
-            </div>
-            <div class="form-item">
-                <label for="october">Октябрь (план)</label>
-                <input type="number" step="0.01" class="form-control" id="october" name="october" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
-            </div>
-            <div class="form-item">
-                <label for="november">Ноябрь (план)</label>
-                <input type="number" step="0.01" class="form-control" id="november" name="november" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
-            </div>
-            <div class="form-item">
-                <label for="december">Декабрь (план)</label>
-                <input type="number" step="0.01" class="form-control" id="december" name="december" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
-            </div>
-            <div class="form-item">
-                <label for="january_two">Январь 2 (план)</label>
-                <input type="number" step="0.01" class="form-control" id="january_two" name="january_two" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
-            </div>
-            <input type="hidden" name="execution_contract_fact" value="{{ '' }}">  <!-- Скрытое поле для Исполнение контракта (факт) (формула) -->
-            <div class="form-item">
-                <label for="date_january_one">Дата оплаты Январь (факт)</label>
-                <input type="text" class="form-control" id="date_january_one" name="date_january_one" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
-            </div>
-            <div class="form-item">
-                <label for="sum_january_one">Сумма оплаты Январь (факт)</label>
-                <input type="text" class="form-control" id="sum_january_one" name="sum_january_one" maxlength="255" title="Максимальное количество значений 255">
-            </div>
-            <div class="form-item">
-                <label for="date_february">Дата оплаты Февраль (факт)</label>
-                <input type="text" class="form-control" id="date_february" name="date_february" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
-            </div>
-            <div class="form-item">
-                <label for="sum_february">Сумма оплаты Февраль (факт)</label>
-                <input type="text" class="form-control" id="sum_february" name="sum_february" maxlength="255" title="Максимальное количество значений 255">
-            </div>
-            <div class="form-item">
-                <label for="date_march">Дата оплаты Март (факт)</label>
-                <input type="text" class="form-control" id="date_march" name="date_march" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
-            </div>
-            <div class="form-item">
-                <label for="sum_march">Сумма оплаты Март (факт)</label>
-                <input type="text" class="form-control" id="sum_march" name="sum_march" maxlength="255" title="Максимальное количество значений 255">
-            </div>
-            <div class="form-item">
-                <label for="date_april">Дата оплаты Апрель (факт)</label>
-                <input type="text" class="form-control" id="date_april" name="date_april" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
-            </div>
-            <div class="form-item">
-                <label for="sum_april">Сумма оплаты Апрель (факт)</label>
-                <input type="text" class="form-control" id="sum_april" name="sum_april" maxlength="255" title="Максимальное количество значений 255">
-            </div>
-            <div class="form-item">
-                <label for="date_may">Дата оплаты Май (факт)</label>
-                <input type="text" class="form-control" id="date_may" name="date_may" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
-            </div>
-            <div class="form-item">
-                <label for="sum_may">Сумма оплаты Май (факт)</label>
-                <input type="text" class="form-control" id="sum_may" name="sum_may" maxlength="255" title="Максимальное количество значений 255">
-            </div>
-            <div class="form-item">
-                <label for="date_june">Дата оплаты Июнь (факт)</label>
-                <input type="text" class="form-control" id="date_june" name="date_june" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
-            </div>
-            <div class="form-item">
-                <label for="sum_june">Сумма оплаты Июнь (факт)</label>
-                <input type="text" class="form-control" id="sum_june" name="sum_june" maxlength="255" title="Максимальное количество значений 255">
-            </div>
-            <div class="form-item">
-                <label for="date_july">Дата оплаты Июль (факт)</label>
-                <input type="text" class="form-control" id="date_july" name="date_july" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
-            </div>
-            <div class="form-item">
-                <label for="sum_july">Сумма оплаты Июль (факт)</label>
-                <input type="text" class="form-control" id="sum_july" name="sum_july" maxlength="255" title="Максимальное количество значений 255">
-            </div>
-            <div class="form-item">
-                <label for="date_august">Дата оплаты Август (факт)</label>
-                <input type="text" class="form-control" id="date_august" name="date_august" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
-            </div>
-            <div class="form-item">
-                <label for="sum_august">Сумма оплаты Август (факт)</label>
-                <input type="text" class="form-control" id="sum_august" name="sum_august" maxlength="255" title="Максимальное количество значений 255">
-            </div>
-            <div class="form-item">
-                <label for="date_september">Дата оплаты Сентябрь (факт)</label>
-                <input type="text" class="form-control" id="date_september" name="date_september" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
-            </div>
-            <div class="form-item">
-                <label for="sum_september">Сумма оплаты Сентябрь (факт)</label>
-                <input type="text" class="form-control" id="sum_september" name="sum_september" maxlength="255" title="Максимальное количество значений 255">
-            </div>
-            <div class="form-item">
-                <label for="date_october">Дата оплаты Октябрь (факт)</label>
-                <input type="text" class="form-control" id="date_october" name="date_october" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
-            </div>
-            <div class="form-item">
-                <label for="sum_october">Сумма оплаты Октябрь (факт)</label>
-                <input type="text" class="form-control" id="sum_october" name="sum_october" maxlength="255" title="Максимальное количество значений 255">
-            </div>
-            <div class="form-item">
-                <label for="date_november">Дата оплаты Ноябрь (факт)</label>
-                <input type="text" class="form-control" id="date_november" name="date_november" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
-            </div>
-            <div class="form-item">
-                <label for="sum_november">Сумма оплаты Ноябрь (факт)</label>
-                <input type="text" class="form-control" id="sum_november" name="sum_november" maxlength="255" title="Максимальное количество значений 255">
-            </div>
-            <div class="form-item">
-                <label for="date_december">Дата оплаты Декабрь (факт)</label>
-                <input type="text" class="form-control" id="date_december" name="date_december" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
-            </div>
-            <div class="form-item">
-                <label for="sum_december">Сумма оплаты Декабрь (факт)</label>
-                <input type="text" class="form-control" id="sum_december" name="sum_december" maxlength="255" title="Максимальное количество значений 255">
-            </div>
-            <div class="form-item">
-                <label for="date_january_two">Дата оплаты Январь (факт)</label>
-                <input type="text" class="form-control" id="date_january_two" name="date_january_two" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
-            </div>
-            <div class="form-item">
-                <label for="sum_january_two">Сумма оплаты Январь (факт)</label>
-                <input type="text" class="form-control" id="sum_january_two" name="sum_january_two" maxlength="255" title="Максимальное количество значений 255">
-            </div>
-            
-            <input type="hidden" name="execution" value="{{ '' }}">  <!-- Скрытое поле для % исполнения (формула) -->
-            <input type="hidden" name="contract_balance" value="{{ '' }}">  <!-- Скрытое поле для Остаток по контракту (формула) -->
-            <input type="hidden" name="execution_contract_fact" value="{{ '' }}">
-            <input type="hidden" name="execution_contract_plan" value="{{ '' }}">
-            <input type="hidden" name="saving" value="{{ '' }}">
+                        <option value="221" {% if KOSGU == "221" %}selected{% endif %}>221</option>
+                        <option value="226" {% if KOSGU == "226" %}selected{% endif %}>226</option>
+                        <option value="310" {% if KOSGU == "310" %}selected{% endif %}>310</option>
+                        <option value="346" {% if KOSGU == "346" %}selected{% endif %}>346</option>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <label for="DopFC">ДопФК</label>
+                    <select class="form-control" id="DopFC" name="DopFC" required title="Выберите статус" value="{{ DopFC }}">
+                        <option value="" {% if DopFC == "" %}selected{% endif %}>Выберите КОСГУ</option>
+                        <option value="0000000" {% if DopFC == "0000000" %}selected{% endif %}>0000000</option>
+                        <option value="0000021" {% if DopFC == "0000021" %}selected{% endif %}>0000021</option>
+                        <option value="0000025" {% if DopFC == "0000025" %}selected{% endif %}>0000025</option>
+                        <option value="0000026" {% if DopFC == "0000026" %}selected{% endif %}>0000026</option>
+                        <option value="0000028" {% if DopFC == "0000028" %}selected{% endif %}>0000028</option>
+                        <option value="0000029" {% if DopFC == "0000029" %}selected{% endif %}>0000029</option>
 
-            <input type="hidden" name="color" value="{{ '' }}">  <!-- Скрытое поле для цвета -->
-            <button type="submit" class="btn btn-primary clear-btn">Добавить запись</button>
-            <a href="{% url 'data_table_view' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" class="btn btn-secondary btn-neverov mt-3 clear-btn">Вернуться назад</a>
-        </form>
+                        <option value="0000150" {% if DopFC == "0000150" %}selected{% endif %}>0000150</option>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <label for="NMCC">НМЦК</label>
+                    <input type="number" step="0.01" class="form-control" id="NMCC" name="NMCC" min="0" max="99999999.99" required title="Максимальное значение 99999999.99" value="{{ number }}">
+                </div>
+                <div class="form-item">
+                    <label for="counterparty">Контрагент</label>
+                    <input type="text" class="form-control" id="counterparty" name="counterparty" maxlength="255" title="Максимальное количество значений 255" value="{{ counterparty }}">
+                </div>
+                <div class="form-item">
+                    <label for="registration_number">Реестровый номер контракта (ЕИС)</label>
+                    <input type="text" class="form-control" id="registration_number" name="registration_number" pattern="\d{1,20}" maxlength="20" title="Максимальное значение 20 чисел" value="{{ registration_number }}">
+                </div>
+                <div class="form-item">
+                    <label for="contract_number">Номер контракта</label>
+                    <input type="text" class="form-control" id="contract_number" name="contract_number" maxlength="255" title="Максимальное количество значений 255" value="{{ contract_number }}">
+                </div>
+                <div class="form-item">
+                    <label for="contract_date">Дата контракта</label>
+                    <input type="text" class="form-control" id="contract_date" name="contract_date" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ contract_date }}">
+                </div>
+                <div class="form-item">
+                    <label for="end_date">Окончание даты исполнения</label>
+                    <input type="text" class="form-control" id="end_date" name="end_date" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ end_date }}">
+                </div>
+                <div class="form-item">
+                    <label for="contract_price">Цена контракта</label>
+                    <input type="number" step="0.01" class="form-control" id="contract_price" name="contract_price" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ contract_price }}">
+                </div>
+                <input type="hidden" name="execution_contract_plan" value="{{ '' }}">  <!-- Скрытое поле для Исполнение контракта (план) (формула) -->
+                <div class="form-item">
+                    <label for="january_one">Январь (план)</label>
+                    <input type="number" step="0.01" class="form-control" id="january_one" name="january_one" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ january_one }}">
+                </div>
+                <div class="form-item">
+                    <label for="february">Февраль (план)</label>
+                    <input type="number" step="0.01" class="form-control" id="february" name="february" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ february }}">
+                </div>
+                <div class="form-item">
+                    <label for="march">Март (план)</label>
+                    <input type="number" step="0.01" class="form-control" id="march" name="march" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ march }}">
+                </div>
+                <div class="form-item">
+                    <label for="april">Апрель (план)</label>
+                    <input type="number" step="0.01" class="form-control" id="april" name="april" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ april }}">
+                </div>
+                <div class="form-item">
+                    <label for="may">Май (план)</label>
+                    <input type="number" step="0.01" class="form-control" id="may" name="may" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ may }}">
+                </div>
+                <div class="form-item">
+                    <label for="june">Июнь (план)</label>
+                    <input type="number" step="0.01" class="form-control" id="june" name="june" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ june }}">
+                </div>
+                <div class="form-item">
+                    <label for="july">Июль (план)</label>
+                    <input type="number" step="0.01" class="form-control" id="july" name="july" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ july }}">
+                </div>
+                <div class="form-item">
+                    <label for="august">Август (план)</label>
+                    <input type="number" step="0.01" class="form-control" id="august" name="august" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ august }}">
+                </div>
+                <div class="form-item">
+                    <label for="september">Сентябрь (план)</label>
+                    <input type="number" step="0.01" class="form-control" id="september" name="september" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ september }}">
+                </div>
+                <div class="form-item">
+                    <label for="october">Октябрь (план)</label>
+                    <input type="number" step="0.01" class="form-control" id="october" name="october" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ october }}">
+                </div>
+                <div class="form-item">
+                    <label for="november">Ноябрь (план)</label>
+                    <input type="number" step="0.01" class="form-control" id="november" name="november" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ november }}">
+                </div>
+                <div class="form-item">
+                    <label for="december">Декабрь (план)</label>
+                    <input type="number" step="0.01" class="form-control" id="december" name="december" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ december }}">
+                </div>
+                <div class="form-item">
+                    <label for="january_two">Январь 2 (план)</label>
+                    <input type="number" step="0.01" class="form-control" id="january_two" name="january_two" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ january_two }}">
+                </div>
+                <input type="hidden" name="execution_contract_fact" value="{{ '' }}">  <!-- Скрытое поле для Исполнение контракта (факт) (формула) -->
+                <div class="form-item">
+                    <label for="date_january_one">Дата оплаты Январь (факт)</label>
+                    <input type="text" class="form-control" id="date_january_one" name="date_january_one" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_january_one }}">
+                </div>
+                <div class="form-item">
+                    <label for="sum_january_one">Сумма оплаты Январь (факт)</label>
+                    <input type="text" class="form-control" id="sum_january_one" name="sum_january_one" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_january_one }}">
+                </div>
+                <div class="form-item">
+                    <label for="date_february">Дата оплаты Февраль (факт)</label>
+                    <input type="text" class="form-control" id="date_february" name="date_february" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_february }}">
+                </div>
+                <div class="form-item">
+                    <label for="sum_february">Сумма оплаты Февраль (факт)</label>
+                    <input type="text" class="form-control" id="sum_february" name="sum_february" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_february }}">
+                </div>
+                <div class="form-item">
+                    <label for="date_march">Дата оплаты Март (факт)</label>
+                    <input type="text" class="form-control" id="date_march" name="date_march" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_march }}">
+                </div>
+                <div class="form-item">
+                    <label for="sum_march">Сумма оплаты Март (факт)</label>
+                    <input type="text" class="form-control" id="sum_march" name="sum_march" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_march }}">
+                </div>
+                <div class="form-item">
+                    <label for="date_april">Дата оплаты Апрель (факт)</label>
+                    <input type="text" class="form-control" id="date_april" name="date_april" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_april }}">
+                </div>
+                <div class="form-item">
+                    <label for="sum_april">Сумма оплаты Апрель (факт)</label>
+                    <input type="text" class="form-control" id="sum_april" name="sum_april" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_april }}">
+                </div>
+                <div class="form-item">
+                    <label for="date_may">Дата оплаты Май (факт)</label>
+                    <input type="text" class="form-control" id="date_may" name="date_may" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_may }}">
+                </div>
+                <div class="form-item">
+                    <label for="sum_may">Сумма оплаты Май (факт)</label>
+                    <input type="text" class="form-control" id="sum_may" name="sum_may" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_may }}">
+                </div>
+                <div class="form-item">
+                    <label for="date_june">Дата оплаты Июнь (факт)</label>
+                    <input type="text" class="form-control" id="date_june" name="date_june" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_june }}">
+                </div>
+                <div class="form-item">
+                    <label for="sum_june">Сумма оплаты Июнь (факт)</label>
+                    <input type="text" class="form-control" id="sum_june" name="sum_june" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_june }}">
+                </div>
+                <div class="form-item">
+                    <label for="date_july">Дата оплаты Июль (факт)</label>
+                    <input type="text" class="form-control" id="date_july" name="date_july" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_july }}">
+                </div>
+                <div class="form-item">
+                    <label for="sum_july">Сумма оплаты Июль (факт)</label>
+                    <input type="text" class="form-control" id="sum_july" name="sum_july" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_july }}">
+                </div>
+                <div class="form-item">
+                    <label for="date_august">Дата оплаты Август (факт)</label>
+                    <input type="text" class="form-control" id="date_august" name="date_august" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_august }}">
+                </div>
+                <div class="form-item">
+                    <label for="sum_august">Сумма оплаты Август (факт)</label>
+                    <input type="text" class="form-control" id="sum_august" name="sum_august" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_august }}">
+                </div>
+                <div class="form-item">
+                    <label for="date_september">Дата оплаты Сентябрь (факт)</label>
+                    <input type="text" class="form-control" id="date_september" name="date_september" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_september }}">
+                </div>
+                <div class="form-item">
+                    <label for="sum_september">Сумма оплаты Сентябрь (факт)</label>
+                    <input type="text" class="form-control" id="sum_september" name="sum_september" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_september }}">
+                </div>
+                <div class="form-item">
+                    <label for="date_october">Дата оплаты Октябрь (факт)</label>
+                    <input type="text" class="form-control" id="date_october" name="date_october" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_october }}">
+                </div>
+                <div class="form-item">
+                    <label for="sum_october">Сумма оплаты Октябрь (факт)</label>
+                    <input type="text" class="form-control" id="sum_october" name="sum_october" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_october }}">
+                </div>
+                <div class="form-item">
+                    <label for="date_november">Дата оплаты Ноябрь (факт)</label>
+                    <input type="text" class="form-control" id="date_november" name="date_november" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_november }}">
+                </div>
+                <div class="form-item">
+                    <label for="sum_november">Сумма оплаты Ноябрь (факт)</label>
+                    <input type="text" class="form-control" id="sum_november" name="sum_november" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_november }}">
+                </div>
+                <div class="form-item">
+                    <label for="date_december">Дата оплаты Декабрь (факт)</label>
+                    <input type="text" class="form-control" id="date_december" name="date_december" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_december }}">
+                </div>
+                <div class="form-item">
+                    <label for="sum_december">Сумма оплаты Декабрь (факт)</label>
+                    <input type="text" class="form-control" id="sum_december" name="sum_december" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_december }}">
+                </div>
+                <div class="form-item">
+                    <label for="date_january_two">Дата оплаты Январь (факт)</label>
+                    <input type="text" class="form-control" id="date_january_two" name="date_january_two" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_january_two }}">
+                </div>
+                <div class="form-item">
+                    <label for="sum_january_two">Сумма оплаты Январь (факт)</label>
+                    <input type="text" class="form-control" id="sum_january_two" name="sum_january_two" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_january_two }}">
+                </div>
+
+                <input type="hidden" name="execution" value="{{ '' }}">  <!-- Скрытое поле для % исполнения (формула) -->
+                <input type="hidden" name="contract_balance" value="{{ '' }}">  <!-- Скрытое поле для Остаток по контракту (формула) -->
+                <input type="hidden" name="execution_contract_fact" value="{{ '' }}">
+                <input type="hidden" name="execution_contract_plan" value="{{ '' }}">
+                <input type="hidden" name="saving" value="{{ '' }}">
+
+                <input type="hidden" name="color" value="{{ '' }}">  <!-- Скрытое поле для цвета -->
+                <button type="submit" class="btn btn-primary clear-btn">Добавить запись</button>
+                <a href="{% url 'data_table_view' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" class="btn btn-secondary btn-neverov mt-3 clear-btn">Вернуться назад</a>
+            </form>
+        </div>
     </div>
 
     <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>

@@ -872,74 +872,157 @@ async def update_record(request, row_id):
         try:
             data = request.POST
 
-            id_id = data.get('id_id')
-            name = data.get('name')
-            status = data.get('status')
-            way = data.get('way')
-            initiator = data.get('initiator')
-            KTSSR = data.get('KTSSR')
-            KOSGU = data.get('KOSGU')
-            DopFC = data.get('DopFC')
-            NMCC = data.get('NMCC')
-            # saving = data.get('saving')
-            counterparty = data.get('counterparty')
-            registration_number = data.get('registration_number')
-            contract_number = data.get('contract_number')
-            contract_date = data.get('contract_date')
-            end_date = data.get('end_date')
-            contract_price = data.get('contract_price')
-            # execution_contract_plan = data.get('execution_contract_plan')
-            january_one = data.get('january_one')
-            february = data.get('february')
-            march = data.get('march')
-            april = data.get('april')
-            may = data.get('may')
-            june = data.get('june')
-            july = data.get('july')
-            august = data.get('august')
-            september = data.get('september')
-            october = data.get('october')
-            november = data.get('november')
-            december = data.get('december')
-            january_two = data.get('january_two')
-            # execution_contract_fact = data.get('execution_contract_fact')
-            date_january_one = data.get('date_january_one')
-            sum_january_one = data.get('sum_january_one')
-            date_february = data.get('date_february')
-            sum_february = data.get('sum_february')
-            date_march = data.get('date_march')
-            sum_march = data.get('sum_march')
-            date_april = data.get('date_april')
-            sum_april = data.get('sum_april')
-            date_may = data.get('date_may')
-            sum_may = data.get('sum_may')
-            date_june = data.get('date_june')
-            sum_june = data.get('sum_june')
-            date_july = data.get('date_july')
-            sum_july = data.get('sum_july')
-            date_august = data.get('date_august')
-            sum_august = data.get('sum_august')
-            date_september = data.get('date_september')
-            sum_september = data.get('sum_september')
-            date_october = data.get('date_october')
-            sum_october = data.get('sum_october')
-            date_november = data.get('date_november')
-            sum_november = data.get('sum_november')
-            date_december = data.get('date_december')
-            sum_december = data.get('sum_december')
-            date_january_two = data.get('date_january_two')
-            sum_january_two = data.get('sum_january_two')
-            execution = data.get('execution')
-            contract_balance = data.get('contract_balance')
-            color = data.get('color')
+            # Возвращаем данные формы обратно в шаблон
+            context_data = {
+                'service': await sync_to_async(Services.objects.get)(id=row_id),
+                'id_id': data.get('id_id'),
+                'name': data.get('name'),
+                'status': data.get('status'),
+                'way': data.get('way'),
+                'initiator': data.get('initiator'),
+                'KTSSR': data.get('KTSSR'),
+                'KOSGU': data.get('KOSGU'),
+                'DopFC': data.get('DopFC'),
+                'NMCC': data.get('NMCC'),
+                'counterparty': data.get('counterparty'),
+                'registration_number': data.get('registration_number'),
+                'contract_number': data.get('contract_number'),
+                'contract_date': data.get('contract_date'),
+                'end_date': data.get('end_date'),
+                'contract_price': data.get('contract_price'),
+                'january_one': data.get('january_one'),
+                'february': data.get('february'),
+                'march': data.get('march'),
+                'april': data.get('april'),
+                'may': data.get('may'),
+                'june': data.get('june'),
+                'july': data.get('july'),
+                'august': data.get('august'),
+                'september': data.get('september'),
+                'october': data.get('october'),
+                'november': data.get('november'),
+                'december': data.get('december'),
+                'january_two': data.get('january_two'),
+                'date_january_one': data.get('date_january_one'),
+                'sum_january_one': data.get('sum_january_one'),
+                'date_february': data.get('date_february'),
+                'sum_february': data.get('sum_february'),
+                'date_march': data.get('date_march'),
+                'sum_march':  data.get('sum_march'),
+                'date_april': data.get('date_april'),
+                'sum_april': data.get('sum_april'),
+                'date_may': data.get('date_may'),
+                'sum_may': data.get('sum_may'),
+                'date_june': data.get('date_june'),
+                'sum_june': data.get('sum_june'),
+                'date_july': data.get('date_july'),
+                'sum_july': data.get('sum_july'),
+                'date_august': data.get('date_august'),
+                'sum_august': data.get('sum_august'),
+                'date_september': data.get('date_september'),
+                'sum_september': data.get('sum_september'),
+                'date_october': data.get('date_october'),
+                'sum_october': data.get('sum_october'),
+                'date_november': data.get('date_november'),
+                'sum_november': data.get('sum_november'),
+                'date_december': data.get('date_december'),
+                'sum_december': data.get('sum_december'),
+                'date_january_two': data.get('date_january_two'),
+                'sum_january_two': data.get('sum_january_two'),
+                'execution': data.get('execution'),
+                'contract_balance': data.get('contract_balance'),
+                'execution_contract_fact': data.get('execution_contract_fact'),
+                'execution_contract_plan': data.get('execution_contract_plan'),
+                'saving': data.get('saving'),
+                'color': data.get('color'),
+                'row_id': row_id,
+                'page': int(request.GET.get('page', 1)),
+                'keyword_one': request.GET.get('keyword_one', None),
+                'keyword_two': request.GET.get('keyword_two', None),
+                'selected_column_one': request.GET.get('selected_column_one', None),
+                'selected_column_two': request.GET.get('selected_column_two', None),
+                'page_user': 1,
+                'KOSGU_user': request.GET.get('KOSGU_user', None),
+                'keyword_one_user': request.GET.get('keyword_one_user', None),
+                'keyword_two_user': request.GET.get('keyword_two_user', None),
+                'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+                'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+                'page_user_two': 1,
+                'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+                'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+                'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+                'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
+            }
+
+            # id_id = data.get('id_id')
+            # name = data.get('name')
+            # status = data.get('status')
+            # way = data.get('way')
+            # initiator = data.get('initiator')
+            # KTSSR = data.get('KTSSR')
+            # KOSGU = data.get('KOSGU')
+            # DopFC = data.get('DopFC')
+            # NMCC = data.get('NMCC')
+            # # saving = data.get('saving')
+            # counterparty = data.get('counterparty')
+            # registration_number = data.get('registration_number')
+            # contract_number = data.get('contract_number')
+            # contract_date = data.get('contract_date')
+            # end_date = data.get('end_date')
+            # contract_price = data.get('contract_price')
+            # # execution_contract_plan = data.get('execution_contract_plan')
+            # january_one = data.get('january_one')
+            # february = data.get('february')
+            # march = data.get('march')
+            # april = data.get('april')
+            # may = data.get('may')
+            # june = data.get('june')
+            # july = data.get('july')
+            # august = data.get('august')
+            # september = data.get('september')
+            # october = data.get('october')
+            # november = data.get('november')
+            # december = data.get('december')
+            # january_two = data.get('january_two')
+            # # execution_contract_fact = data.get('execution_contract_fact')
+            # date_january_one = data.get('date_january_one')
+            # sum_january_one = data.get('sum_january_one')
+            # date_february = data.get('date_february')
+            # sum_february = data.get('sum_february')
+            # date_march = data.get('date_march')
+            # sum_march = data.get('sum_march')
+            # date_april = data.get('date_april')
+            # sum_april = data.get('sum_april')
+            # date_may = data.get('date_may')
+            # sum_may = data.get('sum_may')
+            # date_june = data.get('date_june')
+            # sum_june = data.get('sum_june')
+            # date_july = data.get('date_july')
+            # sum_july = data.get('sum_july')
+            # date_august = data.get('date_august')
+            # sum_august = data.get('sum_august')
+            # date_september = data.get('date_september')
+            # sum_september = data.get('sum_september')
+            # date_october = data.get('date_october')
+            # sum_october = data.get('sum_october')
+            # date_november = data.get('date_november')
+            # sum_november = data.get('sum_november')
+            # date_december = data.get('date_december')
+            # sum_december = data.get('sum_december')
+            # date_january_two = data.get('date_january_two')
+            # sum_january_two = data.get('sum_january_two')
+            # execution = data.get('execution')
+            # contract_balance = data.get('contract_balance')
+            # color = data.get('color')
 
             # contract_price = NMCC
 
             # Создаем список месяцев
             months = [
-                january_one, february, march, april, may, june,
-                july, august, september, october, november, december,
-                january_two
+                context_data['january_one'], context_data['february'], context_data['march'], context_data['april'], context_data['may'], context_data['june'],
+                context_data['july'], context_data['august'], context_data['september'], context_data['october'], context_data['november'], context_data['december'],
+                context_data['january_two']
             ]
 
             # Асинхронно обрабатываем все месяцы
@@ -948,11 +1031,11 @@ async def update_record(request, row_id):
             # Суммируем результат
             execution_contract_plan = sum(cleaned_numbers)
 
-            page = int(request.GET.get('page', 1))
-            keyword_one = request.GET.get('keyword_one', None)
-            keyword_two = request.GET.get('keyword_two', None)
-            selected_column_one = request.GET.get('selected_column_one', None)
-            selected_column_two = request.GET.get('selected_column_two', None)
+            # page = int(request.GET.get('page', 1))
+            # keyword_one = request.GET.get('keyword_one', None)
+            # keyword_two = request.GET.get('keyword_two', None)
+            # selected_column_one = request.GET.get('selected_column_one', None)
+            # selected_column_two = request.GET.get('selected_column_two', None)
 
             # keyword_one = None
             # keyword_two = None
@@ -965,53 +1048,55 @@ async def update_record(request, row_id):
 
             # return await skeleton(request, user, date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
-            page_user = 1
-            KOSGU_user = None
-            keyword_one_user = None
-            keyword_two_user = None
-            selected_column_one_user = None
-            selected_column_two_user = None
+            # page_user = 1
+            # KOSGU_user = None
+            # keyword_one_user = None
+            # keyword_two_user = None
+            # selected_column_one_user = None
+            # selected_column_two_user = None
 
-            page_user_two = 1
-            KOSGU_user_two = None
-            keyword_one_user_two = None
-            keyword_two_user_two = None
-            selected_column_one_user_two = None
-            selected_column_two_user_two = None
+            # page_user_two = 1
+            # KOSGU_user_two = None
+            # keyword_one_user_two = None
+            # keyword_two_user_two = None
+            # selected_column_one_user_two = None
+            # selected_column_two_user_two = None
 
-            # Формирование строки запроса
-            query_params = {
-                'page': page,
-                'keyword_one': keyword_one,
-                'keyword_two': keyword_two,
-                'selected_column_one': selected_column_one,
-                'selected_column_two': selected_column_two,
-                'page_user': page_user,
-                'KOSGU_user': KOSGU_user,
-                'keyword_one_user': keyword_one_user,
-                'keyword_two_user': keyword_two_user,
-                'selected_column_one_user': selected_column_one_user,
-                'selected_column_two_user': selected_column_two_user,
-                'page_user_two': page_user_two,
-                'KOSGU_user_two': KOSGU_user_two,
-                'keyword_one_user_two': keyword_one_user_two,
-                'keyword_two_user_two': keyword_two_user_two,
-                'selected_column_one_user_two': selected_column_one_user_two,
-                'selected_column_two_user_two': selected_column_two_user_two
-            }
+            # # Формирование строки запроса
+            # query_params = {
+            #     'page': int(request.GET.get('page', 1)),
+            #     'keyword_one': request.GET.get('keyword_one', None),
+            #     'keyword_two': request.GET.get('keyword_two', None),
+            #     'selected_column_one': request.GET.get('selected_column_one', None),
+            #     'selected_column_two': request.GET.get('selected_column_two', None),
+            #     'page_user': 1,
+            #     'KOSGU_user': None,
+            #     'keyword_one_user': None,
+            #     'keyword_two_user': None,
+            #     'selected_column_one_user': None,
+            #     'selected_column_two_user': None,
+            #     'page_user_two': 1,
+            #     'KOSGU_user_two': None,
+            #     'keyword_one_user_two': None,
+            #     'keyword_two_user_two': None,
+            #     'selected_column_one_user_two': None,
+            #     'selected_column_two_user_two': None
+            # }
 
-            if contract_price:
-                if f"{execution_contract_plan:g}" != contract_price:
+            if context_data['contract_price']:
+                if f"{execution_contract_plan:g}" != context_data['contract_price']:
                     await sync_to_async(messages.error)(request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
 
-                    # Перенаправление с несколькими параметрами
-                    return redirect(f"/?{urlencode(query_params)}")
+                    return render(request, 'edit.html', context_data)
+
+                    # # Перенаправление с несколькими параметрами
+                    # return redirect(f"/?{urlencode(query_params)}")
 
             # Создаем список сумм месяцев
             sum_months = [
-                sum_january_one, sum_february, sum_march, sum_april, sum_may, sum_june,
-                sum_july, sum_august, sum_september, sum_october, sum_november, sum_december,
-                sum_january_two
+                context_data['sum_january_one'], context_data['sum_february'], context_data['sum_march'], context_data['sum_april'], context_data['sum_may'], context_data['sum_june'],
+                context_data['sum_july'], context_data['sum_august'], context_data['sum_september'], context_data['sum_october'], context_data['sum_november'], context_data['sum_december'],
+                context_data['sum_january_two']
             ]
 
             # Асинхронно обрабатываем все месяцы
@@ -1020,20 +1105,22 @@ async def update_record(request, row_id):
             # Суммируем результат
             execution_contract_fact = sum(cleaned_numbers)
 
-            if execution_contract_plan != execution_contract_fact and status == 'Исполнено':
+            if execution_contract_plan != execution_contract_fact and context_data['status'] == 'Исполнено':
                 await sync_to_async(messages.error)(request, 'Нельзя выставить статус "Исполнено" при неравенстве ячеек «Исполнение контракта (факт)» и «Исполнение контракта (план)»')
 
-                # Перенаправление с несколькими параметрами
-                return redirect(f"/?{urlencode(query_params)}")
+                return render(request, 'edit.html', context_data)
 
-            saving = await clean_number(NMCC) - await clean_number(contract_price)
+                # # Перенаправление с несколькими параметрами
+                # return redirect(f"/?{urlencode(query_params)}")
 
-            if await clean_number(contract_price) == 0:
-                execution = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
+            saving = await clean_number(context_data['NMCC']) - await clean_number(context_data['contract_price'])
+
+            if await clean_number(context_data['contract_price']) == 0:
+                context_data['execution'] = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
             else:
-                execution = round(await clean_number(execution_contract_fact) / await clean_number(contract_price), 2) * 100
+                context_data['execution'] = round(await clean_number(execution_contract_fact) / await clean_number(context_data['contract_price']), 2) * 100
 
-            contract_balance = await clean_number(contract_price) - await clean_number(execution_contract_fact)
+            context_data['contract_balance'] = await clean_number(context_data['contract_price']) - await clean_number(execution_contract_fact)
 
             # if certificate == '0' and certificate_no == '0':
             #     color = '#dff0d8'
@@ -1043,83 +1130,85 @@ async def update_record(request, row_id):
             from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
             try:
-                Services_ = await sync_to_async(Services.objects.get)(name=name)
+                Services_ = await sync_to_async(Services.objects.get)(name=context_data['name'])
                 # await sync_to_async(messages.error)(request, 'Вы добавляете дубликат в Наименовании')
 
                 # # Перенаправление с несколькими параметрами
                 # return redirect(f"/?{urlencode(query_params)}")
             except MultipleObjectsReturned:
-                Services_ = await sync_to_async(lambda: Services.objects.filter(name=name).first())()
+                Services_ = await sync_to_async(lambda: Services.objects.filter(name=context_data['name']).first())()
                 await sync_to_async(messages.error)(request, 'Вы добавляете дубликат в Ниименовании')
 
-                # Перенаправление с несколькими параметрами
-                return redirect(f"/?{urlencode(query_params)}")
+                return render(request, 'edit.html', context_data)
+
+                # # Перенаправление с несколькими параметрами
+                # return redirect(f"/?{urlencode(query_params)}")
             except ObjectDoesNotExist:
                 pass
 
             # Найдите запись по ID и обновите цвет
             service = await sync_to_async(Services.objects.get)(id=row_id)
 
-            service.id_id = id_id
-            service.name = name
-            service.status = status
-            service.way = way
-            service.initiator = initiator
-            service.KTSSR = KTSSR
-            service.KOSGU = KOSGU
-            service.DopFC = DopFC
-            service.NMCC = NMCC
+            service.id_id = context_data['id_id']
+            service.name = context_data['name']
+            service.status = context_data['status']
+            service.way = context_data['way']
+            service.initiator = context_data['initiator']
+            service.KTSSR = context_data['KTSSR']
+            service.KOSGU = context_data['KOSGU']
+            service.DopFC = context_data['DopFC']
+            service.NMCC = context_data['NMCC']
             service.saving = saving
-            service.counterparty = counterparty
-            service.registration_number = registration_number
-            service.contract_number = contract_number
-            service.contract_date = contract_date
-            service.end_date = end_date
-            service.contract_price = contract_price
+            service.counterparty = context_data['counterparty']
+            service.registration_number = context_data['registration_number']
+            service.contract_number = context_data['contract_number']
+            service.contract_date = context_data['contract_date']
+            service.end_date = context_data['end_date']
+            service.contract_price = context_data['contract_price']
             service.execution_contract_plan = execution_contract_plan
-            service.january_one = january_one
-            service.february = february
-            service.march = march
-            service.april = april
-            service.may = may
-            service.june = june
-            service.july = july
-            service.august = august
-            service.september = september
-            service.october = october
-            service.november = november
-            service.december = december
-            service.january_two = january_two
+            service.january_one = context_data['january_one']
+            service.february = context_data['february']
+            service.march = context_data['march']
+            service.april = context_data['april']
+            service.may = context_data['may']
+            service.june = context_data['june']
+            service.july = context_data['july']
+            service.august = context_data['august']
+            service.september = context_data['september']
+            service.october = context_data['october']
+            service.november = context_data['november']
+            service.december = context_data['december']
+            service.january_two = context_data['january_two']
             service.execution_contract_fact = execution_contract_fact
-            service.date_january_one = date_january_one
-            service.sum_january_one = sum_january_one
-            service.date_february = date_february
-            service.sum_february = sum_february
-            service.date_march = date_march
-            service.sum_march = sum_march
-            service.date_april = date_april
-            service.sum_april = sum_april
-            service.date_may = date_may
-            service.sum_may = sum_may
-            service.date_june = date_june
-            service.sum_june = sum_june
-            service.date_july = date_july
-            service.sum_july = sum_july
-            service.date_august = date_august
-            service.sum_august = sum_august
-            service.date_september = date_september
-            service.sum_september = sum_september
-            service.date_october = date_october
-            service.sum_october = sum_october
-            service.date_november = date_november
-            service.sum_november = sum_november
-            service.date_december = date_december
-            service.sum_december = sum_december
-            service.date_january_two = date_january_two
-            service.sum_january_two = sum_january_two
-            service.execution = execution
-            service.contract_balance = contract_balance
-            service.color = color
+            service.date_january_one = context_data['date_january_one']
+            service.sum_january_one = context_data['sum_january_one']
+            service.date_february = context_data['date_february']
+            service.sum_february = context_data['sum_february']
+            service.date_march = context_data['date_march']
+            service.sum_march = context_data['sum_march']
+            service.date_april = context_data['date_april']
+            service.sum_april = context_data['sum_april']
+            service.date_may = context_data['date_may']
+            service.sum_may = context_data['sum_may']
+            service.date_june = context_data['date_june']
+            service.sum_june = context_data['sum_june']
+            service.date_july = context_data['date_july']
+            service.sum_july = context_data['sum_july']
+            service.date_august = context_data['date_august']
+            service.sum_august = context_data['sum_august']
+            service.date_september = context_data['date_september']
+            service.sum_september = context_data['sum_september']
+            service.date_october = context_data['date_october']
+            service.sum_october = context_data['sum_october']
+            service.date_november = context_data['date_november']
+            service.sum_november = context_data['sum_november']
+            service.date_december = context_data['date_december']
+            service.sum_december = context_data['sum_december']
+            service.date_january_two = context_data['date_january_two']
+            service.sum_january_two = context_data['sum_january_two']
+            service.execution = context_data['execution']
+            service.contract_balance = context_data['contract_balance']
+            service.color = context_data['color']
 
             await sync_to_async(service.save)()
 
@@ -1129,7 +1218,7 @@ async def update_record(request, row_id):
             # )
 
             Services_2016100000_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100000')
             ))
 
             execution_contract_fact_sum_2016100000 = 0
@@ -1137,7 +1226,7 @@ async def update_record(request, row_id):
                 execution_contract_fact_sum_2016100000 += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
 
             Services_2016100092_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100092')
             ))
 
             execution_contract_fact_sum_2016100092 = 0
@@ -1145,7 +1234,7 @@ async def update_record(request, row_id):
                 execution_contract_fact_sum_2016100092 += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
 
             Services_planned_2016100000_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000') & Q(status='Запланировано')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100000') & Q(status='Запланировано')
             ))
 
             contract_price_sum_planned_2016100000 = 0
@@ -1153,7 +1242,7 @@ async def update_record(request, row_id):
                 contract_price_sum_planned_2016100000 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_off_planned_2016100092_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092') & Q(status='Запланировано')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100092') & Q(status='Запланировано')
             ))
 
             contract_price_sum_off_planned_2016100092 = 0
@@ -1161,7 +1250,7 @@ async def update_record(request, row_id):
                 contract_price_sum_off_planned_2016100092 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_bargaining_2016100000_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000') & Q(status='В торгах')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100000') & Q(status='В торгах')
             ))
 
             contract_price_sum_bargaining_2016100000 = 0
@@ -1169,7 +1258,7 @@ async def update_record(request, row_id):
                 contract_price_sum_bargaining_2016100000 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_off_bargaining_2016100092_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092') & Q(status='В торгах')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100092') & Q(status='В торгах')
             ))
 
             contract_price_sum_off_bargaining_2016100092 = 0
@@ -1177,7 +1266,7 @@ async def update_record(request, row_id):
                 contract_price_sum_off_bargaining_2016100092 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_concluded_2016100000_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000') & Q(status='Заключено')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100000') & Q(status='Заключено')
             ))
 
             contract_price_sum_concluded_2016100000 = 0
@@ -1185,7 +1274,7 @@ async def update_record(request, row_id):
                 contract_price_sum_concluded_2016100000 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_off_concluded_2016100092_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092') & Q(status='Заключено')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100092') & Q(status='Заключено')
             ))
 
             contract_price_sum_off_concluded_2016100092 = 0
@@ -1193,7 +1282,7 @@ async def update_record(request, row_id):
                 contract_price_sum_off_concluded_2016100092 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_completed_2016100000_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000') & Q(status='Исполнено')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100000') & Q(status='Исполнено')
             ))
 
             contract_price_sum_completed_2016100000 = 0
@@ -1201,7 +1290,7 @@ async def update_record(request, row_id):
                 contract_price_sum_completed_2016100000 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_off_completed_2016100092_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092') & Q(status='Исполнено')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100092') & Q(status='Исполнено')
             ))
 
             contract_price_sum_off_completed_2016100092 = 0
@@ -1209,7 +1298,7 @@ async def update_record(request, row_id):
                 contract_price_sum_off_completed_2016100092 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_way_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR=KTSSR) & Q(status=status) & Q(way='п.4 ч.1 ст.93')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR=context_data['KTSSR']) & Q(status=context_data['status']) & Q(way='п.4 ч.1 ст.93')
             ))
             contract_price_sum_way = 0
             execution_contract_fact_sum_way = 0
@@ -1221,13 +1310,15 @@ async def update_record(request, row_id):
             # # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(KOSGU=KOSGU)
             try:
                 ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
-                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                    Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC'])
                 )
             except:
                 await sync_to_async(messages.error)(request, 'Нет сопоставления КОСГУ с ДопФК')
 
-                # Перенаправление с несколькими параметрами
-                return redirect(f"/?{urlencode(query_params)}")
+                return render(request, 'edit.html', context_data)
+
+                # # Перенаправление с несколькими параметрами
+                # return redirect(f"/?{urlencode(query_params)}")
 
             ServicesVault_.off_budget_planned = contract_price_sum_off_planned_2016100092
 
@@ -1245,22 +1336,24 @@ async def update_record(request, row_id):
 
             ServicesVault_.budget_completed = contract_price_sum_completed_2016100000
 
-            if KTSSR == '2016100092':
+            if context_data['KTSSR'] == '2016100092':
                 ServicesVault_.off_budget_execution = execution_contract_fact_sum_2016100092
-            elif KTSSR == '2016100000':
+            elif context_data['KTSSR'] == '2016100000':
                 ServicesVault_.budget_execution = execution_contract_fact_sum_2016100000
 
             await sync_to_async(ServicesVault_.save)()
 
             try:
                 ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
-                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                    Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC'])
                 )
             except:
                 await sync_to_async(messages.error)(request, 'Нет сопоставления КОСГУ с ДопФК')
 
-                # Перенаправление с несколькими параметрами
-                return redirect(f"/?{urlencode(query_params)}")
+                return render(request, 'edit.html', context_data)
+
+                # # Перенаправление с несколькими параметрами
+                # return redirect(f"/?{urlencode(query_params)}")
 
             print(ServicesVault_.budget_bargaining)
 
@@ -1302,24 +1395,24 @@ async def update_record(request, row_id):
 
             if any(x < 0 for x in [await clean_number(ServicesVault_.budget_remainder), await clean_number(ServicesVault_.off_budget_remainder), await clean_number(ServicesVault_.budget_plans), await clean_number(ServicesVault_.off_budget_plans)]):
                 ServicesVault_.color = '#ffebeb'
-                color = '#ffebeb'
+                context_data['color'] = '#ffebeb'
             else:
                 ServicesVault_.color = ''
-                color = ''
+                context_data['color'] = ''
 
             await sync_to_async(ServicesVault_.save)()
 
             try:
 
                 ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
-                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                    Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC'])
                 )
 
                 ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
-                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                    Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC'])
                 )
 
-                if status == 'Заключено' and KTSSR == '2016100092':
+                if context_data['status'] == 'Заключено' and KTSSR == '2016100092':
                     ServicesTwo_.off_budget_concluded = contract_price_sum_way
                     ServicesTwo_.off_budget_remainder = await clean_number(ServicesVault_.off_budget_planned) - await clean_number(contract_price_sum_way)
                 elif status == 'Заключено' and KTSSR == '2016100000':
@@ -1344,7 +1437,7 @@ async def update_record(request, row_id):
             await sync_to_async(messages.success)(request, "Редактирование прошло успешно.")
 
             # Перенаправление с несколькими параметрами
-            return redirect(f"/?{urlencode(query_params)}")
+            return redirect(f"/?{urlencode(context_data)}")
 
             # return await skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user)
 
@@ -1642,75 +1735,159 @@ async def add_record(request):
 
     if request.method == 'POST':
         try:
-            total_pages = int(request.GET.get('total_pages', 1))
 
-            name = request.POST['name']
-            status = request.POST['status']
-            way = request.POST['way']
-            initiator = request.POST['initiator']
-            KTSSR = request.POST['KTSSR']
-            KOSGU = request.POST['KOSGU']
-            DopFC = request.POST['DopFC']
-            NMCC = request.POST['NMCC']
-            # saving = request.POST['saving']
-            counterparty = request.POST['counterparty']
-            registration_number = request.POST['registration_number']
-            contract_number = request.POST['contract_number']
-            contract_date = request.POST['contract_date']
-            end_date = request.POST['end_date']
-            contract_price = request.POST['contract_price']
-            # execution_contract_plan = request.POST['execution_contract_plan']
-            january_one = request.POST['january_one']
-            february = request.POST['february']
-            march = request.POST['march']
-            april = request.POST['april']
-            may = request.POST['may']
-            june = request.POST['june']
-            july = request.POST['july']
-            august = request.POST['august']
-            september = request.POST['september']
-            october = request.POST['october']
-            november = request.POST['november']
-            december = request.POST['december']
-            january_two = request.POST['january_two']
-            # execution_contract_fact = request.POST['execution_contract_fact']
-            date_january_one = request.POST['date_january_one']
-            sum_january_one = request.POST['sum_january_one']
-            date_february = request.POST['date_february']
-            sum_february = request.POST['sum_february']
-            date_march = request.POST['date_march']
-            sum_march = request.POST['sum_march']
-            date_april = request.POST['date_april']
-            sum_april = request.POST['sum_april']
-            date_may = request.POST['date_may']
-            sum_may = request.POST['sum_may']
-            date_june = request.POST['date_june']
-            sum_june = request.POST['sum_june']
-            date_july = request.POST['date_july']
-            sum_july = request.POST['sum_july']
-            date_august = request.POST['date_august']
-            sum_august = request.POST['sum_august']
-            date_september = request.POST['date_september']
-            sum_september = request.POST['sum_september']
-            date_october = request.POST['date_october']
-            sum_october = request.POST['sum_october']
-            date_november = request.POST['date_november']
-            sum_november = request.POST['sum_november']
-            date_december = request.POST['date_december']
-            sum_december = request.POST['sum_december']
-            date_january_two = request.POST['date_january_two']
-            sum_january_two = request.POST['sum_january_two']
-            # execution = request.POST['execution']
-            # contract_balance = request.POST['contract_balance']
-            color = request.POST.get('color')
+            # Возвращаем данные формы обратно в шаблон
+            context_data = {
+                # 'total_pages': int(request.GET.get('total_pages', 1)),
+                # 'service': await sync_to_async(Services.objects.get)(id=row_id),
+                # 'id_id': data.get('id_id'),
+                'name': request.POST['name'],
+                'status': request.POST['status'],
+                'way': request.POST['way'],
+                'initiator': request.POST['initiator'],
+                'KTSSR': request.POST['KTSSR'],
+                'KOSGU': request.POST['KOSGU'],
+                'DopFC': request.POST['DopFC'],
+                'NMCC': request.POST['NMCC'],
+                'counterparty': request.POST['counterparty'],
+                'registration_number': request.POST['registration_number'],
+                'contract_number': request.POST['contract_number'],
+                'contract_date': request.POST['contract_date'],
+                'end_date': request.POST['end_date'],
+                'contract_price': request.POST['contract_price'],
+                'january_one': request.POST['january_one'],
+                'february': request.POST['february'],
+                'march': request.POST['march'],
+                'april': request.POST['april'],
+                'may': request.POST['may'],
+                'june': request.POST['june'],
+                'july': request.POST['july'],
+                'august': request.POST['august'],
+                'september': request.POST['september'],
+                'october': request.POST['october'],
+                'november': request.POST['november'],
+                'december': request.POST['december'],
+                'january_two': request.POST['january_two'],
+                'date_january_one': request.POST['date_january_one'],
+                'sum_january_one': request.POST['sum_january_one'],
+                'date_february': request.POST['date_february'],
+                'sum_february': request.POST['sum_february'],
+                'date_march': request.POST['date_march'],
+                'sum_march':  request.POST['sum_march'],
+                'date_april': request.POST['date_april'],
+                'sum_april': request.POST['sum_april'],
+                'date_may': request.POST['date_may'],
+                'sum_may': request.POST['sum_may'],
+                'date_june': request.POST['date_june'],
+                'sum_june': request.POST['sum_june'],
+                'date_july': request.POST['date_july'],
+                'sum_july': request.POST['sum_july'],
+                'date_august': request.POST['date_august'],
+                'sum_august': request.POST['sum_august'],
+                'date_september': request.POST['date_september'],
+                'sum_september': request.POST['sum_september'],
+                'date_october': request.POST['date_october'],
+                'sum_october': request.POST['sum_october'],
+                'date_november': request.POST['date_november'],
+                'sum_november': request.POST['sum_november'],
+                'date_december': request.POST['date_december'],
+                'sum_december': request.POST['sum_december'],
+                'date_january_two': request.POST['date_january_two'],
+                'sum_january_two': request.POST['sum_january_two'],
+                'execution': request.POST['execution'],
+                'contract_balance': request.POST['contract_balance'],
+                'execution_contract_fact': request.POST['execution_contract_fact'],
+                'execution_contract_plan': request.POST['execution_contract_plan'],
+                'saving': request.POST['saving'],
+                'color': request.POST['color'],
+                'page': int(request.GET.get('total_pages', 1)),
+                'keyword_one': request.GET.get('keyword_one', None),
+                'keyword_two': request.GET.get('keyword_two', None),
+                'selected_column_one': request.GET.get('selected_column_one', None),
+                'selected_column_two': request.GET.get('selected_column_two', None),
+                'page_user': 1,
+                'KOSGU_user': request.GET.get('KOSGU_user', None),
+                'keyword_one_user': request.GET.get('keyword_one_user', None),
+                'keyword_two_user': request.GET.get('keyword_two_user', None),
+                'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+                'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+                'page_user_two': 1,
+                'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+                'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+                'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+                'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
+            }
+
+            # total_pages = int(request.GET.get('total_pages', 1))
+
+            # name = request.POST['name']
+            # status = request.POST['status']
+            # way = request.POST['way']
+            # initiator = request.POST['initiator']
+            # KTSSR = request.POST['KTSSR']
+            # KOSGU = request.POST['KOSGU']
+            # DopFC = request.POST['DopFC']
+            # NMCC = request.POST['NMCC']
+            # # saving = request.POST['saving']
+            # counterparty = request.POST['counterparty']
+            # registration_number = request.POST['registration_number']
+            # contract_number = request.POST['contract_number']
+            # contract_date = request.POST['contract_date']
+            # end_date = request.POST['end_date']
+            # contract_price = request.POST['contract_price']
+            # # execution_contract_plan = request.POST['execution_contract_plan']
+            # january_one = request.POST['january_one']
+            # february = request.POST['february']
+            # march = request.POST['march']
+            # april = request.POST['april']
+            # may = request.POST['may']
+            # june = request.POST['june']
+            # july = request.POST['july']
+            # august = request.POST['august']
+            # september = request.POST['september']
+            # october = request.POST['october']
+            # november = request.POST['november']
+            # december = request.POST['december']
+            # january_two = request.POST['january_two']
+            # # execution_contract_fact = request.POST['execution_contract_fact']
+            # date_january_one = request.POST['date_january_one']
+            # sum_january_one = request.POST['sum_january_one']
+            # date_february = request.POST['date_february']
+            # sum_february = request.POST['sum_february']
+            # date_march = request.POST['date_march']
+            # sum_march = request.POST['sum_march']
+            # date_april = request.POST['date_april']
+            # sum_april = request.POST['sum_april']
+            # date_may = request.POST['date_may']
+            # sum_may = request.POST['sum_may']
+            # date_june = request.POST['date_june']
+            # sum_june = request.POST['sum_june']
+            # date_july = request.POST['date_july']
+            # sum_july = request.POST['sum_july']
+            # date_august = request.POST['date_august']
+            # sum_august = request.POST['sum_august']
+            # date_september = request.POST['date_september']
+            # sum_september = request.POST['sum_september']
+            # date_october = request.POST['date_october']
+            # sum_october = request.POST['sum_october']
+            # date_november = request.POST['date_november']
+            # sum_november = request.POST['sum_november']
+            # date_december = request.POST['date_december']
+            # sum_december = request.POST['sum_december']
+            # date_january_two = request.POST['date_january_two']
+            # sum_january_two = request.POST['sum_january_two']
+            # # execution = request.POST['execution']
+            # # contract_balance = request.POST['contract_balance']
+            # color = request.POST.get('color')
 
             # contract_price = NMCC
 
             # Создаем список месяцев
             months = [
-                january_one, february, march, april, may, june,
-                july, august, september, october, november, december,
-                january_two
+                context_data['january_one'], context_data['february'], context_data['march'], context_data['april'], context_data['may'], context_data['june'],
+                context_data['july'], context_data['august'], context_data['september'], context_data['october'], context_data['november'], context_data['december'],
+                context_data['january_two']
             ]
 
             # Асинхронно обрабатываем все месяцы
@@ -1719,63 +1896,65 @@ async def add_record(request):
             # Суммируем результат
             execution_contract_plan = sum(cleaned_numbers)
 
-            keyword_one = None
-            keyword_two = None
-            selected_column_one=None
-            selected_column_two=None
-            page = total_pages
+            # keyword_one = None
+            # keyword_two = None
+            # selected_column_one=None
+            # selected_column_two=None
+            # page = total_pages
 
             # return await skeleton(request, user, date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
-            page_user = 1
+            # page_user = 1
 
-            KOSGU_user = request.GET.get('KOSGU_user', None)
-            keyword_one_user = request.GET.get('keyword_one_user', None)
-            keyword_two_user = request.GET.get('keyword_two_user', None)
-            selected_column_one_user = request.GET.get('selected_column_one_user', None)
-            selected_column_two_user = request.GET.get('selected_column_two_user', None)
+            # KOSGU_user = request.GET.get('KOSGU_user', None)
+            # keyword_one_user = request.GET.get('keyword_one_user', None)
+            # keyword_two_user = request.GET.get('keyword_two_user', None)
+            # selected_column_one_user = request.GET.get('selected_column_one_user', None)
+            # selected_column_two_user = request.GET.get('selected_column_two_user', None)
 
-            page_user_two = 1
+            # page_user_two = 1
 
-            KOSGU_user_two = request.GET.get('KOSGU_user_two', None)
-            keyword_one_user_two = request.GET.get('keyword_one_user_two', None)
-            keyword_two_user_two = request.GET.get('keyword_two_user_two', None)
-            selected_column_one_user_two = request.GET.get('selected_column_one_user_two', None)
-            selected_column_two_user_two = request.GET.get('selected_column_two_user_two', None)
+            # KOSGU_user_two = request.GET.get('KOSGU_user_two', None)
+            # keyword_one_user_two = request.GET.get('keyword_one_user_two', None)
+            # keyword_two_user_two = request.GET.get('keyword_two_user_two', None)
+            # selected_column_one_user_two = request.GET.get('selected_column_one_user_two', None)
+            # selected_column_two_user_two = request.GET.get('selected_column_two_user_two', None)
 
-            # Формирование строки запроса
-            query_params = {
-                'page': page,
-                'keyword_one': keyword_one,
-                'keyword_two': keyword_two,
-                'selected_column_one': selected_column_one,
-                'selected_column_two': selected_column_two,
-                'page_user': page_user,
-                'KOSGU_user': KOSGU_user,
-                'keyword_one_user': keyword_one_user,
-                'keyword_two_user': keyword_two_user,
-                'selected_column_one_user': selected_column_one_user,
-                'selected_column_two_user': selected_column_two_user,
-                'page_user_two': page_user_two,
-                'KOSGU_user_two': KOSGU_user_two,
-                'keyword_one_user_two': keyword_one_user_two,
-                'keyword_two_user_two': keyword_two_user_two,
-                'selected_column_one_user_two': selected_column_one_user_two,
-                'selected_column_two_user_two': selected_column_two_user_two
-            }
+            # # Формирование строки запроса
+            # query_params = {
+            #     'page': page,
+            #     'keyword_one': keyword_one,
+            #     'keyword_two': keyword_two,
+            #     'selected_column_one': selected_column_one,
+            #     'selected_column_two': selected_column_two,
+            #     'page_user': page_user,
+            #     'KOSGU_user': KOSGU_user,
+            #     'keyword_one_user': keyword_one_user,
+            #     'keyword_two_user': keyword_two_user,
+            #     'selected_column_one_user': selected_column_one_user,
+            #     'selected_column_two_user': selected_column_two_user,
+            #     'page_user_two': page_user_two,
+            #     'KOSGU_user_two': KOSGU_user_two,
+            #     'keyword_one_user_two': keyword_one_user_two,
+            #     'keyword_two_user_two': keyword_two_user_two,
+            #     'selected_column_one_user_two': selected_column_one_user_two,
+            #     'selected_column_two_user_two': selected_column_two_user_two
+            # }
 
-            if contract_price:
-                if f"{execution_contract_plan:g}" != contract_price:
+            if context_data['contract_price']:
+                if f"{execution_contract_plan:g}" != context_data['contract_price']:
                     await sync_to_async(messages.error)(request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
 
-                    # Перенаправление с несколькими параметрами
-                    return redirect(f"/?{urlencode(query_params)}")
+                    return render(request, 'add.html', context_data)
+
+                    # # Перенаправление с несколькими параметрами
+                    # return redirect(f"/?{urlencode(query_params)}")
 
             # Создаем список сумм месяцев
             sum_months = [
-                sum_january_one, sum_february, sum_march, sum_april, sum_may, sum_june,
-                sum_july, sum_august, sum_september, sum_october, sum_november, sum_december,
-                sum_january_two
+                context_data['sum_january_one'], context_data['sum_february'], context_data['sum_march'], context_data['sum_april'], context_data['sum_may'], context_data['sum_june'],
+                context_data['sum_july'], context_data['sum_august'], context_data['sum_september'], context_data['sum_october'], context_data['sum_november'], context_data['sum_december'],
+                context_data['sum_january_two']
             ]
 
             # Асинхронно обрабатываем все месяцы
@@ -1784,37 +1963,43 @@ async def add_record(request):
             # Суммируем результат
             execution_contract_fact = sum(cleaned_numbers)
 
-            if execution_contract_plan != execution_contract_fact and status == 'Исполнено':
+            if execution_contract_plan != execution_contract_fact and context_data['status'] == 'Исполнено':
                 await sync_to_async(messages.error)(request, 'Нельзя выставить статус "Исполнено" при неравенстве ячеек «Исполнение контракта (факт)» и «Исполнение контракта (план)»')
 
-                # Перенаправление с несколькими параметрами
-                return redirect(f"/?{urlencode(query_params)}")
+                return render(request, 'add.html', context_data)
 
-            saving = await clean_number(NMCC) - await clean_number(contract_price)
+                # # Перенаправление с несколькими параметрами
+                # return redirect(f"/?{urlencode(query_params)}")
 
-            if await clean_number(contract_price) == 0:
-                execution = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
+            saving = await clean_number(context_data['NMCC']) - await clean_number(context_data['contract_price'])
+
+            if await clean_number(context_data['contract_price']) == 0:
+                context_data['execution'] = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
             else:
-                execution = round(await clean_number(execution_contract_fact) / await clean_number(contract_price), 2) * 100
+                context_data['execution'] = round(await clean_number(execution_contract_fact) / await clean_number(context_data['contract_price']), 2) * 100
 
-            contract_balance = await clean_number(contract_price) - await clean_number(execution_contract_fact)
+            contract_balance = await clean_number(context_data['contract_price']) - await clean_number(execution_contract_fact)
 
             # user = request.user
 
             from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
             try:
-                Services_ = await sync_to_async(Services.objects.get)(name=name)
+                Services_ = await sync_to_async(Services.objects.get)(name=context_data['name'])
                 await sync_to_async(messages.error)(request, 'Вы добавляете дубликат в Наименовании')
 
-                # Перенаправление с несколькими параметрами
-                return redirect(f"/?{urlencode(query_params)}")
+                return render(request, 'add.html', context_data)
+
+                # # Перенаправление с несколькими параметрами
+                # return redirect(f"/?{urlencode(query_params)}")
             except MultipleObjectsReturned:
-                Services_ = await sync_to_async(lambda: Services.objects.filter(name=name).first())()
+                Services_ = await sync_to_async(lambda: Services.objects.filter(name=context_data['name']).first())()
                 await sync_to_async(messages.error)(request, 'Вы добавляете дубликат в Ниименовании')
 
-                # Перенаправление с несколькими параметрами
-                return redirect(f"/?{urlencode(query_params)}")
+                return render(request, 'add.html', context_data)
+
+                # # Перенаправление с несколькими параметрами
+                # return redirect(f"/?{urlencode(query_params)}")
             except ObjectDoesNotExist:
                 pass
 
@@ -1841,26 +2026,26 @@ async def add_record(request):
                 # В случае некорректного значения установить id_id на 1
                 id_id = 1
 
-            new_service = Services(id_id=id_id, name=name, status=status, way=way,
-                                initiator=initiator, KTSSR=KTSSR, KOSGU=KOSGU,
-                                DopFC=DopFC, NMCC=NMCC, saving=saving,
-                                counterparty=counterparty, registration_number=registration_number,
-                                contract_number=contract_number, contract_date=contract_date,
-                                end_date=end_date, contract_price=contract_price, execution_contract_plan=execution_contract_plan,
-                                january_one=january_one, february=february, march=march, april=april,
-                                may=may, june=june, july=july, august=august,
-                                september=september, october=october, november=november, december=december,
-                                january_two=january_two, execution_contract_fact=execution_contract_fact, date_january_one=date_january_one,
-                                sum_january_one=sum_january_one, date_february=date_february, sum_february=sum_february,
-                                date_march=date_march, sum_march=sum_march, date_april=date_april,
-                                sum_april=sum_april, date_may=date_may, sum_may=sum_may,
-                                date_june=date_june, sum_june=sum_june, date_july=date_july,
-                                sum_july=sum_july, date_august=date_august, sum_august=sum_august,
-                                date_september=date_september, sum_september=sum_september, date_october=date_october,
-                                sum_october=sum_october, date_november=date_november, sum_november=sum_november,
-                                date_december=date_december, sum_december=sum_december, date_january_two=date_january_two,
-                                sum_january_two=sum_january_two, execution=execution, contract_balance=contract_balance,
-                                color=color)
+            new_service = Services(id_id=id_id, name=context_data['name'], status=context_data['status'], way=context_data['way'],
+                                initiator=context_data['initiator'], KTSSR=context_data['KTSSR'], KOSGU=context_data['KOSGU'],
+                                DopFC=context_data['DopFC'], NMCC=context_data['NMCC'], saving=saving,
+                                counterparty=context_data['counterparty'], registration_number=context_data['registration_number'],
+                                contract_number=context_data['contract_number'], contract_date=context_data['contract_date'],
+                                end_date=context_data['end_date'], contract_price=context_data['contract_price'], execution_contract_plan=execution_contract_plan,
+                                january_one=context_data['january_one'], february=context_data['february'], march=context_data['march'], april=context_data['april'],
+                                may=context_data['may'], june=context_data['june'], july=context_data['july'], august=context_data['august'],
+                                september=context_data['september'], october=context_data['october'], november=context_data['november'], december=context_data['december'],
+                                january_two=context_data['january_two'], execution_contract_fact=execution_contract_fact, date_january_one=context_data['date_january_one'],
+                                sum_january_one=context_data['sum_january_one'], date_february=context_data['date_february'], sum_february=context_data['sum_february'],
+                                date_march=context_data['date_march'], sum_march=context_data['sum_march'], date_april=context_data['date_april'],
+                                sum_april=context_data['sum_april'], date_may=context_data['date_may'], sum_may=context_data['sum_may'],
+                                date_june=context_data['date_june'], sum_june=context_data['sum_june'], date_july=context_data['date_july'],
+                                sum_july=context_data['sum_july'], date_august=context_data['date_august'], sum_august=context_data['sum_august'],
+                                date_september=context_data['date_september'], sum_september=context_data['sum_september'], date_october=context_data['date_october'],
+                                sum_october=context_data['sum_october'], date_november=context_data['date_november'], sum_november=context_data['sum_november'],
+                                date_december=context_data['date_december'], sum_december=context_data['sum_december'], date_january_two=context_data['date_january_two'],
+                                sum_january_two=context_data['sum_january_two'], execution=context_data['execution'], contract_balance=contract_balance,
+                                color=context_data['color'])
 
             await sync_to_async(new_service.save)()
 
@@ -1890,15 +2075,21 @@ async def add_record(request):
 
             if total_cost_1 < (total_cost_3 or total_cost_5 or total_cost_7 or total_cost_9):
                 await sync_to_async(new_service.delete)()
-                await sync_to_async(messages.error)(request, 'Запрещено внесить новую строку, если после ее ввода сумма контактов по соответствующему КЦСР, КОСГУ и ДопФК превысит значение поля «Лимиты»')
-                # Перенаправление с несколькими параметрами
-                return redirect(f"/?{urlencode(query_params)}")
+                await sync_to_async(messages.error)(request, 'Запрещено вносить новую строку, если после ее ввода сумма контактов по соответствующему КЦСР, КОСГУ и ДопФК превысит значение поля «Лимиты»')
+
+                return render(request, 'add.html', context_data)
+
+                # # Перенаправление с несколькими параметрами
+                # return redirect(f"/?{urlencode(query_params)}")
 
             if total_cost_2 < (total_cost_4 or total_cost_5 or total_cost_8 or total_cost_10):
                 await sync_to_async(new_service.delete)()
-                await sync_to_async(messages.error)(request, 'Запрещено внесить новую строку, если после ее ввода сумма контактов по соответствующему КЦСР, КОСГУ и ДопФК превысит значение поля «Лимиты»')
-                # Перенаправление с несколькими параметрами
-                return redirect(f"/?{urlencode(query_params)}")
+                await sync_to_async(messages.error)(request, 'Запрещено вносить новую строку, если после ее ввода сумма контактов по соответствующему КЦСР, КОСГУ и ДопФК превысит значение поля «Лимиты»')
+
+                return render(request, 'add.html', context_data)
+
+                # # Перенаправление с несколькими параметрами
+                # return redirect(f"/?{urlencode(query_params)}")
 
             from django.db.models import Q
             # Services_ = await sync_to_async(Services.objects.get)(
@@ -1906,7 +2097,7 @@ async def add_record(request):
             # )
 
             Services_2016100000_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100000')
             ))
 
             execution_contract_fact_sum_2016100000 = 0
@@ -1914,7 +2105,7 @@ async def add_record(request):
                 execution_contract_fact_sum_2016100000 += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
 
             Services_2016100092_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100092')
             ))
 
             execution_contract_fact_sum_2016100092 = 0
@@ -1922,7 +2113,7 @@ async def add_record(request):
                 execution_contract_fact_sum_2016100092 += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
 
             Services_planned_2016100000_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000') & Q(status='Запланировано')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100000') & Q(status='Запланировано')
             ))
 
             contract_price_sum_planned_2016100000 = 0
@@ -1930,7 +2121,7 @@ async def add_record(request):
                 contract_price_sum_planned_2016100000 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_off_planned_2016100092_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092') & Q(status='Запланировано')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100092') & Q(status='Запланировано')
             ))
 
             contract_price_sum_off_planned_2016100092 = 0
@@ -1938,7 +2129,7 @@ async def add_record(request):
                 contract_price_sum_off_planned_2016100092 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_bargaining_2016100000_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000') & Q(status='В торгах')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100000') & Q(status='В торгах')
             ))
 
             contract_price_sum_bargaining_2016100000 = 0
@@ -1946,7 +2137,7 @@ async def add_record(request):
                 contract_price_sum_bargaining_2016100000 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_off_bargaining_2016100092_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092') & Q(status='В торгах')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100092') & Q(status='В торгах')
             ))
 
             contract_price_sum_off_bargaining_2016100092 = 0
@@ -1954,7 +2145,7 @@ async def add_record(request):
                 contract_price_sum_off_bargaining_2016100092 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_concluded_2016100000_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000') & Q(status='Заключено')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100000') & Q(status='Заключено')
             ))
 
             contract_price_sum_concluded_2016100000 = 0
@@ -1962,7 +2153,7 @@ async def add_record(request):
                 contract_price_sum_concluded_2016100000 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_off_concluded_2016100092_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092') & Q(status='Заключено')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100092') & Q(status='Заключено')
             ))
 
             contract_price_sum_off_concluded_2016100092 = 0
@@ -1970,7 +2161,7 @@ async def add_record(request):
                 contract_price_sum_off_concluded_2016100092 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_completed_2016100000_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100000') & Q(status='Исполнено')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100000') & Q(status='Исполнено')
             ))
 
             contract_price_sum_completed_2016100000 = 0
@@ -1978,7 +2169,7 @@ async def add_record(request):
                 contract_price_sum_completed_2016100000 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_off_completed_2016100092_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR='2016100092') & Q(status='Исполнено')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR='2016100092') & Q(status='Исполнено')
             ))
 
             contract_price_sum_off_completed_2016100092 = 0
@@ -1986,7 +2177,7 @@ async def add_record(request):
                 contract_price_sum_off_completed_2016100092 += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
             Services_way_ = await sync_to_async(list)(Services.objects.filter(
-                Q(KOSGU=KOSGU) & Q(DopFC=DopFC) & Q(KTSSR=KTSSR) & Q(status=status) & Q(way='п.4 ч.1 ст.93')
+                Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC']) & Q(KTSSR=context_data['KTSSR']) & Q(status=context_data['status']) & Q(way='п.4 ч.1 ст.93')
             ))
             contract_price_sum_way = 0
             execution_contract_fact_sum_way = 0
@@ -1996,13 +2187,15 @@ async def add_record(request):
 
             try:
                 ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
-                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                    Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC'])
                 )
             except:
                 await sync_to_async(messages.error)(request, 'Нет сопоставления КОСГУ с ДопФК')
 
-                # Перенаправление с несколькими параметрами
-                return redirect(f"/?{urlencode(query_params)}")
+                return render(request, 'add.html', context_data)
+
+                # # Перенаправление с несколькими параметрами
+                # return redirect(f"/?{urlencode(query_params)}")
 
             ServicesVault_.off_budget_planned = contract_price_sum_off_planned_2016100092
 
@@ -2020,9 +2213,9 @@ async def add_record(request):
 
             ServicesVault_.budget_completed = contract_price_sum_completed_2016100000
 
-            if KTSSR == '2016100092':
+            if context_data['KTSSR'] == '2016100092':
                 ServicesVault_.off_budget_execution = execution_contract_fact_sum_2016100092
-            elif KTSSR == '2016100000':
+            elif context_data['KTSSR'] == '2016100000':
                 ServicesVault_.budget_execution = execution_contract_fact_sum_2016100000
 
             # Создаем список месяцев
@@ -2063,27 +2256,27 @@ async def add_record(request):
 
             if any(x < 0 for x in [await clean_number(ServicesVault_.budget_remainder), await clean_number(ServicesVault_.off_budget_remainder), await clean_number(ServicesVault_.budget_plans), await clean_number(ServicesVault_.off_budget_plans)]):
                 ServicesVault_.color = '#ffebeb'
-                color = '#ffebeb'
+                context_data['color'] = '#ffebeb'
             else:
                 ServicesVault_.color = ''
-                color = ''
+                context_data['color'] = ''
 
             await sync_to_async(ServicesVault_.save)()
 
             try:
 
                 ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
-                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                    Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC'])
                 )
 
                 ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
-                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+                    Q(KOSGU=context_data['KOSGU']) & Q(DopFC=context_data['DopFC'])
                 )
 
-                if status == 'Заключено' and KTSSR == '2016100092':
+                if context_data['status'] == 'Заключено' and context_data['KTSSR'] == '2016100092':
                     ServicesTwo_.off_budget_concluded = contract_price_sum_way
                     ServicesTwo_.off_budget_remainder = await clean_number(ServicesTwo_.off_budget_planned) - await clean_number(contract_price_sum_way)
-                elif status == 'Заключено' and KTSSR == '2016100000':
+                elif context_data['status'] == 'Заключено' and context_data['KTSSR'] == '2016100000':
                     ServicesTwo_.budget_concluded = contract_price_sum_way
                     ServicesTwo_.budget_remainder = await clean_number(ServicesTwo_.budget_planned) - await clean_number(contract_price_sum_way)
 
@@ -2105,7 +2298,7 @@ async def add_record(request):
             await sync_to_async(messages.success)(request, 'Данные успешно добавлены!')
 
             # Перенаправление с несколькими параметрами
-            return redirect(f"/?{urlencode(query_params)}")
+            return redirect(f"/?{urlencode(context_data)}")
 
             # return await skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user)
         except Services.DoesNotExist:
