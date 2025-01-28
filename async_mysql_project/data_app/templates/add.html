@@ -31,6 +31,7 @@
                     <input type="text" class="form-control" id="name" name="name" maxlength="255" required title="Максимальное количество значений 255" value="{{ name }}">
                 </div>
                 <div class="form-item">
+                    <p>Текущий статус: <strong>{{ status }}</strong></p>
                     <label for="status">Статус</label>
                     <select class="form-control" id="status" name="status" required title="Выберите статус">
                         <option value="" {% if status == "" %}selected{% endif %}>Выберите статус</option>
@@ -44,17 +45,17 @@
                     <label for="way">Способ закупки</label>
                     <select class="form-control" id="way" name="way" required title="Выберите статус">
                         <option value="" {% if way == "" %}selected{% endif %}>Выберите cпособ закупки</option>
-                        <option value="Запрос котировок" {% if status == "Запрос котировок" %}selected{% endif %}>Запрос котировок</option>
-                        <option value="ОАЭФ" {% if status == "ОАЭФ" %}selected{% endif %}>ОАЭФ</option>
-                        <option value="п.1 ч.1 ст.93" {% if status == "п.1 ч.1 ст.93" %}selected{% endif %}>п.1 ч.1 ст.93</option>
-                        <option value="п.4 ч.1 ст.93" {% if status == "п.4 ч.1 ст.93" %}selected{% endif %}>п.4 ч.1 ст.93</option>
-                        <option value="п.8 ч.1 ст.93" {% if status == "п.8 ч.1 ст.93" %}selected{% endif %}>п.8 ч.1 ст.93</option>
-                        <option value="п.9 ч.1 ст.93" {% if status == "п.9 ч.1 ст.93" %}selected{% endif %}>п.9 ч.1 ст.93</option>
-                        <option value="п.12 ч.1 ст.93" {% if status == "п.12 ч.1 ст.93" %}selected{% endif %}>п.12 ч.1 ст.93</option>
-                        <option value="п.23 ч.1 ст.93" {% if status == "п.23 ч.1 ст.93" %}selected{% endif %}>п.23 ч.1 ст.93</option>
-                        <option value="п.25 ч.1 ст.93" {% if status == "п.25 ч.1 ст.93" %}selected{% endif %}>п.25 ч.1 ст.93</option>
-                        <option value="п.29 ч.1 ст.93" {% if status == "п.29 ч.1 ст.93" %}selected{% endif %}>п.29 ч.1 ст.93</option>
-                        <option value="п.32 ч.1 ст.93" {% if status == "п.32 ч.1 ст.93" %}selected{% endif %}>п.32 ч.1 ст.93</option>
+                        <option value="Запрос котировок" {% if way == "Запрос котировок" %}selected{% endif %}>Запрос котировок</option>
+                        <option value="ОАЭФ" {% if way == "ОАЭФ" %}selected{% endif %}>ОАЭФ</option>
+                        <option value="п.1 ч.1 ст.93" {% if way == "п.1 ч.1 ст.93" %}selected{% endif %}>п.1 ч.1 ст.93</option>
+                        <option value="п.4 ч.1 ст.93" {% if way == "п.4 ч.1 ст.93" %}selected{% endif %}>п.4 ч.1 ст.93</option>
+                        <option value="п.8 ч.1 ст.93" {% if way == "п.8 ч.1 ст.93" %}selected{% endif %}>п.8 ч.1 ст.93</option>
+                        <option value="п.9 ч.1 ст.93" {% if way == "п.9 ч.1 ст.93" %}selected{% endif %}>п.9 ч.1 ст.93</option>
+                        <option value="п.12 ч.1 ст.93" {% if way == "п.12 ч.1 ст.93" %}selected{% endif %}>п.12 ч.1 ст.93</option>
+                        <option value="п.23 ч.1 ст.93" {% if way == "п.23 ч.1 ст.93" %}selected{% endif %}>п.23 ч.1 ст.93</option>
+                        <option value="п.25 ч.1 ст.93" {% if way == "п.25 ч.1 ст.93" %}selected{% endif %}>п.25 ч.1 ст.93</option>
+                        <option value="п.29 ч.1 ст.93" {% if way == "п.29 ч.1 ст.93" %}selected{% endif %}>п.29 ч.1 ст.93</option>
+                        <option value="п.32 ч.1 ст.93" {% if way == "п.32 ч.1 ст.93" %}selected{% endif %}>п.32 ч.1 ст.93</option>
                     </select>
                 </div>
                 <div class="form-item">
