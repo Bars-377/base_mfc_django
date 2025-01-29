@@ -29,12 +29,12 @@
             <!-- Поле для ввода названия услуги -->
             <div class="form-item">
                 <label for="budget_planned">Бюджет (Запланировано)</label>
-                <input type="text" class="form-control form-control-neverov" id="budget_planned" name="budget_planned" value="{{ service_user_two.budget_planned }}"
+                <input type="text" class="form-control form-control-neverov" id="budget_planned" name="budget_planned" value="{% if service_user_two.budget_planned %}{{ service_user_two.budget_planned }}{% else %}{{ budget_planned }}{% endif %}"
                     step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="off_budget_planned">Внебюджет (Запланировано)</label>
-                <input type="text" class="form-control form-control-neverov" id="off_budget_planned" name="off_budget_planned" value="{{ service_user_two.off_budget_planned }}"
+                <input type="text" class="form-control form-control-neverov" id="off_budget_planned" name="off_budget_planned" value="{% if service_user_two.off_budget_planned %}{{ service_user_two.off_budget_planned }}{% else %}{{ off_budget_planned }}{% endif %}"
                     step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
 

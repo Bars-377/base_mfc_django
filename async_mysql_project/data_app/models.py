@@ -71,7 +71,7 @@ class Services(models.Model):
     def __str__(self):
         return self.name
 
-class ServicesTwo(models.Model):
+class Services_Three(models.Model):
     id = models.BigAutoField(primary_key=True)  # Поле id как первичный ключ
     id_id = models.CharField(max_length=255, verbose_name='ID', default='Unknown ID')
     KOSGU = models.CharField(max_length=255, verbose_name='KOSGU', default='Unknown KOSGU')
@@ -92,7 +92,7 @@ class ServicesTwo(models.Model):
     def __str__(self):
         return self.id_id
 
-class ServicesVault(models.Model):
+class Services_Two(models.Model):
     id = models.BigAutoField(primary_key=True)  # Поле id как первичный ключ
     id_id = models.CharField(max_length=255, verbose_name='ID', default='Unknown ID')
     name = models.CharField(max_length=255, verbose_name='Name', default='Unknown Name')
