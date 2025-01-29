@@ -827,24 +827,18 @@ class ContractProcessor:
 
         await sync_to_async(ServicesVault_.save)()
 
-    async def process_services_two(self, contract_price_sum_way):
+    async def process_services_two(self, contract_price_sum_way, ServicesVault_, ServicesTwo_):
         try:
-            from django.db.models import Q
+            if self.context_data['status']:
 
-            ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
-                Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
-            )
+                from django.db.models import Q
 
-            ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
-                Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
-            )
-
-            if self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2016100092':
-                ServicesTwo_.off_budget_concluded = contract_price_sum_way
-                ServicesTwo_.off_budget_remainder = await clean_number(ServicesVault_.off_budget_planned) - await clean_number(contract_price_sum_way)
-            elif self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2016100000':
-                ServicesTwo_.budget_concluded = contract_price_sum_way
-                ServicesTwo_.budget_remainder = await clean_number(ServicesVault_.budget_planned) - await clean_number(contract_price_sum_way)
+                if self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2016100092':
+                    ServicesTwo_.off_budget_concluded = contract_price_sum_way if contract_price_sum_way else ServicesTwo_.off_budget_concluded
+                    ServicesTwo_.off_budget_remainder = await clean_number(ServicesTwo_.off_budget_planned) - await clean_number(contract_price_sum_way)
+                elif self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2016100000':
+                    ServicesTwo_.budget_concluded = contract_price_sum_way if contract_price_sum_way else ServicesTwo_.budget_concluded
+                    ServicesTwo_.budget_remainder = await clean_number(ServicesTwo_.budget_planned) - await clean_number(contract_price_sum_way)
 
             if any(x < 0 for x in [await clean_number(ServicesVault_.budget_remainder),
                                 await clean_number(ServicesVault_.off_budget_remainder),
@@ -932,6 +926,34 @@ class ContractProcessor:
     async def total_costs_message(self):
         await sync_to_async(messages.error)(self.request, 'Запрещено вносить новую строку, если после ее ввода сумма контактов по соответствующему КЦСР, КОСГУ и ДопФК превысит значение поля «Лимиты»')
 
+    async def process_update_user(self):
+        from django.db.models import Q
+
+        # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
+        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
+        # )
+
+        ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
+            Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
+        )
+
+        await self.process_services_two(None, None, ServicesTwo_)
+
+        await self.message_service_update()
+
+        # redirect(f"/?{urlencode(self.context_data)}")
+
+        # Кодируем query-параметры
+        query_string = urlencode(self.context_data)
+
+        # Формируем URL с query-параметрами
+        redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
+
+        # Перенаправляем пользователя
+        return HttpResponseRedirect(redirect_url)
+
+        # Другие операции, такие как сохранение сервиса и т.д.
+
     async def process_update(self):
         # print('ПОПАЛ_FF')
         # if not await self.validate_Services():
@@ -965,9 +987,6 @@ class ContractProcessor:
 
             return render(self.request, 'edit.html', self.context_data)
 
-        print('ПОПАЛ_1')
-        print(self.context_data['contract_price'])
-
         execution_contract_plan = await self.calculate_execution_plan()
         execution_contract_fact = await self.calculate_execution_fact()
         saving = await clean_number(self.context_data['NMCC']) - await clean_number(self.context_data['contract_price'])
@@ -978,9 +997,6 @@ class ContractProcessor:
             self.context_data['execution'] = round(await clean_number(execution_contract_fact) / await clean_number(self.context_data['contract_price']), 2) * 100
 
         self.context_data['contract_balance'] = await clean_number(self.context_data['contract_price']) - await clean_number(execution_contract_fact)
-
-        print('ПОПАЛ_2')
-        print(self.context_data['contract_price'])
 
         await self.update_service(saving, execution_contract_plan, execution_contract_fact)
 
@@ -994,9 +1010,6 @@ class ContractProcessor:
         for service in Services_way_:
             contract_price_sum_way += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
             execution_contract_fact_sum_way += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
-
-        print('ПОПАЛ_3')
-        print(self.context_data['contract_price'])
 
         ServicesVault_ = await self.validate_ServicesVault()
 
@@ -1023,15 +1036,21 @@ class ContractProcessor:
 
         await sync_to_async(ServicesVault_.save)()
 
-        print('ПОПАЛ_4')
-
         ServicesVault_ = await self.validate_ServicesVault()
 
         await self.process_budget(ServicesVault_)
 
-        print('ПОПАЛ_5')
+        # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
+        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
+        # )
 
-        await self.process_services_two(contract_price_sum_way)
+        ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
+            Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
+        )
+
+        print(ServicesVault_)
+
+        await self.process_services_two(contract_price_sum_way, ServicesVault_, ServicesTwo_)
 
         await self.message_service_update()
 
@@ -1144,7 +1163,15 @@ class ContractProcessor:
 
         await self.process_budget(ServicesVault_)
 
-        await self.process_services_two(contract_price_sum_way)
+        # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
+        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
+        # )
+
+        ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
+            Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
+        )
+
+        await self.process_services_two(contract_price_sum_way, ServicesVault_, ServicesTwo_)
 
         await self.message_service_add()
 
@@ -1243,7 +1270,15 @@ class ContractProcessor:
 
         await self.process_budget(ServicesVault_)
 
-        await self.process_services_two(contract_price_sum_way)
+        ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
+            Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
+        )
+
+        ServicesTwo_ = await sync_to_async(ServicesTwo.objects.get)(
+            Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
+        )
+
+        await self.process_services_two(contract_price_sum_way, ServicesVault_, ServicesTwo_)
 
         await self.message_service_delete()
 
@@ -1697,146 +1732,252 @@ async def update_record(request, row_id):
 async def update_record_user(request, row_id):
     if request.method == 'POST':
         try:
-            data = request.POST
 
-            id_id = data.get('id_id')
-            name = data.get('name')
-            KOSGU = data.get('KOSGU')
-            DopFC = data.get('DopFC')
-            budget_limit = data.get('budget_limit')
-            off_budget_limit = data.get('off_budget_limit')
-            budget_planned = data.get('budget_planned')
-            off_budget_planned = data.get('off_budget_planned')
-            budget_bargaining = data.get('budget_bargaining')
-            off_budget_bargaining = data.get('off_budget_bargaining')
-            budget_concluded = data.get('budget_concluded')
-            off_budget_concluded = data.get('off_budget_concluded')
-            budget_completed = data.get('budget_completed')
-            off_budget_completed = data.get('off_budget_completed')
-            budget_execution = data.get('budget_execution')
-            off_budget_execution = data.get('off_budget_execution')
-            budget_remainder = data.get('budget_remainder')
-            off_budget_remainder = data.get('off_budget_remainder')
-            budget_plans = data.get('budget_plans')
-            off_budget_plans = data.get('off_budget_plans')
-            color = data.get('color')
+            # Возвращаем данные формы обратно в шаблон
+            context_data = {
+                'service_user': await sync_to_async(ServicesVault.objects.get)(id=row_id),
+                'id_id': request.POST['id_id'],
+                'name': request.POST['name'],
+                # 'status': request.POST['status'],
+                # 'way': request.POST['way'],
+                # 'initiator': request.POST['initiator'],
+                # 'KTSSR': request.POST['KTSSR'],
+                'KOSGU': request.POST['KOSGU'],
+                'DopFC': request.POST['DopFC'],
+                # 'NMCC': request.POST['NMCC'],
+                # 'counterparty': request.POST['counterparty'],
+                # 'registration_number': request.POST['registration_number'],
+                # 'contract_number': request.POST['contract_number'],
+                # 'contract_date': request.POST['contract_date'],
+                # 'end_date': request.POST['end_date'],
+                # 'contract_price': request.POST['contract_price'],
+                # 'january_one': request.POST['january_one'],
+                # 'february': request.POST['february'],
+                # 'march': request.POST['march'],
+                # 'april': request.POST['april'],
+                # 'may': request.POST['may'],
+                # 'june': request.POST['june'],
+                # 'july': request.POST['july'],
+                # 'august': request.POST['august'],
+                # 'september': request.POST['september'],
+                # 'october': request.POST['october'],
+                # 'november': request.POST['november'],
+                # 'december': request.POST['december'],
+                # 'january_two': request.POST['january_two'],
+                # 'date_january_one': request.POST['date_january_one'],
+                # 'sum_january_one': request.POST['sum_january_one'],
+                # 'date_february': request.POST['date_february'],
+                # 'sum_february': request.POST['sum_february'],
+                # 'date_march': request.POST['date_march'],
+                # 'sum_march':  request.POST['sum_march'],
+                # 'date_april': request.POST['date_april'],
+                # 'sum_april': request.POST['sum_april'],
+                # 'date_may': request.POST['date_may'],
+                # 'sum_may': request.POST['sum_may'],
+                # 'date_june': request.POST['date_june'],
+                # 'sum_june': request.POST['sum_june'],
+                # 'date_july': request.POST['date_july'],
+                # 'sum_july': request.POST['sum_july'],
+                # 'date_august': request.POST['date_august'],
+                # 'sum_august': request.POST['sum_august'],
+                # 'date_september': request.POST['date_september'],
+                # 'sum_september': request.POST['sum_september'],
+                # 'date_october': request.POST['date_october'],
+                # 'sum_october': request.POST['sum_october'],
+                # 'date_november': request.POST['date_november'],
+                # 'sum_november': request.POST['sum_november'],
+                # 'date_december': request.POST['date_december'],
+                # 'sum_december': request.POST['sum_december'],
+                # 'date_january_two': request.POST['date_january_two'],
+                # 'sum_january_two': request.POST['sum_january_two'],
+                # 'execution': request.POST['execution'],
+                # 'contract_balance': request.POST['contract_balance'],
+                # 'execution_contract_fact': request.POST['execution_contract_fact'],
+                # 'execution_contract_plan': request.POST['execution_contract_plan'],
+                # 'saving': request.POST['saving'],
 
-            # Найдите запись по ID и обновите цвет
-            service = await sync_to_async(ServicesVault.objects.get)(id=row_id)
+                'budget_limit': request.POST['budget_limit'],
+                'off_budget_limit': request.POST['off_budget_limit'],
+                'budget_planned': request.POST['budget_planned'],
+                'off_budget_planned': request.POST['off_budget_planned'],
+                'budget_bargaining': request.POST['budget_bargaining'],
+                'off_budget_bargaining': request.POST['off_budget_bargaining'],
+                'budget_concluded': request.POST['budget_concluded'],
+                'off_budget_concluded': request.POST['off_budget_concluded'],
+                'budget_completed': request.POST['budget_completed'],
+                'off_budget_completed': request.POST['off_budget_completed'],
+                'budget_completed': request.POST['budget_completed'],
+                'budget_execution': request.POST['budget_execution'],
+                'off_budget_execution': request.POST['off_budget_execution'],
+                'budget_remainder': request.POST['budget_remainder'],
+                'off_budget_remainder': request.POST['off_budget_remainder'],
+                'budget_plans': request.POST['budget_plans'],
+                'off_budget_plans': request.POST['off_budget_plans'],
 
-            service.id_id = id_id
-            service.name = name
-            service.KOSGU = KOSGU
-            service.DopFC = DopFC
-            service.budget_limit = budget_limit
-            service.off_budget_limit = off_budget_limit
-            service.budget_planned = budget_planned
-            service.off_budget_planned = off_budget_planned
-            service.budget_bargaining = budget_bargaining
-            service.off_budget_bargaining = off_budget_bargaining
-            service.budget_concluded = budget_concluded
-            service.off_budget_concluded = off_budget_concluded
-            service.budget_completed = budget_completed
-            service.off_budget_completed = off_budget_completed
-            service.budget_execution = budget_execution
-            service.off_budget_execution = off_budget_execution
-            service.budget_remainder = budget_remainder
-            service.off_budget_remainder = off_budget_remainder
-            service.budget_plans = budget_plans
-            service.off_budget_plans = off_budget_plans
-            service.color = color
-
-            await sync_to_async(service.save)()
-
-            try:
-                from django.db.models import Q
-
-                ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
-                    Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
-                )
-
-                # Создаем список месяцев
-                budget = [
-                    ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0,
-                    ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0,
-                    ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0,
-                    ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0
-                ]
-
-                # Асинхронно обрабатываем все месяцы
-                cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in budget))
-
-                # Суммируем результат
-                ServicesVault_.budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
-
-                # Создаем список месяцев
-                off_budget = [
-                    ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0,
-                    ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0,
-                    ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0,
-                    ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0
-                ]
-
-                # Асинхронно обрабатываем все месяцы
-                cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in off_budget))
-
-                # Суммируем результат
-                ServicesVault_.off_budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
-
-                await sync_to_async(ServicesVault_.save)()
-            except Exception as e:
-                # Вывод подробной информации об ошибке
-                print(f"Поймано исключение: {type(e).__name__}")
-                print(f"Сообщение об ошибке: {str(e)}")
-                import traceback
-                print("Трассировка стека (stack trace):")
-                traceback.print_exc()
-
-            await sync_to_async(messages.success)(request, "Редактирование прошло успешно.")
-
-            page = 1
-            keyword_one = None
-            keyword_two = None
-            selected_column_one = None
-            selected_column_two = None
-
-            page_user = int(request.GET.get('page_user', 1))
-            KOSGU_user = request.GET.get('KOSGU_user', None)
-            keyword_one_user = request.GET.get('keyword_one_user', None)
-            keyword_two_user = request.GET.get('keyword_two_user', None)
-            selected_column_one_user = request.GET.get('selected_column_one_user', None)
-            selected_column_two_user = request.GET.get('selected_column_two_user', None)
-
-            page_user_two = int(request.GET.get('page_user_two', 1))
-            KOSGU_user_two = request.GET.get('KOSGU_user_two', None)
-            keyword_one_user_two = request.GET.get('keyword_one_user_two', None)
-            keyword_two_user_two = request.GET.get('keyword_two_user_two', None)
-            selected_column_one_user_two = request.GET.get('selected_column_one_user_two', None)
-            selected_column_two_user_two = request.GET.get('selected_column_two_user_two', None)
-
-            # Формирование строки запроса
-            query_params = {
-                'page': page,
-                'keyword_one': keyword_one,
-                'keyword_two': keyword_two,
-                'selected_column_one': selected_column_one,
-                'selected_column_two': selected_column_two,
-                'page_user': page_user,
-                'KOSGU_user': KOSGU_user,
-                'keyword_one_user': keyword_one_user,
-                'keyword_two_user': keyword_two_user,
-                'selected_column_one_user': selected_column_one_user,
-                'selected_column_two_user': selected_column_two_user,
-                'page_user_two': page_user_two,
-                'KOSGU_user_two': KOSGU_user_two,
-                'keyword_one_user_two': keyword_one_user_two,
-                'keyword_two_user_two': keyword_two_user_two,
-                'selected_column_one_user_two': selected_column_one_user_two,
-                'selected_column_two_user_two': selected_column_two_user_two
+                'color': request.POST['color'],
+                'row_id_user': row_id,
+                'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
+                'keyword_one': request.GET.get('keyword_one', None),
+                'keyword_two': request.GET.get('keyword_two', None),
+                'selected_column_one': request.GET.get('selected_column_one', None),
+                'selected_column_two': request.GET.get('selected_column_two', None),
+                'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
+                'KOSGU_user': request.GET.get('KOSGU_user', None),
+                'keyword_one_user': request.GET.get('keyword_one_user', None),
+                'keyword_two_user': request.GET.get('keyword_two_user', None),
+                'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+                'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+                'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1,
+                'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+                'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+                'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+                'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
             }
 
-            # Перенаправление с несколькими параметрами
-            return redirect(f"/?{urlencode(query_params)}")
+            # data = request.POST
+
+            # id_id = data.get('id_id')
+            # name = data.get('name')
+            # KOSGU = data.get('KOSGU')
+            # DopFC = data.get('DopFC')
+            # budget_limit = data.get('budget_limit')
+            # off_budget_limit = data.get('off_budget_limit')
+            # budget_planned = data.get('budget_planned')
+            # off_budget_planned = data.get('off_budget_planned')
+            # budget_bargaining = data.get('budget_bargaining')
+            # off_budget_bargaining = data.get('off_budget_bargaining')
+            # budget_concluded = data.get('budget_concluded')
+            # off_budget_concluded = data.get('off_budget_concluded')
+            # budget_completed = data.get('budget_completed')
+            # off_budget_completed = data.get('off_budget_completed')
+            # budget_execution = data.get('budget_execution')
+            # off_budget_execution = data.get('off_budget_execution')
+            # budget_remainder = data.get('budget_remainder')
+            # off_budget_remainder = data.get('off_budget_remainder')
+            # budget_plans = data.get('budget_plans')
+            # off_budget_plans = data.get('off_budget_plans')
+            # color = data.get('color')
+
+            # # Найдите запись по ID и обновите цвет
+            # service = await sync_to_async(ServicesVault.objects.get)(id=row_id)
+
+            context_data['service_user'].id_id = context_data['id_id']
+            context_data['service_user'].name = context_data['name']
+            context_data['service_user'].KOSGU = context_data['KOSGU']
+            context_data['service_user'].DopFC = context_data['DopFC']
+            context_data['service_user'].budget_limit = context_data['budget_limit']
+            context_data['service_user'].off_budget_limit = context_data['off_budget_limit']
+            context_data['service_user'].budget_planned = context_data['budget_planned']
+            context_data['service_user'].off_budget_planned = context_data['off_budget_planned']
+            context_data['service_user'].budget_bargaining = context_data['budget_bargaining']
+            context_data['service_user'].off_budget_bargaining = context_data['off_budget_bargaining']
+            context_data['service_user'].budget_concluded = context_data['budget_concluded']
+            context_data['service_user'].off_budget_concluded = context_data['off_budget_concluded']
+            context_data['service_user'].budget_completed = context_data['budget_completed']
+            context_data['service_user'].off_budget_completed = context_data['off_budget_completed']
+            context_data['service_user'].budget_execution = context_data['budget_execution']
+            context_data['service_user'].off_budget_execution = context_data['off_budget_execution']
+            context_data['service_user'].budget_remainder = context_data['budget_remainder']
+            context_data['service_user'].off_budget_remainder = context_data['off_budget_remainder']
+            context_data['service_user'].budget_plans = context_data['budget_plans']
+            context_data['service_user'].off_budget_plans = context_data['off_budget_plans']
+            context_data['service_user'].color = context_data['color']
+
+            await sync_to_async(context_data['service_user'].save)()
+
+            processor = ContractProcessor(context_data, request)
+            return await processor.process_update_user()
+
+            # try:
+            #     from django.db.models import Q
+
+            #     ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
+            #         Q(KOSGU=KOSGU) & Q(DopFC=DopFC)
+            #     )
+
+            #     # Создаем список месяцев
+            #     budget = [
+            #         ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0,
+            #         ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0,
+            #         ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0,
+            #         ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0
+            #     ]
+
+            #     # Асинхронно обрабатываем все месяцы
+            #     cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in budget))
+
+            #     # Суммируем результат
+            #     ServicesVault_.budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
+
+            #     # Создаем список месяцев
+            #     off_budget = [
+            #         ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0,
+            #         ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0,
+            #         ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0,
+            #         ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0
+            #     ]
+
+            #     # Асинхронно обрабатываем все месяцы
+            #     cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in off_budget))
+
+            #     # Суммируем результат
+            #     ServicesVault_.off_budget_remainder = sum(cleaned_numbers)
+
+            #     await sync_to_async(ServicesVault_.save)()
+            # except Exception as e:
+            #     # Вывод подробной информации об ошибке
+            #     print(f"Поймано исключение: {type(e).__name__}")
+            #     print(f"Сообщение об ошибке: {str(e)}")
+            #     import traceback
+            #     print("Трассировка стека (stack trace):")
+            #     traceback.print_exc()
+
+            # await sync_to_async(messages.success)(request, "Редактирование прошло успешно.")
+
+            # page = 1
+            # keyword_one = None
+            # keyword_two = None
+            # selected_column_one = None
+            # selected_column_two = None
+
+            # page_user = int(request.GET.get('page_user', 1))
+            # KOSGU_user = request.GET.get('KOSGU_user', None)
+            # keyword_one_user = request.GET.get('keyword_one_user', None)
+            # keyword_two_user = request.GET.get('keyword_two_user', None)
+            # selected_column_one_user = request.GET.get('selected_column_one_user', None)
+            # selected_column_two_user = request.GET.get('selected_column_two_user', None)
+
+            # page_user_two = int(request.GET.get('page_user_two', 1))
+            # KOSGU_user_two = request.GET.get('KOSGU_user_two', None)
+            # keyword_one_user_two = request.GET.get('keyword_one_user_two', None)
+            # keyword_two_user_two = request.GET.get('keyword_two_user_two', None)
+            # selected_column_one_user_two = request.GET.get('selected_column_one_user_two', None)
+            # selected_column_two_user_two = request.GET.get('selected_column_two_user_two', None)
+
+            # # Формирование строки запроса
+            # query_params = {
+            #     'page': page,
+            #     'keyword_one': keyword_one,
+            #     'keyword_two': keyword_two,
+            #     'selected_column_one': selected_column_one,
+            #     'selected_column_two': selected_column_two,
+            #     'page_user': page_user,
+            #     'KOSGU_user': KOSGU_user,
+            #     'keyword_one_user': keyword_one_user,
+            #     'keyword_two_user': keyword_two_user,
+            #     'selected_column_one_user': selected_column_one_user,
+            #     'selected_column_two_user': selected_column_two_user,
+            #     'page_user_two': page_user_two,
+            #     'KOSGU_user_two': KOSGU_user_two,
+            #     'keyword_one_user_two': keyword_one_user_two,
+            #     'keyword_two_user_two': keyword_two_user_two,
+            #     'selected_column_one_user_two': selected_column_one_user_two,
+            #     'selected_column_two_user_two': selected_column_two_user_two
+            # }
+
+            # # Перенаправление с несколькими параметрами
+            # return redirect(f"/?{urlencode(query_params)}")
 
         except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)

@@ -29,12 +29,12 @@
             <!-- Поле для ввода названия услуги -->
             <div class="form-item">
                 <label for="budget_limit">Бюджет (Лимиты)</label>
-                <input type="text" class="form-control form-control-neverov" id="budget_limit" name="budget_limit" value="{{ service_user.budget_limit }}"
+                <input type="text" class="form-control form-control-neverov" id="budget_limit" name="budget_limit" value="{% if service_user.budget_limit %}{{ service_user.budget_limit }}{% else %}{{ budget_limit }}{% endif %}"
                     step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
             <div class="form-item">
                 <label for="off_budget_limit">Внебюджет (Лимиты)</label>
-                <input type="text" class="form-control form-control-neverov" id="off_budget_limit" name="off_budget_limit" value="{{ service_user.off_budget_limit }}"
+                <input type="text" class="form-control form-control-neverov" id="off_budget_limit" name="off_budget_limit" value="{% if service_user.off_budget_limit %}{{ service_user.off_budget_limit }}{% else %}{{ off_budget_limit }}{% endif %}"
                     step="0.01" min="0" max="99999999.99" required title="Максимальное значение 99999999.99">
             </div>
 
