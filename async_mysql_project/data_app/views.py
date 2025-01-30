@@ -94,6 +94,8 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
             query = await sync_to_async(filter_func)(query)
         return query
 
+    from django.db.models import Q
+
     filters = []
     if contract_date == 'None' and end_date == 'None':
         filters.append(lambda q: q.exclude(Q(contract_date__regex=pattern_dd_mm_yyyy) | Q(contract_date__regex=pattern_yyyy_mm_dd) | Q(end_date__regex=pattern_dd_mm_yyyy) | Q(end_date__regex=pattern_yyyy_mm_dd)))
@@ -747,7 +749,7 @@ class ContractProcessor:
                 setattr(service, key, value)
         await sync_to_async(service.save)()
 
-    async def save_service(self, saving, execution_contract_plan, execution_contract_fact, new_service):
+    async def creation_new_service(self, saving, execution_contract_plan, execution_contract_fact, new_service):
         # Получаем следующий ID
         from django.db import connection
 
@@ -786,9 +788,11 @@ class ContractProcessor:
         # Добавляем contract_balance в объект new_service
         setattr(new_service, 'contract_balance', contract_balance)
 
-        await sync_to_async(new_service.save)()
+        return new_service
+        # await sync_to_async(new_service.save)()
 
     async def calculate_contract_sums(self, KTSSR, status):
+        """Получаем сумму всех contract_price либо execution_contract_fact"""
         from django.db.models import Q
 
         # Общий фильтр для обоих случаев
@@ -800,8 +804,16 @@ class ContractProcessor:
         else:
             field_to_sum = 'execution_contract_fact'
 
+        print(filters)
+        print('------------------')
+        print(field_to_sum)
+
+        print('------------------')
+
         # Асинхронно выполняем агрегацию
         total_sum = await sync_to_async(self._aggregate_sum)(filters, field_to_sum)
+
+        print('POPAL', total_sum)
 
         # Очищаем число, если это необходимо
         return await clean_number(total_sum if total_sum not in [None, 'None', ''] else 0)
@@ -1004,6 +1016,9 @@ class ContractProcessor:
 
         Services_Two_.budget_concluded = await self.calculate_contract_sums('2016100000', 'Заключено')
 
+        print(await self.calculate_contract_sums('2016100092', 'Заключено'))
+        print(await self.calculate_contract_sums('2016100000', 'Заключено'))
+
         Services_Two_.off_budget_completed = await self.calculate_contract_sums('2016100092', 'Исполнено')
 
         Services_Two_.budget_completed = await self.calculate_contract_sums('2016100000', 'Исполнено')
@@ -1038,8 +1053,6 @@ class ContractProcessor:
         #     print('FDSFDSDFSSDFFSD')
         # except KeyError:
         #     condition = False
-
-        """ДОДЕЛАТЬ ТУТ ДОБАВИТЬ ПРЕДВАРИТЕЛЬНЫХ ОБРАБОТОК"""
 
         Services_Two_ = await self.validate_Services_Two()
 
@@ -1299,9 +1312,13 @@ class ContractProcessor:
         self.context_data['contract_balance'] = await clean_number(self.context_data['contract_price']) - await clean_number(execution_contract_fact)
 
         new_service = Services()
-        await self.save_service(saving, execution_contract_plan, execution_contract_fact, new_service)
+        new_service = await self.creation_new_service(saving, execution_contract_plan, execution_contract_fact, new_service)
 
         query_user = await sync_to_async(lambda: Services_Two.objects.all())()
+
+        """ТУТ ДОДЕЛАТЬ"""
+
+        await sync_to_async(new_service.save)()
 
         if not await self.total_costs(query_user, new_service):
             await self.total_costs_message()

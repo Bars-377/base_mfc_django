@@ -40,7 +40,7 @@
                 </div>
                 <div class="form-item">
                     <label for="status">Статус</label>
-                    <select class="form-control" id="status" name="status" required title="Выберите статус">
+                    <select class="form-control" id="status" onchange="checkMandatoryFields()" name="status" required title="Выберите статус">
                         {% with current_status=service.status|default:status %}
                         <option value="" {% if current_status == "" %}selected{% endif %}>Выберите статус</option>
                         <option value="В торгах" {% if current_status == "В торгах" %}selected{% endif %}>В торгах</option>
@@ -367,7 +367,9 @@
 
         function checkMandatoryFields() {
             const status = document.getElementById('status').value;
+            console.log('Статус:', status);
             const isMandatory = status === 'Заключено' || status === 'Исполнено';
+            console.log('Обязательные поля:', isMandatory);
 
             // Получаем все обязательные поля
             const mandatoryFields = ['counterparty', 'contract_number', 'contract_date', 'end_date'];
@@ -376,8 +378,10 @@
                 const field = document.getElementById(fieldId);
                 if (isMandatory) {
                     field.setAttribute('required', 'required'); // Устанавливаем обязательность
+                    console.log(`Поле ${fieldId} установлено как обязательное`);
                 } else {
                     field.removeAttribute('required'); // Убираем обязательность
+                    console.log(`Поле ${fieldId} убрано из обязательных`);
                 }
             });
         }
