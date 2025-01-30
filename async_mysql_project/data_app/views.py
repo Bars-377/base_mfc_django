@@ -613,7 +613,7 @@ async def edit_user_two(request, row_id):
 async def clean_number(value):
     if isinstance(value, (int, float)):
         return float(value)  # Уже число, возвращаем как есть
-    if not value or value.strip() == '':
+    if not value or value.strip() == '' or value == 'None':
         return 0.0  # Пустая строка обрабатывается как 0.0
     return float(value.replace(' ', '').replace(',', '.'))
 
@@ -784,74 +784,95 @@ class ContractProcessor:
     def _aggregate_sum(self, filters, field_to_sum):
         return Services.objects.filter(filters).aggregate(total_sum=Sum(field_to_sum, default=0))['total_sum']
 
-    async def process_budget(self, ServicesVault_):
+    async def process_budget_services_two(self, Services_Two_):
         # Создаем список месяцев
         budget = [
-            ServicesVault_.budget_limit if ServicesVault_.budget_limit not in [None, 'None', ''] else 0,
-            ServicesVault_.budget_bargaining if ServicesVault_.budget_bargaining not in [None, 'None', ''] else 0,
-            ServicesVault_.budget_concluded if ServicesVault_.budget_concluded not in [None, 'None', ''] else 0,
-            ServicesVault_.budget_completed if ServicesVault_.budget_completed not in [None, 'None', ''] else 0
+            Services_Two_.budget_limit if Services_Two_.budget_limit not in [None, 'None', ''] else 0,
+            Services_Two_.budget_bargaining if Services_Two_.budget_bargaining not in [None, 'None', ''] else 0,
+            Services_Two_.budget_concluded if Services_Two_.budget_concluded not in [None, 'None', ''] else 0,
+            Services_Two_.budget_completed if Services_Two_.budget_completed not in [None, 'None', ''] else 0
         ]
 
         # Асинхронно обрабатываем все месяцы
         cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in budget))
 
         # Суммируем результат
-        ServicesVault_.budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
+        Services_Two_.budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
 
         # Создаем список месяцев
         off_budget = [
-            ServicesVault_.off_budget_limit if ServicesVault_.off_budget_limit not in [None, 'None', ''] else 0,
-            ServicesVault_.off_budget_bargaining if ServicesVault_.off_budget_bargaining not in [None, 'None', ''] else 0,
-            ServicesVault_.off_budget_concluded if ServicesVault_.off_budget_concluded not in [None, 'None', ''] else 0,
-            ServicesVault_.off_budget_completed if ServicesVault_.off_budget_completed not in [None, 'None', ''] else 0
+            Services_Two_.off_budget_limit if Services_Two_.off_budget_limit not in [None, 'None', ''] else 0,
+            Services_Two_.off_budget_bargaining if Services_Two_.off_budget_bargaining not in [None, 'None', ''] else 0,
+            Services_Two_.off_budget_concluded if Services_Two_.off_budget_concluded not in [None, 'None', ''] else 0,
+            Services_Two_.off_budget_completed if Services_Two_.off_budget_completed not in [None, 'None', ''] else 0
         ]
 
         # Асинхронно обрабатываем все месяцы
         cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in off_budget))
 
         # Суммируем результат
-        ServicesVault_.off_budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
+        Services_Two_.off_budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
 
         # Расчет планов
-        ServicesVault_.budget_plans = await self.clean_number_two(ServicesVault_.budget_remainder) - await self.clean_number_two(ServicesVault_.budget_planned)
-        ServicesVault_.off_budget_plans = await self.clean_number_two(ServicesVault_.off_budget_remainder) - await self.clean_number_two(ServicesVault_.off_budget_planned)
+        Services_Two_.budget_plans = await self.clean_number_two(Services_Two_.budget_remainder) - await self.clean_number_two(Services_Two_.budget_planned)
+        Services_Two_.off_budget_plans = await self.clean_number_two(Services_Two_.off_budget_remainder) - await self.clean_number_two(Services_Two_.off_budget_planned)
 
-        if any(x < 0 for x in [await clean_number(ServicesVault_.budget_remainder),
-                            await clean_number(ServicesVault_.off_budget_remainder),
-                            await clean_number(ServicesVault_.budget_plans),
-                            await clean_number(ServicesVault_.off_budget_plans)]):
-            ServicesVault_.color = '#ffebeb'
+        if any(x < 0 for x in [await clean_number(Services_Two_.budget_remainder),
+                            await clean_number(Services_Two_.off_budget_remainder)
+                            # await clean_number(Services_Two_.budget_plans),
+                            # await clean_number(Services_Two_.off_budget_plans)
+                            ]):
+            Services_Two_.color = '#ffebeb'
         else:
-            ServicesVault_.color = ''
+            Services_Two_.color = ''
 
-        await sync_to_async(ServicesVault_.save)()
+        await sync_to_async(Services_Two_.save)()
 
-    async def process_services_two(self, contract_price_sum_way, ServicesTwo_, ServicesThree_):
+    # async def process_budget_services_three_final(self, ServicesThree_):
+    #     ServicesThree_.off_budget_remainder = await clean_number(ServicesTwo_.off_budget_planned) - await clean_number(contract_price_sum_way)
+
+    async def process_budget_services_three(self, contract_price_sum_way, ServicesTwo_):
         try:
-            try:
 
-                from django.db.models import Q
+            from django.db.models import Q
 
-                if self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2016100092':
-                    ServicesThree_.off_budget_concluded = contract_price_sum_way if contract_price_sum_way else ServicesTwo_.off_budget_concluded
-                    ServicesThree_.off_budget_remainder = await clean_number(ServicesTwo_.off_budget_planned) - await clean_number(contract_price_sum_way)
-                elif self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2016100000':
-                    ServicesThree_.budget_concluded = contract_price_sum_way if contract_price_sum_way else ServicesTwo_.budget_concluded
-                    ServicesThree_.budget_remainder = await clean_number(ServicesTwo_.budget_planned) - await clean_number(contract_price_sum_way)
+            Services_Three_ = await sync_to_async(Services_Three.objects.get)(
+                Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
+            )
 
-                if any(x < 0 for x in [await clean_number(ServicesThree_.budget_remainder),
-                                    await clean_number(ServicesThree_.off_budget_remainder),
-                                    await clean_number(ServicesThree_.budget_plans),
-                                    await clean_number(ServicesThree_.off_budget_plans)]):
-                    ServicesThree_.color = '#ffebeb'
-                else:
-                    ServicesThree_.color = ''
+            if contract_price_sum_way:
 
-                await sync_to_async(ServicesThree_.save)()
+                try:
 
-            except KeyError:
-                pass
+                    if self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2016100092':
+                        Services_Three_.off_budget_concluded = contract_price_sum_way if contract_price_sum_way else ServicesTwo_.off_budget_concluded
+                        # Services_Three_.off_budget_remainder = await clean_number(ServicesTwo_.off_budget_planned) - await clean_number(contract_price_sum_way)
+                    elif self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2016100000':
+                        Services_Three_.budget_concluded = contract_price_sum_way if contract_price_sum_way else ServicesTwo_.budget_concluded
+                        # Services_Three_.budget_remainder = await clean_number(ServicesTwo_.budget_planned) - await clean_number(contract_price_sum_way)
+
+                except KeyError:
+                    pass
+
+            await sync_to_async(Services_Three_.save)()
+
+            Services_Three_ = await sync_to_async(Services_Three.objects.get)(
+                Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
+            )
+
+            Services_Three_.budget_remainder = await clean_number(Services_Three_.budget_planned) - await clean_number(Services_Three_.budget_concluded)
+            Services_Three_.off_budget_remainder = await clean_number(Services_Three_.off_budget_planned) - await clean_number(Services_Three_.off_budget_concluded)
+
+            if any(x < 0 for x in [await clean_number(Services_Three_.budget_remainder),
+                                await clean_number(Services_Three_.off_budget_remainder)
+                                # await clean_number(Services_Three_.budget_planned),
+                                # await clean_number(Services_Three_.off_budget_planned)
+                                ]):
+                Services_Three_.color = '#ffebeb'
+            else:
+                Services_Three_.color = ''
+
+            await sync_to_async(Services_Three_.save)()
 
         except Exception as e:
             # Вывод подробной информации об ошибке
@@ -1026,7 +1047,7 @@ class ContractProcessor:
 
         Services_Two_ = await self.validate_Services_Two()
 
-        await self.process_budget(Services_Two_)
+        await self.process_budget_services_two(Services_Two_)
 
         # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
         #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
@@ -1059,15 +1080,23 @@ class ContractProcessor:
     async def process_update_user_two(self):
         from django.db.models import Q
 
+        # contract_price_sum_way, execution_contract_fact_sum_way = await self.Services_way(self.context_data['KTSSR'], self.context_data['status'])
+
         # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
         #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
         # )
 
-        Services_Three_ = await sync_to_async(Services_Three.objects.get)(
-            Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
-        )
+        Services_Two_ = await self.validate_Services_Two()
 
-        await self.process_services_two(None, None, Services_Three_)
+        await self.process_budget_services_two(Services_Two_)
+
+        # Services_Three_ = await sync_to_async(Services_Three.objects.get)(
+        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
+        # )
+
+        # await self.process_services_three(contract_price_sum_way, Services_Two_, Services_Three_)
+
+        await self.process_budget_services_three(None, Services_Two_)
 
         await self.message_service_update()
 
@@ -1172,17 +1201,17 @@ class ContractProcessor:
 
         Services_Two_ = await self.validate_Services_Two()
 
-        await self.process_budget(Services_Two_)
+        await self.process_budget_services_two(Services_Two_)
 
         # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
         #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
         # )
 
-        Services_Three_ = await sync_to_async(Services_Three.objects.get)(
-            Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
-        )
+        # Services_Three_ = await sync_to_async(Services_Three.objects.get)(
+        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
+        # )
 
-        await self.process_services_two(contract_price_sum_way, Services_Two_, Services_Three_)
+        await self.process_budget_services_three(contract_price_sum_way, Services_Two_)
 
         await self.message_service_update()
 
@@ -1299,17 +1328,17 @@ class ContractProcessor:
 
         Services_Two_ = await self.validate_Services_Two()
 
-        await self.process_budget(Services_Two_)
+        await self.process_budget_services_two(Services_Two_)
 
         # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
         #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
         # )
 
-        Services_Three_ = await sync_to_async(Services_Three.objects.get)(
-            Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
-        )
+        # Services_Three_ = await sync_to_async(Services_Three.objects.get)(
+        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
+        # )
 
-        await self.process_services_two(contract_price_sum_way, Services_Two_, Services_Three_)
+        await self.process_budget_services_three(contract_price_sum_way, Services_Two_)
 
         await self.message_service_add()
 
@@ -1409,17 +1438,17 @@ class ContractProcessor:
 
         Services_Two_ = await self.validate_Services_Two()
 
-        await self.process_budget(Services_Two_)
+        await self.process_budget_services_two(Services_Two_)
 
         Services_Two_ = await sync_to_async(Services_Two.objects.get)(
             Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
         )
 
-        Services_Three_ = await sync_to_async(Services_Three.objects.get)(
-            Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
-        )
+        # Services_Three_ = await sync_to_async(Services_Three.objects.get)(
+        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
+        # )
 
-        await self.process_services_two(contract_price_sum_way, Services_Two_, Services_Three_)
+        await self.process_budget_services_three(contract_price_sum_way, Services_Two_)
 
         await self.message_service_delete()
 
@@ -2258,7 +2287,7 @@ async def update_record_user_two(request, row_id):
             await sync_to_async(context_data['service_user_two'].save)()
 
             processor = ContractProcessor(context_data, request)
-            return await processor.process_update_user()
+            return await processor.process_update_user_two()
 
             # data = request.POST
 
