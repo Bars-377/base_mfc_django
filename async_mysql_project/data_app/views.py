@@ -14,6 +14,13 @@ from asgiref.sync import sync_to_async
 
 import asyncio
 
+async def clean_number(value):
+    if isinstance(value, (int, float)):
+        return float(value)  # Уже число, возвращаем как есть
+    if not value or value.strip() == '' or value == 'None':
+        return 0.0  # Пустая строка обрабатывается как 0.0
+    return float(value.replace(' ', '').replace(',', '.'))
+
 async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user, KOSGU_user_two, keyword_one_user_two, keyword_two_user_two, selected_column_one_user_two, selected_column_two_user_two, page_user_two):
     contract_date = None if contract_date == 'None' else contract_date
     end_date = None if end_date == 'None' else end_date
@@ -203,6 +210,24 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
         total_cost_17 = 0
         total_cost_18 = 0.00
 
+    # Получаем все записи из таблицы Services_Three
+    Services_Three_ = await sync_to_async(list)(Services_Three.objects.all())
+    total_cost_1_1 = 0
+    total_cost_1_2 = 0
+    total_cost_1_3 = 0
+    total_cost_1_4 = 0
+    total_cost_1_5 = 0
+    total_cost_1_6 = 0
+    for service in Services_Three_:
+        total_cost_1_1 += await clean_number(service.budget_planned)
+        total_cost_1_2 += await clean_number(service.off_budget_planned)
+        total_cost_1_3 += await clean_number(service.budget_concluded)
+        total_cost_1_4 += await clean_number(service.off_budget_concluded)
+        total_cost_1_5 += await clean_number(service.budget_remainder)
+        total_cost_1_6 += await clean_number(service.off_budget_remainder)
+
+    total_cost_1_7 = total_cost_17 - (total_cost_1_3 + total_cost_1_4)
+
     # Пагинация
     paginator = Paginator(query, per_page)
     services = await sync_to_async(paginator.get_page)(page)
@@ -290,6 +315,13 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
         'total_cost_16': total_cost_16,
         'total_cost_17': total_cost_17,
         'total_cost_18': total_cost_18,
+        'total_cost_1_1': total_cost_1_1,
+        'total_cost_1_2': total_cost_1_2,
+        'total_cost_1_3': total_cost_1_3,
+        'total_cost_1_4': total_cost_1_4,
+        'total_cost_1_5': total_cost_1_5,
+        'total_cost_1_6': total_cost_1_6,
+        'total_cost_1_7': total_cost_1_7,
         'selected_contract_date': contract_date,
         'selected_KOSGU_user': KOSGU_user,
         'selected_KOSGU_user_two': KOSGU_user_two,
@@ -609,13 +641,6 @@ async def edit_user_two(request, row_id):
     }
 
     return await sync_to_async(render)(request, 'edit_user_two.html', context)
-
-async def clean_number(value):
-    if isinstance(value, (int, float)):
-        return float(value)  # Уже число, возвращаем как есть
-    if not value or value.strip() == '' or value == 'None':
-        return 0.0  # Пустая строка обрабатывается как 0.0
-    return float(value.replace(' ', '').replace(',', '.'))
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
