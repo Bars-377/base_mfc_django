@@ -14,6 +14,16 @@ from asgiref.sync import sync_to_async
 
 import asyncio
 
+# async def clean_number(value):
+#     try:
+#         if isinstance(value, (int, float)):
+#             return float(value)  # Уже число, возвращаем как есть
+#         if not value or value.strip() == '' or value == 'None':
+#             return 0.0  # Пустая строка обрабатывается как 0.0
+#         return float(value.replace(' ', '').replace(',', '.'))
+#     except ValueError:
+#         return 0.0  # Пустая строка обрабатывается как 0.0
+
 async def clean_number(value):
     if isinstance(value, (int, float)):
         return float(value)  # Уже число, возвращаем как есть
@@ -1205,19 +1215,6 @@ class ContractProcessor:
             self.context_data['execution'] = round(await clean_number(execution_contract_fact) / await clean_number(self.context_data['contract_price']), 2) * 100
 
         self.context_data['contract_balance'] = await clean_number(self.context_data['contract_price']) - await clean_number(execution_contract_fact)
-
-        # new_service = Services()
-        # new_service = await self.creation_new_service(saving, execution_contract_plan, execution_contract_fact, new_service)
-
-        # Services_Two_ = await sync_to_async(lambda: Services_Two.objects.all())()
-
-        # """ТУТ ДОДЕЛАТЬ"""
-
-        # await sync_to_async(new_service.save)()
-
-        # Services_Two_ = await self.validate_Services_Two()
-
-        # await self.Services_Two_save(Services_Two_)
 
         await self.update_service(saving, execution_contract_plan, execution_contract_fact)
 

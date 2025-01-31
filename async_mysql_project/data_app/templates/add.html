@@ -35,8 +35,8 @@
                     <label for="status">Статус</label>
                     <select class="form-control" id="status" onchange="checkMandatoryFields()" name="status" required title="Выберите статус">
                         <option value="" {% if status == "" %}selected{% endif %}>Выберите статус</option>
-                        <option value="В торгах" {% if status == "В торгах" %}selected{% endif %}>В торгах</option>
                         <option value="Запланировано" {% if status == "Запланировано" %}selected{% endif %}>Запланировано</option>
+                        <option value="В торгах" {% if status == "В торгах" %}selected{% endif %}>В торгах</option>
                         <option value="Заключено" {% if status == "Заключено" %}selected{% endif %}>Заключено</option>
                         <option value="Исполнено" {% if status == "Исполнено" %}selected{% endif %}>Исполнено</option>
                     </select>
@@ -201,7 +201,7 @@
                 </div>
                 <div class="form-item">
                     <label for="sum_january_one">Сумма оплаты Январь (факт)</label>
-                    <input type="text" class="form-control" id="sum_january_one" name="sum_january_one" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_january_one }}">
+                    <input type="number" step="0.01" class="form-control" id="sum_january_one" name="sum_january_one" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ sum_january_one }}">
                 </div>
                 <div class="form-item">
                     <label for="date_february">Дата оплаты Февраль (факт)</label>
@@ -209,7 +209,7 @@
                 </div>
                 <div class="form-item">
                     <label for="sum_february">Сумма оплаты Февраль (факт)</label>
-                    <input type="text" class="form-control" id="sum_february" name="sum_february" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_february }}">
+                    <input type="number" step="0.01" class="form-control" id="sum_february" name="sum_february" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ sum_february }}">
                 </div>
                 <div class="form-item">
                     <label for="date_march">Дата оплаты Март (факт)</label>
@@ -217,7 +217,7 @@
                 </div>
                 <div class="form-item">
                     <label for="sum_march">Сумма оплаты Март (факт)</label>
-                    <input type="text" class="form-control" id="sum_march" name="sum_march" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_march }}">
+                    <input type="number" step="0.01" class="form-control" id="sum_march" name="sum_march" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ sum_march }}">
                 </div>
                 <div class="form-item">
                     <label for="date_april">Дата оплаты Апрель (факт)</label>
@@ -225,7 +225,7 @@
                 </div>
                 <div class="form-item">
                     <label for="sum_april">Сумма оплаты Апрель (факт)</label>
-                    <input type="text" class="form-control" id="sum_april" name="sum_april" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_april }}">
+                    <input type="number" step="0.01" class="form-control" id="sum_april" name="sum_april" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ sum_april }}">
                 </div>
                 <div class="form-item">
                     <label for="date_may">Дата оплаты Май (факт)</label>
@@ -233,7 +233,7 @@
                 </div>
                 <div class="form-item">
                     <label for="sum_may">Сумма оплаты Май (факт)</label>
-                    <input type="text" class="form-control" id="sum_may" name="sum_may" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_may }}">
+                    <input type="number" step="0.01" class="form-control" id="sum_may" name="sum_may" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ sum_may }}">
                 </div>
                 <div class="form-item">
                     <label for="date_june">Дата оплаты Июнь (факт)</label>
@@ -241,7 +241,7 @@
                 </div>
                 <div class="form-item">
                     <label for="sum_june">Сумма оплаты Июнь (факт)</label>
-                    <input type="text" class="form-control" id="sum_june" name="sum_june" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_june }}">
+                    <input type="number" step="0.01" class="form-control" id="sum_june" name="sum_june" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ sum_june }}">
                 </div>
                 <div class="form-item">
                     <label for="date_july">Дата оплаты Июль (факт)</label>
@@ -249,7 +249,7 @@
                 </div>
                 <div class="form-item">
                     <label for="sum_july">Сумма оплаты Июль (факт)</label>
-                    <input type="text" class="form-control" id="sum_july" name="sum_july" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_july }}">
+                    <input type="number" step="0.01" class="form-control" id="sum_july" name="sum_july" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ sum_july }}">
                 </div>
                 <div class="form-item">
                     <label for="date_august">Дата оплаты Август (факт)</label>
@@ -257,7 +257,7 @@
                 </div>
                 <div class="form-item">
                     <label for="sum_august">Сумма оплаты Август (факт)</label>
-                    <input type="text" class="form-control" id="sum_august" name="sum_august" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_august }}">
+                    <input type="number" step="0.01" class="form-control" id="sum_august" name="sum_august" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ sum_august }}">
                 </div>
                 <div class="form-item">
                     <label for="date_september">Дата оплаты Сентябрь (факт)</label>
@@ -265,7 +265,7 @@
                 </div>
                 <div class="form-item">
                     <label for="sum_september">Сумма оплаты Сентябрь (факт)</label>
-                    <input type="text" class="form-control" id="sum_september" name="sum_september" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_september }}">
+                    <input type="number" step="0.01" class="form-control" id="sum_september" name="sum_september" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ sum_september }}">
                 </div>
                 <div class="form-item">
                     <label for="date_october">Дата оплаты Октябрь (факт)</label>
@@ -273,7 +273,7 @@
                 </div>
                 <div class="form-item">
                     <label for="sum_october">Сумма оплаты Октябрь (факт)</label>
-                    <input type="text" class="form-control" id="sum_october" name="sum_october" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_october }}">
+                    <input type="number" step="0.01" class="form-control" id="sum_october" name="sum_october" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ sum_october }}">
                 </div>
                 <div class="form-item">
                     <label for="date_november">Дата оплаты Ноябрь (факт)</label>
@@ -281,7 +281,7 @@
                 </div>
                 <div class="form-item">
                     <label for="sum_november">Сумма оплаты Ноябрь (факт)</label>
-                    <input type="text" class="form-control" id="sum_november" name="sum_november" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_november }}">
+                    <input type="number" step="0.01" class="form-control" id="sum_november" name="sum_november" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ sum_november }}">
                 </div>
                 <div class="form-item">
                     <label for="date_december">Дата оплаты Декабрь (факт)</label>
@@ -289,7 +289,7 @@
                 </div>
                 <div class="form-item">
                     <label for="sum_december">Сумма оплаты Декабрь (факт)</label>
-                    <input type="text" class="form-control" id="sum_december" name="sum_december" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_december }}">
+                    <input type="number" step="0.01" class="form-control" id="sum_december" name="sum_december" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ sum_december }}">
                 </div>
                 <div class="form-item">
                     <label for="date_january_two">Дата оплаты Январь (факт)</label>
@@ -297,7 +297,7 @@
                 </div>
                 <div class="form-item">
                     <label for="sum_january_two">Сумма оплаты Январь (факт)</label>
-                    <input type="text" class="form-control" id="sum_january_two" name="sum_january_two" maxlength="255" title="Максимальное количество значений 255" value="{{ sum_january_two }}">
+                    <input type="number" step="0.01" class="form-control" id="sum_january_two" name="sum_january_two" min="0" max="99999999.99" title="Максимальное значение 99999999.99" value="{{ sum_january_two }}">
                 </div>
 
                 <input type="hidden" name="execution" value="{{ '' }}">  <!-- Скрытое поле для % исполнения (формула) -->
@@ -328,9 +328,14 @@
             }
         }
 
+        document.addEventListener('DOMContentLoaded', function() {
+            checkMandatoryFields(); // Вызов функции при загрузке страницы
+        });
+
         function checkMandatoryFields() {
             const status = document.getElementById('status').value;
             console.log('Статус:', status);
+
             const isMandatory = status === 'Заключено' || status === 'Исполнено';
             console.log('Обязательные поля:', isMandatory);
 
@@ -345,6 +350,36 @@
                 } else {
                     field.removeAttribute('required'); // Убираем обязательность
                     console.log(`Поле ${fieldId} убрано из обязательных`);
+                }
+            });
+
+            const isMandatoryTwo = status === 'В торгах' || status === 'Запланировано';
+            console.log('Обязательные поля:', isMandatoryTwo);
+
+            // Получаем все обязательные поля
+            const mandatoryFieldsTwo = ['date_january_one', 'sum_january_one',
+                                        'date_february', 'sum_february',
+                                        'date_march', 'sum_march',
+                                        'date_april', 'sum_april',
+                                        'date_may', 'sum_may',
+                                        'date_june', 'sum_june',
+                                        'date_july', 'sum_july',
+                                        'date_august', 'sum_august',
+                                        'date_september', 'sum_september',
+                                        'date_october', 'sum_october',
+                                        'date_november', 'sum_november',
+                                        'date_december', 'sum_december',
+                                        'date_january_two', 'sum_january_two'];
+
+            mandatoryFieldsTwo.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (isMandatoryTwo) {
+                    field.setAttribute('disabled', true); // Запрещаем редактирование
+                    field.value = ''; // Очищаем значение поля, если это необходимо
+                    console.log(`Поле ${fieldId} отключено для редактирования`);
+                } else {
+                    field.removeAttribute('disabled'); // Включаем редактирование
+                    console.log(`Поле ${fieldId} включено для редактирования`);
                 }
             });
         }
