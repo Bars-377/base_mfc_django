@@ -64,7 +64,7 @@ class Services(models.Model):
     color = models.CharField(max_length=255, verbose_name='Color', default='Unknown Color')
 
     class Meta:
-        db_table = 'services_base'  # Указываем имя таблицы в базе данных
+        db_table = 'services'  # Указываем имя таблицы в базе данных
         verbose_name = 'Service'
         verbose_name_plural = 'Services'
 
@@ -85,9 +85,9 @@ class Services_Three(models.Model):
     color = models.CharField(max_length=255, verbose_name='Color', default='Unknown Color')
 
     class Meta:
-        db_table = 'services_two'  # Указываем имя таблицы в базе данных
-        verbose_name = 'Service Two'
-        verbose_name_plural = 'Services Two'
+        db_table = 'services_three'  # Указываем имя таблицы в базе данных
+        verbose_name = 'Service Three'
+        verbose_name_plural = 'Services Three'
 
     def __str__(self):
         return self.id_id
@@ -117,9 +117,9 @@ class Services_Two(models.Model):
     color = models.CharField(max_length=255, verbose_name='Color', default='Unknown Color')
 
     class Meta:
-        db_table = 'services_vault'  # Указываем имя таблицы в базе данных
-        verbose_name = 'Service Vault'
-        verbose_name_plural = 'Service Vaults'
+        db_table = 'services_two'  # Указываем имя таблицы в базе данных
+        verbose_name = 'Service Two'
+        verbose_name_plural = 'Service Two'
 
     def __str__(self):
         return self.name

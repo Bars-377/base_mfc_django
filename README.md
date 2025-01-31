@@ -17,9 +17,11 @@
 
 2. Затем сделайте миграции:
 
-   python manage.py makemigrations
+   Зайти в дирректорию async_mysql_project
 
-   python manage.py migrate
+         python manage.py makemigrations
+
+         python manage.py migrate
 
 3. Запустить приложение:
 

@@ -702,14 +702,10 @@ class ContractProcessor:
             Services_ = await sync_to_async(Services.objects.get)(name=self.context_data['name'])
             # await sync_to_async(messages.error)(self.request, 'Вы добавляете дубликат в Наименовании')
 
-            print('validate_Services_1')
-
             return False
         except MultipleObjectsReturned:
             Services_ = await sync_to_async(lambda: Services.objects.filter(name=self.context_data['name']).first())()
             # await sync_to_async(messages.error)(self.request, 'Вы добавляете дубликат в Наименовании')
-
-            print('validate_Services_2')
 
             return False
         except ObjectDoesNotExist:
@@ -725,6 +721,8 @@ class ContractProcessor:
             'january_two'
         ]]
         cleaned_numbers = await asyncio.gather(*(clean_number(month) for month in months))
+        print('NEVEROV')
+        print(sum(cleaned_numbers))
         return sum(cleaned_numbers)
 
     async def calculate_execution_fact(self):
@@ -737,16 +735,17 @@ class ContractProcessor:
         return sum(cleaned_numbers)
 
     async def update_service(self, saving, execution_contract_plan, execution_contract_fact):
+        """Подсчёт Исполнение контракта (план) (формула) и Исполнение контракта (факт) (формула)"""
         service = self.context_data['service']
+
+        # Обновляем значения в self.context_data
+        self.context_data['saving'] = saving
+        self.context_data['execution_contract_plan'] = execution_contract_plan
+        self.context_data['execution_contract_fact'] = execution_contract_fact
+
         for key, value in self.context_data.items():
-            if key == saving:
-                setattr(service, key, saving)
-            elif key == execution_contract_plan:
-                setattr(service, key, execution_contract_plan)
-            elif key == execution_contract_fact:
-                setattr(service, key, execution_contract_fact)
-            else:
-                setattr(service, key, value)
+            setattr(service, key, value)
+
         await sync_to_async(service.save)()
 
     async def creation_new_service(self, saving, execution_contract_plan, execution_contract_fact, new_service):
@@ -804,16 +803,8 @@ class ContractProcessor:
         else:
             field_to_sum = 'execution_contract_fact'
 
-        print(filters)
-        print('------------------')
-        print(field_to_sum)
-
-        print('------------------')
-
         # Асинхронно выполняем агрегацию
         total_sum = await sync_to_async(self._aggregate_sum)(filters, field_to_sum)
-
-        print('POPAL', total_sum)
 
         # Очищаем число, если это необходимо
         return await clean_number(total_sum if total_sum not in [None, 'None', ''] else 0)
@@ -928,16 +919,16 @@ class ContractProcessor:
     async def message_service_delete(self):
         await sync_to_async(messages.success)(self.request, "Данные успешно удалены!")
 
-    async def aggregate_fields(self, query_user, fields):
+    async def aggregate_fields(self, fields):
         results = {}
         for field in fields:
             # Асинхронно выполняем агрегацию по каждому полю
-            result = await sync_to_async(lambda: query_user.aggregate(**{f'{field}__sum': Sum(field)}))()
+            result = await sync_to_async(lambda: Services_Two.objects.aggregate(**{f'{field}__sum': Sum(field)}))()
             # Получаем значение суммы или 0, если оно None
             results[field] = result[f'{field}__sum'] or 0
         return results
 
-    async def total_costs(self, query_user, new_service):
+    async def total_costs(self, new_service):
         # Определите список всех полей, которые нужно агрегировать
         fields = [
             'budget_limit',
@@ -953,7 +944,7 @@ class ContractProcessor:
         ]
 
         # Вызов функции для выполнения агрегации
-        aggregated_results = await self.aggregate_fields(query_user, fields)
+        aggregated_results = await self.aggregate_fields(fields)
 
         # Теперь вы можете получить значения из aggregated_results
         total_costs_calc = {
@@ -970,22 +961,22 @@ class ContractProcessor:
         }
 
         if total_costs_calc['total_cost_1'] < (total_costs_calc['total_cost_3'] or total_costs_calc['total_cost_5'] or total_costs_calc['total_cost_7'] or total_costs_calc['total_cost_9']):
-            await sync_to_async(new_service.delete)()
+            if new_service:
+                await sync_to_async(new_service.delete)()
             # await sync_to_async(messages.error)(self.request, 'Запрещено вносить новую строку, если после ее ввода сумма контактов по соответствующему КЦСР, КОСГУ и ДопФК превысит значение поля «Лимиты»')
-
             return False
             # return render(self.request, 'add.html', self.context_data)
 
-        if total_costs_calc['total_cost_2'] < (total_costs_calc['total_cost_4'] or total_costs_calc['total_cost_5'] or total_costs_calc['total_cost_8'] or total_costs_calc['total_cost_10']):
-            await sync_to_async(new_service.delete)()
+        if total_costs_calc['total_cost_2'] < (total_costs_calc['total_cost_4'] or total_costs_calc['total_cost_6'] or total_costs_calc['total_cost_8'] or total_costs_calc['total_cost_10']):
+            if new_service:
+                await sync_to_async(new_service.delete)()
             # await sync_to_async(messages.error)(self.request, 'Запрещено вносить новую строку, если после ее ввода сумма контактов по соответствующему КЦСР, КОСГУ и ДопФК превысит значение поля «Лимиты»')
-
             return False
             # return render(self.request, 'add.html', self.context_data)
         return True
 
     async def total_costs_message(self):
-        await sync_to_async(messages.error)(self.request, 'Запрещено вносить новую строку, если после ее ввода сумма контактов по соответствующему КЦСР, КОСГУ и ДопФК превысит значение поля «Лимиты»')
+        await sync_to_async(messages.error)(self.request, 'Запрещено вносить новую строку, если после ее ввода сумма контрактов по соответствующему КЦСР, КОСГУ и ДопФК превысит значение поля «Лимиты»')
 
     async def Services_way(self, KTSSR, status):
         from django.db.models import Q
@@ -1015,9 +1006,6 @@ class ContractProcessor:
         Services_Two_.off_budget_concluded = await self.calculate_contract_sums('2016100092', 'Заключено')
 
         Services_Two_.budget_concluded = await self.calculate_contract_sums('2016100000', 'Заключено')
-
-        print(await self.calculate_contract_sums('2016100092', 'Заключено'))
-        print(await self.calculate_contract_sums('2016100000', 'Заключено'))
 
         Services_Two_.off_budget_completed = await self.calculate_contract_sums('2016100092', 'Исполнено')
 
@@ -1151,6 +1139,29 @@ class ContractProcessor:
 
         # Другие операции, такие как сохранение сервиса и т.д.
 
+    async def process(self):
+        """Вычислительные операции после обновления или добавления записи"""
+        from django.db.models import Q
+
+        Services_way_ = await sync_to_async(list)(Services.objects.filter(
+            Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
+        ))
+        contract_price_sum_way = 0
+        execution_contract_fact_sum_way = 0
+        for service in Services_way_:
+            contract_price_sum_way += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+            execution_contract_fact_sum_way += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
+
+        Services_Two_ = await self.validate_Services_Two()
+
+        await self.Services_Two_save(Services_Two_)
+
+        Services_Two_ = await self.validate_Services_Two()
+
+        await self.process_budget_services_two(Services_Two_)
+
+        await self.process_budget_services_three(contract_price_sum_way, Services_Two_)
+
     async def process_update(self):
         # print('ПОПАЛ_FF')
         # if not await self.validate_Services():
@@ -1195,61 +1206,57 @@ class ContractProcessor:
 
         self.context_data['contract_balance'] = await clean_number(self.context_data['contract_price']) - await clean_number(execution_contract_fact)
 
+        # new_service = Services()
+        # new_service = await self.creation_new_service(saving, execution_contract_plan, execution_contract_fact, new_service)
+
+        # Services_Two_ = await sync_to_async(lambda: Services_Two.objects.all())()
+
+        # """ТУТ ДОДЕЛАТЬ"""
+
+        # await sync_to_async(new_service.save)()
+
+        # Services_Two_ = await self.validate_Services_Two()
+
+        # await self.Services_Two_save(Services_Two_)
+
         await self.update_service(saving, execution_contract_plan, execution_contract_fact)
 
-        from django.db.models import Q
+        await self.process()
 
-        Services_way_ = await sync_to_async(list)(Services.objects.filter(
-            Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
-        ))
-        contract_price_sum_way = 0
-        execution_contract_fact_sum_way = 0
-        for service in Services_way_:
-            contract_price_sum_way += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
-            execution_contract_fact_sum_way += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
+        if not await self.total_costs(None):
 
-        Services_Two_ = await self.validate_Services_Two()
+            self.context_data['contract_price'] = '0'
 
-        await self.Services_Two_save(Services_Two_)
+            await self.update_service(saving, execution_contract_plan, execution_contract_fact)
+            await self.process()
 
-        # ServicesVault_ = await self.validate_ServicesVault()
+            await self.total_costs_message()
+            return render(self.request, 'edit.html', self.context_data)
 
-        # ServicesVault_.off_budget_planned = await self.calculate_contract_sums('2016100092', 'Запланировано')
+        # await self.update_service(saving, execution_contract_plan, execution_contract_fact)
 
-        # ServicesVault_.budget_planned = await self.calculate_contract_sums('2016100000', 'Запланировано')
+        # from django.db.models import Q
 
-        # ServicesVault_.off_budget_bargaining = await self.calculate_contract_sums('2016100092', 'В торгах')
+        # Services_way_ = await sync_to_async(list)(Services.objects.filter(
+        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
+        # ))
+        # contract_price_sum_way = 0
+        # execution_contract_fact_sum_way = 0
+        # for service in Services_way_:
+        #     contract_price_sum_way += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+        #     execution_contract_fact_sum_way += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
 
-        # ServicesVault_.budget_bargaining = await self.calculate_contract_sums('2016100000', 'В торгах')
+        # Services_Two_ = await self.validate_Services_Two()
 
-        # ServicesVault_.off_budget_concluded = await self.calculate_contract_sums('2016100092', 'Заключено')
+        # await self.Services_Two_save(Services_Two_)
 
-        # ServicesVault_.budget_concluded = await self.calculate_contract_sums('2016100000', 'Заключено')
+        # Services_Two_ = await self.validate_Services_Two()
 
-        # ServicesVault_.off_budget_completed = await self.calculate_contract_sums('2016100092', 'Исполнено')
+        # await self.process_budget_services_two(Services_Two_)
 
-        # ServicesVault_.budget_completed = await self.calculate_contract_sums('2016100000', 'Исполнено')
+        # await self.process_budget_services_three(contract_price_sum_way, Services_Two_)
 
-        # if self.context_data['KTSSR'] == '2016100092':
-        #     ServicesVault_.off_budget_execution = await self.calculate_contract_sums('2016100092', None)
-        # elif self.context_data['KTSSR'] == '2016100000':
-        #     ServicesVault_.budget_execution = await self.calculate_contract_sums('2016100000', None)
-
-        # await sync_to_async(ServicesVault_.save)()
-
-        Services_Two_ = await self.validate_Services_Two()
-
-        await self.process_budget_services_two(Services_Two_)
-
-        # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
-        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
-        # )
-
-        # Services_Three_ = await sync_to_async(Services_Three.objects.get)(
-        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
-        # )
-
-        await self.process_budget_services_three(contract_price_sum_way, Services_Two_)
+        # await self.process()
 
         await self.message_service_update()
 
@@ -1267,17 +1274,17 @@ class ContractProcessor:
         # Другие операции, такие как сохранение сервиса и т.д.
 
     async def process_add(self):
-        if not await self.validate_Services():
-            print('ПОПАЛ_11')
-            await self.validate_Services_message()
+        # if not await self.validate_Services():
+        #     print('ПОПАЛ_11')
+        #     await self.validate_Services_message()
 
-            return render(self.request, 'add.html', self.context_data)
-        elif not await self.validate_Services_Two():
+        #     return render(self.request, 'add.html', self.context_data)
+        if not await self.validate_Services_Two():
             print('ПОПАЛ_22')
             await self.validate_Services_Two_message()
 
             return render(self.request, 'add.html', self.context_data)
-        if not await self.validate_execution_plan():
+        elif not await self.validate_execution_plan():
             print('ПОПАЛ_33')
             await self.validate_execution_plan_message()
 
@@ -1314,73 +1321,40 @@ class ContractProcessor:
         new_service = Services()
         new_service = await self.creation_new_service(saving, execution_contract_plan, execution_contract_fact, new_service)
 
-        query_user = await sync_to_async(lambda: Services_Two.objects.all())()
-
-        """ТУТ ДОДЕЛАТЬ"""
+        Services_Two_ = await sync_to_async(lambda: Services_Two.objects.all())()
 
         await sync_to_async(new_service.save)()
 
-        if not await self.total_costs(query_user, new_service):
+        Services_Two_ = await self.validate_Services_Two()
+
+        await self.Services_Two_save(Services_Two_)
+
+        if not await self.total_costs(new_service):
             await self.total_costs_message()
             return render(self.request, 'add.html', self.context_data)
 
-        Services_Two_ = await self.validate_Services_Two()
+        # from django.db.models import Q
 
-        await self.Services_Two_save(Services_Two_)
+        # Services_way_ = await sync_to_async(list)(Services.objects.filter(
+        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
+        # ))
+        # contract_price_sum_way = 0
+        # execution_contract_fact_sum_way = 0
+        # for service in Services_way_:
+        #     contract_price_sum_way += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+        #     execution_contract_fact_sum_way += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
 
-        from django.db.models import Q
+        # Services_Two_ = await self.validate_Services_Two()
 
-        Services_way_ = await sync_to_async(list)(Services.objects.filter(
-            Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
-        ))
-        contract_price_sum_way = 0
-        execution_contract_fact_sum_way = 0
-        for service in Services_way_:
-            contract_price_sum_way += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
-            execution_contract_fact_sum_way += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
+        # await self.Services_Two_save(Services_Two_)
 
-        Services_Two_ = await self.validate_Services_Two()
+        # Services_Two_ = await self.validate_Services_Two()
 
-        await self.Services_Two_save(Services_Two_)
+        # await self.process_budget_services_two(Services_Two_)
 
-        # ServicesVault_ = await self.validate_ServicesVault()
+        # await self.process_budget_services_three(contract_price_sum_way, Services_Two_)
 
-        # ServicesVault_.off_budget_planned = await self.calculate_contract_sums('2016100092', 'Запланировано')
-
-        # ServicesVault_.budget_planned = await self.calculate_contract_sums('2016100000', 'Запланировано')
-
-        # ServicesVault_.off_budget_bargaining = await self.calculate_contract_sums('2016100092', 'В торгах')
-
-        # ServicesVault_.budget_bargaining = await self.calculate_contract_sums('2016100000', 'В торгах')
-
-        # ServicesVault_.off_budget_concluded = await self.calculate_contract_sums('2016100092', 'Заключено')
-
-        # ServicesVault_.budget_concluded = await self.calculate_contract_sums('2016100000', 'Заключено')
-
-        # ServicesVault_.off_budget_completed = await self.calculate_contract_sums('2016100092', 'Исполнено')
-
-        # ServicesVault_.budget_completed = await self.calculate_contract_sums('2016100000', 'Исполнено')
-
-        # if self.context_data['KTSSR'] == '2016100092':
-        #     ServicesVault_.off_budget_execution = await self.calculate_contract_sums('2016100092', None)
-        # elif self.context_data['KTSSR'] == '2016100000':
-        #     ServicesVault_.budget_execution = await self.calculate_contract_sums('2016100000', None)
-
-        # await sync_to_async(ServicesVault_.save)()
-
-        Services_Two_ = await self.validate_Services_Two()
-
-        await self.process_budget_services_two(Services_Two_)
-
-        # ServicesVault_ = await sync_to_async(ServicesVault.objects.get)(
-        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
-        # )
-
-        # Services_Three_ = await sync_to_async(Services_Three.objects.get)(
-        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
-        # )
-
-        await self.process_budget_services_three(contract_price_sum_way, Services_Two_)
+        await self.process()
 
         await self.message_service_add()
 
@@ -1427,70 +1401,28 @@ class ContractProcessor:
 
         self.context_data['contract_balance'] = await clean_number(self.context_data['contract_price']) - await clean_number(execution_contract_fact)
 
-        # new_service = Services()
-        # await self.save_service(saving, execution_contract_plan, execution_contract_fact, new_service)
+        # from django.db.models import Q
 
-        # query_user = await sync_to_async(lambda: ServicesVault.objects.all())()
+        # Services_way_ = await sync_to_async(list)(Services.objects.filter(
+        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
+        # ))
+        # contract_price_sum_way = 0
+        # execution_contract_fact_sum_way = 0
+        # for service_ in Services_way_:
+        #     contract_price_sum_way += await clean_number(service_.contract_price if service_.contract_price not in [None, 'None', ''] else 0)
+        #     execution_contract_fact_sum_way += await clean_number(service_.execution_contract_fact if service_.execution_contract_fact not in [None, 'None', ''] else 0)
 
-        # if not await self.total_costs(query_user, new_service):
-        #     return render(self.request, 'add.html', self.context_data)
+        # Services_Two_ = await self.validate_Services_Two()
 
-        from django.db.models import Q
+        # await self.Services_Two_save(Services_Two_)
 
-        Services_way_ = await sync_to_async(list)(Services.objects.filter(
-            Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
-        ))
-        contract_price_sum_way = 0
-        execution_contract_fact_sum_way = 0
-        for service_ in Services_way_:
-            contract_price_sum_way += await clean_number(service_.contract_price if service_.contract_price not in [None, 'None', ''] else 0)
-            execution_contract_fact_sum_way += await clean_number(service_.execution_contract_fact if service_.execution_contract_fact not in [None, 'None', ''] else 0)
+        # Services_Two_ = await self.validate_Services_Two()
 
-        Services_Two_ = await self.validate_Services_Two()
+        # await self.process_budget_services_two(Services_Two_)
 
-        await self.Services_Two_save(Services_Two_)
+        # await self.process_budget_services_three(contract_price_sum_way, Services_Two_)
 
-        # # Удаление записи
-        # await sync_to_async(service.delete)()
-
-        # ServicesVault_ = await self.validate_ServicesVault()
-
-        # ServicesVault_.off_budget_planned = await self.calculate_contract_sums('2016100092', 'Запланировано')
-
-        # ServicesVault_.budget_planned = await self.calculate_contract_sums('2016100000', 'Запланировано')
-
-        # ServicesVault_.off_budget_bargaining = await self.calculate_contract_sums('2016100092', 'В торгах')
-
-        # ServicesVault_.budget_bargaining = await self.calculate_contract_sums('2016100000', 'В торгах')
-
-        # ServicesVault_.off_budget_concluded = await self.calculate_contract_sums('2016100092', 'Заключено')
-
-        # ServicesVault_.budget_concluded = await self.calculate_contract_sums('2016100000', 'Заключено')
-
-        # ServicesVault_.off_budget_completed = await self.calculate_contract_sums('2016100092', 'Исполнено')
-
-        # ServicesVault_.budget_completed = await self.calculate_contract_sums('2016100000', 'Исполнено')
-
-        # if self.context_data['KTSSR'] == '2016100092':
-        #     ServicesVault_.off_budget_execution = await self.calculate_contract_sums('2016100092', None)
-        # elif self.context_data['KTSSR'] == '2016100000':
-        #     ServicesVault_.budget_execution = await self.calculate_contract_sums('2016100000', None)
-
-        # await sync_to_async(ServicesVault_.save)()
-
-        Services_Two_ = await self.validate_Services_Two()
-
-        await self.process_budget_services_two(Services_Two_)
-
-        Services_Two_ = await sync_to_async(Services_Two.objects.get)(
-            Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
-        )
-
-        # Services_Three_ = await sync_to_async(Services_Three.objects.get)(
-        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
-        # )
-
-        await self.process_budget_services_three(contract_price_sum_way, Services_Two_)
+        await self.process()
 
         await self.message_service_delete()
 
