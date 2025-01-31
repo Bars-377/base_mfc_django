@@ -374,11 +374,10 @@
             mandatoryFieldsTwo.forEach(fieldId => {
                 const field = document.getElementById(fieldId);
                 if (isMandatoryTwo) {
-                    field.setAttribute('disabled', true); // Запрещаем редактирование
-                    field.value = ''; // Очищаем значение поля, если это необходимо
+                    field.setAttribute('readonly', true); // Запрещаем редактирование
                     console.log(`Поле ${fieldId} отключено для редактирования`);
                 } else {
-                    field.removeAttribute('disabled'); // Включаем редактирование
+                    field.removeAttribute('readonly'); // Включаем редактирование
                     console.log(`Поле ${fieldId} включено для редактирования`);
                 }
             });
