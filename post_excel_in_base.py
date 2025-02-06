@@ -5,8 +5,8 @@ from datetime import datetime
 
 # Установите соединение с базой данных
 conn = mysql.connector.connect(
-    # host='172.18.11.104',
-    host='localhost',
+    host='172.18.11.104',
+    # host='localhost',
     user='root',        # Замените на ваше имя пользователя
     password='enigma1418',    # Замените на ваш пароль
     database='basemfcdjango'
