@@ -765,7 +765,7 @@ class ContractProcessor:
         def get_latest_service():
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    SELECT id_id FROM services_base
+                    SELECT id_id FROM services
                     WHERE id_id REGEXP '^[0-9]+$'
                     ORDER BY CAST(id_id AS UNSIGNED) DESC
                     LIMIT 1
