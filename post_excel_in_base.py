@@ -78,44 +78,19 @@ try:
     df.iloc[0, 54] = 'Февраль (факт)' + ' ' + clean_string(df.iloc[0, 54])
     df.iloc[0, 56] = 'Февраль (факт)' + ' ' + clean_string(df.iloc[0, 56])
 
-    # file_path = 'C:/Users/neverov/Desktop/gos.xlsx'
-    # sheet_name = 'ЗАКУПКИ'  # Замените на имя вашего листа
-    # df = pd.read_excel(file_path, sheet_name=sheet_name, header=None, dtype=str) # Читаем все как строки
-    # print(df.iloc[0].fillna(''))
-    # exit()
-    # df = pd.read_excel(file_path, sheet_name=sheet_name, header=2,
-    #                 dtype={'№ п/п': str, 'Наименование закупки': str,
-    #                     'Статус (Выбор из списка констант)': str, 'Способ закупки (Выбор из списка констант)': str, 'Инициатор закупки (ИТ/АХО) (Выбор из списка констант)': str,
-    #                     'КЦСР (Выбор из списка констант)': str, 'КОСГУ (Выбор из списка констант)': str, 'ДопФК (Выбор из списка констант)': str,
-    #                     'НМЦК': str, 'Экономия': str, 'Контрагент': str,
-    #                     'Реестровый номер контракта (ЕИС)': str, 'Номер контракта': str, 'Дата контракта': str,
-    #                     'Окончание даты исполнения': str, 'Цена контракта (на 2024 год)': str, 'Исполнение контракта (план) (формула)': str,
-    #                     'Январь (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Май (план)': str, 'Июнь (план)': str, 'Июль (план)': str,
-    #                     'Август (план)': str, 'Сентябрь (план)': str, 'Октябрь (план)': str,
-    #                     'Ноябрь (план)': str, 'Декабрь (план)': str, 'Январь (план)': str,
-    #                     'Исполнение контракта (факт) (формула)': str, 'дата оплаты': str, 'сумма оплаты': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str,
-    #                     'Февраль (план)': str, 'Март (план)': str, 'Апрель (план)': str})
+    list = []
+
+    for col in range(df.shape[1]):
+        list.append(df.iloc[0, col])
+
+    def convert_to_float(x):
+        # Удаляем неразрывные пробелы и другие пробелы
+        if isinstance(x, str):
+            x = x.replace('\xa0', '').strip()  # Удаляем неразрывные пробелы и обрезаем пробелы
+        try:
+            return float(x) if pd.notnull(x) and x != '' else None
+        except ValueError:
+            return 'None'  # Возвращаем None, если не удалось конвертировать
 
     def extract_number(value, default="0.0"):
         """Извлекает первое число из строки, если оно есть."""
@@ -151,6 +126,11 @@ try:
         return '', str(value)
 
     def safe_date_conversion(value):
+        # Если value является Series, извлекаем первое значение
+        if isinstance(value, pd.Series):
+            # Применяем конвертацию ко всем элементам Series
+            return value.apply(lambda x: convert_to_float(x))
+
         """Извлекаем дату"""
         if pd.isna(value):
             return ''  # Возвращаем None для недопустимых значений
@@ -176,26 +156,14 @@ try:
             return ''
         return str(value)  # Преобразуем в строку, если значение не NaN
 
-    def convert_to_float(x):
-        # Удаляем неразрывные пробелы и другие пробелы
-        if isinstance(x, str):
-            x = x.replace('\xa0', '').strip()  # Удаляем неразрывные пробелы и обрезаем пробелы
-        try:
-            return float(x) if pd.notnull(x) and x != '' else None
-        except ValueError:
-            return 'None'  # Возвращаем None, если не удалось конвертировать
-
     def safe_float_conversion(value):
-        print('----')
-        print(value)
-        print('----')
-        # exit()
+        # print('----')
+        # print(value)
+        # print('----')
         # Если value является Series, извлекаем первое значение
         if isinstance(value, pd.Series):
             # Применяем конвертацию ко всем элементам Series
             return value.apply(lambda x: convert_to_float(x))
-
-        # print('POPAL1', value)
         """Для преобразолвания в float"""
         if pd.isna(value):
             return "0.0"
@@ -215,104 +183,69 @@ try:
         except ValueError:
             return "0"
 
-    # # Выводим первую строку для проверки
-    # print(df.iloc[0].fillna(''))
-    # exit()
-
     df.columns = df.iloc[0]  # Используем первую строку как заголовки столбцов
     df = df.drop(0)  # Удаляем первую строку, так как она теперь используется как заголовок
-    df = df.drop(1)  # Удаляем первую строку, так как она теперь используется как заголовок
+    df = df.drop(1)  # Удаляем вторую строку, так как она теперь используется как заголовок
 
-    print(df[1])
-    exit()
-
-
-    df[f'{df.iloc[0, 29]}'] = df[f'{df.iloc[0, 29]}'].apply(safe_float_conversion)
-    exit()
-
-    df[f'{df.iloc[0, 0]}'] = df[f'{df.iloc[0, 0]}'].iloc[2:].apply(safe_conversion)
-    df[f'{df.iloc[0, 1]}'] = df[f'{df.iloc[0, 1]}'].iloc[2:].apply(safe_conversion)
-    df[f'{df.iloc[0, 2]}'] = df[f'{df.iloc[0, 2]}'].iloc[2:].apply(safe_conversion)
-    df[f'{df.iloc[0, 3]}'] = df[f'{df.iloc[0, 3]}'].iloc[2:].apply(safe_conversion)
-    df[f'{df.iloc[0, 4]}'] = df[f'{df.iloc[0, 4]}'].iloc[2:].apply(safe_conversion)
-    df[f'{df.iloc[0, 5]}'] = df[f'{df.iloc[0, 5]}'].iloc[2:].apply(safe_int_conversion)
-    df[f'{df.iloc[0, 6]}'] = df[f'{df.iloc[0, 6]}'].iloc[2:].apply(safe_int_conversion)
-    df[f'{df.iloc[0, 7]}'] = df[f'{df.iloc[0, 7]}'].iloc[2:].apply(safe_int_conversion)
-    df[f'{df.iloc[0, 8]}'] = df[f'{df.iloc[0, 8]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 9]}'] = df[f'{df.iloc[0, 9]}'].iloc[2:].apply(safe_int_conversion)
-    df[f'{df.iloc[0, 10]}'] = df[f'{df.iloc[0, 10]}'].iloc[2:].apply(safe_conversion)
-    df[f'{df.iloc[0, 11]}'] = df[f'{df.iloc[0, 11]}'].iloc[2:].apply(safe_int_conversion)
-    df[f'{df.iloc[0, 12]}'] = df[f'{df.iloc[0, 12]}'].iloc[2:].apply(safe_conversion)
-    df[f'{df.iloc[0, 13]}'] = df[f'{df.iloc[0, 13]}'].iloc[2:].apply(safe_date_conversion)
-    df[f'{df.iloc[0, 14]}'] = df[f'{df.iloc[0, 14]}'].iloc[2:].apply(safe_date_conversion)
-    df[f'{df.iloc[0, 15]}'] = df[f'{df.iloc[0, 15]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 16]}'] = df[f'{df.iloc[0, 16]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 17]}'] = df[f'{df.iloc[0, 17]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 18]}'] = df[f'{df.iloc[0, 18]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 19]}'] = df[f'{df.iloc[0, 19]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 20]}'] = df[f'{df.iloc[0, 20]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 21]}'] = df[f'{df.iloc[0, 21]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 22]}'] = df[f'{df.iloc[0, 22]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 23]}'] = df[f'{df.iloc[0, 23]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 24]}'] = df[f'{df.iloc[0, 24]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 25]}'] = df[f'{df.iloc[0, 25]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 26]}'] = df[f'{df.iloc[0, 26]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 27]}'] = df[f'{df.iloc[0, 27]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 28]}'] = df[f'{df.iloc[0, 28]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 29]}'] = df[f'{df.iloc[0, 29]}'].iloc[2:].apply(safe_float_conversion)
-    exit()
-    df[f'{df.iloc[0, 30]}'] = df[f'{df.iloc[0, 30]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 31]}'] = df[f'{df.iloc[0, 31]}'].iloc[2:].apply(safe_date_conversion)
-    df[f'{df.iloc[0, 32]}'] = df[f'{df.iloc[0, 32]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 33]}'] = df[f'{df.iloc[0, 33]}'].iloc[2:].apply(safe_date_conversion)
-    df[f'{df.iloc[0, 34]}'] = df[f'{df.iloc[0, 34]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 35]}'] = df[f'{df.iloc[0, 35]}'].iloc[2:].apply(safe_date_conversion)
-    df[f'{df.iloc[0, 36]}'] = df[f'{df.iloc[0, 36]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 37]}'] = df[f'{df.iloc[0, 37]}'].iloc[2:].apply(safe_date_conversion)
-    df[f'{df.iloc[0, 38]}'] = df[f'{df.iloc[0, 38]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 39]}'] = df[f'{df.iloc[0, 39]}'].iloc[2:].apply(safe_date_conversion)
-    df[f'{df.iloc[0, 40]}'] = df[f'{df.iloc[0, 40]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 41]}'] = df[f'{df.iloc[0, 41]}'].iloc[2:].apply(safe_date_conversion)
-    df[f'{df.iloc[0, 42]}'] = df[f'{df.iloc[0, 42]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 43]}'] = df[f'{df.iloc[0, 43]}'].iloc[2:].apply(safe_date_conversion)
-    df[f'{df.iloc[0, 44]}'] = df[f'{df.iloc[0, 44]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 45]}'] = df[f'{df.iloc[0, 45]}'].iloc[2:].apply(safe_date_conversion)
-    df[f'{df.iloc[0, 46]}'] = df[f'{df.iloc[0, 46]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 47]}'] = df[f'{df.iloc[0, 47]}'].iloc[2:].apply(safe_date_conversion)
-    df[f'{df.iloc[0, 48]}'] = df[f'{df.iloc[0, 48]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 49]}'] = df[f'{df.iloc[0, 49]}'].iloc[2:].apply(safe_date_conversion)
-    df[f'{df.iloc[0, 50]}'] = df[f'{df.iloc[0, 50]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 51]}'] = df[f'{df.iloc[0, 51]}'].iloc[2:].apply(safe_date_conversion)
-    df[f'{df.iloc[0, 52]}'] = df[f'{df.iloc[0, 52]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 53]}'] = df[f'{df.iloc[0, 35]}'].iloc[2:].apply(safe_date_conversion)
-    df[f'{df.iloc[0, 54]}'] = df[f'{df.iloc[0, 54]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 55]}'] = df[f'{df.iloc[0, 55]}'].iloc[2:].apply(safe_date_conversion)
-    df[f'{df.iloc[0, 56]}'] = df[f'{df.iloc[0, 56]}'].iloc[2:].apply(safe_float_conversion)
-    df[f'{df.iloc[0, 57]}'] = df[f'{df.iloc[0, 57]}'].iloc[2:].apply(safe_conversion)
-    df[f'{df.iloc[0, 58]}'] = df[f'{df.iloc[0, 58]}'].iloc[2:].apply(safe_float_conversion)
-
-    # # Примените функцию для извлечения даты и номера решения об отказе
-    # df['Дата решения об отказе в выдаче сертификата'], df['№ решения об отказе в выдаче сертификата'] = zip(*df['Дата и № решения об отказе в выдаче сертификата'].apply(extract_date_and_number))
-
-    # # Заполните NaN значения в DataFrame и обработайте данные
-    # df['№ п/п'] = df['№ п/п'].apply(safe_conversion)
-    # df['ФИО заявителя'] = df['ФИО заявителя'].apply(safe_conversion)
-    # df['СНИЛС'] = df['СНИЛС'].apply(safe_int_conversion)
-    # df['Район'] = df['Район'].apply(safe_conversion)
-    # df['Адрес нп'] = df['Адрес нп'].apply(safe_conversion)
-    # df['Адрес'] = df['Адрес'].apply(safe_conversion)
-    # df['Льгота'] = df['Льгота'].apply(safe_conversion)
-    # df['Серия и № сертификата'] = df['Серия и № сертификата'].apply(safe_conversion)
-    # df['Дата выдачи сертификата'] = df['Дата выдачи сертификата'].apply(safe_date_conversion)
-    # df['Размер выплаты'] = df['Размер выплаты'].apply(safe_float_conversion)
-    # df['Сертификат'] = df['Сертификат'].apply(safe_int_conversion)
-    # df['Дата и № решения о выдаче сертификата'] = df['Дата и № решения о выдаче сертификата'].apply(safe_conversion)
-    # df['Дата и № решения об аннулировании сертификата'] = df['Дата и № решения об аннулировании сертификата'].apply(safe_conversion)
-
-    # df['Отказ в выдаче сертификата'] = df['Отказ в выдаче сертификата'].apply(safe_int_conversion)
-    # df['Основная причина отказа (пункт)'] = df['Основная причина отказа (пункт)'].apply(safe_conversion)
-    # df['ТРЕК'] = df['ТРЕК'].apply(safe_conversion)
-    # df['Дата отправки почтой'] = df['Дата отправки почтой'].apply(safe_conversion)
+    df[f'{list[0]}'] = df[f'{list[0]}'].apply(safe_conversion)
+    df[f'{list[1]}'] = df[f'{list[1]}'].apply(safe_conversion)
+    df[f'{list[2]}'] = df[f'{list[2]}'].apply(safe_conversion)
+    df[f'{list[3]}'] = df[f'{list[3]}'].apply(safe_conversion)
+    df[f'{list[4]}'] = df[f'{list[4]}'].apply(safe_conversion)
+    df[f'{list[5]}'] = df[f'{list[5]}'].apply(safe_int_conversion)
+    df[f'{list[6]}'] = df[f'{list[6]}'].apply(safe_int_conversion)
+    df[f'{list[7]}'] = df[f'{list[7]}'].apply(safe_int_conversion)
+    df[f'{list[8]}'] = df[f'{list[8]}'].apply(safe_float_conversion)
+    df[f'{list[9]}'] = df[f'{list[9]}'].apply(safe_int_conversion)
+    df[f'{list[10]}'] = df[f'{list[10]}'].apply(safe_conversion)
+    df[f'{list[11]}'] = df[f'{list[11]}'].apply(safe_int_conversion)
+    df[f'{list[12]}'] = df[f'{list[12]}'].apply(safe_conversion)
+    df[f'{list[13]}'] = df[f'{list[13]}'].apply(safe_date_conversion)
+    df[f'{list[14]}'] = df[f'{list[14]}'].apply(safe_date_conversion)
+    df[f'{list[15]}'] = df[f'{list[15]}'].apply(safe_float_conversion)
+    df[f'{list[16]}'] = df[f'{list[16]}'].apply(safe_float_conversion)
+    df[f'{list[17]}'] = df[f'{list[17]}'].apply(safe_float_conversion)
+    df[f'{list[18]}'] = df[f'{list[18]}'].apply(safe_float_conversion)
+    df[f'{list[19]}'] = df[f'{list[19]}'].apply(safe_float_conversion)
+    df[f'{list[20]}'] = df[f'{list[20]}'].apply(safe_float_conversion)
+    df[f'{list[21]}'] = df[f'{list[21]}'].apply(safe_float_conversion)
+    df[f'{list[22]}'] = df[f'{list[22]}'].apply(safe_float_conversion)
+    df[f'{list[23]}'] = df[f'{list[23]}'].apply(safe_float_conversion)
+    df[f'{list[24]}'] = df[f'{list[24]}'].apply(safe_float_conversion)
+    df[f'{list[25]}'] = df[f'{list[25]}'].apply(safe_float_conversion)
+    df[f'{list[26]}'] = df[f'{list[26]}'].apply(safe_float_conversion)
+    df[f'{list[27]}'] = df[f'{list[27]}'].apply(safe_float_conversion)
+    df[f'{list[28]}'] = df[f'{list[28]}'].apply(safe_float_conversion)
+    df[f'{list[29]}'] = df[f'{list[29]}'].apply(safe_float_conversion)
+    df[f'{list[30]}'] = df[f'{list[30]}'].apply(safe_float_conversion)
+    df[f'{list[31]}'] = df[f'{list[31]}'].apply(safe_date_conversion)
+    df[f'{list[32]}'] = df[f'{list[32]}'].apply(safe_float_conversion)
+    df[f'{list[33]}'] = df[f'{list[33]}'].apply(safe_date_conversion)
+    df[f'{list[34]}'] = df[f'{list[34]}'].apply(safe_float_conversion)
+    df[f'{list[35]}'] = df[f'{list[35]}'].apply(safe_date_conversion)
+    df[f'{list[36]}'] = df[f'{list[36]}'].apply(safe_float_conversion)
+    df[f'{list[37]}'] = df[f'{list[37]}'].apply(safe_date_conversion)
+    df[f'{list[38]}'] = df[f'{list[38]}'].apply(safe_float_conversion)
+    df[f'{list[39]}'] = df[f'{list[39]}'].apply(safe_date_conversion)
+    df[f'{list[40]}'] = df[f'{list[40]}'].apply(safe_float_conversion)
+    df[f'{list[41]}'] = df[f'{list[41]}'].apply(safe_date_conversion)
+    df[f'{list[42]}'] = df[f'{list[42]}'].apply(safe_float_conversion)
+    df[f'{list[43]}'] = df[f'{list[43]}'].apply(safe_date_conversion)
+    df[f'{list[44]}'] = df[f'{list[44]}'].apply(safe_float_conversion)
+    df[f'{list[45]}'] = df[f'{list[45]}'].apply(safe_date_conversion)
+    df[f'{list[46]}'] = df[f'{list[46]}'].apply(safe_float_conversion)
+    df[f'{list[47]}'] = df[f'{list[47]}'].apply(safe_date_conversion)
+    df[f'{list[48]}'] = df[f'{list[48]}'].apply(safe_float_conversion)
+    df[f'{list[49]}'] = df[f'{list[49]}'].apply(safe_date_conversion)
+    df[f'{list[50]}'] = df[f'{list[50]}'].apply(safe_float_conversion)
+    df[f'{list[51]}'] = df[f'{list[51]}'].apply(safe_date_conversion)
+    df[f'{list[52]}'] = df[f'{list[52]}'].apply(safe_float_conversion)
+    df[f'{list[53]}'] = df[f'{list[53]}'].apply(safe_date_conversion)
+    df[f'{list[54]}'] = df[f'{list[54]}'].apply(safe_float_conversion)
+    df[f'{list[55]}'] = df[f'{list[55]}'].apply(safe_date_conversion)
+    df[f'{list[56]}'] = df[f'{list[56]}'].apply(safe_float_conversion)
+    df[f'{list[57]}'] = df[f'{list[57]}'].apply(safe_conversion)
+    df[f'{list[58]}'] = df[f'{list[58]}'].apply(safe_float_conversion)
 
     # Определите SQL-запрос для вставки данных
     insert_query = """
@@ -331,105 +264,14 @@ try:
     )
     """
 
-    # Подготовьте данные для вставки
-    data_to_insert = []
-    for _, row in df.iterrows():
-        if pd.notna(row.get('Наименование закупки')) and row.get('Наименование закупки').strip():
-            # # Проверяем значение 'Сертификат' для заполнения колонки 'Цвет'
-            # certificate_value = safe_int_conversion(row.get('Сертификат'))
-            # refusal_value = safe_int_conversion(row.get('Отказ в выдаче сертификата'))
-            # color_value = "#dff0d8" if certificate_value == "0" and refusal_value == '0' else ""
+    # Преобразуем DataFrame в список кортежей
+    data_to_insert = [tuple(x) for x in df.to_numpy()]
 
-            color_value = ''
-
-            data_row = (
-                # safe_conversion(row.get('№ п/п')),
-                # safe_conversion(row.get('ФИО заявителя')),
-                # safe_int_conversion(row.get('СНИЛС')),
-                # safe_conversion(row.get('Район')),
-                # safe_conversion(row.get('Адрес нп')),
-                # safe_conversion(row.get('Адрес')),
-                # safe_conversion(row.get('Льгота')),
-                # safe_conversion(row.get('Серия и № сертификата')),
-                # safe_date_conversion(row.get('Дата выдачи сертификата')),
-                # safe_float_conversion(row.get('Размер выплаты')),
-                # safe_int_conversion(row.get('Сертификат')),
-                # safe_conversion(row.get('Дата и № решения о выдаче сертификата')),
-                # safe_conversion(row.get('Дата и № решения об аннулировании сертификата')),
-
-                # safe_conversion(row.get('Дата решения об отказе в выдаче сертификата')),
-                # safe_conversion(row.get('№ решения об отказе в выдаче сертификата')),
-
-                # safe_int_conversion(row.get('Отказ в выдаче сертификата')),
-                # safe_conversion(row.get('Основная причина отказа (пункт)')),
-                # safe_conversion(row.get('ТРЕК')),
-                # safe_conversion(row.get('Дата отправки почтой')),
-                # "",  # Пустая строка для поля 'comment'
-                # color_value,
-
-                safe_conversion(row.get(f'{df.iloc[0, 0]}')),
-                safe_conversion(row.get(f'{df.iloc[0, 1]}')),
-                safe_conversion(row.get(f'{df.iloc[0, 2]}')),
-                safe_conversion(row.get(f'{df.iloc[0, 3]}')),
-                safe_conversion(row.get(f'{df.iloc[0, 4]}')),
-                safe_int_conversion(row.get(f'{df.iloc[0, 5]}')),
-                safe_int_conversion(row.get(f'{df.iloc[0, 6]}')),
-                safe_int_conversion(row.get(f'{df.iloc[0, 7]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 8]}')),
-                safe_int_conversion(row.get(f'{df.iloc[0, 9]}')),
-                safe_conversion(row.get(f'{df.iloc[0, 10]}')),
-                safe_int_conversion(row.get(f'{df.iloc[0, 11]}')),
-                safe_conversion(row.get(f'{df.iloc[0, 12]}')),
-                safe_date_conversion(row.get(f'{df.iloc[0, 13]}')),
-                safe_date_conversion(row.get(f'{df.iloc[0, 14]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 15]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 16]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 17]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 18]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 19]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 20]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 21]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 22]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 23]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 24]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 25]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 26]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 27]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 28]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 29]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 30]}')),
-                safe_date_conversion(row.get(f'{df.iloc[0, 31]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 32]}')),
-                safe_date_conversion(row.get(f'{df.iloc[0, 33]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 34]}')),
-                safe_date_conversion(row.get(f'{df.iloc[0, 35]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 36]}')),
-                safe_date_conversion(row.get(f'{df.iloc[0, 37]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 38]}')),
-                safe_date_conversion(row.get(f'{df.iloc[0, 39]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 40]}')),
-                safe_date_conversion(row.get(f'{df.iloc[0, 41]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 42]}')),
-                safe_date_conversion(row.get(f'{df.iloc[0, 43]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 44]}')),
-                safe_date_conversion(row.get(f'{df.iloc[0, 45]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 46]}')),
-                safe_date_conversion(row.get(f'{df.iloc[0, 47]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 48]}')),
-                safe_date_conversion(row.get(f'{df.iloc[0, 49]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 50]}')),
-                safe_date_conversion(row.get(f'{df.iloc[0, 51]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 52]}')),
-                safe_date_conversion(row.get(f'{df.iloc[0, 53]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 54]}')),
-                safe_date_conversion(row.get(f'{df.iloc[0, 55]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 56]}')),
-                safe_conversion(row.get(f'{df.iloc[0, 57]}')),
-                safe_float_conversion(row.get(f'{df.iloc[0, 58]}'))
-
-                )
-
-            data_to_insert.append(data_row)
+    # Преобразование всех значений в строки и добавление пустой строки в конец каждого кортежа
+    data_to_insert = [
+        tuple(str(value) if value is not None else '' for value in row) + ('',)
+        for row in data_to_insert
+    ]
 
     if data_to_insert:
         # Вставьте данные в базу данных
