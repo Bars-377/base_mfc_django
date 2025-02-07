@@ -53,15 +53,19 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
 
     per_page = 20
 
-    # Регулярные выражения для форматов дат
-    pattern_dd_mm_yyyy = r'\b\d{2}\.\d{2}\.\d{4}\b'
-    pattern_yyyy_mm_dd = r'\b\d{4}-\d{2}-\d{2}\b'
-
     # Получаем все уникальные значения year и date_number_no_one
     all_years = await sync_to_async(lambda: list(Services.objects.values('contract_date').distinct()))()
     all_end_date = await sync_to_async(lambda: list(Services.objects.values('end_date').distinct()))()
     all_KOSGU_user = await sync_to_async(lambda: list(Services_Two.objects.values('KOSGU').distinct()))()
     all_KOSGU_user_two = await sync_to_async(lambda: list(Services_Three.objects.values('KOSGU').distinct()))()
+
+    # Регулярные выражения для форматов дат
+    pattern_dd_mm_yyyy = r'\b\d{2}\.\d{2}\.\d{4}\b'
+    pattern_yyyy_mm_dd = r'\b\d{4}-\d{2}-\d{2}\b'
+
+    @sync_to_async
+    def findall_sync(pattern, text):
+        return re.findall(pattern, text)
 
     async def process_service_data(all_data, field_name):
         service_data = set()
@@ -73,13 +77,13 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
                 empty_found = True
                 continue
 
-            matches_dd_mm_yyyy = re.findall(pattern_dd_mm_yyyy, field_value)
-            matches_yyyy_mm_dd = re.findall(pattern_yyyy_mm_dd, field_value)
+            matches_dd_mm_yyyy = await findall_sync(pattern_dd_mm_yyyy, field_value)
+            matches_yyyy_mm_dd = await findall_sync(pattern_yyyy_mm_dd, field_value)
 
             service_data.update([date_str[-4:] for date_str in matches_dd_mm_yyyy])
             service_data.update([date_str[:4] for date_str in matches_yyyy_mm_dd])
 
-        service_data = sorted({str(int(year)) for year in service_data if year.isdigit()})
+        service_data = await sync_to_async(sorted)({str(int(year)) for year in service_data if year.isdigit()})
         if empty_found:
             service_data.insert(0, None)
         return service_data

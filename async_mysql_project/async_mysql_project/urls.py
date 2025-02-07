@@ -37,7 +37,7 @@ urlpatterns = [
     path('edit_user/<int:row_id>/', views.edit_user, name='edit_user'),
     path('edit_user_two/<int:row_id>/', views.edit_user_two, name='edit_user_two'),
     path('delete_record/<int:row_id>/', views.delete_record, name='delete_record'),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0]) # Эта строка решает проблема поиска статических файлов
 
 if settings.DEBUG:  # Показывать статические файлы в режиме разработки
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

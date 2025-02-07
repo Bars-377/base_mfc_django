@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=xaq%c^1lnt$yl#77e*!epnwv5s_w*3^c_j*4c@xs4srqodz66'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -37,7 +37,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # Добавляем AccountMiddleware от allauth
     'allauth.account.middleware.AccountMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Добавьте эту строку
+    # 'whitenoise.middleware.WhiteNoiseMiddleware',  # Эта строка решает проблема поиска статических файлов
 ]
 
 ROOT_URLCONF = 'async_mysql_project.urls'
@@ -114,8 +114,8 @@ DATABASES = {
         'NAME': 'basemfcdjango',
         'USER': 'root',
         'PASSWORD': 'enigma1418',
-        'HOST': '172.18.11.104',  # или IP, если база на удалённом сервере
-        # 'HOST': 'localhost',  # или IP, если база на удалённом сервере
+        # 'HOST': '172.18.11.104',  # или IP, если база на удалённом сервере
+        'HOST': 'localhost',  # или IP, если база на удалённом сервере
         'PORT': '3306',
         # 'OPTIONS': {
         #     'charset': 'utf8mb4',
