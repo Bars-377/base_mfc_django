@@ -763,9 +763,10 @@ class ContractProcessor:
         await sync_to_async(service.save)()
 
     async def creation_new_service(self, saving, execution_contract_plan, execution_contract_fact, new_service):
-        # Получаем следующий ID
+        """Формируем запрос для новой записи"""
         from django.db import connection
 
+        # Получаем следующий ID
         def get_latest_service():
             with connection.cursor() as cursor:
                 cursor.execute("""
@@ -827,6 +828,7 @@ class ContractProcessor:
         return Services.objects.filter(filters).aggregate(total_sum=Sum(field_to_sum, default=0))['total_sum']
 
     async def process_budget_services_two(self, Services_Two_):
+        """Обновление второй базы"""
         # Создаем список месяцев
         budget = [
             Services_Two_.budget_limit if Services_Two_.budget_limit not in [None, 'None', ''] else 0,
@@ -874,6 +876,7 @@ class ContractProcessor:
     #     ServicesThree_.off_budget_remainder = await clean_number(ServicesTwo_.off_budget_planned) - await clean_number(contract_price_sum_way)
 
     async def process_budget_services_three(self, contract_price_sum_way, ServicesTwo_):
+        """Обновление третьей базы"""
         try:
 
             from django.db.models import Q
@@ -934,6 +937,7 @@ class ContractProcessor:
         await sync_to_async(messages.success)(self.request, "Данные успешно удалены!")
 
     async def aggregate_fields(self, fields):
+        """Суммирование столбцов"""
         results = {}
         for field in fields:
             # Асинхронно выполняем агрегацию по каждому полю
@@ -943,6 +947,7 @@ class ContractProcessor:
         return results
 
     async def total_costs(self, new_service):
+        """Удаление новой записи если условия соответствуют"""
         # Определите список всех полей, которые нужно агрегировать
         fields = [
             'budget_limit',
@@ -993,6 +998,7 @@ class ContractProcessor:
         await sync_to_async(messages.error)(self.request, 'Запрещено вносить новую строку, если после ее ввода сумма контрактов по соответствующему КЦСР, КОСГУ и ДопФК превысит значение поля «Лимиты»')
 
     async def Services_way(self, KTSSR, status):
+        """Подсчёт Цена контракта (на 2024 год) и Исполнение контракта (план) (формула) если есть way='п.4 ч.1 ст.93'"""
         from django.db.models import Q
 
         Services_way_ = await sync_to_async(list)(Services.objects.filter(
@@ -1007,6 +1013,7 @@ class ContractProcessor:
         return contract_price_sum_way, execution_contract_fact_sum_way
 
     async def Services_Two_save(self, Services_Two_):
+        """Обновление второй базы"""
         # ServicesVault_ = await self.validate_ServicesVault()
 
         Services_Two_.off_budget_planned = await self.calculate_contract_sums('2016100092', 'Запланировано')
@@ -1154,7 +1161,7 @@ class ContractProcessor:
         # Другие операции, такие как сохранение сервиса и т.д.
 
     async def process(self):
-        """Вычислительные операции после обновления или добавления записи"""
+        """Предварительные вычислительные операции после обновления или добавления записи"""
         from django.db.models import Q
 
         Services_way_ = await sync_to_async(list)(Services.objects.filter(
