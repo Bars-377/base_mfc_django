@@ -32,8 +32,9 @@ async def clean_number(value):
     return float(value.replace(' ', '').replace(',', '.'))
 
 async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user, KOSGU_user_two, keyword_one_user_two, keyword_two_user_two, selected_column_one_user_two, selected_column_two_user_two, page_user_two):
-    contract_date = None if contract_date == 'None' else contract_date
-    end_date = None if end_date == 'None' else end_date
+
+    # contract_date = None if contract_date == 'None' else contract_date
+    # end_date = None if end_date == 'None' else end_date
     keyword_one = None if keyword_one == 'None' else keyword_one
     keyword_two = None if keyword_two == 'None' else keyword_two
     selected_column_one = None if selected_column_one == 'None' else selected_column_one
@@ -85,13 +86,30 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
 
         service_data = await sync_to_async(sorted)({str(int(year)) for year in service_data if year.isdigit()})
         if empty_found:
-            service_data.insert(0, None)
+            service_data.insert(0, 'None')
+        return service_data
+
+    async def process_service_KOSGU(all_data, field_name):
+        service_data = set()
+        empty_found = False
+
+        for item in all_data:
+            field_value = item.get(field_name, None)
+            if not field_value:
+                empty_found = True
+                continue
+
+            service_data.add(field_value)
+
+        service_data = await sync_to_async(sorted)({str(int(year)) for year in service_data if year.isdigit()})
+        if empty_found:
+            service_data.insert(0, 'None')
         return service_data
 
     service_years = await process_service_data(all_years, 'contract_date')
     service_end_date = await process_service_data(all_end_date, 'end_date')
-    service_KOSGU_user = await process_service_data(all_KOSGU_user, 'KOSGU')
-    service_KOSGU_user_two = await process_service_data(all_KOSGU_user_two, 'KOSGU')
+    service_KOSGU_user = await process_service_KOSGU(all_KOSGU_user, 'KOSGU')
+    service_KOSGU_user_two = await process_service_KOSGU(all_KOSGU_user_two, 'KOSGU')
 
     # Построение запроса
     query = await sync_to_async(lambda: Services.objects.all())()

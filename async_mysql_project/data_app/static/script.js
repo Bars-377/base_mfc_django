@@ -125,9 +125,11 @@ function resetFilters() {
 	// Получаем текущую страницу
 	const currentPage = new URLSearchParams(window.location.search).get('page') || 1;
 
+	console.log('ПОПАЛ!');
+
 	// Сбрасываем значения фильтров
-	document.getElementById('contract_date').value = '';
-	document.getElementById('end_date').value = '';
+	document.getElementById('contract_date').value = 'No';
+	document.getElementById('end_date').value = 'No';
 	document.getElementById('keyword_one').value = '';
 	document.getElementById('keyword_two').value = '';
 	document.getElementById('selected_column_one').value = '';
@@ -151,6 +153,8 @@ function resetFilters() {
 function resetFiltersUser() {
 	// Получаем текущую страницу
 	const currentPage = new URLSearchParams(window.location.search).get('page_user') || 1;
+
+	console.log('ПОПАЛ!');
 
 	// Сбрасываем значения фильтров
 	document.getElementById('KOSGU_user').value = '';
@@ -366,6 +370,7 @@ window.addEventListener('beforeunload', function () {
 // Обработчик нажатия на кнопку сброса фильтров
 const resetButton = document.getElementById('reset-filters');
 if (resetButton) {
+	console.log('ПОПАЛ_1!');
 	resetButton.addEventListener('click', function () {
 		resetFilters();
 	});
@@ -390,6 +395,7 @@ if (resetButtonTwo) {
 // Обработчик нажатия на кнопку фильтрации
 const filterForm = document.getElementById('filter-form');
 if (filterForm) {
+	console.log('ПОПАЛ_1!');
 	filterForm.addEventListener('submit', function (event) {
 		window.scrollTo(0, 0);
 
