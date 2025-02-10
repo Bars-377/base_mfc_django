@@ -116,93 +116,104 @@ function showFlashMessage(event) {
 
 }
 
+// Восстанавливаем прокрутку после загрузки страницы
 window.onload = function () {
-	window.scrollTo(0, 0);
+	// Восстановление для scrollPosition
+	const scrollPosition = sessionStorage.getItem('scrollPosition');
+	if (scrollPosition !== null) {
+		window.scrollTo(0, parseInt(scrollPosition, 10));
+		sessionStorage.removeItem('scrollPosition');
+	}
 };
 
 // Функция сброса фильтров и прокрутки
 function resetFilters() {
+	// Сохраняем текущую позицию прокрутки
+	sessionStorage.setItem('scrollPosition', window.scrollY);
+
 	// Получаем текущую страницу
 	const currentPage = new URLSearchParams(window.location.search).get('page') || 1;
 
-	console.log('ПОПАЛ!');
+	// Создаем объект для передачи данных через POST
+	const formData = new FormData();
+	formData.append('total_pages_full', currentPage); // Отправляем как POST
 
-	// Сбрасываем значения фильтров
-	document.getElementById('contract_date').value = 'No';
-	document.getElementById('end_date').value = 'No';
-	document.getElementById('keyword_one').value = '';
-	document.getElementById('keyword_two').value = '';
-	document.getElementById('selected_column_one').value = '';
-	document.getElementById('selected_column_two').value = '';
+	// Формируем URL с параметрами GET
+	const url = new URL(window.location.href);
+	url.searchParams.set('contract_date', 'No');
+	url.searchParams.set('end_date', 'No');
+	url.searchParams.set('keyword_one', '');
+	url.searchParams.set('keyword_two', '');
+	url.searchParams.set('selected_column_one', '');
+	url.searchParams.set('selected_column_two', '');
 
-	// Добавляем текущую страницу как скрытое поле
-	const pageInput = document.createElement('input');
-	pageInput.type = 'hidden';
-	pageInput.name = 'total_pages_full';
-	pageInput.value = currentPage;
-
-	const form = document.getElementById('filter-form');
-	form.appendChild(pageInput);
-
-	// Отправляем форму
-	form.submit();
-	window.scrollTo(0, 0);
+	// Отправляем запрос через fetch
+	fetch(window.location.pathname, {
+		method: 'POST',
+		body: formData
+	}).then(() => {
+		window.location.href = url; // Перезагружаем страницу с GET параметрами
+	});
 }
 
 // Функция сброса фильтров и прокрутки
 function resetFiltersUser() {
+	// Сохраняем текущую позицию прокрутки
+	sessionStorage.setItem('scrollPosition', window.scrollY);
+
 	// Получаем текущую страницу
 	const currentPage = new URLSearchParams(window.location.search).get('page_user') || 1;
 
-	console.log('ПОПАЛ!');
+	// Создаем объект для передачи данных через POST
+	const formData = new FormData();
+	formData.append('total_pages_full_user', currentPage); // Отправляем как POST
 
-	// Сбрасываем значения фильтров
-	document.getElementById('KOSGU_user').value = '';
+	// Формируем URL с параметрами GET
+	const url = new URL(window.location.href);
+	url.searchParams.set('KOSGU_user', 'No');
 
-	document.getElementById('keyword_one_user').value = '';
-	document.getElementById('keyword_two_user').value = '';
-	document.getElementById('selected_column_one_user').value = '';
-	document.getElementById('selected_column_two_user').value = '';
+	url.searchParams.set('keyword_one', '');
+	url.searchParams.set('keyword_two', '');
+	url.searchParams.set('selected_column_one', '');
+	url.searchParams.set('selected_column_two', '');
 
-	// Добавляем текущую страницу как скрытое поле
-	const pageInput = document.createElement('input');
-	pageInput.type = 'hidden';
-	pageInput.name = 'total_pages_full_user';
-	pageInput.value = currentPage;
-
-	const form = document.getElementById('filter-form-user');
-	form.appendChild(pageInput);
-
-	// Отправляем форму
-	form.submit();
-	window.scrollTo(0, 0);
+	// Отправляем запрос через fetch
+	fetch(window.location.pathname, {
+		method: 'POST',
+		body: formData
+	}).then(() => {
+		window.location.href = url; // Перезагружаем страницу с GET параметрами
+	});
 }
 
 // Функция сброса фильтров и прокрутки
 function resetFiltersUserTwo() {
+	// Сохраняем текущую позицию прокрутки
+	sessionStorage.setItem('scrollPosition', window.scrollY);
+
 	// Получаем текущую страницу
 	const currentPage = new URLSearchParams(window.location.search).get('page_user_two') || 1;
 
-	// Сбрасываем значения фильтров
-	document.getElementById('KOSGU_user_two').value = '';
+	// Создаем объект для передачи данных через POST
+	const formData = new FormData();
+	formData.append('total_pages_full_user_two', currentPage); // Отправляем как POST
 
-	document.getElementById('keyword_one_user_two').value = '';
-	document.getElementById('keyword_two_user_two').value = '';
-	document.getElementById('selected_column_one_user_two').value = '';
-	document.getElementById('selected_column_two_user_two').value = '';
+	// Формируем URL с параметрами GET
+	const url = new URL(window.location.href);
+	url.searchParams.set('KOSGU_user_two', 'No');
 
-	// Добавляем текущую страницу как скрытое поле
-	const pageInput = document.createElement('input');
-	pageInput.type = 'hidden';
-	pageInput.name = 'total_pages_full_user_two';
-	pageInput.value = currentPage;
+	url.searchParams.set('keyword_one', '');
+	url.searchParams.set('keyword_two', '');
+	url.searchParams.set('selected_column_one', '');
+	url.searchParams.set('selected_column_two', '');
 
-	const form = document.getElementById('filter-form-user-two');
-	form.appendChild(pageInput);
-
-	// Отправляем форму
-	form.submit();
-	window.scrollTo(0, 0);
+	// Отправляем запрос через fetch
+	fetch(window.location.pathname, {
+		method: 'POST',
+		body: formData
+	}).then(() => {
+		window.location.href = url; // Перезагружаем страницу с GET параметрами
+	});
 }
 
 // Функция обновления цвета строки
@@ -370,7 +381,6 @@ window.addEventListener('beforeunload', function () {
 // Обработчик нажатия на кнопку сброса фильтров
 const resetButton = document.getElementById('reset-filters');
 if (resetButton) {
-	console.log('ПОПАЛ_1!');
 	resetButton.addEventListener('click', function () {
 		resetFilters();
 	});
@@ -395,9 +405,9 @@ if (resetButtonTwo) {
 // Обработчик нажатия на кнопку фильтрации
 const filterForm = document.getElementById('filter-form');
 if (filterForm) {
-	console.log('ПОПАЛ_1!');
-	filterForm.addEventListener('submit', function (event) {
-		window.scrollTo(0, 0);
+	filterForm.addEventListener('submit', function () {
+		// Сохраняем текущую позицию прокрутки
+		sessionStorage.setItem('scrollPosition', window.scrollY);
 
 		// Проверяем существование поля ввода 1 перед обрезкой пробелов
 		const keywordInputOne = document.getElementById('keyword_one');
@@ -415,9 +425,10 @@ if (filterForm) {
 
 // Обработчик нажатия на кнопку фильтрации
 const filterFormOne = document.getElementById('filter-form-user');
-if (filterForm) {
-	filterForm.addEventListener('submit', function (event) {
-		window.scrollTo(0, 0);
+if (filterFormOne) {
+	filterFormOne.addEventListener('submit', function () {
+		// Сохраняем текущую позицию прокрутки
+		sessionStorage.setItem('scrollPosition', window.scrollY);
 
 		// Проверяем существование поля ввода 1 перед обрезкой пробелов
 		const keywordInputOne = document.getElementById('keyword_one_user');
@@ -435,9 +446,10 @@ if (filterForm) {
 
 // Обработчик нажатия на кнопку фильтрации
 const filterFormTwo = document.getElementById('filter-form-user-two');
-if (filterForm) {
-	filterForm.addEventListener('submit', function (event) {
-		window.scrollTo(0, 0);
+if (filterFormTwo) {
+	filterFormTwo.addEventListener('submit', function () {
+		// Сохраняем текущую позицию прокрутки
+		sessionStorage.setItem('scrollPosition', window.scrollY);
 
 		// Проверяем существование поля ввода 1 перед обрезкой пробелов
 		const keywordInputOne = document.getElementById('keyword_one_user_two');

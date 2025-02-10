@@ -32,7 +32,9 @@ async def clean_number(value):
     return float(value.replace(' ', '').replace(',', '.'))
 
 async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user, KOSGU_user_two, keyword_one_user_two, keyword_two_user_two, selected_column_one_user_two, selected_column_two_user_two, page_user_two):
-
+    print('POPAL')
+    print(contract_date)
+    print(end_date)
     # contract_date = None if contract_date == 'None' else contract_date
     # end_date = None if end_date == 'None' else end_date
     keyword_one = None if keyword_one == 'None' else keyword_one
@@ -399,6 +401,8 @@ async def data_table_view(request):
     user = request.user
 
     total_pages_full = request.GET.get('total_pages_full', None)
+    print('----------------')
+    print(total_pages_full)
 
     if total_pages_full:
         per_page = 20
