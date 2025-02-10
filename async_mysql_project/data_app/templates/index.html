@@ -47,10 +47,15 @@
                 </ul>
             </div>
         </div>
-            {% block content %}{% endblock %}
+            {% if user.id == 4 or user.id == 12 %}
+                {% block content %}{% endblock %}
+            {% endif %}
 
-            {% if user.id == 4 %}
+            {% if user.id == 4 or user.id == 6 %}
                 {% block content_user %}{% endblock %}
+            {% endif %}
+
+            {% if user.id == 4 or user.id == 11 %}
                 {% block content_user_two %}{% endblock %}
             {% endif %}
     </div>

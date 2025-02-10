@@ -5,8 +5,8 @@ from datetime import datetime
 
 # Установите соединение с базой данных
 conn = mysql.connector.connect(
-    host='172.18.11.104',
-    # host='localhost',
+    # host='172.18.11.104',
+    host='localhost',
     user='root',        # Замените на ваше имя пользователя
     password='enigma1418',    # Замените на ваш пароль
     database='basemfcdjango'
@@ -126,13 +126,13 @@ try:
         return '', str(value)
 
     def safe_date_conversion(value):
+        """Извлекаем дату"""
         # Если value является Series, извлекаем первое значение
         if isinstance(value, pd.Series):
             # Применяем конвертацию ко всем элементам Series
             return value.apply(lambda x: convert_to_float(x))
 
-        """Извлекаем дату"""
-        if pd.isna(value):
+        elif pd.isna(value):
             return ''  # Возвращаем None для недопустимых значений
 
         # Попробуем извлечь дату в формате ДД.ММ.ГГГГ или ГГГГ-ММ-ДД
@@ -152,7 +152,11 @@ try:
 
     def safe_conversion(value):
         """Для преобразования данных"""
-        if pd.isna(value):
+        # Если value является Series, извлекаем первое значение
+        if isinstance(value, pd.Series):
+            # Применяем конвертацию ко всем элементам Series
+            return value.apply(lambda x: convert_to_float(x))
+        elif pd.isna(value):
             return ''
         return str(value)  # Преобразуем в строку, если значение не NaN
 
@@ -186,6 +190,9 @@ try:
     df.columns = df.iloc[0]  # Используем первую строку как заголовки столбцов
     df = df.drop(0)  # Удаляем первую строку, так как она теперь используется как заголовок
     df = df.drop(1)  # Удаляем вторую строку, так как она теперь используется как заголовок
+
+    # df[f'{list[31]}'] = df[f'{list[31]}'].apply(safe_date_conversion)
+    # exit()
 
     df[f'{list[0]}'] = df[f'{list[0]}'].apply(safe_conversion)
     df[f'{list[1]}'] = df[f'{list[1]}'].apply(safe_conversion)
