@@ -108,12 +108,122 @@
 
 // });
 
+function updateFileName() {
+	const fileInput = document.getElementById('file-input');
+	const fileNameDisplay = document.getElementById('file-name');
+
+	if (fileInput.files.length > 0) {
+		// Устанавливаем текстовое содержимое
+		fileNameDisplay.textContent = "Выбран файл: " + fileInput.files[0].name;
+
+		fileNameDisplay.style.display = 'inline-block';
+		fileNameDisplay.style.verticalAlign = 'middle';
+		// Применяем активные стили через fileNameDisplay.style
+		fileNameDisplay.style.border = '2px solid red'; // Увеличиваем толщину рамки
+		fileNameDisplay.style.padding = '8px 12px'; // Увеличиваем отступы
+
+		fileNameDisplay.style.borderRadius = '5px'; // Скругляем углы
+
+		fileNameDisplay.style.marginTop = '0';
+		fileNameDisplay.style.marginRight = '10px';
+		fileNameDisplay.style.marginBottom = '20px';
+		fileNameDisplay.style.marginLeft = '10px';
+
+		// Показываем кнопку отправки
+		document.getElementById('submit-button').style.display = 'inline';
+	} else {
+		// Очищаем текстовое содержимое
+		fileNameDisplay.textContent = '';
+
+		fileNameDisplay.style.display = '';
+		fileNameDisplay.style.verticalAlign = '';
+		// Сбрасываем все стили
+		fileNameDisplay.style.border = '';
+		fileNameDisplay.style.padding = '';
+
+		fileNameDisplay.style.borderRadius = '';
+
+		fileNameDisplay.style.marginTop = '';
+		fileNameDisplay.style.marginRight = '';
+		fileNameDisplay.style.marginBottom = '';
+		fileNameDisplay.style.marginLeft = '';
+
+		// Скрываем кнопку отправки
+		document.getElementById('submit-button').style.display = 'none';
+	}
+}
+
 function showFlashMessage(event) {
+	event.preventDefault();
 
-	// Показываем сообщение
-	const flashMessage = document.getElementById('flash-message');
-	flashMessage.style.display = 'block';
+	const fileInput = document.getElementById("file-input");
+	if (fileInput.files.length === 0) {
+		alert("Выберите файл перед отправкой!");
+		return;
+	}
 
+	// Показываем индикатор загрузки
+	const loadingIndicator = document.getElementById("loading");
+	loadingIndicator.style.display = "block";
+
+	const formData = new FormData();
+	formData.append("file", fileInput.files[0]);
+
+	fetch("/upload/", {  // URL на Django view
+		method: "POST",
+		body: formData,
+		headers: {
+			"X-CSRFToken": getCookie("csrftoken")
+		}
+	})
+		.then(response => response.json())
+		.then(data => {
+			// Скрыть индикатор загрузки с небольшой задержкой
+			setTimeout(() => {
+				console.log("Скрываю индикатор загрузки...");
+				loadingIndicator.style.display = "none";
+			}, 500); // Задержка 500ms
+
+			// Показать сообщение
+			const message = document.getElementById("flash-message");
+			message.textContent = data.message;
+
+
+
+			// Меняем класс в зависимости от статуса
+			if (data.status === "success") {
+				message.classList.remove("alert-danger");  // Убираем класс ошибки
+				message.classList.add("alert-success");    // Добавляем класс успеха
+				console.log("Status from server:", data.status);
+			} else {
+				message.classList.remove("alert-success");  // Убираем класс ошибки
+				message.classList.add("alert-danger");     // Добавляем класс ошибки
+				console.log("Status from server:", data.status);
+			}
+
+			message.style.display = "block";
+		})
+		.catch(error => {
+			// Скрыть индикатор загрузки
+			loadingIndicator.style.display = "none";
+
+			console.error("Ошибка загрузки файла:", error);
+		});
+}
+
+function getCookie(name) {
+	let cookieValue = null;
+	if (document.cookie && document.cookie !== '') {
+		const cookies = document.cookie.split(';');
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i].trim();
+			if (cookie.startsWith(name + '=')) {
+				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+				break;
+			}
+		}
+	}
+	return cookieValue;
 }
 
 // Восстанавливаем прокрутку после загрузки страницы

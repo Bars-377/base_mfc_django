@@ -32,9 +32,6 @@ async def clean_number(value):
     return float(value.replace(' ', '').replace(',', '.'))
 
 async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user, KOSGU_user_two, keyword_one_user_two, keyword_two_user_two, selected_column_one_user_two, selected_column_two_user_two, page_user_two):
-    print('POPAL')
-    print(contract_date)
-    print(end_date)
     # contract_date = None if contract_date == 'None' else contract_date
     # end_date = None if end_date == 'None' else end_date
     keyword_one = None if keyword_one == 'None' else keyword_one
@@ -401,8 +398,6 @@ async def data_table_view(request):
     user = request.user
 
     total_pages_full = request.GET.get('total_pages_full', None)
-    print('----------------')
-    print(total_pages_full)
 
     if total_pages_full:
         per_page = 20
@@ -1898,3 +1893,22 @@ async def delete_record(request, row_id):
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
     return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+from .models import UploadedFile
+
+@csrf_exempt  # Если используете fetch, нужно отключить CSRF или передавать токен
+def upload_file(request):
+    if request.method == "POST" and request.FILES.get("file"):
+        uploaded_file = request.FILES["file"]
+
+        # Если файл .xlsx, можно использовать openpyxl для обработки
+        if uploaded_file.name.endswith('.xlsx'):
+            # Сохранение файла в папку file/
+            file_instance = UploadedFile(file=uploaded_file)
+            file_instance.save()
+
+            return JsonResponse({"message": f"Файл {uploaded_file.name} успешно загружен!", "status": "success"})
+        else:
+            return JsonResponse({"message": "Только файлы .xlsx разрешены", "status": "error"}, status=400)
+
+    return JsonResponse({"message": "Ошибка загрузки файла"}, status=400)

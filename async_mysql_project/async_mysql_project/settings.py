@@ -102,6 +102,12 @@ STATICFILES_DIRS = [
     BASE_DIR / "data_app/static",
 ]
 
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# Если хотите хранить файлы в папке 'file' внутри проекта:
+MEDIA_ROOT = os.path.join(BASE_DIR, "")
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

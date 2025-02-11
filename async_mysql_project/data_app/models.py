@@ -123,3 +123,7 @@ class Services_Two(models.Model):
 
     def __str__(self):
         return self.name
+
+class UploadedFile(models.Model):
+    file = models.FileField(upload_to="file/")  # Папка "file" внутри MEDIA_ROOT
+    uploaded_at = models.DateTimeField(auto_now_add=True)
