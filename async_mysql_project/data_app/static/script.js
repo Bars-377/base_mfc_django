@@ -188,8 +188,6 @@ function showFlashMessage(event) {
 			const message = document.getElementById("flash-message");
 			message.textContent = data.message;
 
-
-
 			// Меняем класс в зависимости от статуса
 			if (data.status === "success") {
 				message.classList.remove("alert-danger");  // Убираем класс ошибки

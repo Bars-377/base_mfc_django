@@ -1,53 +1,54 @@
 import pandas as pd
-import mysql.connector
-import re
-from datetime import datetime
-
-# Установите соединение с базой данных
-conn = mysql.connector.connect(
-    # host='172.18.11.104',
-    host='localhost',
-    user='root',        # Замените на ваше имя пользователя
-    password='enigma1418',    # Замените на ваш пароль
-    database='basemfcdjango'
-)
-cursor = conn.cursor()
-
-def clean_string(input_string):
-    """
-    Очищает строку, удаляя символы новой строки (\n),
-    заменяя двойные пробелы на одинарные и удаляя пробелы в начале и конце строки.
-
-    Args:
-        input_string (str): Строка для очистки.
-
-    Returns:
-        str: Очищенная строка.
-    """
-
-    input_string = str(input_string)
-
-    # Удаляем символы новой строки
-    string_without_newlines = input_string.replace('\n', '')
-
-    # Заменяем двойные пробелы на одинарные
-    string_single_spaces = string_without_newlines.replace('  ', ' ')
-
-    #Удаляем повторяющиеся пробелы, пока они не исчезнут
-    while '  ' in string_single_spaces:
-        string_single_spaces = string_single_spaces.replace('  ', ' ')
-
-
-    # Удаляем пробелы в начале и конце строки
-    cleaned_string = string_single_spaces.strip()
-
-    return cleaned_string
 
 try:
     # Загрузите данные из Excel
     file_path = 'C:/Users/neverov/Desktop/gos.xlsx'
     sheet_name = 'ЗАКУПКИ'
     df = pd.read_excel(file_path, sheet_name=sheet_name, header=None, dtype=str)
+
+    import mysql.connector
+    import re
+    from datetime import datetime
+
+    # Установите соединение с базой данных
+    conn = mysql.connector.connect(
+        # host='172.18.11.104',
+        host='localhost',
+        user='root',        # Замените на ваше имя пользователя
+        password='enigma1418',    # Замените на ваш пароль
+        database='basemfcdjango'
+    )
+    cursor = conn.cursor()
+
+    def clean_string(input_string):
+        """
+        Очищает строку, удаляя символы новой строки (\n),
+        заменяя двойные пробелы на одинарные и удаляя пробелы в начале и конце строки.
+
+        Args:
+            input_string (str): Строка для очистки.
+
+        Returns:
+            str: Очищенная строка.
+        """
+
+        input_string = str(input_string)
+
+        # Удаляем символы новой строки
+        string_without_newlines = input_string.replace('\n', '')
+
+        # Заменяем двойные пробелы на одинарные
+        string_single_spaces = string_without_newlines.replace('  ', ' ')
+
+        #Удаляем повторяющиеся пробелы, пока они не исчезнут
+        while '  ' in string_single_spaces:
+            string_single_spaces = string_single_spaces.replace('  ', ' ')
+
+
+        # Удаляем пробелы в начале и конце строки
+        cleaned_string = string_single_spaces.strip()
+
+        return cleaned_string
 
     # Столбцы, в которые нужно вставить данные
     columns_to_fill = [32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56]
