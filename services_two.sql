@@ -20,7 +20,7 @@ CREATE DATABASE IF NOT EXISTS `basemfcdjango` /*!40100 DEFAULT CHARACTER SET utf
 USE `basemfcdjango`;
 
 -- Дамп структуры для таблица basemfcdjango.services_vault
-CREATE TABLE IF NOT EXISTS `services_vault` (
+CREATE TABLE IF NOT EXISTS `services_two` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `id_id` text COLLATE utf8mb4_general_ci,
   `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
@@ -44,10 +44,10 @@ CREATE TABLE IF NOT EXISTS `services_vault` (
   `off_budget_plans` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `color` text COLLATE utf8mb4_general_ci,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Дамп данных таблицы basemfcdjango.services_vault: ~22 rows (приблизительно)
-INSERT INTO `services_vault` (`id`, `id_id`, `name`, `KOSGU`, `DopFC`, `budget_limit`, `off_budget_limit`, `budget_planned`, `off_budget_planned`, `budget_bargaining`, `off_budget_bargaining`, `budget_concluded`, `off_budget_concluded`, `budget_completed`, `off_budget_completed`, `budget_execution`, `off_budget_execution`, `budget_remainder`, `off_budget_remainder`, `budget_plans`, `off_budget_plans`, `color`) VALUES
+INSERT INTO `services_two` (`id`, `id_id`, `name`, `KOSGU`, `DopFC`, `budget_limit`, `off_budget_limit`, `budget_planned`, `off_budget_planned`, `budget_bargaining`, `off_budget_bargaining`, `budget_concluded`, `off_budget_concluded`, `budget_completed`, `off_budget_completed`, `budget_execution`, `off_budget_execution`, `budget_remainder`, `off_budget_remainder`, `budget_plans`, `off_budget_plans`, `color`) VALUES
 	(1, '1', 'Связь', '221', '0000000', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
 	(2, '2', 'Транспортные расходы', '222', '0000000', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
 	(3, '3', 'ТКО', '223', '0000021', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
@@ -69,12 +69,12 @@ INSERT INTO `services_vault` (`id`, `id_id`, `name`, `KOSGU`, `DopFC`, `budget_l
 	(23, '23', 'Строительные материалы', '344', '0000000', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
 	(24, '24', 'Спецодежда', '345', '0000000', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
 	(25, '25', 'Прочие материалы', '346', '0000000', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
-	(26, '26', 'Прочие материалы однократного применения', '349', '0000000', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
-  (26, '26', 'Связь', '221', '0000150', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
-  (26, '26', 'Прочие', '226', '0000150', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
-  (26, '26', 'ОС', '310', '0000150', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
-  (26, '26', 'Прочие материалы', '346', '0000150', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
-  (26, '26', 'Содержание', '225', '0000150', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
+	(26, '26', 'Прочие материалы однократного применения', '349', '0000000', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
+  (27, '27', 'Связь', '221', '0000150', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
+  (28, '28', 'Прочие', '226', '0000150', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
+  (29, '29', 'ОС', '310', '0000150', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
+  (30, '30', 'Прочие материалы', '346', '0000150', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
+  (31, '31', 'Содержание', '225', '0000150', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

@@ -321,7 +321,7 @@
                         <td class="stretch-width">
                             <!-- Управление -->
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                <a href="{% url 'edit' row_id=item.id user=user.id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}"
+                                <a href="{% url 'edit' row_id=item.id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}"
                                 class="btn btn-sm btn-warning">Edit</a>
                                 <form class="delete-form" data-id="{{ item.id }}" style="display:inline;">
 
@@ -580,7 +580,7 @@
                         <td class="stretch-width">
                             <!-- Управление -->
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                <a href="{% url 'edit_user' row_id=item.id user=user.id %}?page_user={{ page_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&contract_date_user={{ selected_contract_date_user }}&selected_end_date_user={{ selected_end_date_user }}"
+                                <a href="{% url 'edit_user' row_id=item.id %}?page_user={{ page_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&contract_date_user={{ selected_contract_date_user }}&selected_end_date_user={{ selected_end_date_user }}"
                                 class="btn btn-sm btn-warning">Edit</a>
 
                             </div>
@@ -827,7 +827,7 @@
                         <td class="stretch-width">
                             <!-- Управление -->
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                <a href="{% url 'edit_user_two' row_id=item.id user=user.id %}?page_user_two={{ page_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&KOSGU_user_two={{ selected_KOSGU_user_two }}"
+                                <a href="{% url 'edit_user_two' row_id=item.id %}?page_user_two={{ page_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&KOSGU_user_two={{ selected_KOSGU_user_two }}"
                                 class="btn btn-sm btn-warning">Edit</a>
 
                             </div>

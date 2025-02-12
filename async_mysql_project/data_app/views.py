@@ -577,8 +577,11 @@ async def add(request):
 
     return await sync_to_async(render)(request, 'add.html', context)
 
+from .admin import admin_required
+
+@admin_required
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
-async def edit(request, row_id, user):
+async def edit(request, row_id):
     # Возвращаем данные формы обратно в шаблон
     context_data = {
         # 'row_id_user': row_id,
@@ -601,16 +604,16 @@ async def edit(request, row_id, user):
         'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
     }
 
-    if user != 12:
-        await sync_to_async(messages.error)(request, "Редактировать таблицу Закупки может только Администратор")
-        # Кодируем query-параметры
-        query_string = urlencode(context_data)
+    # if user != 12:
+    #     await sync_to_async(messages.error)(request, "Редактировать таблицу Закупки может только Администратор")
+    #     # Кодируем query-параметры
+    #     query_string = urlencode(context_data)
 
-        # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
+    #     # Формируем URL с query-параметрами
+    #     redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
 
-        # Перенаправляем пользователя
-        return HttpResponseRedirect(redirect_url)
+    #     # Перенаправляем пользователя
+    #     return HttpResponseRedirect(redirect_url)
 
     page = int(request.GET.get('page', 1))
     keyword_one = request.GET.get('keyword_one', None)
@@ -619,8 +622,6 @@ async def edit(request, row_id, user):
     selected_column_two = request.GET.get('selected_column_two', None)
     selected_contract_date = request.GET.get('contract_date', "No")
     selected_end_date = request.GET.get('end_date', "No")
-
-    user = request.user
 
     # Получаем объект service по id
     service = await sync_to_async(Services.objects.get)(id=row_id)
@@ -633,7 +634,6 @@ async def edit(request, row_id, user):
         'KTSSR': '',
         'KOSGU': '',
         'DopFC': '',
-        'user': user,
         'row_id': row_id,
         'page': page,
         'keyword_one': keyword_one,
@@ -646,8 +646,9 @@ async def edit(request, row_id, user):
 
     return await sync_to_async(render)(request, 'edit.html', context)
 
+@admin_required
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
-async def edit_user(request, row_id, user):
+async def edit_user(request, row_id):
     # Возвращаем данные формы обратно в шаблон
     context_data = {
         # 'row_id_user': row_id,
@@ -670,16 +671,17 @@ async def edit_user(request, row_id, user):
         'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
     }
 
-    if user != 12:
-        await sync_to_async(messages.error)(request, "Редактировать таблицу План - график может только Администратор")
-        # Кодируем query-параметры
-        query_string = urlencode(context_data)
+    # if user != 12:
+    #     await sync_to_async(messages.error)(request, "Редактировать таблицу План - график может только Администратор")
+    #     # Кодируем query-параметры
+    #     query_string = urlencode(context_data)
 
-        # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
+    #     # Формируем URL с query-параметрами
+    #     redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
 
-        # Перенаправляем пользователя
-        return HttpResponseRedirect(redirect_url)
+    #     # Перенаправляем пользователя
+    #     return HttpResponseRedirect(redirect_url)
+
     page_user = int(request.GET.get('page_user', 1))
     keyword_one_user = request.GET.get('keyword_one_user', None)
     keyword_two_user = request.GET.get('keyword_two_user', None)
@@ -688,15 +690,12 @@ async def edit_user(request, row_id, user):
     selected_contract_date_user = request.GET.get('selected_contract_date_user', "No")
     selected_end_date_user = request.GET.get('selected_end_date_user', "No")
 
-    user = request.user
-
     # Получаем объект service_user по id
     service_user = await sync_to_async(Services_Two.objects.get)(id=row_id)
 
     # Подготовка контекста для шаблона
     context = {
         'service_user': service_user,
-        'user': user,
         'row_id_user': row_id,
         'page_user': page_user,
         'keyword_one_user': keyword_one_user,
@@ -709,8 +708,9 @@ async def edit_user(request, row_id, user):
 
     return await sync_to_async(render)(request, 'edit_user.html', context)
 
+@admin_required
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
-async def edit_user_two(request, row_id, user):
+async def edit_user_two(request, row_id):
     # Возвращаем данные формы обратно в шаблон
     context_data = {
         # 'row_id_user': row_id,
@@ -733,16 +733,16 @@ async def edit_user_two(request, row_id, user):
         'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
     }
 
-    if user != 12:
-        await sync_to_async(messages.error)(request, "Редактировать таблицу Свод может только Администратор")
-        # Кодируем query-параметры
-        query_string = urlencode(context_data)
+    # if user != 12:
+    #     await sync_to_async(messages.error)(request, "Редактировать таблицу Свод может только Администратор")
+    #     # Кодируем query-параметры
+    #     query_string = urlencode(context_data)
 
-        # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
+    #     # Формируем URL с query-параметрами
+    #     redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
 
-        # Перенаправляем пользователя
-        return HttpResponseRedirect(redirect_url)
+    #     # Перенаправляем пользователя
+    #     return HttpResponseRedirect(redirect_url)
 
     page_user = int(request.GET.get('page_user', 1))
     keyword_one_user = request.GET.get('keyword_one_user', None)
@@ -752,15 +752,12 @@ async def edit_user_two(request, row_id, user):
     selected_contract_date_user = request.GET.get('selected_contract_date_user', "No")
     selected_end_date_user = request.GET.get('selected_end_date_user', "No")
 
-    user = request.user
-
     # Получаем объект service_user_two по id
     service_user_two = await sync_to_async(Services_Three.objects.get)(id=row_id)
 
     # Подготовка контекста для шаблона
     context = {
         'service_user_two': service_user_two,
-        'user': user,
         'row_id_user_two': row_id,
         'page_user': page_user,
         'keyword_one_user': keyword_one_user,
