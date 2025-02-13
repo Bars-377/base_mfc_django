@@ -102,6 +102,9 @@ STATICFILES_DIRS = [
     BASE_DIR / "data_app/static",
 ]
 
+# Папка для сбора статических файлов в продакшн (если необходимо)
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 

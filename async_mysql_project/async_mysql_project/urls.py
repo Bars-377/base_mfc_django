@@ -20,6 +20,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.views import LogoutView
 
+from django.contrib import admin
+
 urlpatterns = [
     path('accounts/login/', views.login_view, name='login'),  # Ваше представление для входа
     path('accounts/register/', views.register_view, name='register'),  # Ваше представление для регистрации
@@ -38,7 +40,9 @@ urlpatterns = [
     path('edit_user_two/<int:row_id>/', views.edit_user_two, name='edit_user_two'),
     path('delete_record/<int:row_id>/', views.delete_record, name='delete_record'),
     path("upload/", views.upload_file, name="upload_file"),
-] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0]) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Эта строка решает проблема поиска статических файлов
+    path("admin/", admin.site.urls),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Эта строка решает проблема поиска статических файлов
 
-if settings.DEBUG:  # Показывать статические файлы в режиме разработки
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# Для доступа к папке static
+# static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
+

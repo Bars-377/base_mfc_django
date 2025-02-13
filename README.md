@@ -26,7 +26,10 @@
 
          python manage.py migrate
 
-4. Запустить приложение:
+4. Собираем статическией файлы (берётся из STATICFILES_DIRS):
+         python manage.py collectstatic
+
+6. Запустить приложение:
 
    Зайти в дирректорию async_mysql_project
 

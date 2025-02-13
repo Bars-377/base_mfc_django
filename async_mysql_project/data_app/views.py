@@ -54,10 +54,10 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     per_page = 20
 
     # Получаем все уникальные значения year и date_number_no_one
-    all_years = await sync_to_async(lambda: list(Services.objects.values('contract_date').distinct()))()
-    all_end_date = await sync_to_async(lambda: list(Services.objects.values('end_date').distinct()))()
-    all_KOSGU_user = await sync_to_async(lambda: list(Services_Two.objects.values('KOSGU').distinct()))()
-    all_KOSGU_user_two = await sync_to_async(lambda: list(Services_Three.objects.values('KOSGU').distinct()))()
+    all_years = await sync_to_async(lambda: list(Services.objects.values('contract_date').distinct()), thread_sensitive=True)()
+    all_end_date = await sync_to_async(lambda: list(Services.objects.values('end_date').distinct()), thread_sensitive=True)()
+    all_KOSGU_user = await sync_to_async(lambda: list(Services_Two.objects.values('KOSGU').distinct()), thread_sensitive=True)()
+    all_KOSGU_user_two = await sync_to_async(lambda: list(Services_Three.objects.values('KOSGU').distinct()), thread_sensitive=True)()
 
     # Регулярные выражения для форматов дат
     pattern_dd_mm_yyyy = r'\b\d{2}\.\d{2}\.\d{4}\b'
@@ -498,7 +498,7 @@ async def update_color(request, row_id):
             color = data.get('color')
 
             # Найдите запись по ID и обновите цвет
-            service = await sync_to_async(Services.objects.get)(id=row_id)
+            service = await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id)
             service.color = color
             await sync_to_async(service.save)()
 
@@ -517,7 +517,7 @@ async def update_color_user(request, row_id):
             color = data.get('color')
 
             # Найдите запись по ID и обновите цвет
-            service = await sync_to_async(Services_Two.objects.get)(id=row_id)
+            service = await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id)
             service.color = color
             await sync_to_async(service.save)()
 
@@ -536,7 +536,7 @@ async def update_color_user_two(request, row_id):
             color = data.get('color')
 
             # Найдите запись по ID и обновите цвет
-            service = await sync_to_async(Services_Three.objects.get)(id=row_id)
+            service = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(id=row_id)
             service.color = color
             await sync_to_async(service.save)()
 
@@ -547,8 +547,9 @@ async def update_color_user_two(request, row_id):
             return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
     return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
 
-# from django.shortcuts import get_object_or_404
+from .admin import group_required
 
+@group_required('Администратор', 'Редактор')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def add(request):
     page = int(request.GET.get('page', 1))
@@ -577,9 +578,7 @@ async def add(request):
 
     return await sync_to_async(render)(request, 'add.html', context)
 
-from .admin import admin_required
-
-@admin_required
+@group_required('Администратор', 'Редактор')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit(request, row_id):
     # Возвращаем данные формы обратно в шаблон
@@ -624,7 +623,7 @@ async def edit(request, row_id):
     selected_end_date = request.GET.get('end_date', "No")
 
     # Получаем объект service по id
-    service = await sync_to_async(Services.objects.get)(id=row_id)
+    service = await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id)
 
     # Подготовка контекста для шаблона
     context = {
@@ -646,7 +645,7 @@ async def edit(request, row_id):
 
     return await sync_to_async(render)(request, 'edit.html', context)
 
-@admin_required
+@group_required('Администратор', 'Редактор')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit_user(request, row_id):
     # Возвращаем данные формы обратно в шаблон
@@ -691,7 +690,7 @@ async def edit_user(request, row_id):
     selected_end_date_user = request.GET.get('selected_end_date_user', "No")
 
     # Получаем объект service_user по id
-    service_user = await sync_to_async(Services_Two.objects.get)(id=row_id)
+    service_user = await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id)
 
     # Подготовка контекста для шаблона
     context = {
@@ -708,7 +707,7 @@ async def edit_user(request, row_id):
 
     return await sync_to_async(render)(request, 'edit_user.html', context)
 
-@admin_required
+@group_required('Администратор', 'Редактор')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit_user_two(request, row_id):
     # Возвращаем данные формы обратно в шаблон
@@ -753,7 +752,7 @@ async def edit_user_two(request, row_id):
     selected_end_date_user = request.GET.get('selected_end_date_user', "No")
 
     # Получаем объект service_user_two по id
-    service_user_two = await sync_to_async(Services_Three.objects.get)(id=row_id)
+    service_user_two = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(id=row_id)
 
     # Подготовка контекста для шаблона
     context = {
@@ -808,7 +807,7 @@ class ContractProcessor:
         try:
             from django.db.models import Q
 
-            Services_Two_ = await sync_to_async(Services_Two.objects.get)(
+            Services_Two_ = await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(
                 Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
             )
             return Services_Two_
@@ -822,7 +821,7 @@ class ContractProcessor:
         from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
         try:
-            Services_ = await sync_to_async(Services.objects.get)(name=self.context_data['name'])
+            Services_ = await sync_to_async(Services.objects.get, thread_sensitive=True)(name=self.context_data['name'])
             return False
         except MultipleObjectsReturned:
             Services_ = await sync_to_async(lambda: Services.objects.filter(name=self.context_data['name']).first())()
@@ -980,7 +979,7 @@ class ContractProcessor:
 
             from django.db.models import Q
 
-            Services_Three_ = await sync_to_async(Services_Three.objects.get)(
+            Services_Three_ = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(
                 Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
             )
 
@@ -1000,7 +999,7 @@ class ContractProcessor:
 
             await sync_to_async(Services_Three_.save)()
 
-            Services_Three_ = await sync_to_async(Services_Three.objects.get)(
+            Services_Three_ = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(
                 Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
             )
 
@@ -1332,7 +1331,7 @@ async def update_record(request, row_id):
         try:
             # Возвращаем данные формы обратно в шаблон
             context_data = {
-                'service': await sync_to_async(Services.objects.get)(id=row_id),
+                'service': await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id),
                 'id_id': request.POST['id_id'],
                 'name': request.POST['name'],
                 'status': request.POST['status'],
@@ -1427,7 +1426,7 @@ async def update_record_user(request, row_id):
         try:
             # Возвращаем данные формы обратно в шаблон
             context_data = {
-                'service_user': await sync_to_async(Services_Two.objects.get)(id=row_id),
+                'service_user': await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id),
                 'id_id': request.POST['id_id'],
                 'name': request.POST['name'],
                 # 'status': request.POST['status'],
@@ -1565,7 +1564,7 @@ async def update_record_user_two(request, row_id):
         try:
             # Возвращаем данные формы обратно в шаблон
             context_data = {
-                'service_user_two': await sync_to_async(Services_Three.objects.get)(id=row_id),
+                'service_user_two': await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(id=row_id),
                 'id_id': request.POST['id_id'],
                 # 'name': request.POST['name'],
                 # 'status': request.POST['status'],
@@ -1798,7 +1797,7 @@ async def delete_record(request, row_id):
         try:
 
             # Найдите запись по ID и обновите цвет
-            service = await sync_to_async(Services.objects.get)(id=row_id)
+            service = await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id)
 
             # Возвращаем данные формы обратно в шаблон
             context_data = {

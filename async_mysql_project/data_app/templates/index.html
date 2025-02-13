@@ -26,23 +26,16 @@
             <div class="center-content">
                 <ul class="navbar-nav ml-auto">
                     {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Пользователь: {{ user.username }}</a>
-                        </li>
-                        <li class="nav-item">
-                            <!-- Замена ссылки на выход на форму -->
-                            <form method="POST" action="{% url 'logout' %}">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-success">Выход</button>
-                            </form>
-                        </li>
+                        <h4 style="color: #007bff;">Пользователь: {{ user.username }}</h4>
+                        <a class="btn btn-sm btn-danger delete-button d-button" href="{% url 'admin:index' %}">Админ панель</a>
+                        <!-- Замена ссылки на выход на форму -->
+                        <form method="POST" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">Выход</button>
+                        </form>
                     {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account_login' %}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
-                        </li>
+                        <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+                        <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
                     {% endif %}
                 </ul>
             </div>
