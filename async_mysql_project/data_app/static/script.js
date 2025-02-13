@@ -200,10 +200,26 @@ function showFlashMessage(event) {
 			}
 
 			message.style.display = "block";
+
+			// Перезагрузка страницы через window.location.assign
+			setTimeout(() => {
+				window.location.assign(window.location.href);  // Переход на текущий URL, что вызывает перезагрузку
+			}, 2000);  // Задержка 1 секунда, чтобы успело отобразиться сообщение
+
 		})
 		.catch(error => {
 			// Скрыть индикатор загрузки
 			loadingIndicator.style.display = "none";
+
+			// Показать сообщение об ошибке
+			const message = document.getElementById("flash-message");
+			message.textContent = "У вас недостаточно прав для этого действия!";
+
+			// Меняем класс на ошибку
+			message.classList.remove("alert-success");
+			message.classList.add("alert-danger");
+
+			message.style.display = "block";
 
 			console.error("Ошибка загрузки файла:", error);
 		});

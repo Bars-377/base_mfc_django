@@ -211,6 +211,16 @@ function showFlashMessage(event) {
 			// Скрыть индикатор загрузки
 			loadingIndicator.style.display = "none";
 
+			// Показать сообщение об ошибке
+			const message = document.getElementById("flash-message");
+			message.textContent = "У вас недостаточно прав для этого действия!";
+
+			// Меняем класс на ошибку
+			message.classList.remove("alert-success");
+			message.classList.add("alert-danger");
+
+			message.style.display = "block";
+
 			console.error("Ошибка загрузки файла:", error);
 		});
 }
