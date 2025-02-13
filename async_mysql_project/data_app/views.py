@@ -14,6 +14,18 @@ from asgiref.sync import sync_to_async
 
 import asyncio
 
+import logging
+
+# Создаем логгер для действий пользователей
+logger = logging.getLogger('django')
+
+from datetime import datetime
+
+@sync_to_async
+def log_user_action(user, action):
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Получаем текущее время в нужном формате
+    logger.info(f'{current_time} - Пользователь {user.username} выполнил действие: {action}')
+
 # async def clean_number(value):
 #     try:
 #         if isinstance(value, (int, float)):
@@ -393,6 +405,7 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
 
 @login_required
 async def data_table_view(request):
+    await log_user_action(request.user, 'Перешел на главную страницу таблиц')
     user = request.user
 
     total_pages_full = request.GET.get('total_pages_full', None)
@@ -457,6 +470,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 
 async def login_view(request):
+    await log_user_action(request.user, 'Попал на страницу авторизации')
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -474,6 +488,7 @@ def create_user(username, email, password):
     return User.objects.create_user(username=username, email=email, password=password)
 
 async def register_view(request):
+    await log_user_action(request.user, 'Регистрируется')
     if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
@@ -490,6 +505,7 @@ async def register_view(request):
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_color(request, row_id):
+    await log_user_action(request.user, f'Обновил цвет записи в "Закупки" с ID {row_id}')
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -509,6 +525,7 @@ async def update_color(request, row_id):
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_color_user(request, row_id):
+    await log_user_action(request.user, f'Обновил цвет записи в "План-график" с ID {row_id}')
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -528,6 +545,7 @@ async def update_color_user(request, row_id):
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_color_user_two(request, row_id):
+    await log_user_action(request.user, f'Обновил цвет записи в "Свод" с ID {row_id}')
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -550,6 +568,7 @@ from .admin import group_required
 @group_required('Администратор', 'Полный')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def add(request):
+    await log_user_action(request.user, f'Перешёл на страницу добавления записи в "Закупки"')
     page = int(request.GET.get('page', 1))
     keyword_one = request.GET.get('keyword_one', None)
     keyword_two = request.GET.get('keyword_two', None)
@@ -579,6 +598,7 @@ async def add(request):
 @group_required('Администратор', 'Полный', 'Редактирование-Закупки')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit(request, row_id):
+    await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "Закупки" с ID {row_id}')
     # # Возвращаем данные формы обратно в шаблон
     # context_data = {
     #     # 'row_id_user': row_id,
@@ -646,6 +666,7 @@ async def edit(request, row_id):
 @group_required('Администратор', 'Полный', 'Редактирование-План-график')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit_user(request, row_id):
+    await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "План-график" с ID {row_id}')
     # # Возвращаем данные формы обратно в шаблон
     # context_data = {
     #     # 'row_id_user': row_id,
@@ -708,6 +729,7 @@ async def edit_user(request, row_id):
 @group_required('Администратор', 'Полный')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit_user_two(request, row_id):
+    await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "Свод" с ID {row_id}')
     # # Возвращаем данные формы обратно в шаблон
     # context_data = {
     #     # 'row_id_user': row_id,
@@ -885,6 +907,8 @@ class ContractProcessor:
         except ValueError:
             # В случае некорректного значения установить id_id на 1
             id_id = 1
+
+        await log_user_action(self.request.user, f'Добавил запись в "Закупки" с ID {id_id}')
 
         contract_balance = await clean_number(self.context_data['contract_price']) - await clean_number(execution_contract_fact)
 
@@ -1078,11 +1102,13 @@ class ContractProcessor:
         if total_costs_calc['total_cost_1'] < (total_costs_calc['total_cost_3'] or total_costs_calc['total_cost_5'] or total_costs_calc['total_cost_7'] or total_costs_calc['total_cost_9']):
             if new_service:
                 await sync_to_async(new_service.delete)()
+                await log_user_action(self.request.user, f'Отменилось добавление записи в "Закупки" с ID {new_service['id_id']}')
             return False
 
         if total_costs_calc['total_cost_2'] < (total_costs_calc['total_cost_4'] or total_costs_calc['total_cost_6'] or total_costs_calc['total_cost_8'] or total_costs_calc['total_cost_10']):
             if new_service:
                 await sync_to_async(new_service.delete)()
+                await log_user_action(self.request.user, f'Отменилось добавление записи в "Закупки" с ID {new_service['id_id']}')
             return False
         return True
 
@@ -1311,6 +1337,8 @@ class ContractProcessor:
 
         await self.message_service_delete()
 
+        await log_user_action(self.request.user, f'Удалил запись в "Закупки" с ID {self.context_data['id_id']}')
+
         # Кодируем query-параметры
         query_string = urlencode(self.context_data)
 
@@ -1326,6 +1354,7 @@ from urllib.parse import urlencode
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_record(request, row_id):
+    await log_user_action(request.user, f'Отредактировал запись в "Закупки" с ID {row_id}')
     if request.method == 'POST':
         try:
             # Возвращаем данные формы обратно в шаблон
@@ -1421,6 +1450,7 @@ async def update_record(request, row_id):
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_record_user(request, row_id):
+    await log_user_action(request.user, f'Отредактировал запись в "План-график" с ID {row_id}')
     if request.method == 'POST':
         try:
             # Возвращаем данные формы обратно в шаблон
@@ -1559,6 +1589,7 @@ async def update_record_user(request, row_id):
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_record_user_two(request, row_id):
+    await log_user_action(request.user, f'Отредактировал запись в "Свод" с ID {row_id}')
     if request.method == 'POST':
         try:
             # Возвращаем данные формы обратно в шаблон
@@ -1912,15 +1943,15 @@ async def upload_file(request):
                     import re
                     from datetime import datetime
 
-                    # Установите соединение с базой данных
-                    conn = mysql.connector.connect(
-                        # host='172.18.11.104',
-                        host='localhost',
-                        user='root',        # Замените на ваше имя пользователя
-                        password='enigma1418',    # Замените на ваш пароль
-                        database='basemfcdjango'
-                    )
-                    cursor = conn.cursor()
+                    # # Установите соединение с базой данных
+                    # conn = mysql.connector.connect(
+                    #     # host='172.18.11.104',
+                    #     host='localhost',
+                    #     user='root',        # Замените на ваше имя пользователя
+                    #     password='enigma1418',    # Замените на ваш пароль
+                    #     database='basemfcdjango'
+                    # )
+                    # cursor = conn.cursor()
 
                     def clean_string(input_string):
                         """
@@ -2198,6 +2229,8 @@ async def upload_file(request):
                                     cursor.executemany(insert_query, data_to_insert)
 
                         await insert_data(insert_query, data_to_insert)
+
+                        await log_user_action(request.user, f'Загрузил данные из Excel в "Закупки"')
 
                         from collections import defaultdict
 

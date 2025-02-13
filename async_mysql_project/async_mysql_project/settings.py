@@ -116,6 +116,26 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'user_actions.log',
+            'encoding': 'utf-8',  # Устанавливаем кодировку UTF-8
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
 """------------------------------------------------------"""
 DATABASES = {
     'default': {
@@ -123,8 +143,8 @@ DATABASES = {
         'NAME': 'basemfcdjango',
         'USER': 'root',
         'PASSWORD': 'enigma1418',
-        'HOST': '172.18.11.104',  # или IP, если база на удалённом сервере
-        # 'HOST': 'localhost',  # или IP, если база на удалённом сервере
+        # 'HOST': '172.18.11.104',  # или IP, если база на удалённом сервере
+        'HOST': 'localhost',  # или IP, если база на удалённом сервере
         'PORT': '3306',
         # 'OPTIONS': {
         #     'charset': 'utf8mb4',
