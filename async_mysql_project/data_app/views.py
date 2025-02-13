@@ -391,8 +391,6 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
 
     return await sync_to_async(render)(request, 'data_table.html', context)
 
-from asgiref.sync import sync_to_async
-
 @login_required
 async def data_table_view(request):
     user = request.user
@@ -549,7 +547,7 @@ async def update_color_user_two(request, row_id):
 
 from .admin import group_required
 
-@group_required('Администратор', 'Редактор')
+@group_required('Администратор', 'Полный', 'Загрузка')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def add(request):
     page = int(request.GET.get('page', 1))
@@ -578,30 +576,30 @@ async def add(request):
 
     return await sync_to_async(render)(request, 'add.html', context)
 
-@group_required('Администратор', 'Редактор')
+@group_required('Администратор', 'Полный', 'Изменение')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit(request, row_id):
-    # Возвращаем данные формы обратно в шаблон
-    context_data = {
-        # 'row_id_user': row_id,
-        'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-        'keyword_one': request.GET.get('keyword_one', None),
-        'keyword_two': request.GET.get('keyword_two', None),
-        'selected_column_one': request.GET.get('selected_column_one', None),
-        'selected_column_two': request.GET.get('selected_column_two', None),
-        'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
-        'KOSGU_user': request.GET.get('KOSGU_user', None),
-        'keyword_one_user': request.GET.get('keyword_one_user', None),
-        'keyword_two_user': request.GET.get('keyword_two_user', None),
-        'selected_column_one_user': request.GET.get('selected_column_one_user', None),
-        'selected_column_two_user': request.GET.get('selected_column_two_user', None),
-        'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1,
-        'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
-        'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
-        'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
-        'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-        'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
-    }
+    # # Возвращаем данные формы обратно в шаблон
+    # context_data = {
+    #     # 'row_id_user': row_id,
+    #     'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
+    #     'keyword_one': request.GET.get('keyword_one', None),
+    #     'keyword_two': request.GET.get('keyword_two', None),
+    #     'selected_column_one': request.GET.get('selected_column_one', None),
+    #     'selected_column_two': request.GET.get('selected_column_two', None),
+    #     'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
+    #     'KOSGU_user': request.GET.get('KOSGU_user', None),
+    #     'keyword_one_user': request.GET.get('keyword_one_user', None),
+    #     'keyword_two_user': request.GET.get('keyword_two_user', None),
+    #     'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+    #     'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+    #     'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1,
+    #     'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+    #     'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+    #     'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+    #     'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+    #     'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
+    # }
 
     # if user != 12:
     #     await sync_to_async(messages.error)(request, "Редактировать таблицу Закупки может только Администратор")
@@ -645,30 +643,30 @@ async def edit(request, row_id):
 
     return await sync_to_async(render)(request, 'edit.html', context)
 
-@group_required('Администратор', 'Редактор')
+@group_required('Администратор', 'Полный', 'Изменение')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit_user(request, row_id):
-    # Возвращаем данные формы обратно в шаблон
-    context_data = {
-        # 'row_id_user': row_id,
-        'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-        'keyword_one': request.GET.get('keyword_one', None),
-        'keyword_two': request.GET.get('keyword_two', None),
-        'selected_column_one': request.GET.get('selected_column_one', None),
-        'selected_column_two': request.GET.get('selected_column_two', None),
-        'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
-        'KOSGU_user': request.GET.get('KOSGU_user', None),
-        'keyword_one_user': request.GET.get('keyword_one_user', None),
-        'keyword_two_user': request.GET.get('keyword_two_user', None),
-        'selected_column_one_user': request.GET.get('selected_column_one_user', None),
-        'selected_column_two_user': request.GET.get('selected_column_two_user', None),
-        'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1,
-        'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
-        'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
-        'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
-        'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-        'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
-    }
+    # # Возвращаем данные формы обратно в шаблон
+    # context_data = {
+    #     # 'row_id_user': row_id,
+    #     'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
+    #     'keyword_one': request.GET.get('keyword_one', None),
+    #     'keyword_two': request.GET.get('keyword_two', None),
+    #     'selected_column_one': request.GET.get('selected_column_one', None),
+    #     'selected_column_two': request.GET.get('selected_column_two', None),
+    #     'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
+    #     'KOSGU_user': request.GET.get('KOSGU_user', None),
+    #     'keyword_one_user': request.GET.get('keyword_one_user', None),
+    #     'keyword_two_user': request.GET.get('keyword_two_user', None),
+    #     'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+    #     'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+    #     'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1,
+    #     'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+    #     'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+    #     'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+    #     'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+    #     'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
+    # }
 
     # if user != 12:
     #     await sync_to_async(messages.error)(request, "Редактировать таблицу План - график может только Администратор")
@@ -707,30 +705,30 @@ async def edit_user(request, row_id):
 
     return await sync_to_async(render)(request, 'edit_user.html', context)
 
-@group_required('Администратор', 'Редактор')
+@group_required('Администратор', 'Полный', 'Изменение')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit_user_two(request, row_id):
-    # Возвращаем данные формы обратно в шаблон
-    context_data = {
-        # 'row_id_user': row_id,
-        'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-        'keyword_one': request.GET.get('keyword_one', None),
-        'keyword_two': request.GET.get('keyword_two', None),
-        'selected_column_one': request.GET.get('selected_column_one', None),
-        'selected_column_two': request.GET.get('selected_column_two', None),
-        'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
-        'KOSGU_user': request.GET.get('KOSGU_user', None),
-        'keyword_one_user': request.GET.get('keyword_one_user', None),
-        'keyword_two_user': request.GET.get('keyword_two_user', None),
-        'selected_column_one_user': request.GET.get('selected_column_one_user', None),
-        'selected_column_two_user': request.GET.get('selected_column_two_user', None),
-        'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1,
-        'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
-        'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
-        'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
-        'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-        'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
-    }
+    # # Возвращаем данные формы обратно в шаблон
+    # context_data = {
+    #     # 'row_id_user': row_id,
+    #     'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
+    #     'keyword_one': request.GET.get('keyword_one', None),
+    #     'keyword_two': request.GET.get('keyword_two', None),
+    #     'selected_column_one': request.GET.get('selected_column_one', None),
+    #     'selected_column_two': request.GET.get('selected_column_two', None),
+    #     'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
+    #     'KOSGU_user': request.GET.get('KOSGU_user', None),
+    #     'keyword_one_user': request.GET.get('keyword_one_user', None),
+    #     'keyword_two_user': request.GET.get('keyword_two_user', None),
+    #     'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+    #     'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+    #     'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1,
+    #     'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+    #     'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+    #     'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+    #     'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+    #     'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
+    # }
 
     # if user != 12:
     #     await sync_to_async(messages.error)(request, "Редактировать таблицу Свод может только Администратор")
@@ -773,7 +771,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 
 class ContractProcessor:
-    def __init__(self, context_data, request):
+    def __init__(self, context_data=None, request=None):
         self.context_data = context_data
         self.request = request
 
@@ -1893,6 +1891,7 @@ async def delete_record(request, row_id):
 from .models import UploadedFile
 import pandas as pd
 
+@group_required('Администратор', 'Полный', 'Загрузка')
 @csrf_exempt  # Если используете fetch, нужно отключить CSRF или передавать токен
 async def upload_file(request):
     if request.method == "POST" and request.FILES.get("file"):
@@ -1912,15 +1911,15 @@ async def upload_file(request):
                     import re
                     from datetime import datetime
 
-                    # # Установите соединение с базой данных
-                    # conn = mysql.connector.connect(
-                    #     # host='172.18.11.104',
-                    #     host='localhost',
-                    #     user='root',        # Замените на ваше имя пользователя
-                    #     password='enigma1418',    # Замените на ваш пароль
-                    #     database='basemfcdjango'
-                    # )
-                    # cursor = conn.cursor()
+                    # Установите соединение с базой данных
+                    conn = mysql.connector.connect(
+                        # host='172.18.11.104',
+                        host='localhost',
+                        user='root',        # Замените на ваше имя пользователя
+                        password='enigma1418',    # Замените на ваш пароль
+                        database='basemfcdjango'
+                    )
+                    cursor = conn.cursor()
 
                     def clean_string(input_string):
                         """
@@ -2187,8 +2186,47 @@ async def upload_file(request):
 
                     if data_to_insert:
                         # Вставьте данные в базу данных
-                        with connection.cursor() as cursor:
-                            cursor.execute(insert_query, data_to_insert)  # Передаем данные как кортеж
+                        from asgiref.sync import sync_to_async
+                        from django.db import connection
+
+                        # Функция для выполнения синхронной операции с базой данных
+                        @sync_to_async
+                        def insert_data(insert_query, data_to_insert):
+                            if data_to_insert:
+                                with connection.cursor() as cursor:
+                                    cursor.executemany(insert_query, data_to_insert)
+
+                        await insert_data(insert_query, data_to_insert)
+
+                        # Асинхронная функция для получения данных
+                        @sync_to_async
+                        def get_services_two_data():
+                            # Получаем данные из базы синхронно
+                            services_two_records = Services_Two.objects.all()
+
+                            # Создаем словарь
+                            KOSGU_and_DopFC = {}
+                            for record in services_two_records:
+                                KOSGU_and_DopFC[record.KOSGU] = record.DopFC
+
+                            return KOSGU_and_DopFC
+
+                        # Вызовите синхронную функцию через sync_to_async
+                        KOSGU_and_DopFC = await get_services_two_data()
+
+                        context_data = {}
+
+                        # Инициализация и обработка контекста
+                        processor = ContractProcessor(context_data, request)
+
+                        Services_Two_ = await processor.validate_Services_Two()
+
+                        await processor.Services_Two_save(Services_Two_)
+
+                        Services_Two_ = await processor.validate_Services_Two()
+
+                        await processor.process_budget_services_two(Services_Two_)
+
                         # cursor.executemany(insert_query, data_to_insert)
                         # conn.commit()
                         return JsonResponse({"message": f"Данные из файла {uploaded_file.name} успешно загружены!", "status": "success"})
@@ -2202,6 +2240,12 @@ async def upload_file(request):
                     return JsonResponse({"message": "Нет соответствия количества столбцов", "status": "error"}, status=400)
 
             except Exception as e:
+                # Вывод подробной информации об ошибке
+                print(f"Поймано исключение: {type(e).__name__}")
+                print(f"Сообщение об ошибке: {str(e)}")
+                import traceback
+                print("Трассировка стека (stack trace):")
+                traceback.print_exc()
                 return JsonResponse({"message": f"Ошибка при обработке файла: {str(e)}", "status": "error"}, status=400)
         else:
             return JsonResponse({"message": "Только файлы .xlsx разрешены", "status": "error"}, status=400)

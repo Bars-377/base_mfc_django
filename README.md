@@ -26,7 +26,7 @@
 
          python manage.py migrate
 
-4. Собираем статическией файлы (берётся из STATICFILES_DIRS):
+4. Собираем статическией файлы для создания admin стилей и остального (берётся из STATICFILES_DIRS):
          python manage.py collectstatic
 
 6. Запустить приложение:

@@ -200,6 +200,12 @@ function showFlashMessage(event) {
 			}
 
 			message.style.display = "block";
+
+			// Перезагрузка страницы через window.location.assign
+			setTimeout(() => {
+				window.location.assign(window.location.href);  // Переход на текущий URL, что вызывает перезагрузку
+			}, 2000);  // Задержка 1 секунда, чтобы успело отобразиться сообщение
+
 		})
 		.catch(error => {
 			// Скрыть индикатор загрузки
