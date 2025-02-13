@@ -40,11 +40,19 @@
                 </ul>
             </div>
         </div>
-            {% block content %}{% endblock %}
-            {% if user.id != 20 and user.id != 21 %}
-                {% block content_user %}{% endblock %}
+            {% if user.id != 20 or user.id != 21 %}
+                {% block content %}{% endblock %}
             {% endif %}
+            {% block content_user %}{% endblock %}
             {% block content_user_two %}{% endblock %}
+
+            <!--  {% if user.id == 20 or user.id == 21 %}  -->
+            <!--      {% block content_user %}{% endblock %}  -->
+            <!--  {% endif %}  -->
+
+            <!--  {% if user.id == 20 or user.id == 21 %}  -->
+            <!--      {% block content_user_two %}{% endblock %}  -->
+            <!--  {% endif %}  -->
     </div>
 
     <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>

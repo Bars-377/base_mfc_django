@@ -547,7 +547,7 @@ async def update_color_user_two(request, row_id):
 
 from .admin import group_required
 
-@group_required('Администратор', 'Полный', 'Загрузка')
+@group_required('Администратор', 'Полный')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def add(request):
     page = int(request.GET.get('page', 1))
@@ -576,7 +576,7 @@ async def add(request):
 
     return await sync_to_async(render)(request, 'add.html', context)
 
-@group_required('Администратор', 'Полный', 'Изменение')
+@group_required('Администратор', 'Полный', 'Редактирование-Закупки')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit(request, row_id):
     # # Возвращаем данные формы обратно в шаблон
@@ -643,7 +643,7 @@ async def edit(request, row_id):
 
     return await sync_to_async(render)(request, 'edit.html', context)
 
-@group_required('Администратор', 'Полный', 'Изменение')
+@group_required('Администратор', 'Полный', 'Редактирование-План-график')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit_user(request, row_id):
     # # Возвращаем данные формы обратно в шаблон
@@ -705,7 +705,7 @@ async def edit_user(request, row_id):
 
     return await sync_to_async(render)(request, 'edit_user.html', context)
 
-@group_required('Администратор', 'Полный', 'Изменение')
+@group_required('Администратор', 'Полный')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit_user_two(request, row_id):
     # # Возвращаем данные формы обратно в шаблон
@@ -1179,6 +1179,7 @@ class ContractProcessor:
         Services_way_ = await sync_to_async(list)(Services.objects.filter(
             Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
         ))
+
         contract_price_sum_way = 0
         execution_contract_fact_sum_way = 0
         for service in Services_way_:
@@ -1891,7 +1892,7 @@ async def delete_record(request, row_id):
 from .models import UploadedFile
 import pandas as pd
 
-@group_required('Администратор', 'Полный', 'Загрузка')
+@group_required('Администратор', 'Полный')
 @csrf_exempt  # Если используете fetch, нужно отключить CSRF или передавать токен
 async def upload_file(request):
     if request.method == "POST" and request.FILES.get("file"):
@@ -2198,34 +2199,49 @@ async def upload_file(request):
 
                         await insert_data(insert_query, data_to_insert)
 
+                        from collections import defaultdict
+
                         # Асинхронная функция для получения данных
                         @sync_to_async
                         def get_services_two_data():
-                            # Получаем данные из базы синхронно
                             services_two_records = Services_Two.objects.all()
 
-                            # Создаем словарь
-                            KOSGU_and_DopFC = {}
-                            for record in services_two_records:
-                                KOSGU_and_DopFC[record.KOSGU] = record.DopFC
+                            # Сохраняем все записи в список
+                            KOSGU_and_DopFC = [(record.KOSGU, record.DopFC) for record in services_two_records]
 
-                            return KOSGU_and_DopFC
+                            return KOSGU_and_DopFC  # Список с повторяющимися ключами
 
-                        # Вызовите синхронную функцию через sync_to_async
+                        # Вызов функции
                         KOSGU_and_DopFC = await get_services_two_data()
+
+                        async def process_context(KTSSR, status, context_data, request):
+                            # Обновляем context_data
+                            context_data.update({'KTSSR': KTSSR, 'status': status})
+
+                            # Инициализация и обработка контекста
+                            processor = ContractProcessor(context_data, request)
+                            await processor.process()
+
+                        async def handle_multiple_statuses(context_data, request):
+                            # Список статусов для обработки
+                            statuses = ['Запланировано', 'В торгах', 'Заключено', 'Исполнено']
+
+                            # Обработка для KTSSR 2016100000
+                            for status in statuses:
+                                await process_context('2016100000', status, context_data, request)
+
+                            # Обработка для KTSSR 2016100092
+                            for status in statuses:
+                                await process_context('2016100092', status, context_data, request)
 
                         context_data = {}
 
-                        # Инициализация и обработка контекста
-                        processor = ContractProcessor(context_data, request)
+                        for key, value in KOSGU_and_DopFC:
 
-                        Services_Two_ = await processor.validate_Services_Two()
+                            context_data.update({'KOSGU': key})  # Добавляем ключ и значение в context_data
+                            context_data.update({'DopFC': value})  # Добавляем ключ и значение в context_data
 
-                        await processor.Services_Two_save(Services_Two_)
-
-                        Services_Two_ = await processor.validate_Services_Two()
-
-                        await processor.process_budget_services_two(Services_Two_)
+                            await handle_multiple_statuses(context_data, request)
 
                         # cursor.executemany(insert_query, data_to_insert)
                         # conn.commit()
