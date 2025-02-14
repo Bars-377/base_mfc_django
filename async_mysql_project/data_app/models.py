@@ -128,10 +128,17 @@ class UploadedFile(models.Model):
     file = models.FileField(upload_to="file/")  # Папка "file" внутри MEDIA_ROOT
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
+from datetime import timedelta
+
+def formatted_timestamp(obj):
+    # Добавляем 7 часов к timestamp
+    adjusted_time = obj + timedelta(hours=7)  # Используйте obj напрямую
+    return adjusted_time.strftime('%Y-%m-%d %H:%M')  # Форматируем дату и время
+
 class UserActionLog(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     username = models.CharField(max_length=150)
     action = models.TextField()
 
     def __str__(self):
-        return f"{self.timestamp} - {self.username}: {self.action}"
+        return f"{formatted_timestamp(self.timestamp)} - {self.username}: {self.action}"
