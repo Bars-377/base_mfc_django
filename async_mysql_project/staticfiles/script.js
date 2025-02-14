@@ -249,8 +249,8 @@ function resetFilters() {
 	const currentPage = new URLSearchParams(window.location.search).get('page') || 1;
 
 	// Создаем объект для передачи данных через POST
-	const formData = new FormData();
-	formData.append('total_pages_full', currentPage); // Отправляем как POST
+	// const formData = new FormData();
+	// formData.append('total_pages_full', currentPage); // Отправляем как POST
 
 	// Формируем URL с параметрами GET
 	const url = new URL(window.location.href);
@@ -260,14 +260,17 @@ function resetFilters() {
 	url.searchParams.set('keyword_two', '');
 	url.searchParams.set('selected_column_one', '');
 	url.searchParams.set('selected_column_two', '');
+	url.searchParams.set('total_pages_full', currentPage);
+
+	window.location.href = url; // Перезагружаем страницу с GET параметрами
 
 	// Отправляем запрос через fetch
-	fetch(window.location.pathname, {
-		method: 'POST',
-		body: formData
-	}).then(() => {
-		window.location.href = url; // Перезагружаем страницу с GET параметрами
-	});
+	// fetch(window.location.pathname, {
+	// 	method: 'POST',
+	// 	body: formData
+	// }).then(() => {
+	// 	window.location.href = url; // Перезагружаем страницу с GET параметрами
+	// });
 }
 
 // Функция сброса фильтров и прокрутки
@@ -279,8 +282,8 @@ function resetFiltersUser() {
 	const currentPage = new URLSearchParams(window.location.search).get('page_user') || 1;
 
 	// Создаем объект для передачи данных через POST
-	const formData = new FormData();
-	formData.append('total_pages_full_user', currentPage); // Отправляем как POST
+	// const formData = new FormData();
+	// formData.append('total_pages_full_user', currentPage); // Отправляем как POST
 
 	// Формируем URL с параметрами GET
 	const url = new URL(window.location.href);
@@ -290,14 +293,17 @@ function resetFiltersUser() {
 	url.searchParams.set('keyword_two', '');
 	url.searchParams.set('selected_column_one', '');
 	url.searchParams.set('selected_column_two', '');
+	url.searchParams.set('total_pages_full_user', currentPage);
+
+	window.location.href = url; // Перезагружаем страницу с GET параметрами
 
 	// Отправляем запрос через fetch
-	fetch(window.location.pathname, {
-		method: 'POST',
-		body: formData
-	}).then(() => {
-		window.location.href = url; // Перезагружаем страницу с GET параметрами
-	});
+	// fetch(window.location.pathname, {
+	// 	method: 'POST',
+	// 	body: formData
+	// }).then(() => {
+	// 	window.location.href = url; // Перезагружаем страницу с GET параметрами
+	// });
 }
 
 // Функция сброса фильтров и прокрутки
@@ -309,8 +315,8 @@ function resetFiltersUserTwo() {
 	const currentPage = new URLSearchParams(window.location.search).get('page_user_two') || 1;
 
 	// Создаем объект для передачи данных через POST
-	const formData = new FormData();
-	formData.append('total_pages_full_user_two', currentPage); // Отправляем как POST
+	// const formData = new FormData();
+	// formData.append('total_pages_full_user_two', currentPage); // Отправляем как POST
 
 	// Формируем URL с параметрами GET
 	const url = new URL(window.location.href);
@@ -320,14 +326,17 @@ function resetFiltersUserTwo() {
 	url.searchParams.set('keyword_two', '');
 	url.searchParams.set('selected_column_one', '');
 	url.searchParams.set('selected_column_two', '');
+	url.searchParams.set('total_pages_full_user_two', currentPage);
+
+	window.location.href = url; // Перезагружаем страницу с GET параметрами
 
 	// Отправляем запрос через fetch
-	fetch(window.location.pathname, {
-		method: 'POST',
-		body: formData
-	}).then(() => {
-		window.location.href = url; // Перезагружаем страницу с GET параметрами
-	});
+	// fetch(window.location.pathname, {
+	// 	method: 'POST',
+	// 	body: formData
+	// }).then(() => {
+	// 	window.location.href = url; // Перезагружаем страницу с GET параметрами
+	// });
 }
 
 // Функция обновления цвета строки
