@@ -647,7 +647,6 @@ function getCookie(name) {
 	}
 	return cookieValue;
 }
-const csrftoken = getCookie('csrftoken');
 
 document.addEventListener('DOMContentLoaded', function () {
 	const deleteButtons = document.querySelectorAll('.delete-button');
@@ -656,30 +655,35 @@ document.addEventListener('DOMContentLoaded', function () {
 		button.addEventListener('click', function () {
 			const form = this.closest('.delete-form');
 			const serviceId = form.getAttribute('data-id');
-			console.log(serviceId);
+			console.log(`Ищем элемент с id: ${serviceId}`);
 
 			if (confirmDelete()) {
 				fetch(`/delete_record/${serviceId}/`, {  // Убедитесь, что здесь правильный путь
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-CSRFToken': csrftoken
+						'X-CSRFToken': getCookie('csrftoken')
 					},
 					body: JSON.stringify({ id: serviceId })  // Отправка данных, если необходимо
 				})
-					.then(response => {
-						if (response.ok) {
+					.then(response => response.json()) // Преобразуем ответ в JSON
+					.then(data => {
+						if (data.success) { // Предполагаем, что сервер возвращает { success: true } при успешном удалении
 							const row = document.querySelector(`.service-row[data-id="${serviceId}"]`);
+							console.log(row); // Проверьте, что элемент найден
 							if (row) {
 								row.remove();
 							}
 							alert('Элемент успешно удален!'); // Уведомление об успешном удалении
-							window.location.reload(); // Обновление страницы
+							// window.location.reload(); // Обновление страницы
 						} else {
-							alert('Ошибка удаления');
+							alert('Ошибка:', data); // Если success не true
 						}
 					})
-					.catch(error => console.error('Ошибка:', error));
+					.catch(error => {
+						alert('У вас недостаточно прав для этого действия!');
+						console.error('Ошибка:', error);
+					} );
 			}
 		});
 	});

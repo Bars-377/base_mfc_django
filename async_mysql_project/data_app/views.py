@@ -1339,20 +1339,20 @@ class ContractProcessor:
         # Другие операции, такие как сохранение сервиса и т.д.
 
     async def process_delete(self, service):
-        execution_contract_fact = await self.calculate_execution_fact()
+        # execution_contract_fact = await self.calculate_execution_fact()
 
-        if await clean_number(self.context_data['contract_price']) == 0:
-            self.context_data['execution'] = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
-        else:
-            self.context_data['execution'] = round(await clean_number(execution_contract_fact) / await clean_number(self.context_data['contract_price']), 2) * 100
+        # print('FDSFDSFDSFDSSFD')
 
-        self.context_data['contract_balance'] = await clean_number(self.context_data['contract_price']) - await clean_number(execution_contract_fact)
+        # if await clean_number(self.context_data['contract_price']) == 0:
+        #     self.context_data['execution'] = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
+        # else:
+        #     self.context_data['execution'] = round(await clean_number(execution_contract_fact) / await clean_number(self.context_data['contract_price']), 2) * 100
+
+        # self.context_data['contract_balance'] = await clean_number(self.context_data['contract_price']) - await clean_number(execution_contract_fact)
 
         await self.process()
 
         await self.message_service_delete()
-
-        await log_user_action(self.request.user, f'Удалил запись в "Закупки" с ID {self.context_data['id_id']}')
 
         # Кодируем query-параметры
         query_string = urlencode(self.context_data)
@@ -1845,99 +1845,46 @@ async def add_record(request):
             return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
     return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
 
+@group_required('Администратор', 'Полный', 'Редактирование-План-график')
+# @group_required('Полный', 'Редактирование-План-график')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def delete_record(request, row_id):
     if request.method == 'POST':
         try:
-
             # Найдите запись по ID и обновите цвет
             service = await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id)
 
             # Возвращаем данные формы обратно в шаблон
             context_data = {
-                # 'service': await sync_to_async(Services.objects.get)(id=row_id),
-                'id_id': service.id_id,
-                'name': service.name,
-                'status': service.status,
-                'way': service.way,
-                'initiator': service.initiator,
-                'KTSSR': service.KTSSR,
                 'KOSGU': service.KOSGU,
                 'DopFC': service.DopFC,
-                'NMCC': service.NMCC,
-                'counterparty': service.counterparty,
-                'registration_number': service.registration_number,
-                'contract_number': service.contract_number,
-                'contract_date': service.contract_date,
-                'end_date': service.end_date,
-                'contract_price': service.contract_price,
-                'january_one': service.january_one,
-                'february': service.february,
-                'march': service.march,
-                'april': service.april,
-                'may': service.may,
-                'june': service.june,
-                'july': service.july,
-                'august': service.august,
-                'september': service.september,
-                'october': service.october,
-                'november': service.november,
-                'december': service.december,
-                'january_two': service.january_two,
-                'date_january_one': service.date_january_one,
-                'sum_january_one': service.sum_january_one,
-                'date_february': service.date_february,
-                'sum_february': service.sum_february,
-                'date_march': service.date_march,
-                'sum_march':  service.sum_march,
-                'date_april': service.date_april,
-                'sum_april': service.sum_april,
-                'date_may': service.date_may,
-                'sum_may': service.sum_may,
-                'date_june': service.date_june,
-                'sum_june': service.sum_june,
-                'date_july': service.date_july,
-                'sum_july': service.sum_july,
-                'date_august': service.date_august,
-                'sum_august': service.sum_august,
-                'date_september': service.date_september,
-                'sum_september': service.sum_september,
-                'date_october': service.date_october,
-                'sum_october': service.sum_october,
-                'date_november': service.date_november,
-                'sum_november': service.sum_november,
-                'date_december': service.date_december,
-                'sum_december': service.sum_december,
-                'date_january_two': service.date_january_two,
-                'sum_january_two': service.sum_january_two,
-                'execution': service.execution,
-                'contract_balance': service.contract_balance,
-                'execution_contract_fact': service.execution_contract_fact,
-                'execution_contract_plan': service.execution_contract_plan,
-                'saving': service.saving,
-                'color': service.color,
-                # 'row_id': row_id,
-                # 'page': int(request.GET.get('page', 1)),
-                # 'keyword_one': request.GET.get('keyword_one', None),
-                # 'keyword_two': request.GET.get('keyword_two', None),
-                # 'selected_column_one': request.GET.get('selected_column_one', None),
-                # 'selected_column_two': request.GET.get('selected_column_two', None),
-                # 'page_user': 1,
-                # 'KOSGU_user': request.GET.get('KOSGU_user', None),
-                # 'keyword_one_user': request.GET.get('keyword_one_user', None),
-                # 'keyword_two_user': request.GET.get('keyword_two_user', None),
-                # 'selected_column_one_user': request.GET.get('selected_column_one_user', None),
-                # 'selected_column_two_user': request.GET.get('selected_column_two_user', None),
-                # 'page_user_two': 1,
-                # 'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
-                # 'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
-                # 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
-                # 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-                # 'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
+                'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
+                'keyword_one': request.GET.get('keyword_one', None),
+                'keyword_two': request.GET.get('keyword_two', None),
+                'selected_column_one': request.GET.get('selected_column_one', None),
+                'selected_column_two': request.GET.get('selected_column_two', None),
+                'page_user': 1,
+                'KOSGU_user': request.GET.get('KOSGU_user', None),
+                'keyword_one_user': request.GET.get('keyword_one_user', None),
+                'keyword_two_user': request.GET.get('keyword_two_user', None),
+                'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+                'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+                'page_user_two': 1,
+                'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+                'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+                'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+                'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
             }
 
+            # Удаляем объект
+            await sync_to_async(service.delete, thread_sensitive=True)()
+
+            await log_user_action(request.user, f'Удалил запись из "Закупки" с ID {row_id}')
+
             processor = ContractProcessor(context_data, request)
-            return await processor.process_delete(service)
+            await processor.process_delete(service)
+            return JsonResponse({'success': True}, status=200)
         except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
         except json.JSONDecodeError:
