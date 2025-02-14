@@ -1155,11 +1155,6 @@ class ContractProcessor:
 
     async def process_update_user(self):
 
-        from django.forms.models import model_to_dict
-        service_dict = model_to_dict(self.context_data['service_user'])
-
-        await log_user_action(self.request.user, f'Отредактировал запись в "План-график" с ID {service_dict['id_id']},\nБыло: {service_dict}')
-
         # Services_Two_ = await self.validate_Services_Two()
 
         # await self.Services_Two_save(Services_Two_)
@@ -1169,8 +1164,6 @@ class ContractProcessor:
         # await self.process_budget_services_two(Services_Two_)
 
         await self.process()
-
-        await log_user_action(self.request.user, f'Отредактировал запись в "План-график" с ID {self.context_data['id_id']},\Стало: {self.context_data}')
 
         await self.message_service_update()
 
@@ -1187,11 +1180,6 @@ class ContractProcessor:
 
     async def process_update_user_two(self):
 
-        from django.forms.models import model_to_dict
-        service_dict = model_to_dict(self.context_data['service_user_two'])
-
-        await log_user_action(self.request.user, f'Отредактировал запись в "Свод" с ID {service_dict['id_id']},\nБыло: {service_dict}')
-
         # from django.db.models import Q
 
         # Services_Two_ = await self.validate_Services_Two()
@@ -1201,8 +1189,6 @@ class ContractProcessor:
         # await self.process_budget_services_three(None, Services_Two_)
 
         await self.process()
-
-        await log_user_action(self.request.user, f'Отредактировал запись в "Свод" с ID {self.context_data['id_id']},\nБыло: {self.context_data}')
 
         await self.message_service_update()
 
@@ -1219,17 +1205,20 @@ class ContractProcessor:
 
     async def process(self):
         """Предварительные вычислительные операции после обновления или добавления записи"""
-        from django.db.models import Q
+        try:
+            from django.db.models import Q
 
-        Services_way_ = await sync_to_async(list)(Services.objects.filter(
-            Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
-        ))
+            Services_way_ = await sync_to_async(list)(Services.objects.filter(
+                Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
+            ))
 
-        contract_price_sum_way = 0
-        execution_contract_fact_sum_way = 0
-        for service in Services_way_:
-            contract_price_sum_way += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
-            execution_contract_fact_sum_way += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
+            contract_price_sum_way = 0
+            execution_contract_fact_sum_way = 0
+            for service in Services_way_:
+                contract_price_sum_way += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+                execution_contract_fact_sum_way += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
+        except KeyError:
+            contract_price_sum_way = None
 
         Services_Two_ = await self.validate_Services_Two()
 
@@ -1475,7 +1464,6 @@ async def update_record(request, row_id):
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_record_user(request, row_id):
-    await log_user_action(request.user, f'Отредактировал запись в "План-график" с ID {row_id}')
     if request.method == 'POST':
         try:
             # Возвращаем данные формы обратно в шаблон
@@ -1580,6 +1568,10 @@ async def update_record_user(request, row_id):
                 'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
             }
 
+            from django.forms.models import model_to_dict
+            service_dict = model_to_dict(context_data['service_user'])
+            await log_user_action(request.user, f'Отредактировал запись в "План-график" с ID {service_dict['id_id']},\nБыло: budget_limit: {service_dict['budget_limit']}, off_budget_limit: {service_dict['off_budget_limit']}')
+
             context_data['service_user'].id_id = context_data['id_id']
             context_data['service_user'].name = context_data['name']
             context_data['service_user'].KOSGU = context_data['KOSGU']
@@ -1604,6 +1596,8 @@ async def update_record_user(request, row_id):
 
             await sync_to_async(context_data['service_user'].save)()
 
+            await log_user_action(request.user, f'Отредактировал запись в "План-график" с ID {context_data['id_id']},\Стало: budget_limit: {context_data['budget_limit']}, off_budget_limit: {context_data['off_budget_limit']}')
+
             processor = ContractProcessor(context_data, request)
             return await processor.process_update_user()
         except Services.DoesNotExist:
@@ -1614,7 +1608,6 @@ async def update_record_user(request, row_id):
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_record_user_two(request, row_id):
-    await log_user_action(request.user, f'Отредактировал запись в "Свод" с ID {row_id}')
     if request.method == 'POST':
         try:
             # Возвращаем данные формы обратно в шаблон
@@ -1719,6 +1712,10 @@ async def update_record_user_two(request, row_id):
                 'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
             }
 
+            from django.forms.models import model_to_dict
+            service_dict = model_to_dict(context_data['service_user_two'])
+            await log_user_action(request.user, f'Отредактировал запись в "Свод" с ID {service_dict['id_id']},\nБыло: budget_planned: {service_dict['budget_planned']}, off_budget_planned: {service_dict['off_budget_planned']}')
+
             context_data['service_user_two'].id_id = context_data['id_id']
             # context_data['service_user'].name = context_data['name']
             context_data['service_user_two'].KOSGU = context_data['KOSGU']
@@ -1742,6 +1739,8 @@ async def update_record_user_two(request, row_id):
             context_data['service_user_two'].color = context_data['color']
 
             await sync_to_async(context_data['service_user_two'].save)()
+
+            await log_user_action(request.user, f'Отредактировал запись в "Свод" с ID {context_data['id_id']},\Стало: budget_planned: {context_data['budget_planned']}, off_budget_planned: {context_data['off_budget_planned']}')
 
             processor = ContractProcessor(context_data, request)
             return await processor.process_update_user_two()
