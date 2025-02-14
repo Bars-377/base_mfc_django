@@ -127,3 +127,11 @@ class Services_Two(models.Model):
 class UploadedFile(models.Model):
     file = models.FileField(upload_to="file/")  # Папка "file" внутри MEDIA_ROOT
     uploaded_at = models.DateTimeField(auto_now_add=True)
+
+class UserActionLog(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True)
+    username = models.CharField(max_length=150)
+    action = models.TextField()
+
+    def __str__(self):
+        return f"{self.timestamp} - {self.username}: {self.action}"

@@ -16,25 +16,19 @@ import asyncio
 
 import logging
 
-# Создаем логгер для действий пользователей
-logger = logging.getLogger('django')
+# # Создаем логгер для действий пользователей
+# logger = logging.getLogger('django')
 
-from datetime import datetime
+# from datetime import datetime
+from .models import UserActionLog
 
 @sync_to_async
 def log_user_action(user, action):
-    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Получаем текущее время в нужном формате
-    logger.info(f'{current_time} - Пользователь {user.username} выполнил действие: {action}')
+    # current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Получаем текущее время в нужном формате
+    # logger.info(f'{current_time} - Пользователь {user.username} выполнил действие: {action}')
 
-# async def clean_number(value):
-#     try:
-#         if isinstance(value, (int, float)):
-#             return float(value)  # Уже число, возвращаем как есть
-#         if not value or value.strip() == '' or value == 'None':
-#             return 0.0  # Пустая строка обрабатывается как 0.0
-#         return float(value.replace(' ', '').replace(',', '.'))
-#     except ValueError:
-#         return 0.0  # Пустая строка обрабатывается как 0.0
+    # Сохраняем лог в базу данных
+    UserActionLog.objects.create(username=user.username, action=action)
 
 async def clean_number(value):
     if isinstance(value, (int, float)):
@@ -874,6 +868,11 @@ class ContractProcessor:
         """Подсчёт Исполнение контракта (план) (формула) и Исполнение контракта (факт) (формула)"""
         service = self.context_data['service']
 
+        # from django.forms.models import model_to_dict
+        # service_dict = model_to_dict(service)
+
+        # await log_user_action(self.request.user, f'Отредактировал запись в "Закупки" с ID {service_dict['id_id']},\nБыло: {service_dict}')
+
         # Обновляем значения в self.context_data
         self.context_data['saving'] = saving
         self.context_data['execution_contract_plan'] = execution_contract_plan
@@ -1155,13 +1154,23 @@ class ContractProcessor:
         await sync_to_async(Services_Two_.save)()
 
     async def process_update_user(self):
-        Services_Two_ = await self.validate_Services_Two()
 
-        await self.Services_Two_save(Services_Two_)
+        from django.forms.models import model_to_dict
+        service_dict = model_to_dict(self.context_data['service_user'])
 
-        Services_Two_ = await self.validate_Services_Two()
+        await log_user_action(self.request.user, f'Отредактировал запись в "План-график" с ID {service_dict['id_id']},\nБыло: {service_dict}')
 
-        await self.process_budget_services_two(Services_Two_)
+        # Services_Two_ = await self.validate_Services_Two()
+
+        # await self.Services_Two_save(Services_Two_)
+
+        # Services_Two_ = await self.validate_Services_Two()
+
+        # await self.process_budget_services_two(Services_Two_)
+
+        await self.process()
+
+        await log_user_action(self.request.user, f'Отредактировал запись в "План-график" с ID {self.context_data['id_id']},\Стало: {self.context_data}')
 
         await self.message_service_update()
 
@@ -1177,13 +1186,23 @@ class ContractProcessor:
         # Другие операции, такие как сохранение сервиса и т.д.
 
     async def process_update_user_two(self):
-        from django.db.models import Q
 
-        Services_Two_ = await self.validate_Services_Two()
+        from django.forms.models import model_to_dict
+        service_dict = model_to_dict(self.context_data['service_user_two'])
 
-        await self.process_budget_services_two(Services_Two_)
+        await log_user_action(self.request.user, f'Отредактировал запись в "Свод" с ID {service_dict['id_id']},\nБыло: {service_dict}')
 
-        await self.process_budget_services_three(None, Services_Two_)
+        # from django.db.models import Q
+
+        # Services_Two_ = await self.validate_Services_Two()
+
+        # await self.process_budget_services_two(Services_Two_)
+
+        # await self.process_budget_services_three(None, Services_Two_)
+
+        await self.process()
+
+        await log_user_action(self.request.user, f'Отредактировал запись в "Свод" с ID {self.context_data['id_id']},\nБыло: {self.context_data}')
 
         await self.message_service_update()
 
@@ -1244,6 +1263,11 @@ class ContractProcessor:
 
         self.context_data['contract_balance'] = await clean_number(self.context_data['contract_price']) - await clean_number(execution_contract_fact)
 
+        from django.forms.models import model_to_dict
+        service_dict = model_to_dict(self.context_data['service'])
+
+        await log_user_action(self.request.user, f'Отредактировал запись в "Закупки" с ID {service_dict['id_id']},\nБыло: {service_dict}')
+
         await self.update_service(saving, execution_contract_plan, execution_contract_fact)
 
         await self.process()
@@ -1257,6 +1281,8 @@ class ContractProcessor:
 
             await self.total_costs_message()
             return render(self.request, 'edit.html', self.context_data)
+
+        await log_user_action(self.request.user, f'Отредактировал запись в "Закупки" с ID {self.context_data['id_id']},\nСтало: {self.context_data}')
 
         await self.message_service_update()
 
@@ -1354,7 +1380,6 @@ from urllib.parse import urlencode
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_record(request, row_id):
-    await log_user_action(request.user, f'Отредактировал запись в "Закупки" с ID {row_id}')
     if request.method == 'POST':
         try:
             # Возвращаем данные формы обратно в шаблон
@@ -2095,9 +2120,6 @@ async def upload_file(request):
                         return str(value)  # Преобразуем в строку, если значение не NaN
 
                     def safe_float_conversion(value):
-                        # print('----')
-                        # print(value)
-                        # print('----')
                         # Если value является Series, извлекаем первое значение
                         if isinstance(value, pd.Series):
                             # Применяем конвертацию ко всем элементам Series
