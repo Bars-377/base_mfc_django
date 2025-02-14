@@ -401,7 +401,6 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
 
 @login_required
 async def data_table_view(request):
-    await log_user_action(request.user, 'Перешел на главную страницу таблиц')
     user = request.user
 
     total_pages_full = request.GET.get('total_pages_full', None)
@@ -466,7 +465,6 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 
 async def login_view(request):
-    await log_user_action(request.user, 'Попал на страницу авторизации')
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
