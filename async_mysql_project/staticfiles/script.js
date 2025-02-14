@@ -178,34 +178,37 @@ function showFlashMessage(event) {
 	})
 		.then(response => response.json())
 		.then(data => {
-			// Скрыть индикатор загрузки с небольшой задержкой
-			setTimeout(() => {
-				console.log("Скрываю индикатор загрузки...");
-				loadingIndicator.style.display = "none";
-			}, 500); // Задержка 500ms
+			if (data.success) {
+				// Скрыть индикатор загрузки с небольшой задержкой
+				setTimeout(() => {
+					console.log("Скрываю индикатор загрузки...");
+					loadingIndicator.style.display = "none";
+				}, 500); // Задержка 500ms
 
-			// Показать сообщение
-			const message = document.getElementById("flash-message");
-			message.textContent = data.message;
+				// Показать сообщение
+				const message = document.getElementById("flash-message");
+				message.textContent = data.message;
 
-			// Меняем класс в зависимости от статуса
-			if (data.status === "success") {
-				message.classList.remove("alert-danger");  // Убираем класс ошибки
-				message.classList.add("alert-success");    // Добавляем класс успеха
-				console.log("Status from server:", data.status);
+				// Меняем класс в зависимости от статуса
+				if (data.status === "success") {
+					message.classList.remove("alert-danger");  // Убираем класс ошибки
+					message.classList.add("alert-success");    // Добавляем класс успеха
+					console.log("Status from server:", data.status);
+				} else {
+					message.classList.remove("alert-success");  // Убираем класс ошибки
+					message.classList.add("alert-danger");     // Добавляем класс ошибки
+					console.log("Status from server:", data.status);
+				}
+
+				message.style.display = "block";
+
+				// Перезагрузка страницы через window.location.assign
+				setTimeout(() => {
+					window.location.assign(window.location.href);  // Переход на текущий URL, что вызывает перезагрузку
+				}, 2000);  // Задержка 1 секунда, чтобы успело отобразиться сообщение
 			} else {
-				message.classList.remove("alert-success");  // Убираем класс ошибки
-				message.classList.add("alert-danger");     // Добавляем класс ошибки
-				console.log("Status from server:", data.status);
+				console.error("Ошибка:", data);
 			}
-
-			message.style.display = "block";
-
-			// Перезагрузка страницы через window.location.assign
-			setTimeout(() => {
-				window.location.assign(window.location.href);  // Переход на текущий URL, что вызывает перезагрузку
-			}, 2000);  // Задержка 1 секунда, чтобы успело отобразиться сообщение
-
 		})
 		.catch(error => {
 			// Скрыть индикатор загрузки
@@ -225,20 +228,7 @@ function showFlashMessage(event) {
 		});
 }
 
-function getCookie(name) {
-	let cookieValue = null;
-	if (document.cookie && document.cookie !== '') {
-		const cookies = document.cookie.split(';');
-		for (let i = 0; i < cookies.length; i++) {
-			const cookie = cookies[i].trim();
-			if (cookie.startsWith(name + '=')) {
-				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-				break;
-			}
-		}
-	}
-	return cookieValue;
-}
+
 
 // Восстанавливаем прокрутку после загрузки страницы
 window.onload = function () {
@@ -347,6 +337,7 @@ function updateColor(rowId, color) {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
+			'X-CSRFToken': getCookie('csrftoken')
 		},
 		body: JSON.stringify({ color: color })
 	})
@@ -369,7 +360,9 @@ function updateColor(rowId, color) {
 				alert('Не удалось обновить цвет');
 			}
 		})
-		.catch(error => console.error('Ошибка:', error));
+		.catch(error => {
+			alert('У вас нет прав для обновления цвета');
+			console.error('Ошибка:', error) });
 }
 
 // Функция обновления цвета строки
@@ -379,6 +372,7 @@ function updateColorUser(rowId, color) {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
+			'X-CSRFToken': getCookie('csrftoken')
 		},
 		body: JSON.stringify({ color: color })
 	})
@@ -411,6 +405,7 @@ function updateColorUserTwo(rowId, color) {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
+			'X-CSRFToken': getCookie('csrftoken')
 		},
 		body: JSON.stringify({ color: color })
 	})
@@ -639,7 +634,7 @@ function getCookie(name) {
 		const cookies = document.cookie.split(';');
 		for (let i = 0; i < cookies.length; i++) {
 			const cookie = cookies[i].trim();
-			if (cookie.substring(0, name.length + 1) === (name + '=')) {
+			if (cookie.startsWith(name + '=')) {
 				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
 				break;
 			}
@@ -675,7 +670,7 @@ document.addEventListener('DOMContentLoaded', function () {
 								row.remove();
 							}
 							alert('Элемент успешно удален!'); // Уведомление об успешном удалении
-							// window.location.reload(); // Обновление страницы
+							window.location.reload(); // Обновление страницы
 						} else {
 							alert('Ошибка:', data); // Если success не true
 						}

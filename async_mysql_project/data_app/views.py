@@ -14,6 +14,8 @@ from asgiref.sync import sync_to_async
 
 import asyncio
 
+from .admin import group_required
+
 import logging
 
 # # Создаем логгер для действий пользователей
@@ -497,6 +499,7 @@ async def register_view(request):
             await sync_to_async(messages.error)(request, "Пароли не совпадают")
     return await sync_to_async(render)(request, 'register.html')  # Ваш шаблон для регистрации
 
+@group_required('Администратор', 'Полный')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_color(request, row_id):
     await log_user_action(request.user, f'Обновил цвет записи в "Закупки" с ID {row_id}')
@@ -510,7 +513,7 @@ async def update_color(request, row_id):
             service.color = color
             await sync_to_async(service.save)()
 
-            return JsonResponse({'success': True, 'id': service.id, 'color': service.color})
+            return JsonResponse({'success': True, 'id': service.id, 'color': service.color}, status=200)
         except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
         except json.JSONDecodeError:
@@ -556,8 +559,6 @@ async def update_color_user_two(request, row_id):
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
     return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
-
-from .admin import group_required
 
 @group_required('Администратор', 'Полный')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
@@ -1845,8 +1846,7 @@ async def add_record(request):
             return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
     return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
 
-@group_required('Администратор', 'Полный', 'Редактирование-План-график')
-# @group_required('Полный', 'Редактирование-План-график')
+@group_required('Администратор', 'Полный')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def delete_record(request, row_id):
     if request.method == 'POST':
@@ -2246,15 +2246,15 @@ async def upload_file(request):
 
                         # cursor.executemany(insert_query, data_to_insert)
                         # conn.commit()
-                        return JsonResponse({"message": f"Данные из файла {uploaded_file.name} успешно загружены!", "status": "success"})
+                        return JsonResponse({"message": f"Данные из файла {uploaded_file.name} успешно загружены!", "status": "success", 'success': True})
                     else:
-                        return JsonResponse({"message": f"Ошибка при обработке файла: Данные не загружены", "status": "error"}, status=400)
+                        return JsonResponse({"message": f"Ошибка при обработке файла: Данные не загружены", "status": "error", 'success': True}, status=400)
 
                     # # Сохранение файла в папку file/
                     # file_instance = UploadedFile(file=uploaded_file)
                     # file_instance.save()
                 else:
-                    return JsonResponse({"message": "Нет соответствия количества столбцов", "status": "error"}, status=400)
+                    return JsonResponse({"message": "Нет соответствия количества столбцов", "status": "error", 'success': True}, status=400)
 
             except Exception as e:
                 # Вывод подробной информации об ошибке
@@ -2263,8 +2263,8 @@ async def upload_file(request):
                 import traceback
                 print("Трассировка стека (stack trace):")
                 traceback.print_exc()
-                return JsonResponse({"message": f"Ошибка при обработке файла: {str(e)}", "status": "error"}, status=400)
+                return JsonResponse({"message": f"Ошибка при обработке файла: {str(e)}", "status": "error", 'success': False}, status=400)
         else:
-            return JsonResponse({"message": "Только файлы .xlsx разрешены", "status": "error"}, status=400)
+            return JsonResponse({"message": "Только файлы .xlsx разрешены", "status": "error", 'success': False}, status=400)
 
-    return JsonResponse({"message": "Ошибка загрузки файла"}, status=400)
+    return JsonResponse({"message": "Ошибка загрузки файла", 'success': False}, status=400)
