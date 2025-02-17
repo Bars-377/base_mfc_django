@@ -693,36 +693,41 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 });
 
-// document.addEventListener('DOMContentLoaded', function () {
-// 	const deleteButtons = document.querySelectorAll('.delete-button-user');
+document.addEventListener('DOMContentLoaded', function () {
+	const deleteButtons = document.querySelectorAll('.delete-button-user');
 
-// 	deleteButtons.forEach(button => {
-// 		button.addEventListener('click', function () {
-// 			const form = this.closest('.delete-form-user');
-// 			const serviceId = form.getAttribute('data-id');
-// 			console.log(serviceId);
+	deleteButtons.forEach(button => {
+		button.addEventListener('click', function () {
+			const form = this.closest('.delete-form-user');
+			const serviceId = form.getAttribute('data-id');
+			console.log(`Ищем элемент с id: ${serviceId}`);
 
-// 			if (confirmDelete()) {
-// 				fetch(`/delete_record/${serviceId}/`, {  // Убедитесь, что здесь правильный путь
-// 					method: 'POST',
-// 					headers: {
-// 						'Content-Type': 'application/json'
-// 					},
-// 					body: JSON.stringify({ id: serviceId })  // Отправка данных, если необходимо
-// 				})
-// 					.then(response => {
-// 						if (response.ok) {
-// 							const row = document.querySelector(`.service-row-user[data-id="${serviceId}"]`);
-// 							if (row) {
-// 								row.remove();
-// 							}
-// 							alert('Элемент успешно удален!'); // Уведомление об успешном удалении
-// 						} else {
-// 							alert('Ошибка удаления');
-// 						}
-// 					})
-// 					.catch(error => console.error('Ошибка:', error));
-// 			}
-// 		});
-// 	});
-// });
+			if (confirmDelete()) {
+				fetch(`/delete_record_two/${serviceId}/`, {  // Убедитесь, что здесь правильный путь
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-CSRFToken': getCookie('csrftoken')
+					},
+					body: JSON.stringify({ id: serviceId })  // Отправка данных, если необходимо
+				})
+					.then(response => {
+						if (response.ok) {
+							const row = document.querySelector(`.service-row-user[data-id="${serviceId}"]`);
+							if (row) {
+								row.remove();
+							}
+							alert('Элемент успешно удален!'); // Уведомление об успешном удалении
+							window.location.reload(); // Обновление страницы
+						} else {
+							alert('Ошибка:', data); // Если success не true
+						}
+					})
+					.catch(error => {
+						alert('У вас недостаточно прав для этого действия!');
+						console.error('Ошибка:', error);
+					} );
+			}
+		});
+	});
+});

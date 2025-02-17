@@ -588,6 +588,36 @@ async def add(request):
 
     return await sync_to_async(render)(request, 'add.html', context)
 
+@group_required('Администратор', 'Полный')
+@csrf_exempt  # Необходимо, если вы не используете CSRF-токены
+async def add_two(request):
+    await log_user_action(request.user, f'Перешёл на страницу добавления записи в "План-график"')
+    page = int(request.GET.get('page', 1))
+    keyword_one = request.GET.get('keyword_one', None)
+    keyword_two = request.GET.get('keyword_two', None)
+    selected_column_one = request.GET.get('selected_column_one', None)
+    selected_column_two = request.GET.get('selected_column_two', None)
+    selected_contract_date = request.GET.get('contract_date', "No")
+    selected_end_date = request.GET.get('end_date', "No")
+    total_pages = int(request.GET.get('total_pages', 1))
+
+    user = request.user
+
+    # Подготовка контекста для шаблона
+    context = {
+        'user': user,
+        'page': page,
+        'keyword_one': keyword_one,
+        'keyword_two': keyword_two,
+        'selected_column_one': selected_column_one,
+        'selected_column_two': selected_column_two,
+        'selected_contract_date': selected_contract_date,
+        'selected_end_date': selected_end_date,
+        'total_pages': total_pages
+    }
+
+    return await sync_to_async(render)(request, 'add_two.html', context)
+
 @group_required('Администратор', 'Полный', 'Редактирование-Закупки')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit(request, row_id):
@@ -923,6 +953,39 @@ class ContractProcessor:
                 setattr(new_service, key, value)
         # Добавляем contract_balance в объект new_service
         setattr(new_service, 'contract_balance', contract_balance)
+
+        return new_service
+
+    async def creation_new_service_two(self, new_service):
+        """Формируем запрос для новой записи"""
+        from django.db import connection
+
+        # Получаем следующий ID
+        def get_latest_service():
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT id_id FROM services_two
+                    WHERE id_id REGEXP '^[0-9]+$'
+                    ORDER BY CAST(id_id AS UNSIGNED) DESC
+                    LIMIT 1
+                """)
+                row = cursor.fetchone()
+                return row
+
+        latest_service = await sync_to_async(get_latest_service)()
+
+        try:
+            id_id = (int(latest_service[0]) + 1) if latest_service and latest_service[0].isdigit() else 1
+        except ValueError:
+            # В случае некорректного значения установить id_id на 1
+            id_id = 1
+
+        await log_user_action(self.request.user, f'Добавил запись в "План-график" с ID {id_id}')
+
+        # Добавляем id_id в объект new_service
+        setattr(new_service, 'id_id', id_id)
+        for key, value in self.context_data.items():
+            setattr(new_service, key, value)
 
         return new_service
 
@@ -1337,6 +1400,58 @@ class ContractProcessor:
 
         # Другие операции, такие как сохранение сервиса и т.д.
 
+    async def process_add_two(self):
+        # if not await self.validate_Services_Two():
+        #     await self.validate_Services_Two_message()
+        #     return render(self.request, 'add.html', self.context_data)
+        # elif not await self.validate_execution_plan():
+        #     await self.validate_execution_plan_message()
+        #     return render(self.request, 'add.html', self.context_data)
+        # elif not await self.validate_execution_fact():
+        #     await self.validate_execution_fact_message()
+        #     return render(self.request, 'add.html', self.context_data)
+
+        # execution_contract_plan = await self.calculate_execution_plan()
+        # execution_contract_fact = await self.calculate_execution_fact()
+        # saving = await clean_number(self.context_data['NMCC']) - await clean_number(self.context_data['contract_price'])
+
+        # if await clean_number(self.context_data['contract_price']) == 0:
+        #     self.context_data['execution'] = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
+        # else:
+        #     self.context_data['execution'] = round(await clean_number(execution_contract_fact) / await clean_number(self.context_data['contract_price']), 2) * 100
+
+        # self.context_data['contract_balance'] = await clean_number(self.context_data['contract_price']) - await clean_number(execution_contract_fact)
+
+        new_service = Services_Two()
+        new_service = await self.creation_new_service_two(new_service)
+
+        # Services_Two_ = await sync_to_async(lambda: Services_Two.objects.all())()
+
+        await sync_to_async(new_service.save)()
+
+        # Services_Two_ = await self.validate_Services_Two()
+
+        # await self.Services_Two_save(Services_Two_)
+
+        # if not await self.total_costs(new_service):
+        #     await self.total_costs_message()
+        #     return render(self.request, 'add.html', self.context_data)
+
+        # await self.process()
+
+        await self.message_service_add()
+
+        # Кодируем query-параметры
+        query_string = urlencode(self.context_data)
+
+        # Формируем URL с query-параметрами
+        redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
+
+        # Перенаправляем пользователя
+        return HttpResponseRedirect(redirect_url)
+
+        # Другие операции, такие как сохранение сервиса и т.д.
+
     async def process_delete(self, service):
         # execution_contract_fact = await self.calculate_execution_fact()
 
@@ -1350,6 +1465,33 @@ class ContractProcessor:
         # self.context_data['contract_balance'] = await clean_number(self.context_data['contract_price']) - await clean_number(execution_contract_fact)
 
         await self.process()
+
+        await self.message_service_delete()
+
+        # Кодируем query-параметры
+        query_string = urlencode(self.context_data)
+
+        # Формируем URL с query-параметрами
+        redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
+
+        # Перенаправляем пользователя
+        return HttpResponseRedirect(redirect_url)
+
+        # Другие операции, такие как сохранение сервиса и т.д.
+
+    async def process_delete_two(self, service):
+        # execution_contract_fact = await self.calculate_execution_fact()
+
+        # print('FDSFDSFDSFDSSFD')
+
+        # if await clean_number(self.context_data['contract_price']) == 0:
+        #     self.context_data['execution'] = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
+        # else:
+        #     self.context_data['execution'] = round(await clean_number(execution_contract_fact) / await clean_number(self.context_data['contract_price']), 2) * 100
+
+        # self.context_data['contract_balance'] = await clean_number(self.context_data['contract_price']) - await clean_number(execution_contract_fact)
+
+        # await self.process()
 
         await self.message_service_delete()
 
@@ -1844,6 +1986,62 @@ async def add_record(request):
             return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
     return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
 
+@csrf_exempt  # Необходимо, если вы не используете CSRF-токены
+async def add_record_two(request):
+    if request.method == 'POST':
+        try:
+            # Возвращаем данные формы обратно в шаблон
+            context_data = {
+                # 'service': await sync_to_async(Services.objects.get)(id=row_id),
+                # 'id_id': request.POST['id_id'],
+                'name': request.POST['name'],
+                'KOSGU': request.POST['KOSGU'],
+                'DopFC': request.POST['DopFC'],
+                'budget_limit': request.POST['budget_limit'],
+                'off_budget_limit': request.POST['off_budget_limit'],
+                'budget_planned': request.POST['budget_planned'],
+                'off_budget_planned': request.POST['off_budget_planned'],
+                'budget_bargaining': request.POST['budget_bargaining'],
+                'off_budget_bargaining': request.POST['off_budget_bargaining'],
+                'budget_concluded': request.POST['budget_concluded'],
+                'off_budget_concluded': request.POST['off_budget_concluded'],
+                'budget_completed': request.POST['budget_completed'],
+                'off_budget_completed': request.POST['off_budget_completed'],
+                'budget_execution': request.POST['budget_execution'],
+                'off_budget_execution': request.POST['off_budget_execution'],
+                'budget_remainder': request.POST['budget_remainder'],
+                'off_budget_remainder': request.POST['off_budget_remainder'],
+                'budget_plans': request.POST['budget_plans'],
+                'off_budget_plans': request.POST['off_budget_plans'],
+                'color': request.POST['color'],
+                # 'row_id': row_id,
+                'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
+                'keyword_one': request.GET.get('keyword_one', None),
+                'keyword_two': request.GET.get('keyword_two', None),
+                'selected_column_one': request.GET.get('selected_column_one', None),
+                'selected_column_two': request.GET.get('selected_column_two', None),
+                'page_user': 1,
+                'KOSGU_user': request.GET.get('KOSGU_user', None),
+                'keyword_one_user': request.GET.get('keyword_one_user', None),
+                'keyword_two_user': request.GET.get('keyword_two_user', None),
+                'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+                'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+                'page_user_two': 1,
+                'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+                'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+                'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+                'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
+            }
+
+            processor = ContractProcessor(context_data, request)
+            return await processor.process_add_two()
+        except Services.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
 @group_required('Администратор', 'Полный')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def delete_record(request, row_id):
@@ -1882,6 +2080,51 @@ async def delete_record(request, row_id):
 
             processor = ContractProcessor(context_data, request)
             await processor.process_delete(service)
+            return JsonResponse({'success': True}, status=200)
+        except Services.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+@group_required('Администратор', 'Полный')
+@csrf_exempt  # Необходимо, если вы не используете CSRF-токены
+async def delete_record_two(request, row_id):
+    if request.method == 'POST':
+        try:
+            # Найдите запись по ID и обновите цвет
+            service = await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id)
+
+            # Возвращаем данные формы обратно в шаблон
+            context_data = {
+                'KOSGU': service.KOSGU,
+                'DopFC': service.DopFC,
+                'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
+                'keyword_one': request.GET.get('keyword_one', None),
+                'keyword_two': request.GET.get('keyword_two', None),
+                'selected_column_one': request.GET.get('selected_column_one', None),
+                'selected_column_two': request.GET.get('selected_column_two', None),
+                'page_user': 1,
+                'KOSGU_user': request.GET.get('KOSGU_user', None),
+                'keyword_one_user': request.GET.get('keyword_one_user', None),
+                'keyword_two_user': request.GET.get('keyword_two_user', None),
+                'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+                'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+                'page_user_two': 1,
+                'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+                'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+                'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+                'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
+            }
+
+            # Удаляем объект
+            await sync_to_async(service.delete, thread_sensitive=True)()
+
+            await log_user_action(request.user, f'Удалил запись из "План-график" с ID {row_id}')
+
+            processor = ContractProcessor(context_data, request)
+            await processor.process_delete_two(service)
             return JsonResponse({'success': True}, status=200)
         except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
