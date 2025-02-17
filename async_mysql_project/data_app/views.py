@@ -1437,7 +1437,7 @@ class ContractProcessor:
         #     await self.total_costs_message()
         #     return render(self.request, 'add.html', self.context_data)
 
-        # await self.process()
+        await self.process()
 
         await self.message_service_add()
 
@@ -1491,7 +1491,7 @@ class ContractProcessor:
 
         # self.context_data['contract_balance'] = await clean_number(self.context_data['contract_price']) - await clean_number(execution_contract_fact)
 
-        # await self.process()
+        await self.process()
 
         await self.message_service_delete()
 
