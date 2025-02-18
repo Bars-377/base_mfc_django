@@ -289,10 +289,10 @@ function resetFiltersUser() {
 	const url = new URL(window.location.href);
 	url.searchParams.set('KOSGU_user', 'No');
 
-	url.searchParams.set('keyword_one', '');
-	url.searchParams.set('keyword_two', '');
-	url.searchParams.set('selected_column_one', '');
-	url.searchParams.set('selected_column_two', '');
+	url.searchParams.set('keyword_one_user', '');
+	url.searchParams.set('keyword_two_user', '');
+	url.searchParams.set('selected_column_one_user', '');
+	url.searchParams.set('selected_column_two_user', '');
 	url.searchParams.set('total_pages_full_user', currentPage);
 
 	window.location.href = url; // Перезагружаем страницу с GET параметрами
@@ -322,10 +322,10 @@ function resetFiltersUserTwo() {
 	const url = new URL(window.location.href);
 	url.searchParams.set('KOSGU_user_two', 'No');
 
-	url.searchParams.set('keyword_one', '');
-	url.searchParams.set('keyword_two', '');
-	url.searchParams.set('selected_column_one', '');
-	url.searchParams.set('selected_column_two', '');
+	url.searchParams.set('keyword_one_user_two', '');
+	url.searchParams.set('keyword_two_user_two', '');
+	url.searchParams.set('selected_column_one_user_two', '');
+	url.searchParams.set('selected_column_two_user_two', '');
 	url.searchParams.set('total_pages_full_user_two', currentPage);
 
 	window.location.href = url; // Перезагружаем страницу с GET параметрами

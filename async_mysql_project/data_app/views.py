@@ -1067,13 +1067,12 @@ class ContractProcessor:
             )
 
             if contract_price_sum_way:
-
                 try:
 
-                    if self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2016100092':
+                    if self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2046100092':
                         Services_Three_.off_budget_concluded = contract_price_sum_way if contract_price_sum_way else ServicesTwo_.off_budget_concluded
                         # Services_Three_.off_budget_remainder = await clean_number(ServicesTwo_.off_budget_planned) - await clean_number(contract_price_sum_way)
-                    elif self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2016100000':
+                    elif self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2046102280':
                         Services_Three_.budget_concluded = contract_price_sum_way if contract_price_sum_way else ServicesTwo_.budget_concluded
                         # Services_Three_.budget_remainder = await clean_number(ServicesTwo_.budget_planned) - await clean_number(contract_price_sum_way)
 
@@ -1194,24 +1193,24 @@ class ContractProcessor:
     async def Services_Two_save(self, Services_Two_):
         """Обновление второй базы"""
 
-        Services_Two_.off_budget_planned = await self.calculate_contract_sums('2016100092', 'Запланировано')
+        Services_Two_.off_budget_planned = await self.calculate_contract_sums('2046100092', 'Запланировано')
 
-        Services_Two_.budget_planned = await self.calculate_contract_sums('2016100000', 'Запланировано')
+        Services_Two_.budget_planned = await self.calculate_contract_sums('2046102280', 'Запланировано')
 
-        Services_Two_.off_budget_bargaining = await self.calculate_contract_sums('2016100092', 'В торгах')
+        Services_Two_.off_budget_bargaining = await self.calculate_contract_sums('2046100092', 'В торгах')
 
-        Services_Two_.budget_bargaining = await self.calculate_contract_sums('2016100000', 'В торгах')
+        Services_Two_.budget_bargaining = await self.calculate_contract_sums('2046102280', 'В торгах')
 
-        Services_Two_.off_budget_concluded = await self.calculate_contract_sums('2016100092', 'Заключено')
+        Services_Two_.off_budget_concluded = await self.calculate_contract_sums('2046100092', 'Заключено')
 
-        Services_Two_.budget_concluded = await self.calculate_contract_sums('2016100000', 'Заключено')
+        Services_Two_.budget_concluded = await self.calculate_contract_sums('2046102280', 'Заключено')
 
-        Services_Two_.off_budget_completed = await self.calculate_contract_sums('2016100092', 'Исполнено')
+        Services_Two_.off_budget_completed = await self.calculate_contract_sums('2046100092', 'Исполнено')
 
-        Services_Two_.budget_completed = await self.calculate_contract_sums('2016100000', 'Исполнено')
+        Services_Two_.budget_completed = await self.calculate_contract_sums('2046102280', 'Исполнено')
 
-        Services_Two_.off_budget_execution = await self.calculate_contract_sums('2016100092', None)
-        Services_Two_.budget_execution = await self.calculate_contract_sums('2016100000', None)
+        Services_Two_.off_budget_execution = await self.calculate_contract_sums('2046100092', None)
+        Services_Two_.budget_execution = await self.calculate_contract_sums('2046102280', None)
 
         await sync_to_async(Services_Two_.save)()
 
@@ -2134,6 +2133,7 @@ async def delete_record_two(request, row_id):
 
 from .models import UploadedFile
 import pandas as pd
+from django.db import DataError
 
 @group_required('Администратор', 'Полный')
 @csrf_exempt  # Если используете fetch, нужно отключить CSRF или передавать токен
@@ -2417,6 +2417,8 @@ async def upload_file(request):
                     # Преобразуем DataFrame в список кортежей
                     data_to_insert = [tuple(x) for x in df.to_numpy()]
 
+                    print(data_to_insert)
+
                     # Преобразование всех значений в строки и добавление пустой строки в конец каждого кортежа
                     data_to_insert = [
                         tuple(str(value) if value is not None else '' for value in row) + ('',)
@@ -2468,13 +2470,13 @@ async def upload_file(request):
                             # Список статусов для обработки
                             statuses = ['Запланировано', 'В торгах', 'Заключено', 'Исполнено']
 
-                            # Обработка для KTSSR 2016100000
+                            # Обработка для KTSSR 2046102280
                             for status in statuses:
-                                await process_context('2016100000', status, context_data, request)
+                                await process_context('2046102280', status, context_data, request)
 
-                            # Обработка для KTSSR 2016100092
+                            # Обработка для KTSSR 2046100092
                             for status in statuses:
-                                await process_context('2016100092', status, context_data, request)
+                                await process_context('2046100092', status, context_data, request)
 
                         context_data = {}
 
@@ -2496,6 +2498,8 @@ async def upload_file(request):
                     # file_instance.save()
                 else:
                     return JsonResponse({"message": "Нет соответствия количества столбцов", "status": "error", 'success': True}, status=400)
+            except DataError:
+                return JsonResponse({"message": "Слишком много символов в какой-то колонке", "status": "error", 'success': True}, status=400)
 
             except Exception as e:
                 # Вывод подробной информации об ошибке
