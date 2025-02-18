@@ -540,7 +540,7 @@ async def update_color_user(request, row_id):
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_color_user_two(request, row_id):
-    await log_user_action(request.user, f'Обновил цвет записи в "Свод" с ID {row_id}')
+    await log_user_action(request.user, f'Обновил цвет записи в "План-график" с ID {row_id}')
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -591,7 +591,7 @@ async def add(request):
 @group_required('Администратор', 'Полный')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def add_two(request):
-    await log_user_action(request.user, f'Перешёл на страницу добавления записи в "План-график"')
+    await log_user_action(request.user, f'Перешёл на страницу добавления записи в "Свод"')
     page = int(request.GET.get('page', 1))
     keyword_one = request.GET.get('keyword_one', None)
     keyword_two = request.GET.get('keyword_two', None)
@@ -686,10 +686,10 @@ async def edit(request, row_id):
 
     return await sync_to_async(render)(request, 'edit.html', context)
 
-@group_required('Администратор', 'Полный', 'Редактирование-План-график')
+@group_required('Администратор', 'Полный', 'Редактирование-Свод')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit_user(request, row_id):
-    await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "План-график" с ID {row_id}')
+    await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "Свод" с ID {row_id}')
     # # Возвращаем данные формы обратно в шаблон
     # context_data = {
     #     # 'row_id_user': row_id,
@@ -752,7 +752,7 @@ async def edit_user(request, row_id):
 @group_required('Администратор', 'Полный')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit_user_two(request, row_id):
-    await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "Свод" с ID {row_id}')
+    await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "План-график" с ID {row_id}')
     # # Возвращаем данные формы обратно в шаблон
     # context_data = {
     #     # 'row_id_user': row_id,
@@ -980,7 +980,7 @@ class ContractProcessor:
             # В случае некорректного значения установить id_id на 1
             id_id = 1
 
-        await log_user_action(self.request.user, f'Добавил запись в "План-график" с ID {id_id}')
+        await log_user_action(self.request.user, f'Добавил запись в "Свод" с ID {id_id}')
 
         # Добавляем id_id в объект new_service
         setattr(new_service, 'id_id', id_id)
@@ -1710,7 +1710,7 @@ async def update_record_user(request, row_id):
 
             from django.forms.models import model_to_dict
             service_dict = model_to_dict(context_data['service_user'])
-            await log_user_action(request.user, f'Отредактировал запись в "План-график" с ID {service_dict['id_id']},\nБыло: budget_limit: {service_dict['budget_limit']}, off_budget_limit: {service_dict['off_budget_limit']}')
+            await log_user_action(request.user, f'Отредактировал запись в "Свод" с ID {service_dict['id_id']},\nБыло: budget_limit: {service_dict['budget_limit']}, off_budget_limit: {service_dict['off_budget_limit']}')
 
             context_data['service_user'].id_id = context_data['id_id']
             context_data['service_user'].name = context_data['name']
@@ -1736,7 +1736,7 @@ async def update_record_user(request, row_id):
 
             await sync_to_async(context_data['service_user'].save)()
 
-            await log_user_action(request.user, f'Отредактировал запись в "План-график" с ID {context_data['id_id']},\Стало: budget_limit: {context_data['budget_limit']}, off_budget_limit: {context_data['off_budget_limit']}')
+            await log_user_action(request.user, f'Отредактировал запись в "Свод" с ID {context_data['id_id']},\Стало: budget_limit: {context_data['budget_limit']}, off_budget_limit: {context_data['off_budget_limit']}')
 
             processor = ContractProcessor(context_data, request)
             return await processor.process_update_user()
@@ -1854,7 +1854,7 @@ async def update_record_user_two(request, row_id):
 
             from django.forms.models import model_to_dict
             service_dict = model_to_dict(context_data['service_user_two'])
-            await log_user_action(request.user, f'Отредактировал запись в "Свод" с ID {service_dict['id_id']},\nБыло: budget_planned: {service_dict['budget_planned']}, off_budget_planned: {service_dict['off_budget_planned']}')
+            await log_user_action(request.user, f'Отредактировал запись в "План-график" с ID {service_dict['id_id']},\nБыло: budget_planned: {service_dict['budget_planned']}, off_budget_planned: {service_dict['off_budget_planned']}')
 
             context_data['service_user_two'].id_id = context_data['id_id']
             # context_data['service_user'].name = context_data['name']
@@ -1880,7 +1880,7 @@ async def update_record_user_two(request, row_id):
 
             await sync_to_async(context_data['service_user_two'].save)()
 
-            await log_user_action(request.user, f'Отредактировал запись в "Свод" с ID {context_data['id_id']},\Стало: budget_planned: {context_data['budget_planned']}, off_budget_planned: {context_data['off_budget_planned']}')
+            await log_user_action(request.user, f'Отредактировал запись в "План-график" с ID {context_data['id_id']},\Стало: budget_planned: {context_data['budget_planned']}, off_budget_planned: {context_data['off_budget_planned']}')
 
             processor = ContractProcessor(context_data, request)
             return await processor.process_update_user_two()

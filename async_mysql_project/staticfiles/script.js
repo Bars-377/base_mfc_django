@@ -108,6 +108,28 @@
 
 // });
 
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.text-content').forEach(textContent => {
+        const button = textContent.nextElementSibling; // Получаем кнопку рядом с текстом
+
+        // Проверяем, обрезается ли текст
+        if (textContent.scrollHeight <= textContent.clientHeight) {
+            button.style.display = 'none'; // Скрываем кнопку, если текст полностью вмещается
+        } else {
+            button.style.display = 'block'; // Показываем кнопку, если текст обрезан
+        }
+
+        // Добавляем обработчик клика для показа и скрытия текста
+        button.addEventListener('click', function () {
+            textContent.classList.toggle('expanded');
+            
+            // Перепроверяем высоту после раскрытия
+            this.textContent = textContent.classList.contains('expanded') ? 'Скрыть' : 'Показать больше';
+        });
+    });
+});
+
+
 function updateFileName() {
 	const fileInput = document.getElementById('file-input');
 	const fileNameDisplay = document.getElementById('file-name');

@@ -181,6 +181,24 @@ h1 {
     width: 100px;
 }
 
+.stretch-width {
+    width: 200px; /* Фиксированная ширина */
+    text-align: center;
+    word-wrap: break-word; /* Разрешает перенос слов */
+    white-space: normal; /* Разрешает перенос строк */
+}
+
+.text-content {
+    display: block; /* Делаем div блочным, чтобы он занимал всю ширину */
+    height: 50px; /* Ограничение высоты */
+    overflow: hidden; /* Обрезаем текст, если он выходит за границы */
+    transition: height 0.3s ease-out;
+}
+
+.text-content.expanded {
+    height: auto; /* Автоматическая высота при развертывании */
+}
+
 .service-row,
 .service-row td {
     transition: background-color 0.3s ease;
@@ -199,13 +217,6 @@ h1 {
 .fixed-width {
     width: 120px;
     /* Стандартная ширина для фиксированных столбцов */
-    text-align: center;
-    /* Центрируем текст в заголовках */
-}
-
-.stretch-width {
-    width: auto;
-    /* Автоширина для растягиваемых столбцов */
     text-align: center;
     /* Центрируем текст в заголовках */
 }
