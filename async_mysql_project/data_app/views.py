@@ -2417,7 +2417,19 @@ async def upload_file(request):
                     # Преобразуем DataFrame в список кортежей
                     data_to_insert = [tuple(x) for x in df.to_numpy()]
 
-                    print(data_to_insert)
+                    # Слово, которое мы ищем
+                    search_words_1 = ('Запланировано', 'В торгах', 'Заключено', 'Исполнено', '')
+
+                    # Проверяем, все ли кортежи, где третья колонка, содержат искомые слова
+                    if not all(row[2] in search_words_1 for row in data_to_insert):
+                        return JsonResponse({"message": "Некорректная колонка Статус в одной из строк!", "status": "error", 'success': True}, status=400)
+
+                    # Слово, которое мы ищем
+                    search_words_2 = ('2046100092', '2046102280')
+
+                    # Проверяем, все ли кортежи, где третья колонка, содержат искомые слова
+                    if not all(row[5] in search_words_2 for row in data_to_insert):
+                        return JsonResponse({"message": "Некорректная колонка КЦСР в одной из строк!", "status": "error", 'success': True}, status=400)
 
                     # Преобразование всех значений в строки и добавление пустой строки в конец каждого кортежа
                     data_to_insert = [
