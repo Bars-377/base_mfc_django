@@ -1736,7 +1736,7 @@ async def update_record_user(request, row_id):
 
             await sync_to_async(context_data['service_user'].save)()
 
-            await log_user_action(request.user, f'Отредактировал запись в "Свод" с ID {context_data['id_id']},\Стало: budget_limit: {context_data['budget_limit']}, off_budget_limit: {context_data['off_budget_limit']}')
+            await log_user_action(request.user, f'Отредактировал запись в "Свод" с ID {context_data['id_id']},\nСтало: budget_limit: {context_data['budget_limit']}, off_budget_limit: {context_data['off_budget_limit']}')
 
             processor = ContractProcessor(context_data, request)
             return await processor.process_update_user()
