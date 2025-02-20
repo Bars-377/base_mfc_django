@@ -13,6 +13,19 @@ class UserActionLogAdmin(admin.ModelAdmin):
         adjusted_time = obj.timestamp + timedelta(hours=7)
         return adjusted_time.strftime('%Y-%m-%d %H:%M')  # Форматируем дату и время
 
+from .models import UserActionLog, Services  # Импортируем модель Services
+from django.utils.html import format_html
+
+@admin.register(Services)
+class ServicesAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    ordering = ('id_id',)
+    search_fields = ('name',)
+
+    def get_queryset(self, request):
+        """Настройка выборки данных, если необходимо"""
+        return super().get_queryset(request)
+
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib import messages

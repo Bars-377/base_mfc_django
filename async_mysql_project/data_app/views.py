@@ -1162,13 +1162,13 @@ class ContractProcessor:
         if total_costs_calc['total_cost_1'] < (total_costs_calc['total_cost_3'] or total_costs_calc['total_cost_5'] or total_costs_calc['total_cost_7'] or total_costs_calc['total_cost_9']):
             if new_service:
                 await sync_to_async(new_service.delete)()
-                await log_user_action(self.request.user, f'Отменилось добавление записи в "Закупки" с ID {new_service['id_id']}')
+                await log_user_action(self.request.user, f'Отменилось добавление записи в "Закупки" с ID {new_service.id_id}')
             return False
 
         if total_costs_calc['total_cost_2'] < (total_costs_calc['total_cost_4'] or total_costs_calc['total_cost_6'] or total_costs_calc['total_cost_8'] or total_costs_calc['total_cost_10']):
             if new_service:
                 await sync_to_async(new_service.delete)()
-                await log_user_action(self.request.user, f'Отменилось добавление записи в "Закупки" с ID {new_service['id_id']}')
+                await log_user_action(self.request.user, f'Отменилось добавление записи в "Закупки" с ID {new_service.id_id}')
             return False
         return True
 
@@ -1348,7 +1348,10 @@ class ContractProcessor:
         # Другие операции, такие как сохранение сервиса и т.д.
 
     async def process_add(self):
-        if not await self.validate_Services_Two():
+        if not await self.validate_Services():
+            await self.validate_Services_message()
+            return render(self.request, 'add.html', self.context_data)
+        elif not await self.validate_Services_Two():
             await self.validate_Services_Two_message()
             return render(self.request, 'add.html', self.context_data)
         elif not await self.validate_execution_plan():
