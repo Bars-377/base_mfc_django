@@ -864,10 +864,10 @@ class ContractProcessor:
         from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
         try:
-            Services_ = await sync_to_async(Services.objects.get, thread_sensitive=True)(name=self.context_data['name'])
+            Services_ = await sync_to_async(Services.objects.get, thread_sensitive=True)(name__iexact=self.context_data['name'])
             return False
         except MultipleObjectsReturned:
-            Services_ = await sync_to_async(lambda: Services.objects.filter(name=self.context_data['name']).first())()
+            Services_ = await sync_to_async(lambda: Services.objects.filter(name__iexact=self.context_data['name']).first())()
             return False
         except ObjectDoesNotExist:
             return True
@@ -2433,6 +2433,11 @@ async def upload_file(request):
                     # Проверяем, все ли кортежи, где третья колонка, содержат искомые слова
                     if not all(row[5] in search_words_2 for row in data_to_insert):
                         return JsonResponse({"message": "Некорректная колонка КЦСР в одной из строк!", "status": "error", 'success': True}, status=400)
+
+                    # Проверка на дубликаты во втором столбце (row[1])
+                    names = [row[1].lower() for row in data_to_insert]
+                    if len(names) != len(set(names)):  # Если длина списка имен не равна длине множества имен, значит, есть дубликаты
+                        return JsonResponse({"message": "Повторяющееся имя в одной из строк!", "status": "error", 'success': True}, status=400)
 
                     # Преобразование всех значений в строки и добавление пустой строки в конец каждого кортежа
                     data_to_insert = [
