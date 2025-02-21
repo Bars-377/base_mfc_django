@@ -109,24 +109,35 @@
 // });
 
 document.addEventListener("DOMContentLoaded", function () {
-    function formatNumbersInText(node) {
-        const regex = /\d{1,3}(?:[.,]?\d{3})*(?:[.,]?\d+)?/g; // Ищем числа, в том числе с запятыми и точками
-        node.childNodes.forEach(child => {
-            if (child.nodeType === 3) { // Только текстовые узлы
-                child.nodeValue = child.nodeValue.replace(regex, match => {
-                    let num = parseFloat(match.replace(',', '.')); // Меняем запятую на точку
-                    return !isNaN(num) ? new Intl.NumberFormat("ru-RU", {
-                        minimumFractionDigits: match.includes('.') ? 2 : 0, // Две цифры после запятой, если есть дробная часть
-                        maximumFractionDigits: 2
-                    }).format(num) : match;
+    function formatNumbersInText() {
+        const regex = /\d{1,3}(?:[.,]?\d{3})*(?:[.,]?\d+)?/g; // Поиск чисел с запятыми и точками
+
+        // Получаем все текстовые узлы на странице
+        const elements = document.querySelectorAll('*');
+
+        elements.forEach(element => {
+			if (element.getAttribute('data-type') === "no_format") {
+				console.log("ПОПАЛ", element.id);
+				return; // Возвращаем, чтобы пропустить обработку этого элемента
+			}
+            // Проверяем, есть ли текстовое содержимое
+            if (element.childNodes.length > 0) {
+                element.childNodes.forEach(node => {
+                    if (node.nodeType === Node.TEXT_NODE) {
+                        node.nodeValue = node.nodeValue.replace(regex, match => {
+                            let num = parseFloat(match.replace(',', '.')); // Меняем запятую на точку
+                            return !isNaN(num) ? new Intl.NumberFormat("ru-RU", {
+                                minimumFractionDigits: match.includes('.') ? 2 : 0, // Две цифры после запятой, если есть дробная часть
+                                maximumFractionDigits: 2
+                            }).format(num) : match;
+                        });
+                    }
                 });
-            } else {
-                formatNumbersInText(child); // Рекурсивно идём по DOM
             }
         });
     }
 
-    formatNumbersInText(document.body); // Запускаем для всего документа
+    formatNumbersInText(); // Запускаем для всего документа
 });
 
 document.addEventListener("DOMContentLoaded", function () {

@@ -263,16 +263,16 @@
                         <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.status }}</td>
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.way }}</td>
                         <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.initiator }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.KTSSR }}</td>
-                        <td class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
-                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
+                        <td data-type="no_format" class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.KTSSR }}</td>
+                        <td data-type="no_format" class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
+                        <td data-type="no_format" class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.NMCC }}</td>
                         <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.saving }}</td>
                         <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.counterparty }}</td>
                         <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.registration_number }}</td>
                         <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.contract_number }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.contract_date }}</td>
-                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.end_date }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.contract_date }}</td>
+                        <td data-type="no_format" class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.end_date }}</td>
                         <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.contract_price }}</td>
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.execution_contract_plan }}</td>
                         <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.january_one }}</td>
@@ -558,8 +558,8 @@
                     <tr class="service-row-user" data-id="{% if user.is_authenticated %}{{ item.id }}{% else %}0{% endif %}">
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.id_id }}</td>
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.name }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
+                        <td data-type="no_format" class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
                         <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.budget_limit }}</td>
                         <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_limit }}</td>
                         <td class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.budget_planned }}</td>
@@ -818,8 +818,8 @@
                 <tbody>
                     {% for item in data_user_two %}
                     <tr class="service-row-user-two" data-id="{% if user.is_authenticated %}{{ item.id }}{% else %}0{% endif %}">
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
+                        <td data-type="no_format" class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
+                        <td data-type="no_format" class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
                         <td class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.budget_planned }}</td>
                         <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_planned }}</td>
                         <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.budget_concluded }}</td>
