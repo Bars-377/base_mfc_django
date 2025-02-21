@@ -109,6 +109,27 @@
 // });
 
 document.addEventListener("DOMContentLoaded", function () {
+    function formatNumbersInText(node) {
+        const regex = /\d{1,3}(?:[.,]?\d{3})*(?:[.,]?\d+)?/g; // Ищем числа, в том числе с запятыми и точками
+        node.childNodes.forEach(child => {
+            if (child.nodeType === 3) { // Только текстовые узлы
+                child.nodeValue = child.nodeValue.replace(regex, match => {
+                    let num = parseFloat(match.replace(',', '.')); // Меняем запятую на точку
+                    return !isNaN(num) ? new Intl.NumberFormat("ru-RU", {
+                        minimumFractionDigits: match.includes('.') ? 2 : 0, // Две цифры после запятой, если есть дробная часть
+                        maximumFractionDigits: 2
+                    }).format(num) : match;
+                });
+            } else {
+                formatNumbersInText(child); // Рекурсивно идём по DOM
+            }
+        });
+    }
+
+    formatNumbersInText(document.body); // Запускаем для всего документа
+});
+
+document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll('.text-content').forEach(textContent => {
         const button = textContent.nextElementSibling; // Получаем кнопку рядом с текстом
 
