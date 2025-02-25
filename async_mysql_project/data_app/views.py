@@ -88,8 +88,8 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     selected_column_two_user = None if selected_column_two_user == 'None' else selected_column_two_user
 
     KOSGU_user_two = None if KOSGU_user_two == 'None' else KOSGU_user_two
-    keyword_one_user_two = None if keyword_one_user_two == 'None' or keyword_one == None else await remove_spaces_if_numeric(str(keyword_one_user_two).strip())
-    keyword_two_user_two = None if keyword_two_user_two == 'None' or keyword_one == None else await remove_spaces_if_numeric(str(keyword_two_user_two).strip())
+    keyword_one_user_two = None if keyword_one_user_two == 'None' or keyword_one_user_two == None else await remove_spaces_if_numeric(str(keyword_one_user_two).strip())
+    keyword_two_user_two = None if keyword_two_user_two == 'None' or keyword_two_user_two == None else await remove_spaces_if_numeric(str(keyword_two_user_two).strip())
     # keyword_one_user_two = None if keyword_one_user_two == 'None' else remove_spaces_if_numeric(str(keyword_one_user_two).strip())
     # keyword_two_user_two = None if keyword_two_user_two == 'None' else remove_spaces_if_numeric(str(keyword_two_user_two).strip())
     selected_column_one_user_two = None if selected_column_one_user_two == 'None' else selected_column_one_user_two
