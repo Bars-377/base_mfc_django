@@ -585,67 +585,67 @@ if (resetButtonTwo) {
 }
 
 // Обработчик нажатия на кнопку фильтрации
-const filterForm = document.getElementById('filter-form');
-if (filterForm) {
-	filterForm.addEventListener('submit', function () {
-		// Сохраняем текущую позицию прокрутки
-		sessionStorage.setItem('scrollPosition', window.scrollY);
+// const filterForm = document.getElementById('filter-form');
+// if (filterForm) {
+// 	filterForm.addEventListener('submit', function () {
+// 		// Сохраняем текущую позицию прокрутки
+// 		sessionStorage.setItem('scrollPosition', window.scrollY);
 
-		// Проверяем существование поля ввода 1 перед обрезкой пробелов
-		const keywordInputOne = document.getElementById('keyword_one');
-		if (keywordInputOne) {
-			keywordInputOne.value = keywordInputOne.value.trim();
-		}
+// 		// Проверяем существование поля ввода 1 перед обрезкой пробелов
+// 		const keywordInputOne = document.getElementById('keyword_one');
+// 		if (keywordInputOne) {
+// 			keywordInputOne.value = keywordInputOne.value.trim();
+// 		}
 
-		// Проверяем существование поля ввода 2 перед обрезкой пробелов
-		const keywordInputTwo = document.getElementById('keyword_two');
-		if (keywordInputTwo) {
-			keywordInputTwo.value = keywordInputTwo.value.trim();
-		}
-	});
-}
-
-// Обработчик нажатия на кнопку фильтрации
-const filterFormOne = document.getElementById('filter-form-user');
-if (filterFormOne) {
-	filterFormOne.addEventListener('submit', function () {
-		// Сохраняем текущую позицию прокрутки
-		sessionStorage.setItem('scrollPosition', window.scrollY);
-
-		// Проверяем существование поля ввода 1 перед обрезкой пробелов
-		const keywordInputOne = document.getElementById('keyword_one_user');
-		if (keywordInputOne) {
-			keywordInputOne.value = keywordInputOne.value.trim();
-		}
-
-		// Проверяем существование поля ввода 2 перед обрезкой пробелов
-		const keywordInputTwo = document.getElementById('keyword_two_user');
-		if (keywordInputTwo) {
-			keywordInputTwo.value = keywordInputTwo.value.trim();
-		}
-	});
-}
+// 		// Проверяем существование поля ввода 2 перед обрезкой пробелов
+// 		const keywordInputTwo = document.getElementById('keyword_two');
+// 		if (keywordInputTwo) {
+// 			keywordInputTwo.value = keywordInputTwo.value.trim();
+// 		}
+// 	});
+// }
 
 // Обработчик нажатия на кнопку фильтрации
-const filterFormTwo = document.getElementById('filter-form-user-two');
-if (filterFormTwo) {
-	filterFormTwo.addEventListener('submit', function () {
-		// Сохраняем текущую позицию прокрутки
-		sessionStorage.setItem('scrollPosition', window.scrollY);
+// const filterFormOne = document.getElementById('filter-form-user');
+// if (filterFormOne) {
+// 	filterFormOne.addEventListener('submit', function () {
+// 		// Сохраняем текущую позицию прокрутки
+// 		sessionStorage.setItem('scrollPosition', window.scrollY);
 
-		// Проверяем существование поля ввода 1 перед обрезкой пробелов
-		const keywordInputOne = document.getElementById('keyword_one_user_two');
-		if (keywordInputOne) {
-			keywordInputOne.value = keywordInputOne.value.trim();
-		}
+// 		// Проверяем существование поля ввода 1 перед обрезкой пробелов
+// 		const keywordInputOne = document.getElementById('keyword_one_user');
+// 		if (keywordInputOne) {
+// 			keywordInputOne.value = keywordInputOne.value.trim();
+// 		}
 
-		// Проверяем существование поля ввода 2 перед обрезкой пробелов
-		const keywordInputTwo = document.getElementById('keyword_two_user_two');
-		if (keywordInputTwo) {
-			keywordInputTwo.value = keywordInputTwo.value.trim();
-		}
-	});
-}
+// 		// Проверяем существование поля ввода 2 перед обрезкой пробелов
+// 		const keywordInputTwo = document.getElementById('keyword_two_user');
+// 		if (keywordInputTwo) {
+// 			keywordInputTwo.value = keywordInputTwo.value.trim();
+// 		}
+// 	});
+// }
+
+// Обработчик нажатия на кнопку фильтрации
+// const filterFormTwo = document.getElementById('filter-form-user-two');
+// if (filterFormTwo) {
+// 	filterFormTwo.addEventListener('submit', function () {
+// 		// Сохраняем текущую позицию прокрутки
+// 		sessionStorage.setItem('scrollPosition', window.scrollY);
+
+// 		// Проверяем существование поля ввода 1 перед обрезкой пробелов
+// 		const keywordInputOne = document.getElementById('keyword_one_user_two');
+// 		if (keywordInputOne) {
+// 			keywordInputOne.value = keywordInputOne.value.trim();
+// 		}
+
+// 		// Проверяем существование поля ввода 2 перед обрезкой пробелов
+// 		const keywordInputTwo = document.getElementById('keyword_two_user_two');
+// 		if (keywordInputTwo) {
+// 			keywordInputTwo.value = keywordInputTwo.value.trim();
+// 		}
+// 	});
+// }
 
 document.addEventListener('DOMContentLoaded', function () {
 	if (!navigator.userAgent.includes('AppleWebKit')) {

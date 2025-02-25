@@ -64,22 +64,34 @@ async def clean_number(value):
 #     return float(value)
 
 async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user, KOSGU_user_two, keyword_one_user_two, keyword_two_user_two, selected_column_one_user_two, selected_column_two_user_two, page_user_two):
+    async def remove_spaces_if_numeric(text):
+        stripped_text = text.replace(" ", "")  # Удаляем все пробелы
+        if all(char.isdigit() or char in "+-*/.()" for char in stripped_text):
+            return stripped_text
+        return text
+
     contract_date = None if contract_date == 'None' else contract_date
     end_date = None if end_date == 'None' else end_date
-    keyword_one = None if keyword_one == 'None' else keyword_one
-    keyword_two = None if keyword_two == 'None' else keyword_two
+    keyword_one = None if keyword_one == 'None' or keyword_one == None else await remove_spaces_if_numeric(str(keyword_one).strip())
+    keyword_two = None if keyword_two == 'None' or keyword_two == None else await remove_spaces_if_numeric(str(keyword_two).strip())
+    # keyword_one = None if keyword_one == 'None' else remove_spaces_if_numeric(str(keyword_one).strip())
+    # keyword_two = None if keyword_two == 'None' else remove_spaces_if_numeric(str(keyword_two).strip())
     selected_column_one = None if selected_column_one == 'None' else selected_column_one
     selected_column_two = None if selected_column_two == 'None' else selected_column_two
 
     KOSGU_user = None if KOSGU_user == 'None' else KOSGU_user
-    keyword_one_user = None if keyword_one_user == 'None' else keyword_one_user
-    keyword_two_user = None if keyword_two_user == 'None' else keyword_two_user
+    keyword_one_user = None if keyword_one_user == 'None' or keyword_one_user == None else str(keyword_one_user)
+    keyword_two_user = None if keyword_two_user == 'None' or keyword_two_user == None else str(keyword_two_user)
+    # keyword_one_user = None if keyword_one_user == 'None' else remove_spaces_if_numeric(str(keyword_one_user).strip())
+    # keyword_two_user = None if keyword_two_user == 'None' else remove_spaces_if_numeric(str(keyword_two_user).strip())
     selected_column_one_user = None if selected_column_one_user == 'None' else selected_column_one_user
     selected_column_two_user = None if selected_column_two_user == 'None' else selected_column_two_user
 
     KOSGU_user_two = None if KOSGU_user_two == 'None' else KOSGU_user_two
-    keyword_one_user_two = None if keyword_one_user_two == 'None' else keyword_one_user_two
-    keyword_two_user_two = None if keyword_two_user_two == 'None' else keyword_two_user_two
+    keyword_one_user_two = None if keyword_one_user_two == 'None' or keyword_one == None else await remove_spaces_if_numeric(str(keyword_one_user_two).strip())
+    keyword_two_user_two = None if keyword_two_user_two == 'None' or keyword_one == None else await remove_spaces_if_numeric(str(keyword_two_user_two).strip())
+    # keyword_one_user_two = None if keyword_one_user_two == 'None' else remove_spaces_if_numeric(str(keyword_one_user_two).strip())
+    # keyword_two_user_two = None if keyword_two_user_two == 'None' else remove_spaces_if_numeric(str(keyword_two_user_two).strip())
     selected_column_one_user_two = None if selected_column_one_user_two == 'None' else selected_column_one_user_two
     selected_column_two_user_two = None if selected_column_two_user_two == 'None' else selected_column_two_user_two
 
