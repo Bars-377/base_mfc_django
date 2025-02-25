@@ -182,12 +182,12 @@ async def upload_file_(request):
                             return value.apply(lambda x: convert_to_float(x))
                         """Для преобразолвания в float"""
                         if pd.isna(value):
-                            return "0.0"
+                            return "0.00"
                         try:
                             number_str = await extract_number(float(value))
                             return str(float(number_str))
                         except ValueError:
-                            return "0.0"
+                            return "0.00"
 
                     async def safe_int_conversion(value):
                         """Для преобразования в int"""

@@ -1078,7 +1078,7 @@ class ContractProcessor:
         cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in budget))
 
         # Суммируем результат
-        Services_Two_.budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
+        Services_Two_.budget_remainder = await clean_number(cleaned_numbers[0] - sum(cleaned_numbers[1:]))
 
         # Создаем список месяцев
         off_budget = [
@@ -1092,7 +1092,7 @@ class ContractProcessor:
         cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in off_budget))
 
         # Суммируем результат
-        Services_Two_.off_budget_remainder = cleaned_numbers[0] - sum(cleaned_numbers[1:])
+        Services_Two_.off_budget_remainder = await clean_number(cleaned_numbers[0] - sum(cleaned_numbers[1:]))
 
         # Расчет планов
         Services_Two_.budget_plans = await clean_number(await clean_number(Services_Two_.budget_remainder) - await clean_number(Services_Two_.budget_planned))
