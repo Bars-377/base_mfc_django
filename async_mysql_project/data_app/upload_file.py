@@ -33,7 +33,7 @@ async def upload_file_(request):
                     # )
                     # cursor = conn.cursor()
 
-                    def clean_string(input_string):
+                    async def clean_string(input_string):
                         """
                         Очищает строку, удаляя символы новой строки (\n),
                         заменяя двойные пробелы на одинарные и удаляя пробелы в начале и конце строки.
@@ -73,24 +73,24 @@ async def upload_file_(request):
 
                     # Применяем функцию clean_string ко всем именам столбцов
                     for col in range(df.shape[1]):
-                        df.iloc[0, col] = clean_string(df.iloc[0, col])
+                        df.iloc[0, col] = await clean_string(df.iloc[0, col])
 
                     for col in columns_to_fill_:
-                        df.iloc[0, col] = clean_string(df.iloc[0, col]) + ' ' + str('дата оплаты')
+                        df.iloc[0, col] = await clean_string(df.iloc[0, col]) + ' ' + str('дата оплаты')
 
-                    df.iloc[0, 32] = 'Январь (факт)' + ' ' + clean_string(df.iloc[0, 32])
-                    df.iloc[0, 34] = 'Февраль (факт)' + ' ' + clean_string(df.iloc[0, 34])
-                    df.iloc[0, 36] = 'Февраль (факт)' + ' ' + clean_string(df.iloc[0, 36])
-                    df.iloc[0, 38] = 'Февраль (факт)' + ' ' + clean_string(df.iloc[0, 38])
-                    df.iloc[0, 40] = 'Февраль (факт)' + ' ' + clean_string(df.iloc[0, 40])
-                    df.iloc[0, 42] = 'Февраль (факт)' + ' ' + clean_string(df.iloc[0, 42])
-                    df.iloc[0, 44] = 'Февраль (факт)' + ' ' + clean_string(df.iloc[0, 44])
-                    df.iloc[0, 46] = 'Февраль (факт)' + ' ' + clean_string(df.iloc[0, 46])
-                    df.iloc[0, 48] = 'Февраль (факт)' + ' ' + clean_string(df.iloc[0, 48])
-                    df.iloc[0, 50] = 'Февраль (факт)' + ' ' + clean_string(df.iloc[0, 50])
-                    df.iloc[0, 52] = 'Февраль (факт)' + ' ' + clean_string(df.iloc[0, 52])
-                    df.iloc[0, 54] = 'Февраль (факт)' + ' ' + clean_string(df.iloc[0, 54])
-                    df.iloc[0, 56] = 'Февраль (факт)' + ' ' + clean_string(df.iloc[0, 56])
+                    df.iloc[0, 32] = 'Январь (факт)' + ' ' + await clean_string(df.iloc[0, 32])
+                    df.iloc[0, 34] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 34])
+                    df.iloc[0, 36] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 36])
+                    df.iloc[0, 38] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 38])
+                    df.iloc[0, 40] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 40])
+                    df.iloc[0, 42] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 42])
+                    df.iloc[0, 44] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 44])
+                    df.iloc[0, 46] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 46])
+                    df.iloc[0, 48] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 48])
+                    df.iloc[0, 50] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 50])
+                    df.iloc[0, 52] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 52])
+                    df.iloc[0, 54] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 54])
+                    df.iloc[0, 56] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 56])
 
                     list = []
 
@@ -119,7 +119,7 @@ async def upload_file_(request):
                             # return match.group(0).replace(',', '.')  # Заменяем запятую на точку для поддержки формата float
                         return default
 
-                    def extract_date_and_number(value):
+                    async def extract_date_and_number(value):
                         """Извлекает дату и номер из строки."""
                         if pd.isna(value):
                             return '', ''

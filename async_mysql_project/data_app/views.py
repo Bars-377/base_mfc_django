@@ -54,7 +54,6 @@ async def clean_number(value):
     # if has_more_than_two_decimals(number_final):
     #     print(f"Число {number_final} имеет больше двух знаков после запятой.")
     #     exit()
-
     return number_final
 
 # async def clean_number(self, value):
@@ -70,30 +69,36 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
             return stripped_text
         return text
 
-    contract_date = None if contract_date == 'None' else contract_date
-    end_date = None if end_date == 'None' else end_date
-    keyword_one = None if keyword_one == 'None' or keyword_one == None else await remove_spaces_if_numeric(str(keyword_one).strip())
-    keyword_two = None if keyword_two == 'None' or keyword_two == None else await remove_spaces_if_numeric(str(keyword_two).strip())
+    async def format_input(variable):
+        return None if variable == 'None' else variable
+
+    async def format_input_remove(variable):
+        return None if variable == 'None' or variable == None else await remove_spaces_if_numeric(str(variable).strip())
+
+    contract_date = await format_input(contract_date)
+    end_date = await format_input(end_date)
+    keyword_one = await format_input_remove(keyword_one)
+    keyword_two = await format_input_remove(keyword_two)
     # keyword_one = None if keyword_one == 'None' else remove_spaces_if_numeric(str(keyword_one).strip())
     # keyword_two = None if keyword_two == 'None' else remove_spaces_if_numeric(str(keyword_two).strip())
-    selected_column_one = None if selected_column_one == 'None' else selected_column_one
-    selected_column_two = None if selected_column_two == 'None' else selected_column_two
+    selected_column_one = await format_input(selected_column_one)
+    selected_column_two = await format_input(selected_column_two)
 
-    KOSGU_user = None if KOSGU_user == 'None' else KOSGU_user
-    keyword_one_user = None if keyword_one_user == 'None' or keyword_one_user == None else str(keyword_one_user)
-    keyword_two_user = None if keyword_two_user == 'None' or keyword_two_user == None else str(keyword_two_user)
+    KOSGU_user = await format_input(KOSGU_user)
+    keyword_one_user = await format_input_remove(keyword_one_user)
+    keyword_two_user = await format_input_remove(keyword_two_user)
     # keyword_one_user = None if keyword_one_user == 'None' else remove_spaces_if_numeric(str(keyword_one_user).strip())
     # keyword_two_user = None if keyword_two_user == 'None' else remove_spaces_if_numeric(str(keyword_two_user).strip())
-    selected_column_one_user = None if selected_column_one_user == 'None' else selected_column_one_user
-    selected_column_two_user = None if selected_column_two_user == 'None' else selected_column_two_user
+    selected_column_one_user = await format_input(selected_column_one_user)
+    selected_column_two_user = await format_input(selected_column_two_user)
 
-    KOSGU_user_two = None if KOSGU_user_two == 'None' else KOSGU_user_two
-    keyword_one_user_two = None if keyword_one_user_two == 'None' or keyword_one_user_two == None else await remove_spaces_if_numeric(str(keyword_one_user_two).strip())
-    keyword_two_user_two = None if keyword_two_user_two == 'None' or keyword_two_user_two == None else await remove_spaces_if_numeric(str(keyword_two_user_two).strip())
+    KOSGU_user_two = await format_input(KOSGU_user_two)
+    keyword_one_user_two = await format_input_remove(keyword_one_user_two)
+    keyword_two_user_two = await format_input_remove(keyword_two_user_two)
     # keyword_one_user_two = None if keyword_one_user_two == 'None' else remove_spaces_if_numeric(str(keyword_one_user_two).strip())
     # keyword_two_user_two = None if keyword_two_user_two == 'None' else remove_spaces_if_numeric(str(keyword_two_user_two).strip())
-    selected_column_one_user_two = None if selected_column_one_user_two == 'None' else selected_column_one_user_two
-    selected_column_two_user_two = None if selected_column_two_user_two == 'None' else selected_column_two_user_two
+    selected_column_one_user_two = await format_input(selected_column_one_user_two)
+    selected_column_two_user_two = await format_input(selected_column_two_user_two)
 
     per_page = 20
 
@@ -957,7 +962,7 @@ class ContractProcessor:
         from django.db import connection
 
         # Получаем следующий ID
-        def get_latest_service():
+        async def get_latest_service():
             with connection.cursor() as cursor:
                 cursor.execute("""
                     SELECT id_id FROM services
@@ -968,7 +973,7 @@ class ContractProcessor:
                 row = cursor.fetchone()
                 return row
 
-        latest_service = await sync_to_async(get_latest_service)()
+        latest_service = await sync_to_async(await get_latest_service)()
 
         try:
             id_id = (int(latest_service[0]) + 1) if latest_service and latest_service[0].isdigit() else 1
@@ -1001,7 +1006,7 @@ class ContractProcessor:
         from django.db import connection
 
         # Получаем следующий ID
-        def get_latest_service():
+        async def get_latest_service():
             with connection.cursor() as cursor:
                 cursor.execute("""
                     SELECT id_id FROM services_two
@@ -1012,7 +1017,7 @@ class ContractProcessor:
                 row = cursor.fetchone()
                 return row
 
-        latest_service = await sync_to_async(get_latest_service)()
+        latest_service = await sync_to_async(await get_latest_service)()
 
         try:
             id_id = (int(latest_service[0]) + 1) if latest_service and latest_service[0].isdigit() else 1

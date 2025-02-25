@@ -116,20 +116,20 @@ document.addEventListener("DOMContentLoaded", function () {
         const elements = document.querySelectorAll('*');
 
         elements.forEach(element => {
-			if (element.getAttribute('data-type') === "no_format") {
-				console.log("ПОПАЛ", element.id);
-				return; // Возвращаем, чтобы пропустить обработку этого элемента
-			}
+            if (element.getAttribute('data-type') === "no_format") {
+                return; // Возвращаем, чтобы пропустить обработку этого элемента
+            }
             // Проверяем, есть ли текстовое содержимое
             if (element.childNodes.length > 0) {
                 element.childNodes.forEach(node => {
                     if (node.nodeType === Node.TEXT_NODE) {
                         node.nodeValue = node.nodeValue.replace(regex, match => {
                             let num = parseFloat(match.replace(',', '.')); // Меняем запятую на точку
-                            return !isNaN(num) ? new Intl.NumberFormat("ru-RU", {
+                            let formatted = !isNaN(num) ? new Intl.NumberFormat("ru-RU", {
                                 minimumFractionDigits: match.includes('.') ? 2 : 0, // Две цифры после запятой, если есть дробная часть
                                 maximumFractionDigits: 2
                             }).format(num) : match;
+                            return formatted.replace(/,/g, '.'); // Заменяем запятые на точки на выходе
                         });
                     }
                 });
