@@ -179,6 +179,8 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
+                        <th rowspan="2" class="fixed-width">Управление</th>
+                        <th rowspan="2" class="fixed-width">Смена цвета</th>
                         <th rowspan="2" class="fixed-width">№ п/п</th>
                         <th rowspan="2" class="stretch-width">Наименование закупки</th>
                         <th rowspan="2" class="stretch-width">Статус</th>
@@ -189,7 +191,7 @@
                         <th rowspan="2" class="fixed-width-medium">ДопФК</th>
                         <th rowspan="2" class="fixed-width-date">НМЦК</th>
                         <th rowspan="2" class="stretch-width">Экономия</th>
-                        <th rowspan="2" class="fixed-width-small">Контрагент</th>
+                        <th rowspan="2" class="stretch-width-min">Контрагент</th>
                         <th rowspan="2" class="fixed-width-date">Реестровый номер контракта (ЕИС)</th>
                         <th rowspan="2" class="fixed-width-date">Номер контракта</th>
                         <th rowspan="2" class="fixed-width-date">Дата контракта</th>
@@ -225,8 +227,6 @@
                         <th colspan="2" class="fixed-width">Январь (факт)</th>
                         <th rowspan="2" class="fixed-width">% исполнения (формула)</th>
                         <th rowspan="2" class="fixed-width">Остаток по контракту (формула)</th>
-                        <th rowspan="2" class="fixed-width">Управление</th>
-                        <th rowspan="2" class="fixed-width">Смена цвета</th>
                     </tr>
                     <tr>
                         <th class="fixed-width">Дата оплаты</th>
@@ -260,66 +260,6 @@
                 <tbody>
                     {% for item in data %}
                     <tr class="service-row" data-id="{% if user.is_authenticated %}{{ item.id }}{% else %}0{% endif %}">
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.id_id }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}"><div class="text-content">{{ item.name }}</div><button class="toggle-button">Показать больше</button></td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.status }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.way }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.initiator }}</td>
-                        <td data-type="no_format" class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.KTSSR }}</td>
-                        <td data-type="no_format" class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
-                        <td data-type="no_format" class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.NMCC }}</td>
-                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.saving }}</td>
-                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.counterparty }}</td>
-                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.registration_number }}</td>
-                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.contract_number }}</td>
-                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.contract_date }}</td>
-                        <td data-type="no_format" class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.end_date }}</td>
-                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.contract_price }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.execution_contract_plan }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.january_one }}</td>
-                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.february }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.march }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.april }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.may }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.june }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.july }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.august }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.september }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.october }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.november }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.december }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.january_two }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.execution_contract_fact }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_january_one }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_january_one }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_february }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_february }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_march }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_march }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_april }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_april }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_may }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_may }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_june }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_june }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_july }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_july }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_august }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_august }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_september }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_september }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_october }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_october }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_november }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_november }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_december }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_december }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_january_two }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_january_two }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.execution }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.contract_balance }}</td>
-
                         <td class="stretch-width">
                             <!-- Управление -->
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
@@ -344,6 +284,65 @@
                                 <option value="#fff8e1" {% if item.color == '#fff8e1' %}selected{% endif %}>Light Yellow</option>
                             </select>
                         </td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.id_id }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}"><div class="text-content">{{ item.name }}</div><button class="toggle-button">Показать больше</button></td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.status }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.way }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.initiator }}</td>
+                        <td data-type="no_format" class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.KTSSR }}</td>
+                        <td data-type="no_format" class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
+                        <td data-type="no_format" class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.NMCC }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.saving }}</td>
+                        <td class="stretch-width-min" style="background-color: {{ item.color|default:'' }}">{{ item.counterparty }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.registration_number }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.contract_number }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.contract_date }}</td>
+                        <td data-type="no_format" class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.end_date }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.contract_price }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.execution_contract_plan }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.january_one }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.february }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.march }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.april }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.may }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.june }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.july }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.august }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.september }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.october }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.november }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.december }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.january_two }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.execution_contract_fact }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_january_one }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_january_one }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_february }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_february }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_march }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_march }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_april }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_april }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_may }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_may }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_june }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_june }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_july }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_july }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_august }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_august }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_september }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_september }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_october }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_october }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_november }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_november }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_december }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_december }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_january_two }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_january_two }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.execution }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.contract_balance }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

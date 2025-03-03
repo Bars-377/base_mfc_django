@@ -76,21 +76,40 @@ async def upload_file_(request):
                         df.iloc[0, col] = await clean_string(df.iloc[0, col])
 
                     for col in columns_to_fill_:
-                        df.iloc[0, col] = await clean_string(df.iloc[0, col]) + ' ' + str('дата оплаты')
+                        df.iloc[0, col] = await clean_string(df.iloc[1, col])
 
-                    df.iloc[0, 32] = 'Январь (факт)' + ' ' + await clean_string(df.iloc[0, 32])
+                    # print('-----------------')
+                    # print(df.columns)
+
+                    # exit()
+
+                    df.iloc[0, 31] = 'Январь (факт 1)' + ' ' + await clean_string(df.iloc[0, 31])
+                    df.iloc[0, 33] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 33])
+                    df.iloc[0, 35] = 'Март (факт)' + ' ' + await clean_string(df.iloc[0, 35])
+                    df.iloc[0, 37] = 'Апрель (факт)' + ' ' + await clean_string(df.iloc[0, 37])
+                    df.iloc[0, 39] = 'Май (факт)' + ' ' + await clean_string(df.iloc[0, 39])
+                    df.iloc[0, 41] = 'Июнь (факт)' + ' ' + await clean_string(df.iloc[0, 41])
+                    df.iloc[0, 43] = 'Июль (факт)' + ' ' + await clean_string(df.iloc[0, 43])
+                    df.iloc[0, 45] = 'Август (факт)' + ' ' + await clean_string(df.iloc[0, 45])
+                    df.iloc[0, 47] = 'Сентябрь (факт)' + ' ' + await clean_string(df.iloc[0, 47])
+                    df.iloc[0, 49] = 'Октябрь (факт)' + ' ' + await clean_string(df.iloc[0, 49])
+                    df.iloc[0, 51] = 'Ноябрь (факт)' + ' ' + await clean_string(df.iloc[0, 51])
+                    df.iloc[0, 53] = 'Декабрь (факт)' + ' ' + await clean_string(df.iloc[0, 53])
+                    df.iloc[0, 55] = 'Январь (факт 2)' + ' ' + await clean_string(df.iloc[0, 55])
+
+                    df.iloc[0, 32] = 'Январь (факт 1)' + ' ' + await clean_string(df.iloc[0, 32])
                     df.iloc[0, 34] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 34])
-                    df.iloc[0, 36] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 36])
-                    df.iloc[0, 38] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 38])
-                    df.iloc[0, 40] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 40])
-                    df.iloc[0, 42] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 42])
-                    df.iloc[0, 44] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 44])
-                    df.iloc[0, 46] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 46])
-                    df.iloc[0, 48] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 48])
-                    df.iloc[0, 50] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 50])
-                    df.iloc[0, 52] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 52])
-                    df.iloc[0, 54] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 54])
-                    df.iloc[0, 56] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 56])
+                    df.iloc[0, 36] = 'Март (факт)' + ' ' + await clean_string(df.iloc[0, 36])
+                    df.iloc[0, 38] = 'Апрель (факт)' + ' ' + await clean_string(df.iloc[0, 38])
+                    df.iloc[0, 40] = 'Май (факт)' + ' ' + await clean_string(df.iloc[0, 40])
+                    df.iloc[0, 42] = 'Июнь (факт)' + ' ' + await clean_string(df.iloc[0, 42])
+                    df.iloc[0, 44] = 'Июль (факт)' + ' ' + await clean_string(df.iloc[0, 44])
+                    df.iloc[0, 46] = 'Август (факт)' + ' ' + await clean_string(df.iloc[0, 46])
+                    df.iloc[0, 48] = 'Сентябрь (факт)' + ' ' + await clean_string(df.iloc[0, 48])
+                    df.iloc[0, 50] = 'Октябрь (факт)' + ' ' + await clean_string(df.iloc[0, 50])
+                    df.iloc[0, 52] = 'Ноябрь (факт)' + ' ' + await clean_string(df.iloc[0, 52])
+                    df.iloc[0, 54] = 'Декабрь (факт)' + ' ' + await clean_string(df.iloc[0, 54])
+                    df.iloc[0, 56] = 'Январь (факт 2)' + ' ' + await clean_string(df.iloc[0, 56])
 
                     list = []
 
@@ -162,8 +181,7 @@ async def upload_file_(request):
                                 return parsed_date.strftime('%d.%m.%Y')
                             except ValueError:
                                 return date_value  # Возвращаем исходную строку, если не удаётся распарсить
-
-                        return str(value) # Возвращаем None, если не удалось распарсить дату
+                        return str(value)
 
                     async def safe_conversion(value):
                         """Для преобразования данных"""
@@ -201,27 +219,6 @@ async def upload_file_(request):
 
                     df.columns = df.iloc[0]  # Используем первую строку как заголовки столбцов
                     df = df.drop(index=[0, 1])  # Удаляем первые две строки
-
-                    # df[f'{list[31]}'] = df[f'{list[31]}'].apply(safe_date_conversion)
-                    # exit()
-
-                    # async def apply_async(func, iterable):
-                    #     """Асинхронная обертка для применения функции к элементам iterable"""
-                    #     results = []
-
-                    #     for item in iterable:
-                    #         try:
-                    #             result = await func(item)
-                    #             results.append(result)
-                    #         except Exception as e:
-                    #             print(f"Ошибка при обработке значения {item}: {e}")
-                    #             results.append(None)  # Добавляем None в случае ошибки
-
-                    #     # Убедитесь, что длина results совпадает с длиной iterable
-                    #     if len(results) != len(iterable):
-                    #         results += [None] * (len(iterable) - len(results))  # Дополняем None при необходимости
-
-                    #     return pd.Series(results, index=iterable.index)
 
                     df[f'{list[0]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[0]}']])
                     df[f'{list[1]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[1]}']])

@@ -188,6 +188,13 @@ h1 {
     white-space: normal; /* Разрешает перенос строк */
 }
 
+.stretch-width-min {
+    min-width: 300px; /* Фиксированная ширина */
+    text-align: center;
+    word-wrap: break-word; /* Разрешает перенос слов */
+    white-space: normal; /* Разрешает перенос строк */
+}
+
 .text-content {
     display: block; /* Делаем div блочным, чтобы он занимал всю ширину */
     height: 50px; /* Ограничение высоты */
