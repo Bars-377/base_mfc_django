@@ -84,6 +84,12 @@ h1 {
     background-color: #4F83CC;
 }
 
+/* Верхняя прокрутка */
+.top-scroll {
+    height: 18px;
+    margin-bottom: 15px;
+}
+
 /* Стили формы */
 .form-group {
     margin: 20px;

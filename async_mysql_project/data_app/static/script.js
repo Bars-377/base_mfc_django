@@ -691,6 +691,31 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+	const topScrolls = document.querySelectorAll('.top-scroll');
+	const mainScrolls = document.querySelectorAll('.main-scroll');
+	const scrollContents = document.querySelectorAll('.scroll-content');
+
+	topScrolls.forEach((topScroll, index) => {
+		const mainScroll = mainScrolls[index];
+		const scrollContent = scrollContents[index];
+
+		if (mainScroll && scrollContent) {
+			// Устанавливаем ширину верхней прокрутки под ширину таблицы
+			scrollContent.style.width = mainScroll.scrollWidth + 'px';
+
+			// Синхронизация прокрутки
+			topScroll.addEventListener('scroll', () => {
+				mainScroll.scrollLeft = topScroll.scrollLeft;
+			});
+
+			mainScroll.addEventListener('scroll', () => {
+				topScroll.scrollLeft = mainScroll.scrollLeft;
+			});
+		}
+	});
+});
+
 function getCookie(name) {
 	let cookieValue = null;
 	if (document.cookie && document.cookie !== '') {
