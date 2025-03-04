@@ -62,6 +62,62 @@ async def clean_number(value):
 #         return 0
 #     return float(value)
 
+async def calculate_costs(query, keyword_one=None, selected_column_one=None, keyword_two=None, selected_column_two=None):
+    from django.db.models import Q
+
+    def is_valid_field(model, field_name):
+        """ Проверка, существует ли поле в модели """
+        return field_name in [f.name for f in model._meta.get_fields()]
+
+    async def get_invalid_costs(qs, field_name):
+        return await sync_to_async(list)(qs.values_list(field_name, flat=True))
+
+    total_cost_111, total_cost_222, total_cost_333 = 0, 0, 0
+
+    if keyword_one and selected_column_one and is_valid_field(query.model, selected_column_one):
+        invalid_costs = await get_invalid_costs(
+            query.filter(Q(**{f"{selected_column_one}__regex": keyword_one})), 'NMCC'
+        )
+        total_cost_111 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+
+        invalid_costs = await get_invalid_costs(
+            query.filter(Q(**{f"{selected_column_one}__regex": keyword_one})), 'contract_price'
+        )
+        total_cost_222 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+
+        invalid_costs = await get_invalid_costs(
+            query.filter(Q(**{f"{selected_column_one}__regex": keyword_one})), 'execution_contract_fact'
+        )
+        total_cost_333 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+
+    elif keyword_two and selected_column_two and is_valid_field(query.model, selected_column_two):
+        invalid_costs = await get_invalid_costs(
+            query.filter(Q(**{f"{selected_column_two}__regex": keyword_two})), 'NMCC'
+        )
+        total_cost_111 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+
+        invalid_costs = await get_invalid_costs(
+            query.filter(Q(**{f"{selected_column_two}__regex": keyword_two})), 'contract_price'
+        )
+        total_cost_222 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+
+        invalid_costs = await get_invalid_costs(
+            query.filter(Q(**{f"{selected_column_two}__regex": keyword_two})), 'execution_contract_fact'
+        )
+        total_cost_333 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+
+    else:
+        invalid_costs = await get_invalid_costs(query, 'NMCC')
+        total_cost_111 = sum(float(cost) for cost in invalid_costs if cost and str(cost).replace('.', '', 1).isdigit())
+
+        invalid_costs = await get_invalid_costs(query, 'contract_price')
+        total_cost_222 = sum(float(cost) for cost in invalid_costs if cost and str(cost).replace('.', '', 1).isdigit())
+
+        invalid_costs = await get_invalid_costs(query, 'execution_contract_fact')
+        total_cost_333 = sum(float(cost) for cost in invalid_costs if cost and str(cost).replace('.', '', 1).isdigit())
+
+    return total_cost_111, total_cost_222, total_cost_333
+
 async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user, KOSGU_user_two, keyword_one_user_two, keyword_two_user_two, selected_column_one_user_two, selected_column_two_user_two, page_user_two):
     async def remove_spaces_if_numeric(text):
         stripped_text = text.replace(" ", "")  # Удаляем все пробелы
@@ -320,6 +376,38 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
 
     total_cost_1_7 = total_cost_17 - (total_cost_1_3 + total_cost_1_4)
 
+    # keyword_one = request.GET.get('keyword_one', None)
+    # keyword_two = request.GET.get('keyword_two', None)
+    # selected_column_one = request.GET.get('selected_column_one', None)
+    # selected_column_two = request.GET.get('selected_column_two', None)
+
+    total_cost_111, total_cost_222, total_cost_333 = await calculate_costs(query, keyword_one, selected_column_one, keyword_two, selected_column_two)
+
+    # if contract_date == 'None' and end_date == 'None':
+    #     # Получение данных, не соответствующих форматам дат
+    #     invalid_costs = query.filter(
+    #         (Q(contract_date__regex=pattern_dd_mm_yyyy) | Q(contract_date__regex=pattern_yyyy_mm_dd)) &
+    #         (Q(end_date__regex=pattern_dd_mm_yyyy) | Q(end_date__regex=pattern_yyyy_mm_dd))
+    #     ).values_list('cost', flat=True)
+
+    #     total_cost_1 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+
+    #     invalid_certificates = query.filter(
+    #         (~Q(contract_date__regex=pattern_dd_mm_yyyy) | ~Q(contract_date__regex=pattern_yyyy_mm_dd)) &
+    #         (~Q(end_date__regex=pattern_dd_mm_yyyy) | ~Q(end_date__regex=pattern_yyyy_mm_dd))
+    #     ).values_list('certificate', flat=True)
+
+    #     total_cost_2 = sum(float(cert) for cert in invalid_certificates if str(cert).replace('.', '', 1).isdigit())
+
+    #     invalid_certificates_no = query.filter(
+    #         (~Q(contract_date__regex=pattern_dd_mm_yyyy) | ~Q(contract_date__regex=pattern_yyyy_mm_dd)) &
+    #         (~Q(end_date__regex=pattern_dd_mm_yyyy) | ~Q(end_date__regex=pattern_yyyy_mm_dd))
+    #     ).values_list('certificate_no', flat=True)
+
+    #     total_cost_3 = sum(float(cert_no) for cert_no in invalid_certificates_no if str(cert_no).replace('.', '', 1).isdigit())
+    # elif contract_date and end_date:
+
+
     # Пагинация
     paginator = Paginator(query, per_page)
     services = await sync_to_async(paginator.get_page)(page)
@@ -414,6 +502,9 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
         'total_cost_1_5': total_cost_1_5,
         'total_cost_1_6': total_cost_1_6,
         'total_cost_1_7': total_cost_1_7,
+        'total_cost_111': total_cost_111,
+        'total_cost_222': total_cost_222,
+        'total_cost_333': total_cost_333,
         'selected_contract_date': contract_date,
         'selected_KOSGU_user': KOSGU_user,
         'selected_KOSGU_user_two': KOSGU_user_two,

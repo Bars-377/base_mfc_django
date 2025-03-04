@@ -182,7 +182,7 @@
                         <th rowspan="2" class="fixed-width">Управление</th>
                         <th rowspan="2" class="fixed-width">Смена цвета</th>
                         <th rowspan="2" class="fixed-width">№ п/п</th>
-                        <th rowspan="2" class="stretch-width">Наименование закупки</th>
+                        <th rowspan="2" class="stretch-width-min">Наименование закупки</th>
                         <th rowspan="2" class="stretch-width">Статус</th>
                         <th rowspan="2" class="fixed-width">Способ закупки</th>
                         <th rowspan="2" class="stretch-width">Инициатор закупки (ИТ/АХО)</th>
@@ -285,7 +285,7 @@
                             </select>
                         </td>
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.id_id }}</td>
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}"><div class="text-content">{{ item.name }}</div><button class="toggle-button">Показать больше</button></td>
+                        <td class="stretch-width-min" style="background-color: {{ item.color|default:'' }}"><div class="text-content">{{ item.name }}</div><button class="toggle-button">Показать больше</button></td>
                         <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.status }}</td>
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.way }}</td>
                         <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.initiator }}</td>
@@ -411,9 +411,9 @@
     </div>
 
     <div class="container-fluid-neverov">
-        <!-- <h4>Итог выплат за выбранное время: {{ total_cost_1 }}</h4> -->
-        <!-- <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4> -->
-        <!-- <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4> -->
+        <h4>Итог НМЦК: {{ total_cost_111 }}</h4>
+        <h4>Итог Цена контракта: {{ total_cost_222 }}</h4>
+        <h4>Итог Исполнение контракта (факт): {{ total_cost_333 }}</h4>
         <br>
 
         <a href="{% url 'add' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить данные</a>

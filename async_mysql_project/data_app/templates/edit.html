@@ -52,7 +52,7 @@
                 </div>
                 <div class="form-item">
                     <label for="way">Способ закупки</label>
-                    <select class="form-control" id="way" name="way" required title="Выберите статус">
+                    <select class="form-control" id="way" name="way" required title="Выберите cпособ закупки">
                         {% with current_way=service.way|default:way %}
                         <option value="" {% if current_way == "" %}selected{% endif %}>Выберите cпособ закупки</option>
                         <option value="Запрос котировок" {% if current_way == "Запрос котировок" %}selected{% endif %}>Запрос котировок</option>
