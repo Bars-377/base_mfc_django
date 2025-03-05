@@ -188,7 +188,7 @@ h1 {
 }
 
 .stretch-width {
-    width: 200px; /* Фиксированная ширина */
+    width: auto; /* Фиксированная ширина */
     text-align: center;
     word-wrap: break-word; /* Разрешает перенос слов */
     white-space: normal; /* Разрешает перенос строк */

@@ -2,7 +2,6 @@ import pandas as pd
 from django.db import DataError
 from django.http import JsonResponse
 import asyncio
-from .models import Services, Services_Two, Services_Three
 from .views import ContractProcessor, log_user_action, clean_number
 
 async def upload_file_(request):
@@ -353,49 +352,8 @@ async def upload_file_(request):
 
                         await log_user_action(request.user, f'Загрузил данные из Excel в "Закупки"')
 
-                        from collections import defaultdict
-
-                        # Асинхронная функция для получения данных
-                        @sync_to_async
-                        def get_services_two_data():
-                            services_two_records = Services_Two.objects.all()
-
-                            # Сохраняем все записи в список
-                            KOSGU_and_DopFC = [(record.KOSGU, record.DopFC) for record in services_two_records]
-
-                            return KOSGU_and_DopFC  # Список с повторяющимися ключами
-
-                        # Вызов функции
-                        KOSGU_and_DopFC = await get_services_two_data()
-
-                        async def process_context(KTSSR, status, context_data, request):
-                            # Обновляем context_data
-                            context_data.update({'KTSSR': KTSSR, 'status': status})
-
-                            # Инициализация и обработка контекста
-                            processor = ContractProcessor(context_data, request)
-                            await processor.process()
-
-                        async def handle_multiple_statuses(context_data, request):
-                            # Список статусов для обработки
-                            statuses = ['Запланировано', 'В торгах', 'Заключено', 'Исполнено']
-
-                            # Обработка для KTSSR 2046102280
-                            for status in statuses:
-                                await process_context('2046102280', status, context_data, request)
-
-                            # Обработка для KTSSR 2046100092
-                            for status in statuses:
-                                await process_context('2046100092', status, context_data, request)
-
-                        context_data = {}
-
-                        for key, value in KOSGU_and_DopFC:
-
-                            context_data.update({'KOSGU': key})  # Добавляем ключ и значение в context_data
-                            context_data.update({'DopFC': value})  # Добавляем ключ и значение в context_data
-
-                            await handle_multiple_statuses(context_data, request)
+                        processor = ContractProcessor(request)
+                        await processor.count_dates()
 
                         # cursor.executemany(insert_query, data_to_insert)
                         # conn.commit()
