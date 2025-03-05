@@ -387,6 +387,8 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
 
     # Получаем все записи из таблицы Services_Three
     Services_Three_ = await sync_to_async(list)(Services_Three.objects.all())
+    total_cost_1_11 = 0
+    total_cost_1_22 = 0
     total_cost_1_1 = 0
     total_cost_1_2 = 0
     total_cost_1_3 = 0
@@ -394,6 +396,8 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     total_cost_1_5 = 0
     total_cost_1_6 = 0
     for service in Services_Three_:
+        total_cost_1_11 += await clean_number(service.budget_planned_old)
+        total_cost_1_22 += await clean_number(service.off_budget_planned_old)
         total_cost_1_1 += await clean_number(service.budget_planned)
         total_cost_1_2 += await clean_number(service.off_budget_planned)
         total_cost_1_3 += await clean_number(service.budget_concluded)
@@ -522,6 +526,8 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
         'total_cost_16': total_cost_16,
         'total_cost_17': total_cost_17,
         'total_cost_18': total_cost_18,
+        'total_cost_1_11': total_cost_1_11,
+        'total_cost_1_22': total_cost_1_22,
         'total_cost_1_1': total_cost_1_1,
         'total_cost_1_2': total_cost_1_2,
         'total_cost_1_3': total_cost_1_3,
