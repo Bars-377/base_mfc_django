@@ -76,76 +76,76 @@
                     <option data-type="no_format" value="contract_balance" {% if selected_column_one == 'contract_balance' %}selected{% endif %}>Остаток по контракту (формула)</option>
                 </select>
             </div>
-            <!--<div class="form-item">-->
-            <!--    <label for="keyword_two">Поиск по ключевому слову 2:</label>-->
-            <!--    <input type="text" class="form-control" id="keyword_two" name="keyword_two" placeholder="Ключевое слово"-->
-            <!--        value="{% if request.GET.keyword_two == 'None' %}{% else %}{{ request.GET.keyword_two }}{% endif %}">-->
-            <!--</div>-->
-            <!--<div class="form-item">-->
-            <!--    <label for="selected_column_two">Выберите столбец 2:</label>-->
-            <!--    <select name="selected_column_two" id="selected_column_two" class="form-control">-->
-            <!--        <option value="">Столбец</option>-->
-            <!--        <option value="id_id" {% if selected_column_two == 'id_id' %}selected{% endif %}>№ п/п</option>-->
-            <!--        <option value="name" {% if selected_column_two == 'name' %}selected{% endif %}>Наименование закупки</option>-->
-            <!--        <option value="status" {% if selected_column_two == 'status' %}selected{% endif %}>Статус</option>-->
-            <!--        <option value="way" {% if selected_column_two == 'way' %}selected{% endif %}>Способ закупки</option>-->
-            <!--        <option value="initiator" {% if selected_column_two == 'initiator' %}selected{% endif %}>Инициатор закупки (ИТ/АХО)</option>-->
-            <!--        <option value="KTSSR" {% if selected_column_two == 'KTSSR' %}selected{% endif %}>КЦСР</option>-->
-            <!--        <option value="KOSGU" {% if selected_column_two == 'KOSGU' %}selected{% endif %}>КОСГУ</option>-->
-            <!--        <option value="DopFC" {% if selected_column_two == 'DopFC' %}selected{% endif %}>ДопФК</option>-->
-            <!--        <option value="NMCC" {% if selected_column_two == 'NMCC' %}selected{% endif %}>НМЦК</option>-->
-            <!--        <option value="saving" {% if selected_column_two == 'saving' %}selected{% endif %}>Экономия</option>-->
-            <!--        <option value="counterparty" {% if selected_column_two == 'counterparty' %}selected{% endif %}>Контрагент</option>-->
-            <!--        <option value="registration_number" {% if selected_column_two == 'registration_number' %}selected{% endif %}>Реестровый номер контракта (ЕИС)</option>-->
-            <!--        <option value="contract_number" {% if selected_column_two == 'contract_number' %}selected{% endif %}>Номер контракта</option>-->
-            <!--        <option value="contract_date" {% if selected_column_two == 'contract_date'%}selected{% endif %}>Дата контракта</option>-->
-            <!--        <option value="end_date" {% if selected_column_two == 'end_date' %}selected{% endif %}>Окончание даты исполнения</option>-->
-            <!--        <option value="contract_price" {% if selected_column_two == 'contract_price' %}selected{% endif %}>Цена контракта (на 2024 год)</option>-->
-            <!--        <option value="execution_contract_plan" {% if selected_column_two == 'execution_contract_plan' %}selected{% endif %}>Исполнение контракта (план) (формула)</option>-->
-            <!--        <option value="january_one" {% if selected_column_two == 'january_one' %}selected{% endif %}>Январь (план)</option>-->
-            <!--        <option value="february" {% if selected_column_two == 'february' %}selected{% endif %}>Февраль (план)</option>-->
-            <!--        <option value="march" {% if selected_column_two == 'march' %}selected{% endif %}>Март (план)</option>-->
-            <!--        <option value="april" {% if selected_column_two == 'april' %}selected{% endif %}>Апрель (план)</option>-->
-            <!--        <option value="may" {% if selected_column_two == 'may' %}selected{% endif %}>Май (план)</option>-->
-            <!--        <option value="june" {% if selected_column_two == 'june' %}selected{% endif %}>Июнь (план)</option>-->
-            <!--        <option value="july" {% if selected_column_two == 'july' %}selected{% endif %}>Июль (план)</option>-->
-            <!--        <option value="august" {% if selected_column_two == 'august' %}selected{% endif %}>Август (план)</option>-->
-            <!--        <option value="september" {% if selected_column_two == 'september' %}selected{% endif %}>Сентябрь (план)</option>-->
-            <!--        <option value="october" {% if selected_column_two == 'october' %}selected{% endif %}>Октябрь (план)</option>-->
-            <!--        <option value="november" {% if selected_column_two == 'november' %}selected{% endif %}>Ноябрь (план)</option>-->
-            <!--        <option value="december" {% if selected_column_two == 'december' %}selected{% endif %}>Декабрь (план)</option>-->
-            <!--        <option value="january_two" {% if selected_column_two == 'january_two' %}selected{% endif %}>Январь (план)</option>-->
-            <!--        <option value="execution_contract_fact" {% if selected_column_two == 'execution_contract_fact' %}selected{% endif %}>Исполнение контракта (факт) (формула)</option>-->
-            <!--        <option value="date_january_one" {% if selected_column_two == 'date_january_one' %}selected{% endif %}>Дата оплаты Январь (факт 1)</option>-->
-            <!--        <option value="sum_january_one" {% if selected_column_two == 'sum_january_one' %}selected{% endif %}>Сумма оплаты Январь (факт 1)</option>-->
-            <!--        <option value="date_february" {% if selected_column_two == 'date_february' %}selected{% endif %}>Дата оплаты Февраль (факт)</option>-->
-            <!--        <option value="sum_february" {% if selected_column_two == 'sum_february' %}selected{% endif %}>Сумма оплаты Февраль (факт)</option>-->
-            <!--        <option value="date_march" {% if selected_column_two == 'date_march' %}selected{% endif %}>Дата оплаты Март (факт)</option>-->
-            <!--        <option value="sum_march" {% if selected_column_two == 'sum_march' %}selected{% endif %}>Сумма оплаты Март (факт)</option>-->
-            <!--        <option value="date_april" {% if selected_column_two == 'date_april' %}selected{% endif %}>Дата оплаты Апрель (факт)</option>-->
-            <!--        <option value="sum_april" {% if selected_column_two == 'sum_april' %}selected{% endif %}>Сумма оплаты Апрель (факт)</option>-->
-            <!--        <option value="date_may" {% if selected_column_two == 'date_may' %}selected{% endif %}>Дата оплаты Май (факт)</option>-->
-            <!--        <option value="sum_may" {% if selected_column_two == 'sum_may' %}selected{% endif %}>Сумма оплаты Май (факт)</option>-->
-            <!--        <option value="date_june" {% if selected_column_two == 'date_june' %}selected{% endif %}>Дата оплаты Июнь (факт)</option>-->
-            <!--        <option value="sum_june" {% if selected_column_two == 'sum_june' %}selected{% endif %}>Сумма оплаты Июнь (факт)</option>-->
-            <!--        <option value="date_july" {% if selected_column_two == 'date_july' %}selected{% endif %}>Дата оплаты Июль (факт)</option>-->
-            <!--        <option value="sum_july" {% if selected_column_two == 'sum_july' %}selected{% endif %}>Сумма оплаты Июль (факт)</option>-->
-            <!--        <option value="date_august" {% if selected_column_two == 'date_august' %}selected{% endif %}>Дата оплаты Август (факт)</option>-->
-            <!--        <option value="sum_august" {% if selected_column_two == 'sum_august' %}selected{% endif %}>Сумма оплаты Август (факт)</option>-->
-            <!--        <option value="date_september" {% if selected_column_two == 'date_september' %}selected{% endif %}>Дата оплаты Сентябрь (факт)</option>-->
-            <!--        <option value="sum_september" {% if selected_column_two == 'sum_september' %}selected{% endif %}>Сумма оплаты Сентябрь (факт)</option>-->
-            <!--        <option value="date_october" {% if selected_column_two == 'date_october' %}selected{% endif %}>Дата оплаты Октябрь (факт)</option>-->
-            <!--        <option value="sum_october" {% if selected_column_two == 'sum_october' %}selected{% endif %}>Сумма оплаты Октябрь (факт)</option>-->
-            <!--        <option value="date_november" {% if selected_column_two == 'date_november' %}selected{% endif %}>Дата оплаты Ноябрь (факт)</option>-->
-            <!--        <option value="sum_november" {% if selected_column_two == 'sum_november' %}selected{% endif %}>Сумма оплаты Ноябрь (факт)</option>-->
-            <!--        <option value="date_december" {% if selected_column_two == 'date_december' %}selected{% endif %}>Дата оплаты Декабрь (факт)</option>-->
-            <!--        <option value="sum_december" {% if selected_column_two == 'sum_december' %}selected{% endif %}>Сумма оплаты Декабрь (факт)</option>-->
-            <!--        <option value="date_january_two" {% if selected_column_two == 'date_january_two' %}selected{% endif %}>Дата оплаты Январь (факт 2)</option>-->
-            <!--        <option value="sum_january_two" {% if selected_column_two == 'sum_january_two' %}selected{% endif %}>Сумма оплаты Январь (факт 2)</option>-->
-            <!--        <option value="execution" {% if selected_column_two == 'execution' %}selected{% endif %}>% исполнения (формула)</option>-->
-            <!--        <option value="contract_balance" {% if selected_column_two == 'contract_balance' %}selected{% endif %}>Остаток по контракту (формула)</option>-->
-            <!--    </select>-->
-            <!--</div>-->
+            <div class="form-item">
+                <label for="keyword_two">Поиск по ключевому слову 2:</label>
+                <input type="text" class="form-control" id="keyword_two" name="keyword_two" placeholder="Ключевое слово"
+                    value="{% if request.GET.keyword_two == 'None' %}{% else %}{{ request.GET.keyword_two }}{% endif %}">
+            </div>
+            <div class="form-item">
+                <label for="selected_column_two">Выберите столбец 2:</label>
+                <select name="selected_column_two" id="selected_column_two" class="form-control">
+                    <option data-type="no_format" value="">Столбец</option>
+                    <option data-type="no_format" value="id_id" {% if selected_column_two == 'id_id' %}selected{% endif %}>№ п/п</option>
+                    <option data-type="no_format" value="name" {% if selected_column_two == 'name' %}selected{% endif %}>Наименование закупки</option>
+                    <option data-type="no_format" value="status" {% if selected_column_two == 'status' %}selected{% endif %}>Статус</option>
+                    <option data-type="no_format" value="way" {% if selected_column_two == 'way' %}selected{% endif %}>Способ закупки</option>
+                    <option data-type="no_format" value="initiator" {% if selected_column_two == 'initiator' %}selected{% endif %}>Инициатор закупки (ИТ/АХО)</option>
+                    <option data-type="no_format" value="KTSSR" {% if selected_column_two == 'KTSSR' %}selected{% endif %}>КЦСР</option>
+                    <option data-type="no_format" value="KOSGU" {% if selected_column_two == 'KOSGU' %}selected{% endif %}>КОСГУ</option>
+                    <option data-type="no_format" value="DopFC" {% if selected_column_two == 'DopFC' %}selected{% endif %}>ДопФК</option>
+                    <option data-type="no_format" value="NMCC" {% if selected_column_two == 'NMCC' %}selected{% endif %}>НМЦК</option>
+                    <option data-type="no_format" value="saving" {% if selected_column_two == 'saving' %}selected{% endif %}>Экономия</option>
+                    <option data-type="no_format" value="counterparty" {% if selected_column_two == 'counterparty' %}selected{% endif %}>Контрагент</option>
+                    <option data-type="no_format" value="registration_number" {% if selected_column_two == 'registration_number' %}selected{% endif %}>Реестровый номер контракта (ЕИС)</option>
+                    <option data-type="no_format" value="contract_number" {% if selected_column_two == 'contract_number' %}selected{% endif %}>Номер контракта</option>
+                    <option data-type="no_format" value="contract_date" {% if selected_column_two == 'contract_date'%}selected{% endif %}>Дата контракта</option>
+                    <option data-type="no_format" value="end_date" {% if selected_column_two == 'end_date' %}selected{% endif %}>Окончание даты исполнения</option>
+                    <option data-type="no_format" value="contract_price" {% if selected_column_two == 'contract_price' %}selected{% endif %}>Цена контракта (на 2024 год)</option>
+                    <option data-type="no_format" value="execution_contract_plan" {% if selected_column_two == 'execution_contract_plan' %}selected{% endif %}>Исполнение контракта (план) (формула)</option>
+                    <option data-type="no_format" value="january_one" {% if selected_column_two == 'january_one' %}selected{% endif %}>Январь (план)</option>
+                    <option data-type="no_format" value="february" {% if selected_column_two == 'february' %}selected{% endif %}>Февраль (план)</option>
+                    <option data-type="no_format" value="march" {% if selected_column_two == 'march' %}selected{% endif %}>Март (план)</option>
+                    <option data-type="no_format" value="april" {% if selected_column_two == 'april' %}selected{% endif %}>Апрель (план)</option>
+                    <option data-type="no_format" value="may" {% if selected_column_two == 'may' %}selected{% endif %}>Май (план)</option>
+                    <option data-type="no_format" value="june" {% if selected_column_two == 'june' %}selected{% endif %}>Июнь (план)</option>
+                    <option data-type="no_format" value="july" {% if selected_column_two == 'july' %}selected{% endif %}>Июль (план)</option>
+                    <option data-type="no_format" value="august" {% if selected_column_two == 'august' %}selected{% endif %}>Август (план)</option>
+                    <option data-type="no_format" value="september" {% if selected_column_two == 'september' %}selected{% endif %}>Сентябрь (план)</option>
+                    <option data-type="no_format" value="october" {% if selected_column_two == 'october' %}selected{% endif %}>Октябрь (план)</option>
+                    <option data-type="no_format" value="november" {% if selected_column_two == 'november' %}selected{% endif %}>Ноябрь (план)</option>
+                    <option data-type="no_format" value="december" {% if selected_column_two == 'december' %}selected{% endif %}>Декабрь (план)</option>
+                    <option data-type="no_format" value="january_two" {% if selected_column_two == 'january_two' %}selected{% endif %}>Январь (план)</option>
+                    <option data-type="no_format" value="execution_contract_fact" {% if selected_column_two == 'execution_contract_fact' %}selected{% endif %}>Исполнение контракта (факт) (формула)</option>
+                    <option data-type="no_format" value="date_january_one" {% if selected_column_two == 'date_january_one' %}selected{% endif %}>Дата оплаты Январь (факт 1)</option>
+                    <option data-type="no_format" value="sum_january_one" {% if selected_column_two == 'sum_january_one' %}selected{% endif %}>Сумма оплаты Январь (факт 1)</option>
+                    <option data-type="no_format" value="date_february" {% if selected_column_two == 'date_february' %}selected{% endif %}>Дата оплаты Февраль (факт)</option>
+                    <option data-type="no_format" value="sum_february" {% if selected_column_two == 'sum_february' %}selected{% endif %}>Сумма оплаты Февраль (факт)</option>
+                    <option data-type="no_format" value="date_march" {% if selected_column_two == 'date_march' %}selected{% endif %}>Дата оплаты Март (факт)</option>
+                    <option data-type="no_format" value="sum_march" {% if selected_column_two == 'sum_march' %}selected{% endif %}>Сумма оплаты Март (факт)</option>
+                    <option data-type="no_format" value="date_april" {% if selected_column_two == 'date_april' %}selected{% endif %}>Дата оплаты Апрель (факт)</option>
+                    <option data-type="no_format" value="sum_april" {% if selected_column_two == 'sum_april' %}selected{% endif %}>Сумма оплаты Апрель (факт)</option>
+                    <option data-type="no_format" value="date_may" {% if selected_column_two == 'date_may' %}selected{% endif %}>Дата оплаты Май (факт)</option>
+                    <option data-type="no_format" value="sum_may" {% if selected_column_two == 'sum_may' %}selected{% endif %}>Сумма оплаты Май (факт)</option>
+                    <option data-type="no_format" value="date_june" {% if selected_column_two == 'date_june' %}selected{% endif %}>Дата оплаты Июнь (факт)</option>
+                    <option data-type="no_format" value="sum_june" {% if selected_column_two == 'sum_june' %}selected{% endif %}>Сумма оплаты Июнь (факт)</option>
+                    <option data-type="no_format" value="date_july" {% if selected_column_two == 'date_july' %}selected{% endif %}>Дата оплаты Июль (факт)</option>
+                    <option data-type="no_format" value="sum_july" {% if selected_column_two == 'sum_july' %}selected{% endif %}>Сумма оплаты Июль (факт)</option>
+                    <option data-type="no_format" value="date_august" {% if selected_column_two == 'date_august' %}selected{% endif %}>Дата оплаты Август (факт)</option>
+                    <option data-type="no_format" value="sum_august" {% if selected_column_two == 'sum_august' %}selected{% endif %}>Сумма оплаты Август (факт)</option>
+                    <option data-type="no_format" value="date_september" {% if selected_column_two == 'date_september' %}selected{% endif %}>Дата оплаты Сентябрь (факт)</option>
+                    <option data-type="no_format" value="sum_september" {% if selected_column_two == 'sum_september' %}selected{% endif %}>Сумма оплаты Сентябрь (факт)</option>
+                    <option data-type="no_format" value="date_october" {% if selected_column_two == 'date_october' %}selected{% endif %}>Дата оплаты Октябрь (факт)</option>
+                    <option data-type="no_format" value="sum_october" {% if selected_column_two == 'sum_october' %}selected{% endif %}>Сумма оплаты Октябрь (факт)</option>
+                    <option data-type="no_format" value="date_november" {% if selected_column_two == 'date_november' %}selected{% endif %}>Дата оплаты Ноябрь (факт)</option>
+                    <option data-type="no_format" value="sum_november" {% if selected_column_two == 'sum_november' %}selected{% endif %}>Сумма оплаты Ноябрь (факт)</option>
+                    <option data-type="no_format" value="date_december" {% if selected_column_two == 'date_december' %}selected{% endif %}>Дата оплаты Декабрь (факт)</option>
+                    <option data-type="no_format" value="sum_december" {% if selected_column_two == 'sum_december' %}selected{% endif %}>Сумма оплаты Декабрь (факт)</option>
+                    <option data-type="no_format" value="date_january_two" {% if selected_column_two == 'date_january_two' %}selected{% endif %}>Дата оплаты Январь (факт 2)</option>
+                    <option data-type="no_format" value="sum_january_two" {% if selected_column_two == 'sum_january_two' %}selected{% endif %}>Сумма оплаты Январь (факт 2)</option>
+                    <option data-type="no_format" value="execution" {% if selected_column_two == 'execution' %}selected{% endif %}>% исполнения (формула)</option>
+                    <option data-type="no_format" value="contract_balance" {% if selected_column_two == 'contract_balance' %}selected{% endif %}>Остаток по контракту (формула)</option>
+                </select>
+            </div>
             <div class="form-item">
                 <label for="contract_date">Дата контракта:</label>
                 <select name="contract_date" id="contract_date" class="form-control form-control-year">

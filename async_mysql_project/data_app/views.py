@@ -58,46 +58,90 @@ async def calculate_costs(query, keyword_one=None, selected_column_one=None, key
     total_cost_111, total_cost_222, total_cost_333 = 0, 0, 0
 
     if keyword_one and selected_column_one and is_valid_field(query.model, selected_column_one):
-        invalid_costs = await get_invalid_costs(
-            query.filter(Q(**{f"{selected_column_one}__regex": keyword_one})), 'NMCC'
-        )
-        total_cost_111 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
 
-        invalid_costs = await get_invalid_costs(
-            query.filter(Q(**{f"{selected_column_one}__regex": keyword_one})), 'contract_price'
-        )
-        total_cost_222 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+        filter_conditions = Q(**{f"{selected_column_one}__regex": keyword_one})
 
-        invalid_costs = await get_invalid_costs(
-            query.filter(Q(**{f"{selected_column_one}__regex": keyword_one})), 'execution_contract_fact'
-        )
-        total_cost_333 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+        # invalid_costs = await get_invalid_costs(
+        #     query.filter(Q(**{f"{selected_column_one}__regex": keyword_one})), 'NMCC'
+        # )
+        # total_cost_111 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+
+        # invalid_costs = await get_invalid_costs(
+        #     query.filter(Q(**{f"{selected_column_one}__regex": keyword_one})), 'contract_price'
+        # )
+        # total_cost_222 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+
+        # invalid_costs = await get_invalid_costs(
+        #     query.filter(Q(**{f"{selected_column_one}__regex": keyword_one})), 'execution_contract_fact'
+        # )
+        # total_cost_333 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
 
     elif keyword_two and selected_column_two and is_valid_field(query.model, selected_column_two):
-        invalid_costs = await get_invalid_costs(
-            query.filter(Q(**{f"{selected_column_two}__regex": keyword_two})), 'NMCC'
-        )
-        total_cost_111 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
 
-        invalid_costs = await get_invalid_costs(
-            query.filter(Q(**{f"{selected_column_two}__regex": keyword_two})), 'contract_price'
-        )
-        total_cost_222 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+        filter_conditions = Q(**{f"{selected_column_two}__regex": keyword_two})
 
-        invalid_costs = await get_invalid_costs(
-            query.filter(Q(**{f"{selected_column_two}__regex": keyword_two})), 'execution_contract_fact'
-        )
-        total_cost_333 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+        # invalid_costs = await get_invalid_costs(
+        #     query.filter(Q(**{f"{selected_column_two}__regex": keyword_two})), 'NMCC'
+        # )
+        # total_cost_111 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+
+        # invalid_costs = await get_invalid_costs(
+        #     query.filter(Q(**{f"{selected_column_two}__regex": keyword_two})), 'contract_price'
+        # )
+        # total_cost_222 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+
+        # invalid_costs = await get_invalid_costs(
+        #     query.filter(Q(**{f"{selected_column_two}__regex": keyword_two})), 'execution_contract_fact'
+        # )
+        # total_cost_333 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+
+    elif keyword_one and selected_column_one and is_valid_field(query.model, selected_column_one) and keyword_two and selected_column_two and is_valid_field(query.model, selected_column_two):
+
+        filter_conditions = Q(**{f"{selected_column_one}__regex": keyword_one}) & Q(**{f"{selected_column_two}__regex": keyword_two})
+
+        # invalid_costs = await get_invalid_costs(
+        #     query.filter(Q(**{f"{selected_column_one}__regex": keyword_one}) & Q(**{f"{selected_column_two}__regex": keyword_two})), 'NMCC'
+        # )
+        # total_cost_111 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+
+        # invalid_costs = await get_invalid_costs(
+        #     query.filter(Q(**{f"{selected_column_one}__regex": keyword_one}) & Q(**{f"{selected_column_two}__regex": keyword_two})), 'contract_price'
+        # )
+        # total_cost_222 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
+
+        # invalid_costs = await get_invalid_costs(
+        #     query.filter(Q(**{f"{selected_column_one}__regex": keyword_one}) & Q(**{f"{selected_column_two}__regex": keyword_two})), 'execution_contract_fact'
+        # )
+        # total_cost_333 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
 
     else:
-        invalid_costs = await get_invalid_costs(query, 'NMCC')
-        total_cost_111 = sum(float(cost) for cost in invalid_costs if cost and str(cost).replace('.', '', 1).isdigit())
+        filter_conditions = Q()
 
-        invalid_costs = await get_invalid_costs(query, 'contract_price')
-        total_cost_222 = sum(float(cost) for cost in invalid_costs if cost and str(cost).replace('.', '', 1).isdigit())
+        # invalid_costs = await get_invalid_costs(query, 'NMCC')
+        # total_cost_111 = sum(float(cost) for cost in invalid_costs if cost and str(cost).replace('.', '', 1).isdigit())
 
-        invalid_costs = await get_invalid_costs(query, 'execution_contract_fact')
-        total_cost_333 = sum(float(cost) for cost in invalid_costs if cost and str(cost).replace('.', '', 1).isdigit())
+        # invalid_costs = await get_invalid_costs(query, 'contract_price')
+        # total_cost_222 = sum(float(cost) for cost in invalid_costs if cost and str(cost).replace('.', '', 1).isdigit())
+
+        # invalid_costs = await get_invalid_costs(query, 'execution_contract_fact')
+        # total_cost_333 = sum(float(cost) for cost in invalid_costs if cost and str(cost).replace('.', '', 1).isdigit())
+
+    # Выполните запрос один раз
+    filtered_query = query.filter(filter_conditions)
+
+    # Определите функцию для суммирования стоимостей
+    def sum_costs(costs):
+        return sum(float(cost) for cost in costs if str(cost).replace('.', '', 1).isdigit())
+
+    # Получите недопустимые затраты для каждого типа
+    invalid_costs_nmcc = await get_invalid_costs(filtered_query, 'NMCC')
+    invalid_costs_contract_price = await get_invalid_costs(filtered_query, 'contract_price')
+    invalid_costs_execution_contract_fact = await get_invalid_costs(filtered_query, 'execution_contract_fact')
+
+    # Суммируйте затраты
+    total_cost_111 = sum_costs(invalid_costs_nmcc)
+    total_cost_222 = sum_costs(invalid_costs_contract_price)
+    total_cost_333 = sum_costs(invalid_costs_execution_contract_fact)
 
     return total_cost_111, total_cost_222, total_cost_333
 

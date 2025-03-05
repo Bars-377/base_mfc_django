@@ -93,7 +93,7 @@ h1 {
 /* Стили формы */
 .form-group {
     margin: 20px;
-    align-items: flex-end;
+    align-items: center;
     /* Вертикальное выравнивание по низу */
     gap: 15px;
     /* Расстояние между элементами */
