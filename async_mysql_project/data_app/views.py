@@ -1221,8 +1221,8 @@ class ContractProcessor:
                 Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
             )
 
-            Services_Three_.budget_remainder = await clean_number(Services_Three_.budget_planned) - await clean_number(Services_Three_.budget_concluded)
-            Services_Three_.off_budget_remainder = await clean_number(Services_Three_.off_budget_planned) - await clean_number(Services_Three_.off_budget_concluded)
+            Services_Three_.budget_remainder = await clean_number(Services_Three_.budget_planned) + await clean_number(Services_Three_.budget_planned_old) - await clean_number(Services_Three_.budget_concluded)
+            Services_Three_.off_budget_remainder = await clean_number(Services_Three_.off_budget_planned) + await clean_number(Services_Three_.off_budget_planned_old) - await clean_number(Services_Three_.off_budget_concluded)
 
             if any(x < 0 for x in [await clean_number(Services_Three_.budget_remainder),
                                 await clean_number(Services_Three_.off_budget_remainder)
@@ -1947,6 +1947,8 @@ async def update_record_user_two(request, row_id):
 
                 # 'budget_limit': request.POST['budget_limit'],
                 # 'off_budget_limit': request.POST['off_budget_limit'],
+                'budget_planned_old': request.POST['budget_planned_old'],
+                'off_budget_planned_old': request.POST['off_budget_planned_old'],
                 'budget_planned': request.POST['budget_planned'],
                 'off_budget_planned': request.POST['off_budget_planned'],
                 # 'budget_bargaining': request.POST['budget_bargaining'],
@@ -1994,6 +1996,8 @@ async def update_record_user_two(request, row_id):
             context_data['service_user_two'].DopFC = context_data['DopFC']
             # context_data['service_user'].budget_limit = context_data['budget_limit']
             # context_data['service_user'].off_budget_limit = context_data['off_budget_limit']
+            context_data['service_user_two'].budget_planned_old = context_data['budget_planned_old']
+            context_data['service_user_two'].off_budget_planned_old = context_data['off_budget_planned_old']
             context_data['service_user_two'].budget_planned = context_data['budget_planned']
             context_data['service_user_two'].off_budget_planned = context_data['off_budget_planned']
             # context_data['service_user'].budget_bargaining = context_data['budget_bargaining']

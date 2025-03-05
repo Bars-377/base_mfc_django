@@ -174,6 +174,11 @@
             </div>
         </form>
     </div>
+
+    <div class="container-fluid-neverov">
+        <a href="{% url 'add' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить закупку</a>
+    </div>
+
     <div class="container-fluid-neverov">
 
         <div class="scroll-container top-scroll">
@@ -419,13 +424,8 @@
         <h4>Итог НМЦК: {{ total_cost_111 }}</h4>
         <h4>Итог Цена контракта: {{ total_cost_222 }}</h4>
         <h4>Итог Исполнение контракта (факт): {{ total_cost_333 }}</h4>
-        <br>
 
-        <a href="{% url 'add' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить закупку</a>
-
-        <!-- <br> -->
         <h1>Импорт данных из Excel</h1>
-        <br>
 
         <form id="export-form" onsubmit="showFlashMessage(event)">
             <div class="alert" id="flash-message" style="display: none;"></div>
@@ -442,6 +442,11 @@
     <div class="container-fluid-neverov">
         <h3>Свод</h3>
     </div>
+
+    <div class="container-fluid-neverov">
+                <a href="{% url 'add_two' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить свод</a>
+    </div>
+
     <!--<div class="container-fluid-neverov">-->
         <!--<form method="GET" action="/" id="filter-form-user" class="form-group">-->
             <!--<div class="form-item">-->
@@ -728,11 +733,7 @@
 
         <!-- <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4> -->
         <!-- <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4> -->
-        <br>
 
-        <a href="{% url 'add_two' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить свод</a>
-
-        <!-- <br> -->
         <!-- <h1>Экспорт услуг в Excel</h1> -->
         <!-- <br> -->
 
@@ -821,11 +822,14 @@
                         <th rowspan="2" class="fixed-width">Управление</th>
                         <th rowspan="2" class="stretch-width">КОСГУ</th>
                         <th rowspan="2" class="stretch-width">ДопФК</th>
-                        <th colspan="2" class="fixed-width">Внесено в план - график</th>
+                        <th colspan="2" class="fixed-width">Внесено в план - график (прошлый год)</th>
+                        <th colspan="2" class="fixed-width">Внесено в план - график (настоящий год)</th>
                         <th colspan="2" class="fixed-width">Заключено</th>
                         <th colspan="2" class="fixed-width-date">Остаток</th>
                     </tr>
                     <tr>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
                         <th class="fixed-width">Бюджет</th>
                         <th class="fixed-width">Внебюджет</th>
                         <th class="fixed-width">Бюджет</th>
@@ -847,6 +851,8 @@
                         </td>
                         <td data-type="no_format" class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
                         <td data-type="no_format" class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
+                        <td class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.budget_planned_old }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_planned_old }}</td>
                         <td class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.budget_planned }}</td>
                         <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_planned }}</td>
                         <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.budget_concluded }}</td>

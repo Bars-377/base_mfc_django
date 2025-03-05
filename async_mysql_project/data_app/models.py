@@ -76,6 +76,8 @@ class Services_Three(models.Model):
     id_id = models.TextField(verbose_name='ID', default='Unknown ID')
     KOSGU = models.TextField(verbose_name='KOSGU', default='Unknown KOSGU')
     DopFC = models.TextField(verbose_name='DopFC', default='Unknown DopFC')
+    budget_planned_old = models.TextField(verbose_name='Budget Planned Old', default='Unknown Budget Planned Old')
+    off_budget_planned_old = models.TextField(verbose_name='Off Budget Planned Old', default='Unknown Off Budget Planned Old')
     budget_planned = models.TextField(verbose_name='Budget Planned', default='Unknown Budget Planned')
     off_budget_planned = models.TextField(verbose_name='Off Budget Planned', default='Unknown Off Budget Planned')
     budget_concluded = models.TextField(verbose_name='Budget Concluded', default='Unknown Budget Concluded')
