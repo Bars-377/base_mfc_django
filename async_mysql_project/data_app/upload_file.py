@@ -317,6 +317,31 @@ async def upload_file_(request):
                     if not all(row[5] in search_words_2 for row in data_to_insert):
                         return JsonResponse({"message": "Некорректная колонка КЦСР в одной из строк!", "status": "error", 'success': True}, status=400)
 
+                    # Слово, которое мы ищем
+                    search_words_3 = ('Запрос котировок',
+                                        'ОАЭФ',
+                                        'п.1 ч.1 ст.93',
+                                        'п.4 ч.1 ст.93',
+                                        'п.8 ч.1 ст.93',
+                                        'п.9 ч.1 ст.93',
+                                        'п.12 ч.1 ст.93',
+                                        'п.23 ч.1 ст.93',
+                                        'п.25 ч.1 ст.93',
+                                        'п.29 ч.1 ст.93',
+                                        'п.32 ч.1 ст.93',
+                                        'часть 12 ст.93',
+                                        '')
+
+                    names_search_words_3 = [row[3].lower() for row in data_to_insert]
+
+                    for index, row in enumerate(names_search_words_3):
+                        if row not in [word.lower() for word in search_words_3]:
+                            return JsonResponse({
+                                "message": f"Некорректная колонка Способ закупки в строке {index + 1}. Содержание: {row}",
+                                "status": "error",
+                                'success': True
+                            }, status=400)
+
                     names = [row[1].lower() for row in data_to_insert]
                     seen_names = {}
                     for index, name in enumerate(names):
