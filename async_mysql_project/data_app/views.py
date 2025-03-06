@@ -61,70 +61,16 @@ async def calculate_costs(query, keyword_one=None, selected_column_one=None, key
 
         filter_conditions = Q(**{f"{selected_column_one}__regex": keyword_one})
 
-        # invalid_costs = await get_invalid_costs(
-        #     query.filter(Q(**{f"{selected_column_one}__regex": keyword_one})), 'NMCC'
-        # )
-        # total_cost_111 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
-
-        # invalid_costs = await get_invalid_costs(
-        #     query.filter(Q(**{f"{selected_column_one}__regex": keyword_one})), 'contract_price'
-        # )
-        # total_cost_222 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
-
-        # invalid_costs = await get_invalid_costs(
-        #     query.filter(Q(**{f"{selected_column_one}__regex": keyword_one})), 'execution_contract_fact'
-        # )
-        # total_cost_333 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
-
     elif keyword_two and selected_column_two and is_valid_field(query.model, selected_column_two):
 
         filter_conditions = Q(**{f"{selected_column_two}__regex": keyword_two})
-
-        # invalid_costs = await get_invalid_costs(
-        #     query.filter(Q(**{f"{selected_column_two}__regex": keyword_two})), 'NMCC'
-        # )
-        # total_cost_111 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
-
-        # invalid_costs = await get_invalid_costs(
-        #     query.filter(Q(**{f"{selected_column_two}__regex": keyword_two})), 'contract_price'
-        # )
-        # total_cost_222 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
-
-        # invalid_costs = await get_invalid_costs(
-        #     query.filter(Q(**{f"{selected_column_two}__regex": keyword_two})), 'execution_contract_fact'
-        # )
-        # total_cost_333 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
 
     elif keyword_one and selected_column_one and is_valid_field(query.model, selected_column_one) and keyword_two and selected_column_two and is_valid_field(query.model, selected_column_two):
 
         filter_conditions = Q(**{f"{selected_column_one}__regex": keyword_one}) & Q(**{f"{selected_column_two}__regex": keyword_two})
 
-        # invalid_costs = await get_invalid_costs(
-        #     query.filter(Q(**{f"{selected_column_one}__regex": keyword_one}) & Q(**{f"{selected_column_two}__regex": keyword_two})), 'NMCC'
-        # )
-        # total_cost_111 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
-
-        # invalid_costs = await get_invalid_costs(
-        #     query.filter(Q(**{f"{selected_column_one}__regex": keyword_one}) & Q(**{f"{selected_column_two}__regex": keyword_two})), 'contract_price'
-        # )
-        # total_cost_222 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
-
-        # invalid_costs = await get_invalid_costs(
-        #     query.filter(Q(**{f"{selected_column_one}__regex": keyword_one}) & Q(**{f"{selected_column_two}__regex": keyword_two})), 'execution_contract_fact'
-        # )
-        # total_cost_333 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
-
     else:
         filter_conditions = Q()
-
-        # invalid_costs = await get_invalid_costs(query, 'NMCC')
-        # total_cost_111 = sum(float(cost) for cost in invalid_costs if cost and str(cost).replace('.', '', 1).isdigit())
-
-        # invalid_costs = await get_invalid_costs(query, 'contract_price')
-        # total_cost_222 = sum(float(cost) for cost in invalid_costs if cost and str(cost).replace('.', '', 1).isdigit())
-
-        # invalid_costs = await get_invalid_costs(query, 'execution_contract_fact')
-        # total_cost_333 = sum(float(cost) for cost in invalid_costs if cost and str(cost).replace('.', '', 1).isdigit())
 
     # Выполните запрос один раз
     filtered_query = query.filter(filter_conditions)
@@ -162,24 +108,21 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     end_date = await format_input(end_date)
     keyword_one = await format_input_remove(keyword_one)
     keyword_two = await format_input_remove(keyword_two)
-    # keyword_one = None if keyword_one == 'None' else remove_spaces_if_numeric(str(keyword_one).strip())
-    # keyword_two = None if keyword_two == 'None' else remove_spaces_if_numeric(str(keyword_two).strip())
+
     selected_column_one = await format_input(selected_column_one)
     selected_column_two = await format_input(selected_column_two)
 
     KOSGU_user = await format_input(KOSGU_user)
     keyword_one_user = await format_input_remove(keyword_one_user)
     keyword_two_user = await format_input_remove(keyword_two_user)
-    # keyword_one_user = None if keyword_one_user == 'None' else remove_spaces_if_numeric(str(keyword_one_user).strip())
-    # keyword_two_user = None if keyword_two_user == 'None' else remove_spaces_if_numeric(str(keyword_two_user).strip())
+
     selected_column_one_user = await format_input(selected_column_one_user)
     selected_column_two_user = await format_input(selected_column_two_user)
 
     KOSGU_user_two = await format_input(KOSGU_user_two)
     keyword_one_user_two = await format_input_remove(keyword_one_user_two)
     keyword_two_user_two = await format_input_remove(keyword_two_user_two)
-    # keyword_one_user_two = None if keyword_one_user_two == 'None' else remove_spaces_if_numeric(str(keyword_one_user_two).strip())
-    # keyword_two_user_two = None if keyword_two_user_two == 'None' else remove_spaces_if_numeric(str(keyword_two_user_two).strip())
+
     selected_column_one_user_two = await format_input(selected_column_one_user_two)
     selected_column_two_user_two = await format_input(selected_column_two_user_two)
 
@@ -323,16 +266,6 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
         contract_date_date=Cast('contract_date', DateField())
     ).order_by('id_id_int', 'contract_date_date')
 
-    # # Преобразование id_id в целое число и contract_date в дату перед сортировкой
-    # query_user = query_user.annotate(
-    #     id_id_int=Cast('id_id', IntegerField())
-    # ).order_by('id_id_int')
-
-    # # Преобразование id_id в целое число и contract_date в дату перед сортировкой
-    # query_user_two = query_user_two.annotate(
-    #     id_id_int=Cast('id_id', IntegerField())
-    # ).order_by('id_id_int')
-
     # Преобразование id_id в целое число и KOSGU в целое число перед сортировкой
     query_user = query_user.annotate(
         kosgu_int=Cast('KOSGU', IntegerField())  # Преобразование KOSGU в целое число
@@ -407,37 +340,7 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
 
     total_cost_1_7 = total_cost_17 - (total_cost_1_3 + total_cost_1_4)
 
-    # keyword_one = request.GET.get('keyword_one', None)
-    # keyword_two = request.GET.get('keyword_two', None)
-    # selected_column_one = request.GET.get('selected_column_one', None)
-    # selected_column_two = request.GET.get('selected_column_two', None)
-
     total_cost_111, total_cost_222, total_cost_333 = await calculate_costs(query, keyword_one, selected_column_one, keyword_two, selected_column_two)
-
-    # if contract_date == 'None' and end_date == 'None':
-    #     # Получение данных, не соответствующих форматам дат
-    #     invalid_costs = query.filter(
-    #         (Q(contract_date__regex=pattern_dd_mm_yyyy) | Q(contract_date__regex=pattern_yyyy_mm_dd)) &
-    #         (Q(end_date__regex=pattern_dd_mm_yyyy) | Q(end_date__regex=pattern_yyyy_mm_dd))
-    #     ).values_list('cost', flat=True)
-
-    #     total_cost_1 = sum(float(cost) for cost in invalid_costs if str(cost).replace('.', '', 1).isdigit())
-
-    #     invalid_certificates = query.filter(
-    #         (~Q(contract_date__regex=pattern_dd_mm_yyyy) | ~Q(contract_date__regex=pattern_yyyy_mm_dd)) &
-    #         (~Q(end_date__regex=pattern_dd_mm_yyyy) | ~Q(end_date__regex=pattern_yyyy_mm_dd))
-    #     ).values_list('certificate', flat=True)
-
-    #     total_cost_2 = sum(float(cert) for cert in invalid_certificates if str(cert).replace('.', '', 1).isdigit())
-
-    #     invalid_certificates_no = query.filter(
-    #         (~Q(contract_date__regex=pattern_dd_mm_yyyy) | ~Q(contract_date__regex=pattern_yyyy_mm_dd)) &
-    #         (~Q(end_date__regex=pattern_dd_mm_yyyy) | ~Q(end_date__regex=pattern_yyyy_mm_dd))
-    #     ).values_list('certificate_no', flat=True)
-
-    #     total_cost_3 = sum(float(cert_no) for cert_no in invalid_certificates_no if str(cert_no).replace('.', '', 1).isdigit())
-    # elif contract_date and end_date:
-
 
     # Пагинация
     paginator = Paginator(query, per_page)
@@ -797,38 +700,6 @@ async def add_two(request):
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit(request, row_id):
     await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "Закупки" с ID {row_id}')
-    # # Возвращаем данные формы обратно в шаблон
-    # context_data = {
-    #     # 'row_id_user': row_id,
-    #     'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-    #     'keyword_one': request.GET.get('keyword_one', None),
-    #     'keyword_two': request.GET.get('keyword_two', None),
-    #     'selected_column_one': request.GET.get('selected_column_one', None),
-    #     'selected_column_two': request.GET.get('selected_column_two', None),
-    #     'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
-    #     'KOSGU_user': request.GET.get('KOSGU_user', None),
-    #     'keyword_one_user': request.GET.get('keyword_one_user', None),
-    #     'keyword_two_user': request.GET.get('keyword_two_user', None),
-    #     'selected_column_one_user': request.GET.get('selected_column_one_user', None),
-    #     'selected_column_two_user': request.GET.get('selected_column_two_user', None),
-    #     'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1,
-    #     'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
-    #     'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
-    #     'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
-    #     'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-    #     'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
-    # }
-
-    # if user != 12:
-    #     await sync_to_async(messages.error)(request, "Редактировать таблицу Закупки может только Администратор")
-    #     # Кодируем query-параметры
-    #     query_string = urlencode(context_data)
-
-    #     # Формируем URL с query-параметрами
-    #     redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
-
-    #     # Перенаправляем пользователя
-    #     return HttpResponseRedirect(redirect_url)
 
     page = int(request.GET.get('page', 1))
     keyword_one = request.GET.get('keyword_one', None)
@@ -865,38 +736,6 @@ async def edit(request, row_id):
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit_user(request, row_id):
     await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "Свод" с ID {row_id}')
-    # # Возвращаем данные формы обратно в шаблон
-    # context_data = {
-    #     # 'row_id_user': row_id,
-    #     'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-    #     'keyword_one': request.GET.get('keyword_one', None),
-    #     'keyword_two': request.GET.get('keyword_two', None),
-    #     'selected_column_one': request.GET.get('selected_column_one', None),
-    #     'selected_column_two': request.GET.get('selected_column_two', None),
-    #     'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
-    #     'KOSGU_user': request.GET.get('KOSGU_user', None),
-    #     'keyword_one_user': request.GET.get('keyword_one_user', None),
-    #     'keyword_two_user': request.GET.get('keyword_two_user', None),
-    #     'selected_column_one_user': request.GET.get('selected_column_one_user', None),
-    #     'selected_column_two_user': request.GET.get('selected_column_two_user', None),
-    #     'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1,
-    #     'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
-    #     'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
-    #     'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
-    #     'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-    #     'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
-    # }
-
-    # if user != 12:
-    #     await sync_to_async(messages.error)(request, "Редактировать таблицу План - график может только Администратор")
-    #     # Кодируем query-параметры
-    #     query_string = urlencode(context_data)
-
-    #     # Формируем URL с query-параметрами
-    #     redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
-
-    #     # Перенаправляем пользователя
-    #     return HttpResponseRedirect(redirect_url)
 
     page_user = int(request.GET.get('page_user', 1))
     keyword_one_user = request.GET.get('keyword_one_user', None)
@@ -928,38 +767,6 @@ async def edit_user(request, row_id):
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit_user_two(request, row_id):
     await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "План-график" с ID {row_id}')
-    # # Возвращаем данные формы обратно в шаблон
-    # context_data = {
-    #     # 'row_id_user': row_id,
-    #     'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-    #     'keyword_one': request.GET.get('keyword_one', None),
-    #     'keyword_two': request.GET.get('keyword_two', None),
-    #     'selected_column_one': request.GET.get('selected_column_one', None),
-    #     'selected_column_two': request.GET.get('selected_column_two', None),
-    #     'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
-    #     'KOSGU_user': request.GET.get('KOSGU_user', None),
-    #     'keyword_one_user': request.GET.get('keyword_one_user', None),
-    #     'keyword_two_user': request.GET.get('keyword_two_user', None),
-    #     'selected_column_one_user': request.GET.get('selected_column_one_user', None),
-    #     'selected_column_two_user': request.GET.get('selected_column_two_user', None),
-    #     'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1,
-    #     'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
-    #     'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
-    #     'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
-    #     'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-    #     'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
-    # }
-
-    # if user != 12:
-    #     await sync_to_async(messages.error)(request, "Редактировать таблицу Свод может только Администратор")
-    #     # Кодируем query-параметры
-    #     query_string = urlencode(context_data)
-
-    #     # Формируем URL с query-параметрами
-    #     redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
-
-    #     # Перенаправляем пользователя
-    #     return HttpResponseRedirect(redirect_url)
 
     page_user = int(request.GET.get('page_user', 1))
     keyword_one_user = request.GET.get('keyword_one_user', None)
@@ -1245,31 +1052,12 @@ class ContractProcessor:
                 Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
             )
 
-            # if contract_price_sum_way:
-            #     try:
-
-            #         if self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2046100092':
-            #             Services_Three_.off_budget_concluded = contract_price_sum_way if contract_price_sum_way else ServicesTwo_.off_budget_concluded
-            #             # Services_Three_.off_budget_remainder = await clean_number(ServicesTwo_.off_budget_planned) - await clean_number(contract_price_sum_way)
-            #         elif self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2046102280':
-            #             Services_Three_.budget_concluded = contract_price_sum_way if contract_price_sum_way else ServicesTwo_.budget_concluded
-            #             # Services_Three_.budget_remainder = await clean_number(ServicesTwo_.budget_planned) - await clean_number(contract_price_sum_way)
-
-            #     except KeyError:
-            #         pass
-
             if self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2046100092':
                 Services_Three_.off_budget_concluded = contract_price_sum_way if contract_price_sum_way else ServicesTwo_.off_budget_concluded
                 # Services_Three_.off_budget_remainder = await clean_number(ServicesTwo_.off_budget_planned) - await clean_number(contract_price_sum_way)
             elif self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2046102280':
                 Services_Three_.budget_concluded = contract_price_sum_way if contract_price_sum_way else ServicesTwo_.budget_concluded
                 # Services_Three_.budget_remainder = await clean_number(ServicesTwo_.budget_planned) - await clean_number(contract_price_sum_way)
-
-            await sync_to_async(Services_Three_.save)()
-
-            Services_Three_ = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(
-                Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
-            )
 
             Services_Three_.budget_remainder = await clean_number(Services_Three_.budget_planned) + await clean_number(Services_Three_.budget_planned_old) - await clean_number(Services_Three_.budget_concluded)
             Services_Three_.off_budget_remainder = await clean_number(Services_Three_.off_budget_planned) + await clean_number(Services_Three_.off_budget_planned_old) - await clean_number(Services_Three_.off_budget_concluded)
@@ -1401,6 +1189,8 @@ class ContractProcessor:
 
         await sync_to_async(Services_Two_.save)()
 
+        return Services_Two_
+
     async def process_update_user(self):
 
         await self.count_dates()
@@ -1481,40 +1271,12 @@ class ContractProcessor:
 
     async def process_count_dates(self):
         """Продолжение предварительных вычислительних операций после обновления или добавления записей"""
-        # try:
-        #     from django.db.models import Q
-
-        #     Services_way_ = await sync_to_async(list)(Services.objects.filter(
-        #         Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
-        #     ))
-
-        #     contract_price_sum_way = 0
-        #     execution_contract_fact_sum_way = 0
-        #     for service in Services_way_:
-        #         contract_price_sum_way += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
-        #         execution_contract_fact_sum_way += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
-        # except KeyError:
-        #     contract_price_sum_way = None
-
-        # from django.db.models import Q
-
-        # Services_way_ = await sync_to_async(list)(Services.objects.filter(
-        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
-        # ))
-
-        # contract_price_sum_way = 0
-        # execution_contract_fact_sum_way = 0
-        # for service in Services_way_:
-        #     contract_price_sum_way += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
-        #     execution_contract_fact_sum_way += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
 
         contract_price_sum_way, execution_contract_fact_sum_way = await self.Services_way()
 
         Services_Two_ = await self.validate_Services_Two()
 
-        await self.Services_Two_save(Services_Two_)
-
-        Services_Two_ = await self.validate_Services_Two()
+        Services_Two_ = await self.Services_Two_save(Services_Two_)
 
         await self.process_budget_services_two(Services_Two_)
 
@@ -1793,64 +1555,8 @@ async def update_record_user(request, row_id):
                 'service_user': await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id),
                 'id_id': request.POST['id_id'],
                 'name': request.POST['name'],
-                # 'status': request.POST['status'],
-                # 'way': request.POST['way'],
-                # 'initiator': request.POST['initiator'],
-                # 'KTSSR': request.POST['KTSSR'],
                 'KOSGU': request.POST['KOSGU'],
                 'DopFC': request.POST['DopFC'],
-                # 'NMCC': request.POST['NMCC'],
-                # 'counterparty': request.POST['counterparty'],
-                # 'registration_number': request.POST['registration_number'],
-                # 'contract_number': request.POST['contract_number'],
-                # 'contract_date': request.POST['contract_date'],
-                # 'end_date': request.POST['end_date'],
-                # 'contract_price': request.POST['contract_price'],
-                # 'january_one': request.POST['january_one'],
-                # 'february': request.POST['february'],
-                # 'march': request.POST['march'],
-                # 'april': request.POST['april'],
-                # 'may': request.POST['may'],
-                # 'june': request.POST['june'],
-                # 'july': request.POST['july'],
-                # 'august': request.POST['august'],
-                # 'september': request.POST['september'],
-                # 'october': request.POST['october'],
-                # 'november': request.POST['november'],
-                # 'december': request.POST['december'],
-                # 'january_two': request.POST['january_two'],
-                # 'date_january_one': request.POST['date_january_one'],
-                # 'sum_january_one': request.POST['sum_january_one'],
-                # 'date_february': request.POST['date_february'],
-                # 'sum_february': request.POST['sum_february'],
-                # 'date_march': request.POST['date_march'],
-                # 'sum_march':  request.POST['sum_march'],
-                # 'date_april': request.POST['date_april'],
-                # 'sum_april': request.POST['sum_april'],
-                # 'date_may': request.POST['date_may'],
-                # 'sum_may': request.POST['sum_may'],
-                # 'date_june': request.POST['date_june'],
-                # 'sum_june': request.POST['sum_june'],
-                # 'date_july': request.POST['date_july'],
-                # 'sum_july': request.POST['sum_july'],
-                # 'date_august': request.POST['date_august'],
-                # 'sum_august': request.POST['sum_august'],
-                # 'date_september': request.POST['date_september'],
-                # 'sum_september': request.POST['sum_september'],
-                # 'date_october': request.POST['date_october'],
-                # 'sum_october': request.POST['sum_october'],
-                # 'date_november': request.POST['date_november'],
-                # 'sum_november': request.POST['sum_november'],
-                # 'date_december': request.POST['date_december'],
-                # 'sum_december': request.POST['sum_december'],
-                # 'date_january_two': request.POST['date_january_two'],
-                # 'sum_january_two': request.POST['sum_january_two'],
-                # 'execution': request.POST['execution'],
-                # 'contract_balance': request.POST['contract_balance'],
-                # 'execution_contract_fact': request.POST['execution_contract_fact'],
-                # 'execution_contract_plan': request.POST['execution_contract_plan'],
-                # 'saving': request.POST['saving'],
-
                 'budget_limit': request.POST['budget_limit'],
                 'off_budget_limit': request.POST['off_budget_limit'],
                 'budget_planned': request.POST['budget_planned'],
@@ -1936,84 +1642,16 @@ async def update_record_user_two(request, row_id):
             context_data = {
                 'service_user_two': await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(id=row_id),
                 'id_id': request.POST['id_id'],
-                # 'name': request.POST['name'],
-                # 'status': request.POST['status'],
-                # 'way': request.POST['way'],
-                # 'initiator': request.POST['initiator'],
-                # 'KTSSR': request.POST['KTSSR'],
                 'KOSGU': request.POST['KOSGU'],
                 'DopFC': request.POST['DopFC'],
-                # 'NMCC': request.POST['NMCC'],
-                # 'counterparty': request.POST['counterparty'],
-                # 'registration_number': request.POST['registration_number'],
-                # 'contract_number': request.POST['contract_number'],
-                # 'contract_date': request.POST['contract_date'],
-                # 'end_date': request.POST['end_date'],
-                # 'contract_price': request.POST['contract_price'],
-                # 'january_one': request.POST['january_one'],
-                # 'february': request.POST['february'],
-                # 'march': request.POST['march'],
-                # 'april': request.POST['april'],
-                # 'may': request.POST['may'],
-                # 'june': request.POST['june'],
-                # 'july': request.POST['july'],
-                # 'august': request.POST['august'],
-                # 'september': request.POST['september'],
-                # 'october': request.POST['october'],
-                # 'november': request.POST['november'],
-                # 'december': request.POST['december'],
-                # 'january_two': request.POST['january_two'],
-                # 'date_january_one': request.POST['date_january_one'],
-                # 'sum_january_one': request.POST['sum_january_one'],
-                # 'date_february': request.POST['date_february'],
-                # 'sum_february': request.POST['sum_february'],
-                # 'date_march': request.POST['date_march'],
-                # 'sum_march':  request.POST['sum_march'],
-                # 'date_april': request.POST['date_april'],
-                # 'sum_april': request.POST['sum_april'],
-                # 'date_may': request.POST['date_may'],
-                # 'sum_may': request.POST['sum_may'],
-                # 'date_june': request.POST['date_june'],
-                # 'sum_june': request.POST['sum_june'],
-                # 'date_july': request.POST['date_july'],
-                # 'sum_july': request.POST['sum_july'],
-                # 'date_august': request.POST['date_august'],
-                # 'sum_august': request.POST['sum_august'],
-                # 'date_september': request.POST['date_september'],
-                # 'sum_september': request.POST['sum_september'],
-                # 'date_october': request.POST['date_october'],
-                # 'sum_october': request.POST['sum_october'],
-                # 'date_november': request.POST['date_november'],
-                # 'sum_november': request.POST['sum_november'],
-                # 'date_december': request.POST['date_december'],
-                # 'sum_december': request.POST['sum_december'],
-                # 'date_january_two': request.POST['date_january_two'],
-                # 'sum_january_two': request.POST['sum_january_two'],
-                # 'execution': request.POST['execution'],
-                # 'contract_balance': request.POST['contract_balance'],
-                # 'execution_contract_fact': request.POST['execution_contract_fact'],
-                # 'execution_contract_plan': request.POST['execution_contract_plan'],
-                # 'saving': request.POST['saving'],
-
-                # 'budget_limit': request.POST['budget_limit'],
-                # 'off_budget_limit': request.POST['off_budget_limit'],
                 'budget_planned_old': request.POST['budget_planned_old'],
                 'off_budget_planned_old': request.POST['off_budget_planned_old'],
                 'budget_planned': request.POST['budget_planned'],
                 'off_budget_planned': request.POST['off_budget_planned'],
-                # 'budget_bargaining': request.POST['budget_bargaining'],
-                # 'off_budget_bargaining': request.POST['off_budget_bargaining'],
                 'budget_concluded': request.POST['budget_concluded'],
                 'off_budget_concluded': request.POST['off_budget_concluded'],
-                # 'budget_completed': request.POST['budget_completed'],
-                # 'off_budget_completed': request.POST['off_budget_completed'],
-                # 'budget_completed': request.POST['budget_completed'],
-                # 'budget_execution': request.POST['budget_execution'],
-                # 'off_budget_execution': request.POST['off_budget_execution'],
                 'budget_remainder': request.POST['budget_remainder'],
                 'off_budget_remainder': request.POST['off_budget_remainder'],
-                # 'budget_plans': request.POST['budget_plans'],
-                # 'off_budget_plans': request.POST['off_budget_plans'],
 
                 'color': request.POST['color'],
                 'row_id_user_two': row_id,
@@ -2041,27 +1679,16 @@ async def update_record_user_two(request, row_id):
             await log_user_action(request.user, f'Отредактировал запись в "План-график" с ID {service_dict['id_id']},\nБыло: budget_planned: {service_dict['budget_planned']}, off_budget_planned: {service_dict['off_budget_planned']}')
 
             context_data['service_user_two'].id_id = context_data['id_id']
-            # context_data['service_user'].name = context_data['name']
             context_data['service_user_two'].KOSGU = context_data['KOSGU']
             context_data['service_user_two'].DopFC = context_data['DopFC']
-            # context_data['service_user'].budget_limit = context_data['budget_limit']
-            # context_data['service_user'].off_budget_limit = context_data['off_budget_limit']
             context_data['service_user_two'].budget_planned_old = context_data['budget_planned_old']
             context_data['service_user_two'].off_budget_planned_old = context_data['off_budget_planned_old']
             context_data['service_user_two'].budget_planned = context_data['budget_planned']
             context_data['service_user_two'].off_budget_planned = context_data['off_budget_planned']
-            # context_data['service_user'].budget_bargaining = context_data['budget_bargaining']
-            # context_data['service_user'].off_budget_bargaining = context_data['off_budget_bargaining']
             context_data['service_user_two'].budget_concluded = context_data['budget_concluded']
             context_data['service_user_two'].off_budget_concluded = context_data['off_budget_concluded']
-            # context_data['service_user'].budget_completed = context_data['budget_completed']
-            # context_data['service_user'].off_budget_completed = context_data['off_budget_completed']
-            # context_data['service_user'].budget_execution = context_data['budget_execution']
-            # context_data['service_user'].off_budget_execution = context_data['off_budget_execution']
             context_data['service_user_two'].budget_remainder = context_data['budget_remainder']
             context_data['service_user_two'].off_budget_remainder = context_data['off_budget_remainder']
-            # context_data['service_user'].budget_plans = context_data['budget_plans']
-            # context_data['service_user'].off_budget_plans = context_data['off_budget_plans']
             context_data['service_user_two'].color = context_data['color']
 
             await sync_to_async(context_data['service_user_two'].save)()
@@ -2082,8 +1709,6 @@ async def add_record(request):
         try:
             # Возвращаем данные формы обратно в шаблон
             context_data = {
-                # 'service': await sync_to_async(Services.objects.get)(id=row_id),
-                # 'id_id': request.POST['id_id'],
                 'name': request.POST['name'],
                 'status': request.POST['status'],
                 'way': request.POST['way'],
@@ -2143,7 +1768,6 @@ async def add_record(request):
                 'execution_contract_plan': request.POST['execution_contract_plan'],
                 'saving': request.POST['saving'],
                 'color': request.POST['color'],
-                # 'row_id': row_id,
                 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
                 'keyword_one': request.GET.get('keyword_one', None),
                 'keyword_two': request.GET.get('keyword_two', None),
@@ -2177,8 +1801,6 @@ async def add_record_two(request):
         try:
             # Возвращаем данные формы обратно в шаблон
             context_data = {
-                # 'service': await sync_to_async(Services.objects.get)(id=row_id),
-                # 'id_id': request.POST['id_id'],
                 'name': request.POST['name'],
                 'KOSGU': request.POST['KOSGU'],
                 'DopFC': request.POST['DopFC'],
@@ -2199,7 +1821,6 @@ async def add_record_two(request):
                 'budget_plans': request.POST['budget_plans'],
                 'off_budget_plans': request.POST['off_budget_plans'],
                 'color': request.POST['color'],
-                # 'row_id': row_id,
                 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
                 'keyword_one': request.GET.get('keyword_one', None),
                 'keyword_two': request.GET.get('keyword_two', None),

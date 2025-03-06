@@ -77,11 +77,6 @@ async def upload_file_(request):
                     for col in columns_to_fill_:
                         df.iloc[0, col] = await clean_string(df.iloc[1, col])
 
-                    # print('-----------------')
-                    # print(df.columns)
-
-                    # exit()
-
                     df.iloc[0, 31] = 'Январь (факт 1)' + ' ' + await clean_string(df.iloc[0, 31])
                     df.iloc[0, 33] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 33])
                     df.iloc[0, 35] = 'Март (факт)' + ' ' + await clean_string(df.iloc[0, 35])
@@ -225,12 +220,8 @@ async def upload_file_(request):
                     df[f'{list[3]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[3]}']])
                     df[f'{list[4]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[4]}']])
                     df[f'{list[5]}'] = await asyncio.gather(*[safe_int_conversion(val) for val in df[f'{list[5]}']])
-                    # print(await apply_async(safe_int_conversion, df[list[5]]))
-                    # exit()
                     df[f'{list[6]}'] = await asyncio.gather(*[safe_int_conversion(val) for val in df[f'{list[6]}']])
                     df[f'{list[7]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[7]}']])
-                    # print(df[f'{list[7]}'])
-                    # exit()
                     df[f'{list[8]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[8]}']])
                     df[f'{list[9]}'] = await asyncio.gather(*[safe_int_conversion(val) for val in df[f'{list[9]}']])
                     df[f'{list[10]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[10]}']])
