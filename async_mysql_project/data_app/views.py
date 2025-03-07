@@ -1187,8 +1187,6 @@ class ContractProcessor:
 
         Services_Two_.budget_execution = await self.calculate_contract_sums('2046102280', None)
 
-        await sync_to_async(Services_Two_.save)()
-
         return Services_Two_
 
     async def process_update_user(self):
