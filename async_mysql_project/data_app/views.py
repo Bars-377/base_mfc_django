@@ -23,11 +23,17 @@ def log_user_action(user, action):
 
 async def clean_number(value):
     if isinstance(value, (int, float)):
-        number_final = round(float(value), 2)  # Убедитесь, что число с двумя знаками после запятой
-    elif not value or value.strip() == '' or value == 'None':
-        number_final = 0.00  # Пустая строка обрабатывается как 0.00
+        number_final = round(float(value), 2)
+    elif value is None or not value or str(value).strip() == '' or str(value) == 'None':
+        number_final = 0.00
     else:
-        number_final = round(float(str(value).replace(' ', '').replace(',', '.')), 2)  # Форматируем результат
+        try:
+            # Удаляем пробелы и заменяем запятую на точку
+            value_str = str(value).replace(' ', '').replace(',', '.')
+            number_final = round(float(value_str), 2)
+        except ValueError:
+            # Если преобразование в число не удалось, возвращаем 0.00
+            number_final = 0.00
 
     # def has_more_than_two_decimals(number):
     #     # Преобразуем число в строку
@@ -43,6 +49,7 @@ async def clean_number(value):
     # if has_more_than_two_decimals(number_final):
     #     print(f"Число {number_final} имеет больше двух знаков после запятой.")
     #     exit()
+
     return number_final
 
 async def calculate_costs(query, keyword_one=None, selected_column_one=None, keyword_two=None, selected_column_two=None):
@@ -90,6 +97,24 @@ async def calculate_costs(query, keyword_one=None, selected_column_one=None, key
     total_cost_333 = sum_costs(invalid_costs_execution_contract_fact)
 
     return total_cost_111, total_cost_222, total_cost_333
+
+from channels.db import database_sync_to_async
+
+async def calculate_total_budget(query_user, string):
+    @database_sync_to_async
+    def get_values():
+        return list(query_user.values_list(string, flat=True))
+
+    count = await get_values()
+
+    def convert_to_number(value):
+        try:
+            return float(value)
+        except (ValueError, TypeError):
+            return 0.00
+
+    total_cost = sum(convert_to_number(value) for value in count)
+    return total_cost
 
 async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user, KOSGU_user_two, keyword_one_user_two, keyword_two_user_two, selected_column_one_user_two, selected_column_two_user_two, page_user_two):
     async def remove_spaces_if_numeric(text):
@@ -277,57 +302,73 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     ).order_by('kosgu_int')  # Сортировка по id_id_int и kosgu_int
 
     # # Логика подсчета стоимости
-    total_cost_1 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_limit')))()
-    total_cost_1 = await clean_number(total_cost_1['budget_limit__sum'] or 0)
-    total_cost_2 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_limit')))()
-    total_cost_2 = await clean_number(total_cost_2['off_budget_limit__sum'] or 0)
-    total_cost_3 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_planned')))()
-    total_cost_3 = await clean_number(total_cost_3['budget_planned__sum'] or 0)
-    total_cost_4 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_planned')))()
-    total_cost_4 = await clean_number(total_cost_4['off_budget_planned__sum'] or 0)
-    total_cost_5 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_bargaining')))()
-    total_cost_5 = await clean_number(total_cost_5['budget_bargaining__sum'] or 0)
-    total_cost_6 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_bargaining')))()
-    total_cost_6 = await clean_number(total_cost_6['off_budget_bargaining__sum'] or 0)
-    total_cost_7 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_concluded')))()
-    total_cost_7 = await clean_number(total_cost_7['budget_concluded__sum'] or 0)
-    total_cost_8 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_concluded')))()
-    total_cost_8 = await clean_number(total_cost_8['off_budget_concluded__sum'] or 0)
-    total_cost_9 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_completed')))()
-    total_cost_9 = await clean_number(total_cost_9['budget_completed__sum'] or 0)
-    total_cost_10 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_completed')))()
-    total_cost_10 = await clean_number(total_cost_10['off_budget_completed__sum'] or 0)
-    total_cost_11 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_execution')))()
-    total_cost_11 = await clean_number(total_cost_11['budget_execution__sum'] or 0)
-    total_cost_12 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_execution')))()
-    total_cost_12 = await clean_number(total_cost_12['off_budget_execution__sum'] or 0)
-    total_cost_13 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_remainder')))()
-    total_cost_13 = await clean_number(total_cost_13['budget_remainder__sum'] or 0)
-    total_cost_14 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_remainder')))()
-    total_cost_14 = await clean_number(total_cost_14['off_budget_remainder__sum'] or 0)
-    total_cost_15 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_plans')))()
-    total_cost_15 = await clean_number(total_cost_15['budget_plans__sum'] or 0)
-    total_cost_16 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_plans')))()
-    total_cost_16 = await clean_number(total_cost_16['off_budget_plans__sum'] or 0)
+    # total_cost_1 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_limit')))()
+    # total_cost_1 = total_cost_1['budget_limit__sum'] or 0
+    total_cost_1 = await calculate_total_budget(query_user, 'budget_limit')
+    # total_cost_2 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_limit')))()
+    # total_cost_2 = total_cost_2['off_budget_limit__sum'] or 0
+    total_cost_2 = await calculate_total_budget(query_user, 'off_budget_limit')
+    # total_cost_3 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_planned')))()
+    # total_cost_3 = total_cost_3['budget_planned__sum'] or 0
+    total_cost_3 = await calculate_total_budget(query_user, 'budget_planned')
+    # total_cost_4 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_planned')))()
+    # total_cost_4 = total_cost_4['off_budget_planned__sum'] or 0
+    total_cost_4 = await calculate_total_budget(query_user, 'off_budget_planned')
+    # total_cost_5 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_bargaining')))()
+    # total_cost_5 = total_cost_5['budget_bargaining__sum'] or 0
+    total_cost_5 = await calculate_total_budget(query_user, 'budget_bargaining')
+    # total_cost_6 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_bargaining')))()
+    # total_cost_6 = total_cost_6['off_budget_bargaining__sum'] or 0
+    total_cost_6 = await calculate_total_budget(query_user, 'off_budget_bargaining')
+    # total_cost_7 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_concluded')))()
+    # total_cost_7 = total_cost_7['budget_concluded__sum'] or 0
+    total_cost_7 = await calculate_total_budget(query_user, 'budget_concluded')
+    # total_cost_8 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_concluded')))()
+    # total_cost_8 = total_cost_8['off_budget_concluded__sum'] or 0
+    total_cost_8 = await calculate_total_budget(query_user, 'off_budget_concluded')
+    # total_cost_9 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_completed')))()
+    # total_cost_9 = total_cost_9['budget_completed__sum'] or 0
+    total_cost_9 = await calculate_total_budget(query_user, 'budget_completed')
+    # total_cost_10 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_completed')))()
+    # total_cost_10 = total_cost_10['off_budget_completed__sum'] or 0
+    total_cost_10 = await calculate_total_budget(query_user, 'off_budget_completed')
+    # total_cost_11 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_execution')))()
+    # total_cost_11 = total_cost_11['budget_execution__sum'] or 0
+    total_cost_11 = await calculate_total_budget(query_user, 'budget_execution')
+    # total_cost_12 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_execution')))()
+    # total_cost_12 = total_cost_12['off_budget_execution__sum'] or 0
+    total_cost_12 = await calculate_total_budget(query_user, 'off_budget_execution')
+    # total_cost_13 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_remainder')))()
+    # total_cost_13 = total_cost_13['budget_remainder__sum'] or 0
+    total_cost_13 = await calculate_total_budget(query_user, 'budget_remainder')
+    # total_cost_14 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_remainder')))()
+    # total_cost_14 = total_cost_14['off_budget_remainder__sum'] or 0
+    total_cost_14 = await calculate_total_budget(query_user, 'off_budget_remainder')
+    # total_cost_15 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_plans')))()
+    # total_cost_15 = total_cost_15['budget_plans__sum'] or 0
+    total_cost_15 = await calculate_total_budget(query_user, 'budget_plans')
+    # total_cost_16 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_plans')))()
+    # total_cost_16 = total_cost_16['off_budget_plans__sum'] or 0
+    total_cost_16 = await calculate_total_budget(query_user, 'off_budget_plans')
 
     try:
         total_cost_17 = total_cost_1 + total_cost_2
         total_cost_18 = ((total_cost_11 + total_cost_12) / total_cost_17) * 100
         total_cost_18 = round(total_cost_18, 2)  # Округляем до двух знаков после запятой
     except:
-        total_cost_17 = 0
+        total_cost_17 = 0.00
         total_cost_18 = 0.00
 
     # Получаем все записи из таблицы Services_Three
     Services_Three_ = await sync_to_async(list)(Services_Three.objects.all())
-    total_cost_1_11 = 0
-    total_cost_1_22 = 0
-    total_cost_1_1 = 0
-    total_cost_1_2 = 0
-    total_cost_1_3 = 0
-    total_cost_1_4 = 0
-    total_cost_1_5 = 0
-    total_cost_1_6 = 0
+    total_cost_1_11 = 0.00
+    total_cost_1_22 = 0.00
+    total_cost_1_1 = 0.00
+    total_cost_1_2 = 0.00
+    total_cost_1_3 = 0.00
+    total_cost_1_4 = 0.00
+    total_cost_1_5 = 0.00
+    total_cost_1_6 = 0.00
     for service in Services_Three_:
         total_cost_1_11 += await clean_number(service.budget_planned_old)
         total_cost_1_22 += await clean_number(service.off_budget_planned_old)
@@ -411,36 +452,36 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
         'pages': pages,
         'pages_user': pages_user,
         'pages_user_two': pages_user_two,
-        'total_cost_1': total_cost_1,
-        'total_cost_2': total_cost_2,
-        'total_cost_3': total_cost_3,
-        'total_cost_4': total_cost_4,
-        'total_cost_5': total_cost_5,
-        'total_cost_6': total_cost_6,
-        'total_cost_7': total_cost_7,
-        'total_cost_8': total_cost_8,
-        'total_cost_9': total_cost_9,
-        'total_cost_10': total_cost_10,
-        'total_cost_11': total_cost_11,
-        'total_cost_12': total_cost_12,
-        'total_cost_13': total_cost_13,
-        'total_cost_14': total_cost_14,
-        'total_cost_15': total_cost_15,
-        'total_cost_16': total_cost_16,
-        'total_cost_17': total_cost_17,
-        'total_cost_18': total_cost_18,
-        'total_cost_1_11': total_cost_1_11,
-        'total_cost_1_22': total_cost_1_22,
-        'total_cost_1_1': total_cost_1_1,
-        'total_cost_1_2': total_cost_1_2,
-        'total_cost_1_3': total_cost_1_3,
-        'total_cost_1_4': total_cost_1_4,
-        'total_cost_1_5': total_cost_1_5,
-        'total_cost_1_6': total_cost_1_6,
-        'total_cost_1_7': total_cost_1_7,
-        'total_cost_111': total_cost_111,
-        'total_cost_222': total_cost_222,
-        'total_cost_333': total_cost_333,
+        'total_cost_1': await clean_number(total_cost_1),
+        'total_cost_2': await clean_number(total_cost_2),
+        'total_cost_3': await clean_number(total_cost_3),
+        'total_cost_4': await clean_number(total_cost_4),
+        'total_cost_5': await clean_number(total_cost_5),
+        'total_cost_6': await clean_number(total_cost_6),
+        'total_cost_7': await clean_number(total_cost_7),
+        'total_cost_8': await clean_number(total_cost_8),
+        'total_cost_9': await clean_number(total_cost_9),
+        'total_cost_10': await clean_number(total_cost_10),
+        'total_cost_11': await clean_number(total_cost_11),
+        'total_cost_12': await clean_number(total_cost_12),
+        'total_cost_13': await clean_number(total_cost_13),
+        'total_cost_14': await clean_number(total_cost_14),
+        'total_cost_15': await clean_number(total_cost_15),
+        'total_cost_16': await clean_number(total_cost_16),
+        'total_cost_17': await clean_number(total_cost_17),
+        'total_cost_18': await clean_number(total_cost_18),
+        'total_cost_1_11': await clean_number(total_cost_1_11),
+        'total_cost_1_22': await clean_number(total_cost_1_22),
+        'total_cost_1_1': await clean_number(total_cost_1_1),
+        'total_cost_1_2': await clean_number(total_cost_1_2),
+        'total_cost_1_3': await clean_number(total_cost_1_3),
+        'total_cost_1_4': await clean_number(total_cost_1_4),
+        'total_cost_1_5': await clean_number(total_cost_1_5),
+        'total_cost_1_6': await clean_number(total_cost_1_6),
+        'total_cost_1_7': await clean_number(total_cost_1_7),
+        'total_cost_111': await clean_number(total_cost_111),
+        'total_cost_222': await clean_number(total_cost_222),
+        'total_cost_333': await clean_number(total_cost_333),
         'selected_contract_date': contract_date,
         'selected_KOSGU_user': KOSGU_user,
         'selected_KOSGU_user_two': KOSGU_user_two,
