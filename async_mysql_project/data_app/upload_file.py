@@ -77,6 +77,8 @@ async def upload_file_(request):
                     for col in columns_to_fill_:
                         df.iloc[0, col] = await clean_string(df.iloc[1, col])
 
+                    df.iloc[0, 29] = 'Январь (план один)' + ' ' + await clean_string(df.iloc[0, 31])
+
                     df.iloc[0, 31] = 'Январь (факт 1)' + ' ' + await clean_string(df.iloc[0, 31])
                     df.iloc[0, 33] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 33])
                     df.iloc[0, 35] = 'Март (факт)' + ' ' + await clean_string(df.iloc[0, 35])
@@ -109,6 +111,9 @@ async def upload_file_(request):
 
                     for col in range(df.shape[1]):
                         list.append(df.iloc[0, col])
+
+                    # print(list)
+                    # exit()
 
                     def convert_to_float(x):
                         # Удаляем неразрывные пробелы и другие пробелы
@@ -213,7 +218,10 @@ async def upload_file_(request):
 
                     df.columns = df.iloc[0]  # Используем первую строку как заголовки столбцов
                     df = df.drop(index=[0, 1])  # Удаляем первые две строки
-
+                    # print(df.columns)
+                    # exit()
+                    # print(df.columns[df.columns.duplicated()])
+                    # exit()
                     df[f'{list[0]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[0]}']])
                     df[f'{list[1]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[1]}']])
                     df[f'{list[2]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[2]}']])
@@ -230,7 +238,7 @@ async def upload_file_(request):
                     df[f'{list[13]}'] = df[f'{list[13]}'].apply(safe_date_conversion)
                     df[f'{list[14]}'] = df[f'{list[14]}'].apply(safe_date_conversion)
                     df[f'{list[15]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[15]}']])
-                    df[f'{list[16]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[16]}']])
+                    # df[f'{list[16]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[16]}']])
                     df[f'{list[17]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[17]}']])
                     df[f'{list[18]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[18]}']])
                     df[f'{list[19]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[19]}']])
@@ -244,7 +252,8 @@ async def upload_file_(request):
                     df[f'{list[27]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[27]}']])
                     df[f'{list[28]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[28]}']])
                     df[f'{list[29]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[29]}']])
-                    df[f'{list[30]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[30]}']])
+                    df[f'{list[16]}'] = (df[f'{list[17]}'].astype(float) + df[f'{list[18]}'].astype(float) + df[f'{list[19]}'].astype(float) + df[f'{list[20]}'].astype(float) + df[f'{list[21]}'].astype(float) + df[f'{list[22]}'].astype(float) + df[f'{list[23]}'].astype(float) + df[f'{list[24]}'].astype(float) + df[f'{list[25]}'].astype(float) + df[f'{list[26]}'].astype(float) + df[f'{list[27]}'].astype(float) + df[f'{list[28]}'].astype(float) + df[f'{list[29]}'].astype(float)).astype(str)
+                    # df[f'{list[30]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[30]}']])
                     df[f'{list[31]}'] = df[f'{list[31]}'].apply(safe_date_conversion)
                     df[f'{list[32]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[32]}']])
                     df[f'{list[33]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[33]}']])
@@ -271,8 +280,20 @@ async def upload_file_(request):
                     df[f'{list[54]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[54]}']])
                     df[f'{list[55]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[55]}']])
                     df[f'{list[56]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[56]}']])
-                    df[f'{list[57]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[57]}']])
-                    df[f'{list[58]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[58]}']])
+                    df[f'{list[30]}'] = (df[f'{list[32]}'].astype(float) + df[f'{list[34]}'].astype(float) + df[f'{list[36]}'].astype(float) + df[f'{list[38]}'].astype(float) + df[f'{list[40]}'].astype(float) + df[f'{list[42]}'].astype(float) + df[f'{list[44]}'].astype(float) + df[f'{list[46]}'].astype(float) + df[f'{list[48]}'].astype(float) + df[f'{list[50]}'].astype(float) + df[f'{list[52]}'].astype(float) + df[f'{list[54]}'].astype(float) + df[f'{list[56]}'].astype(float)).astype(str)
+                    # df[f'{list[57]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[57]}']])
+
+                    import numpy as np
+
+                    df[f'{list[57]}'] = np.where(
+                        df[f'{list[30]}'].astype(float) != 0,  # Условие: если значение в столбце не равно 0
+                        (round(df[f'{list[30]}'].astype(float) / df[f'{list[15]}'].astype(float), 2) * 100).astype(str),  # Деление и округление
+                        '0'  # Если значение равно 0, то присваиваем '0'
+                    )
+
+                    # df[f'{list[57]}'] = (round(df[f'{list[30]}'].astype(float) / df[f'{list[15]}'].astype(float), 2) * 100).astype(str)
+                    # df[f'{list[58]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[58]}']])
+                    df[f'{list[58]}'] = (df[f'{list[15]}'].astype(float) - df[f'{list[30]}'].astype(float)).astype(str)
 
                     # Определите SQL-запрос для вставки данных
                     insert_query = """

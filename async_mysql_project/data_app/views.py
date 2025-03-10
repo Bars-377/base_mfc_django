@@ -887,8 +887,10 @@ class ContractProcessor:
         """Формируем запрос для новой записи"""
         from django.db import connection
 
+        # Сделать синхронную функцию асинхронной
+        @sync_to_async
         # Получаем следующий ID
-        async def get_latest_service():
+        def get_latest_service():
             with connection.cursor() as cursor:
                 cursor.execute("""
                     SELECT id_id FROM services
@@ -899,7 +901,7 @@ class ContractProcessor:
                 row = cursor.fetchone()
                 return row
 
-        latest_service = await sync_to_async(await get_latest_service)()
+        latest_service = await get_latest_service()
 
         try:
             id_id = (int(latest_service[0]) + 1) if latest_service and latest_service[0].isdigit() else 1
@@ -931,8 +933,10 @@ class ContractProcessor:
         """Формируем запрос для новой записи"""
         from django.db import connection
 
+        # Сделать синхронную функцию асинхронной
+        @sync_to_async
         # Получаем следующий ID
-        async def get_latest_service():
+        def get_latest_service():
             with connection.cursor() as cursor:
                 cursor.execute("""
                     SELECT id_id FROM services_two
@@ -943,7 +947,7 @@ class ContractProcessor:
                 row = cursor.fetchone()
                 return row
 
-        latest_service = await sync_to_async(await get_latest_service)()
+        latest_service = await get_latest_service()
 
         try:
             id_id = (int(latest_service[0]) + 1) if latest_service and latest_service[0].isdigit() else 1
