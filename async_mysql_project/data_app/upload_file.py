@@ -285,9 +285,14 @@ async def upload_file_(request):
 
                     import numpy as np
 
+                    # Преобразуем столбцы в float, используя errors='coerce' для обработки некорректных значений
+                    df[f'{list[30]}'] = pd.to_numeric(df[f'{list[30]}'], errors='coerce')
+                    df[f'{list[15]}'] = pd.to_numeric(df[f'{list[15]}'], errors='coerce')
+
+                    # Используем np.where для создания нового столбца
                     df[f'{list[57]}'] = np.where(
-                        df[f'{list[30]}'].astype(float) != 0,  # Условие: если значение в столбце не равно 0
-                        (round(df[f'{list[30]}'].astype(float) / df[f'{list[15]}'].astype(float), 2) * 100).astype(str),  # Деление и округление
+                        df[f'{list[30]}'] != 0,  # Условие: если значение в столбце не равно 0
+                        (df[f'{list[30]}'] / df[f'{list[15]}'] * 100).astype(str),  # Деление и округление
                         '0'  # Если значение равно 0, то присваиваем '0'
                     )
 

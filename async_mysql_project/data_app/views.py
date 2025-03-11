@@ -835,8 +835,9 @@ async def edit_user_two(request, row_id):
 
     return await sync_to_async(render)(request, 'edit_user_two.html', context)
 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.urls import reverse
+from urllib.parse import urlencode
 
 class ContractProcessor:
     def __init__(self, context_data=None, request=None):
@@ -1491,8 +1492,6 @@ class ContractProcessor:
         return HttpResponseRedirect(redirect_url)
 
         # Другие операции, такие как сохранение сервиса и т.д.
-
-from urllib.parse import urlencode
 
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_record(request, row_id):
