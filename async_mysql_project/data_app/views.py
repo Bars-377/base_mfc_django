@@ -52,15 +52,16 @@ async def clean_number(value):
 
     return number_final
 
+def is_valid_field(model, field_name):
+    """ Проверка, существует ли поле в модели """
+    return field_name in [f.name for f in model._meta.get_fields()]
+
+async def get_invalid_costs(qs, field_name):
+    return await sync_to_async(list, thread_sensitive=True)(qs.values_list(field_name, flat=True))
+    # return await sync_to_async(qs.values_list, thread_sensitive=True)(field_name, flat=True)
+
 async def calculate_costs(query, keyword_one=None, selected_column_one=None, keyword_two=None, selected_column_two=None):
     from django.db.models import Q
-
-    def is_valid_field(model, field_name):
-        """ Проверка, существует ли поле в модели """
-        return field_name in [f.name for f in model._meta.get_fields()]
-
-    async def get_invalid_costs(qs, field_name):
-        return await sync_to_async(list)(qs.values_list(field_name, flat=True))
 
     total_cost_111, total_cost_222, total_cost_333 = 0, 0, 0
 
@@ -183,7 +184,8 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
             service_data.update([date_str[-4:] for date_str in matches_dd_mm_yyyy])
             service_data.update([date_str[:4] for date_str in matches_yyyy_mm_dd])
 
-        service_data = await sync_to_async(sorted)({str(int(year)) for year in service_data if year.isdigit()})
+        # service_data = await sync_to_async(sorted)({str(int(year)) for year in service_data if year.isdigit()})
+        service_data = sorted({str(int(year)) for year in service_data if year.isdigit()})
         if empty_found:
             service_data.insert(0, 'None')
         return service_data
@@ -200,7 +202,8 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
 
             service_data.add(field_value)
 
-        service_data = await sync_to_async(sorted)({str(int(year)) for year in service_data if year.isdigit()})
+        # service_data = await sync_to_async(sorted)({str(int(year)) for year in service_data if year.isdigit()})
+        service_data = sorted({str(int(year)) for year in service_data if year.isdigit()})
         if empty_found:
             service_data.insert(0, 'None')
         return service_data
@@ -211,9 +214,15 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     service_KOSGU_user_two = await process_service_KOSGU(all_KOSGU_user_two, 'KOSGU')
 
     # Построение запроса
-    query = await sync_to_async(lambda: Services.objects.all())()
-    query_user = await sync_to_async(lambda: Services_Two.objects.all())()
-    query_user_two = await sync_to_async(lambda: Services_Three.objects.all())()
+    # query = await sync_to_async(lambda: Services.objects.all())()
+    # query = await sync_to_async(list, thread_sensitive=True)(Services.objects.all())
+    query = await sync_to_async(Services.objects.all, thread_sensitive=True)()
+    # query_user = await sync_to_async(lambda: Services_Two.objects.all())()
+    # query_user = await sync_to_async(list, thread_sensitive=True)(Services_Two.objects.all())
+    query_user = await sync_to_async(Services_Two.objects.all, thread_sensitive=True)()
+    # query_user_two = await sync_to_async(lambda: Services_Three.objects.all())()
+    # query_user_two = await sync_to_async(list, thread_sensitive=True)(Services_Three.objects.all())
+    query_user_two = await sync_to_async(Services_Three.objects.all, thread_sensitive=True)()
 
     if contract_date == 'No':
         contract_date = None
@@ -224,6 +233,11 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
         for filter_func in filters:
             query = await sync_to_async(filter_func)(query)
         return query
+
+    # async def apply_filters(query, filters):
+    #     for filter_func in filters:
+    #         query = filter_func(query)  # Просто вызываем без sync_to_async
+    #     return query
 
     from django.db.models import Q
 
@@ -253,25 +267,46 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     if KOSGU_user_two == 'No':
         KOSGU_user_two = None
 
+    # if KOSGU_user == 'None':
+    #     query_user = await sync_to_async(query_user.exclude)(Q(KOSGU__regex=pattern_dd_mm_yyyy) | Q(KOSGU__regex=pattern_yyyy_mm_dd))
+    # elif KOSGU_user:
+    #     query_user = await sync_to_async(query_user.filter)(KOSGU__icontains=KOSGU_user)
+
     if KOSGU_user == 'None':
-        query_user = await sync_to_async(query_user.exclude)(Q(KOSGU__regex=pattern_dd_mm_yyyy) | Q(KOSGU__regex=pattern_yyyy_mm_dd))
+        query_user = query_user.exclude(Q(KOSGU__regex=pattern_dd_mm_yyyy) | Q(KOSGU__regex=pattern_yyyy_mm_dd))
     elif KOSGU_user:
-        query_user = await sync_to_async(query_user.filter)(KOSGU__icontains=KOSGU_user)
+        query_user = query_user.filter(KOSGU__icontains=KOSGU_user)
+
+    # if KOSGU_user_two == 'None':
+    #     query_user_two = await sync_to_async(query_user_two.exclude)(Q(KOSGU__regex=pattern_dd_mm_yyyy) | Q(KOSGU__regex=pattern_yyyy_mm_dd))
+    # elif KOSGU_user_two:
+    #     query_user_two = await sync_to_async(query_user_two.filter)(KOSGU__icontains=KOSGU_user_two)
 
     if KOSGU_user_two == 'None':
-        query_user_two = await sync_to_async(query_user_two.exclude)(Q(KOSGU__regex=pattern_dd_mm_yyyy) | Q(KOSGU__regex=pattern_yyyy_mm_dd))
+        query_user_two = query_user_two.exclude(Q(KOSGU__regex=pattern_dd_mm_yyyy) | Q(KOSGU__regex=pattern_yyyy_mm_dd))
     elif KOSGU_user_two:
-        query_user_two = await sync_to_async(query_user_two.filter)(KOSGU__icontains=KOSGU_user_two)
+        query_user_two = query_user_two.filter(KOSGU__icontains=KOSGU_user_two)
+
+    # async def apply_keyword_filter(query, keyword, column, model):
+    #     if keyword:
+    #         if column and hasattr(model, column):
+    #             query = await sync_to_async(query.filter)(**{column + '__icontains': keyword})
+    #         else:
+    #             filters = Q()
+    #             for field in await sync_to_async(model._meta.get_fields)():
+    #                 filters |= Q(**{field.name + '__icontains': keyword})
+    #             query = await sync_to_async(query.filter)(filters)
+    #     return query
 
     async def apply_keyword_filter(query, keyword, column, model):
         if keyword:
             if column and hasattr(model, column):
-                query = await sync_to_async(query.filter)(**{column + '__icontains': keyword})
+                query = query.filter(**{column + '__icontains': keyword})
             else:
                 filters = Q()
-                for field in await sync_to_async(model._meta.get_fields)():
+                for field in model._meta.get_fields():
                     filters |= Q(**{field.name + '__icontains': keyword})
-                query = await sync_to_async(query.filter)(filters)
+                query = query.filter(filters)
         return query
 
     query = await apply_keyword_filter(query, keyword_one, selected_column_one, Services)
@@ -360,7 +395,9 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
         total_cost_18 = 0.00
 
     # Получаем все записи из таблицы Services_Three
-    Services_Three_ = await sync_to_async(list)(Services_Three.objects.all())
+    # Services_Three_ = await sync_to_async(list)(Services_Three.objects.all())
+    Services_Three_ = await sync_to_async(list, thread_sensitive=True)(Services_Three.objects.all())
+
     total_cost_1_11 = 0.00
     total_cost_1_22 = 0.00
     total_cost_1_1 = 0.00
@@ -369,6 +406,7 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     total_cost_1_4 = 0.00
     total_cost_1_5 = 0.00
     total_cost_1_6 = 0.00
+
     for service in Services_Three_:
         total_cost_1_11 += await clean_number(service.budget_planned_old)
         total_cost_1_22 += await clean_number(service.off_budget_planned_old)
@@ -517,6 +555,7 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     }
 
     return await sync_to_async(render)(request, 'data_table.html', context)
+    # return await render(request, 'data_table.html', context)
 
 @login_required
 async def data_table_view(request):
@@ -527,9 +566,13 @@ async def data_table_view(request):
     if total_pages_full:
         per_page = 20
 
-        query = await sync_to_async(lambda: Services.objects.all())()
+        # query = await sync_to_async(lambda: Services.objects.all())()
+        # query = await sync_to_async(list, thread_sensitive=True)(Services.objects.all())
+        query = await sync_to_async(Services.objects.all, thread_sensitive=True)()
 
-        total_services_full = await sync_to_async(lambda: query.count())()
+        # total_services_full = await sync_to_async(lambda: query.count())()
+        # total_services_full = query.count()  # Также без sync_to_async
+        total_services_full = await sync_to_async(query.count, thread_sensitive=True)()  # Используем async обертку для count
         page = (total_services_full + per_page - 1) // per_page
     else:
         page = int(request.GET.get('page', 1))
@@ -546,9 +589,13 @@ async def data_table_view(request):
     if total_pages_full_user:
         per_page = 20
 
-        query_user = await sync_to_async(lambda: Services_Two.objects.all())()
+        # query_user = await sync_to_async(lambda: Services_Two.objects.all())()
+        # query_user = await sync_to_async(list, thread_sensitive=True)(Services_Two.objects.all())
+        query_user = await sync_to_async(Services_Two.objects.all, thread_sensitive=True)()
 
-        total_services_full_user = await sync_to_async(lambda: query_user.count())()
+        # total_services_full_user = await sync_to_async(lambda: query_user.count())()
+        # total_services_full_user = query_user.count()  # Также без sync_to_async
+        total_services_full_user = await sync_to_async(query_user.count, thread_sensitive=True)()
         page_user = (total_services_full_user + per_page - 1) // per_page
     else:
         page_user = int(request.GET.get('page_user', 1))
@@ -558,9 +605,13 @@ async def data_table_view(request):
     if total_pages_full_user_two:
         per_page = 20
 
-        query_user_two = await sync_to_async(lambda: Services_Three.objects.all())()
+        # query_user_two = await sync_to_async(lambda: Services_Three.objects.all())()
+        # query_user_two = await sync_to_async(list, thread_sensitive=True)(Services_Three.objects.all())
+        query_user_two = await sync_to_async(Services_Three.objects.all, thread_sensitive=True)()
 
-        total_services_full_user_two = await sync_to_async(lambda: query_user_two.count())()
+        # total_services_full_user_two = await sync_to_async(lambda: query_user_two.count())()
+        # total_services_full_user_two = query_user_two.count()  # Также без sync_to_async
+        total_services_full_user_two = await sync_to_async(query_user_two.count, thread_sensitive=True)()
         page_user_two = (total_services_full_user_two + per_page - 1) // per_page
     else:
         page_user_two = int(request.GET.get('page_user_two', 1))
@@ -583,22 +634,50 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.models import User
 
+# async def login_view(request):
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = await sync_to_async(authenticate)(request, username=username, password=password)
+#         if user is not None:
+#             await sync_to_async(login)(request, user)
+#             return redirect('data_table_view')  # Переход на страницу после успешного входа
+#         else:
+#             await sync_to_async(messages.error)(request, "Неверное имя пользователя или пароль")
+#     return await sync_to_async(render)(request, 'login.html')  # Ваш шаблон для входа
+
 async def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        user = await sync_to_async(authenticate)(request, username=username, password=password)
+        user = authenticate(request, username=username, password=password)
         if user is not None:
-            await sync_to_async(login)(request, user)
+            login(request, user)
             return redirect('data_table_view')  # Переход на страницу после успешного входа
         else:
-            await sync_to_async(messages.error)(request, "Неверное имя пользователя или пароль")
-    return await sync_to_async(render)(request, 'login.html')  # Ваш шаблон для входа
+            messages.error(request, "Неверное имя пользователя или пароль")
+    return render(request, 'login.html')  # Ваш шаблон для входа
 
 # Асинхронная обертка для создания пользователя
 @sync_to_async
 def create_user(username, email, password):
     return User.objects.create_user(username=username, email=email, password=password)
+
+# async def register_view(request):
+#     await log_user_action(request.user, 'Регистрируется')
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         email = request.POST['email']
+#         password = request.POST['password']
+#         confirm_password = request.POST['confirm_password']
+
+#         if password == confirm_password:
+#             await create_user(username=username, email=email, password=password)
+#             await sync_to_async(messages.success)(request, "Регистрация прошла успешно. Вы можете войти.")
+#             return redirect('login')
+#         else:
+#             await sync_to_async(messages.error)(request, "Пароли не совпадают")
+#     return await sync_to_async(render)(request, 'register.html')  # Ваш шаблон для регистрации
 
 async def register_view(request):
     await log_user_action(request.user, 'Регистрируется')
@@ -610,11 +689,11 @@ async def register_view(request):
 
         if password == confirm_password:
             await create_user(username=username, email=email, password=password)
-            await sync_to_async(messages.success)(request, "Регистрация прошла успешно. Вы можете войти.")
+            messages.success(request, "Регистрация прошла успешно. Вы можете войти.")
             return redirect('login')
         else:
-            await sync_to_async(messages.error)(request, "Пароли не совпадают")
-    return await sync_to_async(render)(request, 'register.html')  # Ваш шаблон для регистрации
+            messages.error(request, "Пароли не совпадают")
+    return render(request, 'register.html')  # Ваш шаблон для регистрации
 
 @group_required('Администратор', 'Полный')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
@@ -706,6 +785,7 @@ async def add(request):
     }
 
     return await sync_to_async(render)(request, 'add.html', context)
+    # return await render(request, 'add.html', context)
 
 @group_required('Администратор', 'Полный')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
@@ -736,6 +816,7 @@ async def add_two(request):
     }
 
     return await sync_to_async(render)(request, 'add_two.html', context)
+    # return render(request, 'add_two.html', context)
 
 @group_required('Администратор', 'Полный', 'Редактирование-Закупки')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
@@ -772,6 +853,7 @@ async def edit(request, row_id):
     }
 
     return await sync_to_async(render)(request, 'edit.html', context)
+    # return render(request, 'edit.html', context)
 
 @group_required('Администратор', 'Полный', 'Редактирование-Свод')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
@@ -803,6 +885,7 @@ async def edit_user(request, row_id):
     }
 
     return await sync_to_async(render)(request, 'edit_user.html', context)
+    # return render(request, 'edit_user.html', context)
 
 @group_required('Администратор', 'Полный')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
@@ -834,6 +917,7 @@ async def edit_user_two(request, row_id):
     }
 
     return await sync_to_async(render)(request, 'edit_user_two.html', context)
+    # return render(request, 'edit_user_two.html', context)
 
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -852,7 +936,8 @@ class ContractProcessor:
         return True
 
     async def validate_execution_plan_message(self):
-        await sync_to_async(messages.error)(self.request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
+        # await sync_to_async(messages.error)(self.request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
+        messages.error(self.request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
 
     async def validate_execution_fact(self):
         execution_contract_plan = await self.calculate_execution_plan()
@@ -862,7 +947,8 @@ class ContractProcessor:
         return True
 
     async def validate_execution_fact_message(self):
-        await sync_to_async(messages.error)(self.request, 'Нельзя выставить статус "Исполнено" при неравенстве ячеек «Исполнение контракта (факт)» и «Исполнение контракта (план)»')
+        # await sync_to_async(messages.error)(self.request, 'Нельзя выставить статус "Исполнено" при неравенстве ячеек «Исполнение контракта (факт)» и «Исполнение контракта (план)»')
+        await messages.error(self.request, 'Нельзя выставить статус "Исполнено" при неравенстве ячеек «Исполнение контракта (факт)» и «Исполнение контракта (план)»')
 
     async def validate_Services_Two(self):
         try:
@@ -876,7 +962,8 @@ class ContractProcessor:
             return False
 
     async def validate_Services_Two_message(self):
-        await sync_to_async(messages.error)(self.request, 'Нет сопоставления КОСГУ с ДопФК')
+        # await sync_to_async(messages.error)(self.request, 'Нет сопоставления КОСГУ с ДопФК')
+        messages.error(self.request, 'Нет сопоставления КОСГУ с ДопФК')
 
     async def validate_Services(self):
         from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
@@ -891,7 +978,8 @@ class ContractProcessor:
             return True
 
     async def validate_Services_message(self):
-        await sync_to_async(messages.error)(self.request, 'Вы добавляете дубликат в Наименовании')
+        # await sync_to_async(messages.error)(self.request, 'Вы добавляете дубликат в Наименовании')
+        messages.error(self.request, 'Вы добавляете дубликат в Наименовании')
 
     async def calculate_execution_plan(self):
         months = [self.context_data[month] for month in [
@@ -1088,7 +1176,7 @@ class ContractProcessor:
 
         await sync_to_async(Services_Two_.save)()
 
-    async def process_budget_services_three(self, contract_price_sum_way, ServicesTwo_):
+    async def process_budget_services_three(self, budget_concluded):
         """Обновление третьей базы"""
         try:
 
@@ -1098,12 +1186,13 @@ class ContractProcessor:
                 Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
             )
 
-            if self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2046100092':
-                Services_Three_.off_budget_concluded = contract_price_sum_way if contract_price_sum_way else ServicesTwo_.off_budget_concluded
-                # Services_Three_.off_budget_remainder = await clean_number(ServicesTwo_.off_budget_planned) - await clean_number(contract_price_sum_way)
-            elif self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2046102280':
-                Services_Three_.budget_concluded = contract_price_sum_way if contract_price_sum_way else ServicesTwo_.budget_concluded
-                # Services_Three_.budget_remainder = await clean_number(ServicesTwo_.budget_planned) - await clean_number(contract_price_sum_way)
+            if budget_concluded:
+                contract_price_sum_way = await self.Services_way()
+
+                if self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2046100092':
+                    Services_Three_.off_budget_concluded = contract_price_sum_way
+                elif self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2046102280':
+                    Services_Three_.budget_concluded = contract_price_sum_way
 
             Services_Three_.budget_remainder = await clean_number(Services_Three_.budget_planned) + await clean_number(Services_Three_.budget_planned_old) - await clean_number(Services_Three_.budget_concluded)
             Services_Three_.off_budget_remainder = await clean_number(Services_Three_.off_budget_planned) + await clean_number(Services_Three_.off_budget_planned_old) - await clean_number(Services_Three_.off_budget_concluded)
@@ -1128,20 +1217,23 @@ class ContractProcessor:
             traceback.print_exc()
 
     async def message_service_update(self):
-        await sync_to_async(messages.success)(self.request, "Редактирование прошло успешно!")
+        # await sync_to_async(messages.success)(self.request, "Редактирование прошло успешно!")
+        messages.success(self.request, "Редактирование прошло успешно!")
 
     async def message_service_add(self):
-        await sync_to_async(messages.success)(self.request, "Данные успешно добавлены!")
+        # await sync_to_async(messages.success)(self.request, "Данные успешно добавлены!")
+        messages.success(self.request, "Данные успешно добавлены!")
 
     async def message_service_delete(self):
-        await sync_to_async(messages.success)(self.request, "Данные успешно удалены!")
+        # await sync_to_async(messages.success)(self.request, "Данные успешно удалены!")
+        messages.success(self.request, "Данные успешно удалены!")
 
     async def aggregate_fields(self, fields):
         """Суммирование столбцов"""
         results = {}
         for field in fields:
             # Асинхронно выполняем агрегацию по каждому полю
-            result = await sync_to_async(lambda: Services_Two.objects.aggregate(**{f'{field}__sum': Sum(field)}))()
+            result = await sync_to_async(lambda: Services_Two.objects.aggregate(**{f'{field}__sum': Sum(field)}), thread_sensitive=True)()
             # Получаем значение суммы или 0, если оно None
             results[field] = result[f'{field}__sum'] or 0
         return results
@@ -1193,7 +1285,8 @@ class ContractProcessor:
         return True
 
     async def total_costs_message(self):
-        await sync_to_async(messages.error)(self.request, 'Запрещено вносить новую строку, если после ее ввода сумма контрактов по соответствующему КЦСР, КОСГУ и ДопФК превысит значение поля «Лимиты»')
+        # await sync_to_async(messages.error)(self.request, 'Запрещено вносить новую строку, если после ее ввода сумма контрактов по соответствующему КЦСР, КОСГУ и ДопФК превысит значение поля «Лимиты»')
+        messages.error(self.request, 'Запрещено вносить новую строку, если после ее ввода сумма контрактов по соответствующему КЦСР, КОСГУ и ДопФК превысит значение поля «Лимиты»')
 
     async def Services_way(self):
         """Подсчёт Цена контракта (на 2024 год) и Исполнение контракта (план) (формула) если есть way='п.4 ч.1 ст.93'"""
@@ -1203,12 +1296,10 @@ class ContractProcessor:
             Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
         ))
         contract_price_sum_way = 0
-        execution_contract_fact_sum_way = 0
         for service in Services_way_:
             contract_price_sum_way += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
-            execution_contract_fact_sum_way += await clean_number(service.execution_contract_fact if service.execution_contract_fact not in [None, 'None', ''] else 0)
 
-        return contract_price_sum_way, execution_contract_fact_sum_way
+        return contract_price_sum_way
 
     async def Services_Two_save(self, Services_Two_):
         """Обновление второй базы"""
@@ -1237,7 +1328,9 @@ class ContractProcessor:
 
     async def process_update_user(self):
 
-        await self.count_dates()
+        # await self.count_dates()
+        Services_Two_ = await self.validate_Services_Two()
+        await self.process_budget_services_two(Services_Two_)
 
         await self.message_service_update()
 
@@ -1254,7 +1347,9 @@ class ContractProcessor:
 
     async def process_update_user_two(self):
 
-        await self.count_dates()
+        # await self.count_dates()
+
+        await self.process_budget_services_three(False)
 
         await self.message_service_update()
 
@@ -1271,6 +1366,46 @@ class ContractProcessor:
 
     async def count_dates(self):
         """Предварительные вычислительные операции после обновления или добавления записей"""
+
+        @sync_to_async(thread_sensitive=True)
+        def update_Services_Two():
+            Services_Two.objects.all().update(
+                # budget_limit='0',
+                # off_budget_limit='0',
+                budget_planned='0',
+                off_budget_planned='0',
+                budget_bargaining='0',
+                off_budget_bargaining='0',
+                budget_concluded='0',
+                off_budget_concluded='0',
+                budget_completed='0',
+                off_budget_completed='0',
+                budget_execution='0',
+                off_budget_execution='0',
+                budget_remainder='0',
+                off_budget_remainder='0',
+                budget_plans='0',
+                off_budget_plans='0',
+                color='0'
+            )
+
+        @sync_to_async(thread_sensitive=True)
+        def update_Services_Three():
+            Services_Three.objects.all().update(
+                # budget_planned_old='0',
+                # off_budget_planned_old='0',
+                # budget_planned='0',
+                # off_budget_planned='0',
+                budget_concluded='0',
+                off_budget_concluded='0',
+                budget_remainder='0',
+                off_budget_remainder='0',
+                color='0',
+            )
+
+        await update_Services_Two()
+        await update_Services_Three()
+
         # Асинхронная функция для получения данных
         @sync_to_async
         def get_services_two_data():
@@ -1316,15 +1451,13 @@ class ContractProcessor:
     async def process_count_dates(self):
         """Продолжение предварительных вычислительних операций после обновления или добавления записей"""
 
-        contract_price_sum_way, execution_contract_fact_sum_way = await self.Services_way()
-
         Services_Two_ = await self.validate_Services_Two()
 
         Services_Two_ = await self.Services_Two_save(Services_Two_)
 
         await self.process_budget_services_two(Services_Two_)
 
-        await self.process_budget_services_three(contract_price_sum_way, Services_Two_)
+        await self.process_budget_services_three(True)
 
     async def process_update(self):
         if not await self.validate_Services_Two():
@@ -1410,7 +1543,8 @@ class ContractProcessor:
         new_service = Services()
         new_service = await self.creation_new_service(saving, execution_contract_plan, execution_contract_fact, new_service)
 
-        Services_Two_ = await sync_to_async(lambda: Services_Two.objects.all())()
+        # Services_Two_ = await sync_to_async(lambda: Services_Two.objects.all())()
+        Services_Two_ = await sync_to_async(list, thread_sensitive=True)(Services_Two.objects.all())
 
         await sync_to_async(new_service.save)()
 
