@@ -646,7 +646,7 @@ from django.contrib.auth.models import User
 #             await sync_to_async(messages.error)(request, "Неверное имя пользователя или пароль")
 #     return await sync_to_async(render)(request, 'login.html')  # Ваш шаблон для входа
 
-async def login_view(request):
+def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']

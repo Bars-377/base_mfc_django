@@ -537,7 +537,7 @@
                 <thead>
                     <tr>
                         <th rowspan="2" class="fixed-width">Управление</th>
-                        <th rowspan="2" class="fixed-width">№ п/п</th>
+
                         <th rowspan="2" class="stretch-width">Наименование</th>
                         <th rowspan="2" class="stretch-width">КОСГУ</th>
                         <th rowspan="2" class="fixed-width">ДопФК</th>
@@ -586,7 +586,6 @@
                             </div>
                         </td>
 
-                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.id_id }}</td>
                         <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.name }}</td>
                         <td data-type="no_format" class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
                         <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
