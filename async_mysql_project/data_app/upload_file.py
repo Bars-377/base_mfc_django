@@ -418,7 +418,7 @@ async def upload_file_(request):
                 import traceback
                 print("Трассировка стека (stack trace):")
                 traceback.print_exc()
-                return JsonResponse({"message": f"Ошибка при обработке файла: {str(e)}", "status": "error", 'success': True}, status=400)
+                return JsonResponse({"message": "Попробуйте пересохранить данный файл", "status": "error", 'success': True}, status=400)
         else:
             return JsonResponse({"message": "Только файлы .xlsx разрешены", "status": "error", 'success': True}, status=400)
 
