@@ -259,7 +259,7 @@ function showFlashMessage(event) {
 				// Перезагрузка страницы через window.location.assign
 				setTimeout(() => {
 					window.location.assign(window.location.href);  // Переход на текущий URL, что вызывает перезагрузку
-				}, 3000);  // Задержка 3 секунда, чтобы успело отобразиться сообщение
+				}, 4000);  // Задержка 4 секунда, чтобы успело отобразиться сообщение
 			} else {
 				console.error("Ошибка:", data);
 			}
