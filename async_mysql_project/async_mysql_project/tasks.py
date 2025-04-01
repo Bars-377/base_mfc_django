@@ -14,10 +14,9 @@ def generate_excel(sid, data):
     try:
         from data_app.models import Services, Services_Two, Services_Three
 
-        print('POPAL')
-        exit()
-
         print(f"Начало экспорта для сессии {sid} с данными: {data}")
+
+        exit()
 
         contract_date = data.get('contract_date', None)
 

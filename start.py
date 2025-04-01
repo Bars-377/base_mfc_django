@@ -10,13 +10,14 @@ if __name__ == "__main__":
     # Укажите путь к директории, в которой нужно запустить t1
     async_mysql_project_dir = r".\async_mysql_project"
 
-    venv_python = r".\myvenv\Scripts\python.exe"  # для Windows
+    venv_python = r".\venv_home\Scripts\python.exe"  # для Windows
 
     t1 = threading.Thread(target=run_command, args=([venv_python, "-m", "celery", "-A", "async_mysql_project.celery", "worker", "--concurrency=20", "--loglevel=INFO", "--pool=solo"], async_mysql_project_dir))
     t1.start()
     time.sleep(2)
 
-    t2 = threading.Thread(target=run_command, args=([venv_python, "-m", "celery", "-A", "async_mysql_project.celery", "flower", "--port=6666"], async_mysql_project_dir))
+    # t2 = threading.Thread(target=run_command, args=([venv_python, "-m", "celery", "-A", "async_mysql_project.celery", "flower", "--port=6666", "-l", "info"], async_mysql_project_dir))
+    t2 = threading.Thread(target=run_command, args=([venv_python, "-m", "celery", "-A", "async_mysql_project.celery", "flower"], async_mysql_project_dir))
     t2.start()
     time.sleep(2)
 

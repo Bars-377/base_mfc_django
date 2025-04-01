@@ -13,7 +13,8 @@ h1 {
 
 .d-button {
     width: 150px;
-    margin: 0 auto;       /* Центрирует кнопку по горизонтали */
+    margin: 0 auto;
+    /* Центрирует кнопку по горизонтали */
 }
 
 /* Контейнер для страницы */
@@ -188,28 +189,38 @@ h1 {
 }
 
 .stretch-width {
-    width: auto; /* Фиксированная ширина */
+    width: auto;
+    /* Фиксированная ширина */
     text-align: center;
-    word-wrap: break-word; /* Разрешает перенос слов */
-    white-space: normal; /* Разрешает перенос строк */
+    word-wrap: break-word;
+    /* Разрешает перенос слов */
+    white-space: normal;
+    /* Разрешает перенос строк */
 }
 
 .stretch-width-min {
-    min-width: 300px; /* Фиксированная ширина */
+    min-width: 300px;
+    /* Фиксированная ширина */
     text-align: center;
-    word-wrap: break-word; /* Разрешает перенос слов */
-    white-space: normal; /* Разрешает перенос строк */
+    word-wrap: break-word;
+    /* Разрешает перенос слов */
+    white-space: normal;
+    /* Разрешает перенос строк */
 }
 
 .text-content {
-    display: block; /* Делаем div блочным, чтобы он занимал всю ширину */
-    height: 50px; /* Ограничение высоты */
-    overflow: hidden; /* Обрезаем текст, если он выходит за границы */
+    display: block;
+    /* Делаем div блочным, чтобы он занимал всю ширину */
+    height: 50px;
+    /* Ограничение высоты */
+    overflow: hidden;
+    /* Обрезаем текст, если он выходит за границы */
     transition: height 0.3s ease-out;
 }
 
 .text-content.expanded {
-    height: auto; /* Автоматическая высота при развертывании */
+    height: auto;
+    /* Автоматическая высота при развертывании */
 }
 
 .service-row,

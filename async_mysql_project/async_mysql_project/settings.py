@@ -92,12 +92,18 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Конфигурация для Celery
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # настройка для Redis
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+# Настройки Celery
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'  # Указываем Redis как брокер
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'  # Указываем Redis для хранения результатов задач
+
+# Опционально: таймауты для выполнения задач
 CELERY_TIMEZONE = 'UTC'
+CELERY_ACCEPT_CONTENT = ['json']  # Используем JSON для кодирования
+CELERY_TASK_SERIALIZER = 'json'
+
+# Прочие настройки
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60  # Тайм-аут на выполнение задачи (30 минут)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/

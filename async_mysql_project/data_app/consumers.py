@@ -35,10 +35,10 @@ class ExportConsumer(AsyncWebsocketConsumer):
             # exit()
 
             # Запуск задачи Celery
-            task = generate_excel.delay(sid, data)
+            task = generate_excel.apply_async(args=[sid, data])
 
-            print(task)
-            exit()
+            # print(task)
+            # exit()
 
             # Отправляем task_id клиенту
             await self.send(text_data=json.dumps({
