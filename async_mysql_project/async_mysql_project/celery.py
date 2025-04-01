@@ -5,7 +5,7 @@ from celery import Celery
 # Устанавливаем настройки по умолчанию для Celery
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'async_mysql_project.settings')
 
-app = Celery('async_mysql_project')
+app = Celery('async_mysql_project', broker="redis://localhost:6379/0")
 
 # Используем настройки из Django (это важно для конфигурации Celery)
 app.config_from_object('django.conf:settings', namespace='CELERY')

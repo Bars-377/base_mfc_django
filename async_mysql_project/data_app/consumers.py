@@ -5,11 +5,24 @@ from async_mysql_project.tasks import generate_excel  # Задача Celery
 
 class ExportConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        await self.accept()
-        print(f"WebSocket подключен: {self.channel_name}")
+        self.room_name = "some_path"
+        self.room_group_name = f"export_{self.room_name}"
 
-    async def disconnect(self):
-        print(f"WebSocket отключен: {self.channel_name}")
+        # Присоединяемся к группе
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+
+        # Подтверждаем подключение (это должно происходить после того, как подключение установлено)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        # Отключаемся от группы
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
 
     async def receive(self, text_data):
         data = json.loads(text_data)
@@ -18,8 +31,14 @@ class ExportConsumer(AsyncWebsocketConsumer):
             sid = self.channel_name  # Идентификатор соединения
             data = [data.get("contract_date"), data.get("end_date")]
 
+            # print('POPAL')
+            # exit()
+
             # Запуск задачи Celery
             task = generate_excel.delay(sid, data)
+
+            print(task)
+            exit()
 
             # Отправляем task_id клиенту
             await self.send(text_data=json.dumps({

@@ -1,171 +1,171 @@
-const socket = new WebSocket("ws://localhost:8000/ws/some_path/"); // Инициализация WebSocket
+const socket = new WebSocket("ws://localhost:8900/ws/some_path/"); // Инициализация WebSocket
 console.log("Сокет инициализирован");
 
 socket.onopen = function () {
-    console.log("WebSocket подключен!");
+	console.log("WebSocket подключен!");
 };
 
 socket.onerror = function (error) {
-    console.log("Ошибка WebSocket:", error);
+	console.log("Ошибка WebSocket:", error);
 };
 
 document.addEventListener("DOMContentLoaded", function () {
-    const exportButton = document.getElementById("export-button");
-    let requestInProgress = false;
-    let taskId = null;
-    let checkStatusInterval = null;
+	const exportButton = document.getElementById("export-button");
+	let requestInProgress = false;
+	let taskId = null;
+	let checkStatusInterval = null;
 
-    exportButton.onclick = function (event) {
-        event.preventDefault();
+	exportButton.onclick = function (event) {
+		event.preventDefault();
 
-        if (requestInProgress) {
-            console.log("Запрос уже выполняется, новая отправка отменена");
-            return;
-        }
+		if (requestInProgress) {
+			console.log("Запрос уже выполняется, новая отправка отменена");
+			return;
+		}
 
-        requestInProgress = true;
-        console.log("Запрос на экспорт начат");
+		requestInProgress = true;
+		console.log("Запрос на экспорт начат");
 
-        const flashMessage = document.getElementById("flash-message");
-        flashMessage.innerText = "Пожалуйста, подождите, идёт загрузка!";
-        flashMessage.style.display = "block";
+		const flashMessage = document.getElementById("flash-message");
+		flashMessage.innerText = "Пожалуйста, подождите, идёт загрузка!";
+		flashMessage.style.display = "block";
 
-        const form = document.getElementById("export-form");
+		const form = document.getElementById("export-form");
 
 		if (!form) {
 			console.error("Ошибка: форма не найдена!", form);
 			return;
 		}
 
-        const formData = new FormData(form);
-        const contract_date = formData.get("contract_date");
-        const end_date = formData.get("end_date");
+		const formData = new FormData(form);
+		const contract_date = formData.get("contract_date");
+		const end_date = formData.get("end_date");
 
-        console.log(`Отправка запроса на экспорт для года: ${contract_date}`);
+		console.log(`Отправка запроса на экспорт для года: ${contract_date}`);
 
-        // Отправка JSON через WebSocket
-        socket.send(
-            JSON.stringify({
-                action: "export_excel",
-                contract_date: contract_date,
-                end_date: end_date,
-            })
-        );
-    };
+		// Отправка JSON через WebSocket
+		socket.send(
+			JSON.stringify({
+				action: "export_excel",
+				contract_date: contract_date,
+				end_date: end_date,
+			})
+		);
+	};
 
-    // Получение сообщений от сервера
-    socket.onmessage = function (event) {
-        const data = JSON.parse(event.data);
+	// Получение сообщений от сервера
+	socket.onmessage = function (event) {
+		const data = JSON.parse(event.data);
 
-        if (data.type === "export_started") {
-            taskId = data.task_id;
-            console.log(`Экспорт начат, ID задачи: ${taskId}`);
+		if (data.type === "export_started") {
+			taskId = data.task_id;
+			console.log(`Экспорт начат, ID задачи: ${taskId}`);
 
-            checkStatusInterval = setInterval(function () {
-                console.log(`Проверка статуса задачи с ID: ${taskId}`);
-                socket.send(JSON.stringify({ action: "check_task_status", task_id: taskId }));
-            }, 2000);
-        }
+			checkStatusInterval = setInterval(function () {
+				console.log(`Проверка статуса задачи с ID: ${taskId}`);
+				socket.send(JSON.stringify({ action: "check_task_status", task_id: taskId }));
+			}, 2000);
+		}
 
-        if (data.type === "export_success") {
-            console.log(`Экспорт завершён успешно: ${data.filename}`);
-            clearInterval(checkStatusInterval);
+		if (data.type === "export_success") {
+			console.log(`Экспорт завершён успешно: ${data.filename}`);
+			clearInterval(checkStatusInterval);
 
-            const link = document.createElement("a");
-            link.href = data.file_url;
-            link.download = data.filename;
-            link.click();
+			const link = document.createElement("a");
+			link.href = data.file_url;
+			link.download = data.filename;
+			link.click();
 
-            flashMessage.innerText = "Экспорт завершен!";
-            flashMessage.style.display = "block";
-            requestInProgress = false;
-        }
+			flashMessage.innerText = "Экспорт завершен!";
+			flashMessage.style.display = "block";
+			requestInProgress = false;
+		}
 
-        if (data.type === "export_error") {
-            console.log("Произошла ошибка формирования файла:", data.message);
-            flashMessage.innerText = data.message;
-            flashMessage.style.display = "block";
-            requestInProgress = false;
-        }
+		if (data.type === "export_error") {
+			console.log("Произошла ошибка формирования файла:", data.message);
+			flashMessage.innerText = data.message;
+			flashMessage.style.display = "block";
+			requestInProgress = false;
+		}
 
-        if (data.type === "task_status_pending") {
-            console.log("Ожидание выполнения... Файл очень большой.");
-            flashMessage.innerText = "В ожидании... Очень большой объём файла!";
-            flashMessage.style.display = "block";
-        }
+		if (data.type === "task_status_pending") {
+			console.log("Ожидание выполнения... Файл очень большой.");
+			flashMessage.innerText = "В ожидании... Очень большой объём файла!";
+			flashMessage.style.display = "block";
+		}
 
-        if (data.type === "task_status_failure") {
-            console.log("Ошибка экспорта!");
-            flashMessage.innerText = "Ошибка экспорта!";
-            flashMessage.style.display = "block";
-            requestInProgress = false;
-            clearInterval(checkStatusInterval);
-        }
+		if (data.type === "task_status_failure") {
+			console.log("Ошибка экспорта!");
+			flashMessage.innerText = "Ошибка экспорта!";
+			flashMessage.style.display = "block";
+			requestInProgress = false;
+			clearInterval(checkStatusInterval);
+		}
 
-        // Добавлена обработка разрыва соединения
-        if (data.type === "disconnect") {
+		// Добавлена обработка разрыва соединения
+		if (data.type === "disconnect") {
 			console.log("Соединение потеряно. Экспорт отменён!");
 			const flashMessage = document.getElementById("flash-message");
 			flashMessage.innerText = "Соединение потеряно. Экспорт отменён!";
 			flashMessage.style.display = "block";
-	
+
 			requestInProgress = false;
 			clearInterval(checkStatusInterval);
-        }
-    };
+		}
+	};
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-    function formatNumbersInText() {
-        const regex = /\d{1,3}(?:[.,]?\d{3})*(?:[.,]?\d+)?/g; // Поиск чисел с запятыми и точками
+	function formatNumbersInText() {
+		const regex = /\d{1,3}(?:[.,]?\d{3})*(?:[.,]?\d+)?/g; // Поиск чисел с запятыми и точками
 
-        // Получаем все текстовые узлы на странице
-        const elements = document.querySelectorAll('*');
+		// Получаем все текстовые узлы на странице
+		const elements = document.querySelectorAll('*');
 
-        elements.forEach(element => {
-            if (element.getAttribute('data-type') === "no_format") {
-                return; // Возвращаем, чтобы пропустить обработку этого элемента
-            }
-            // Проверяем, есть ли текстовое содержимое
-            if (element.childNodes.length > 0) {
-                element.childNodes.forEach(node => {
-                    if (node.nodeType === Node.TEXT_NODE) {
-                        node.nodeValue = node.nodeValue.replace(regex, match => {
-                            let num = parseFloat(match.replace(',', '.')); // Меняем запятую на точку
-                            let formatted = !isNaN(num) ? new Intl.NumberFormat("ru-RU", {
-                                minimumFractionDigits: match.includes('.') ? 2 : 0, // Две цифры после запятой, если есть дробная часть
-                                maximumFractionDigits: 2
-                            }).format(num) : match;
-                            return formatted.replace(/,/g, '.'); // Заменяем запятые на точки на выходе
-                        });
-                    }
-                });
-            }
-        });
-    }
+		elements.forEach(element => {
+			if (element.getAttribute('data-type') === "no_format") {
+				return; // Возвращаем, чтобы пропустить обработку этого элемента
+			}
+			// Проверяем, есть ли текстовое содержимое
+			if (element.childNodes.length > 0) {
+				element.childNodes.forEach(node => {
+					if (node.nodeType === Node.TEXT_NODE) {
+						node.nodeValue = node.nodeValue.replace(regex, match => {
+							let num = parseFloat(match.replace(',', '.')); // Меняем запятую на точку
+							let formatted = !isNaN(num) ? new Intl.NumberFormat("ru-RU", {
+								minimumFractionDigits: match.includes('.') ? 2 : 0, // Две цифры после запятой, если есть дробная часть
+								maximumFractionDigits: 2
+							}).format(num) : match;
+							return formatted.replace(/,/g, '.'); // Заменяем запятые на точки на выходе
+						});
+					}
+				});
+			}
+		});
+	}
 
-    formatNumbersInText(); // Запускаем для всего документа
+	formatNumbersInText(); // Запускаем для всего документа
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll('.text-content').forEach(textContent => {
-        const button = textContent.nextElementSibling; // Получаем кнопку рядом с текстом
+	document.querySelectorAll('.text-content').forEach(textContent => {
+		const button = textContent.nextElementSibling; // Получаем кнопку рядом с текстом
 
-        // Проверяем, обрезается ли текст
-        if (textContent.scrollHeight <= textContent.clientHeight) {
-            button.style.display = 'none'; // Скрываем кнопку, если текст полностью вмещается
-        } else {
-            button.style.display = 'block'; // Показываем кнопку, если текст обрезан
-        }
+		// Проверяем, обрезается ли текст
+		if (textContent.scrollHeight <= textContent.clientHeight) {
+			button.style.display = 'none'; // Скрываем кнопку, если текст полностью вмещается
+		} else {
+			button.style.display = 'block'; // Показываем кнопку, если текст обрезан
+		}
 
-        // Добавляем обработчик клика для показа и скрытия текста
-        button.addEventListener('click', function () {
-            textContent.classList.toggle('expanded');
-            
-            // Перепроверяем высоту после раскрытия
-            this.textContent = textContent.classList.contains('expanded') ? 'Скрыть' : 'Показать больше';
-        });
-    });
+		// Добавляем обработчик клика для показа и скрытия текста
+		button.addEventListener('click', function () {
+			textContent.classList.toggle('expanded');
+
+			// Перепроверяем высоту после раскрытия
+			this.textContent = textContent.classList.contains('expanded') ? 'Скрыть' : 'Показать больше';
+		});
+	});
 });
 
 
@@ -432,7 +432,8 @@ function updateColor(rowId, color) {
 		})
 		.catch(error => {
 			alert('У вас нет прав для обновления цвета');
-			console.error('Ошибка:', error) });
+			console.error('Ошибка:', error)
+		});
 }
 
 // Функция обновления цвета строки
@@ -595,41 +596,41 @@ if (resetButtonTwo) {
 const filterForm = document.getElementById('filter-form');
 if (filterForm) {
 	filterForm.addEventListener('submit', function () {
- 		// Сохраняем текущую позицию прокрутки
- 		sessionStorage.setItem('scrollPosition', window.scrollY);
+		// Сохраняем текущую позицию прокрутки
+		sessionStorage.setItem('scrollPosition', window.scrollY);
 
-// 		// Проверяем существование поля ввода 1 перед обрезкой пробелов
-// 		const keywordInputOne = document.getElementById('keyword_one');
-// 		if (keywordInputOne) {
-// 			keywordInputOne.value = keywordInputOne.value.trim();
-// 		}
+		// 		// Проверяем существование поля ввода 1 перед обрезкой пробелов
+		// 		const keywordInputOne = document.getElementById('keyword_one');
+		// 		if (keywordInputOne) {
+		// 			keywordInputOne.value = keywordInputOne.value.trim();
+		// 		}
 
-// 		// Проверяем существование поля ввода 2 перед обрезкой пробелов
-// 		const keywordInputTwo = document.getElementById('keyword_two');
-// 		if (keywordInputTwo) {
-// 			keywordInputTwo.value = keywordInputTwo.value.trim();
-// 		}
+		// 		// Проверяем существование поля ввода 2 перед обрезкой пробелов
+		// 		const keywordInputTwo = document.getElementById('keyword_two');
+		// 		if (keywordInputTwo) {
+		// 			keywordInputTwo.value = keywordInputTwo.value.trim();
+		// 		}
 	});
 }
 
 // Обработчик нажатия на кнопку фильтрации
 const filterFormOne = document.getElementById('filter-form-user');
 if (filterFormOne) {
- 	filterFormOne.addEventListener('submit', function () {
- 		// Сохраняем текущую позицию прокрутки
- 		sessionStorage.setItem('scrollPosition', window.scrollY);
+	filterFormOne.addEventListener('submit', function () {
+		// Сохраняем текущую позицию прокрутки
+		sessionStorage.setItem('scrollPosition', window.scrollY);
 
-// 		// Проверяем существование поля ввода 1 перед обрезкой пробелов
-// 		const keywordInputOne = document.getElementById('keyword_one_user');
-// 		if (keywordInputOne) {
-// 			keywordInputOne.value = keywordInputOne.value.trim();
-// 		}
+		// 		// Проверяем существование поля ввода 1 перед обрезкой пробелов
+		// 		const keywordInputOne = document.getElementById('keyword_one_user');
+		// 		if (keywordInputOne) {
+		// 			keywordInputOne.value = keywordInputOne.value.trim();
+		// 		}
 
-// 		// Проверяем существование поля ввода 2 перед обрезкой пробелов
-// 		const keywordInputTwo = document.getElementById('keyword_two_user');
-// 		if (keywordInputTwo) {
-// 			keywordInputTwo.value = keywordInputTwo.value.trim();
-// 		}
+		// 		// Проверяем существование поля ввода 2 перед обрезкой пробелов
+		// 		const keywordInputTwo = document.getElementById('keyword_two_user');
+		// 		if (keywordInputTwo) {
+		// 			keywordInputTwo.value = keywordInputTwo.value.trim();
+		// 		}
 	});
 }
 
@@ -637,21 +638,21 @@ if (filterFormOne) {
 const filterFormTwo = document.getElementById('filter-form-user-two');
 if (filterFormTwo) {
 	filterFormTwo.addEventListener('submit', function () {
- 		// Сохраняем текущую позицию прокрутки
- 		sessionStorage.setItem('scrollPosition', window.scrollY);
+		// Сохраняем текущую позицию прокрутки
+		sessionStorage.setItem('scrollPosition', window.scrollY);
 
-// 		// Проверяем существование поля ввода 1 перед обрезкой пробелов
-// 		const keywordInputOne = document.getElementById('keyword_one_user_two');
-// 		if (keywordInputOne) {
-// 			keywordInputOne.value = keywordInputOne.value.trim();
-// 		}
+		// 		// Проверяем существование поля ввода 1 перед обрезкой пробелов
+		// 		const keywordInputOne = document.getElementById('keyword_one_user_two');
+		// 		if (keywordInputOne) {
+		// 			keywordInputOne.value = keywordInputOne.value.trim();
+		// 		}
 
-// 		// Проверяем существование поля ввода 2 перед обрезкой пробелов
-// 		const keywordInputTwo = document.getElementById('keyword_two_user_two');
-// 		if (keywordInputTwo) {
-// 			keywordInputTwo.value = keywordInputTwo.value.trim();
-// 		}
- 	});
+		// 		// Проверяем существование поля ввода 2 перед обрезкой пробелов
+		// 		const keywordInputTwo = document.getElementById('keyword_two_user_two');
+		// 		if (keywordInputTwo) {
+		// 			keywordInputTwo.value = keywordInputTwo.value.trim();
+		// 		}
+	});
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -773,7 +774,7 @@ document.addEventListener('DOMContentLoaded', function () {
 					.catch(error => {
 						alert('У вас недостаточно прав для этого действия!');
 						console.error('Ошибка:', error);
-					} );
+					});
 			}
 		});
 	});
@@ -812,7 +813,7 @@ document.addEventListener('DOMContentLoaded', function () {
 					.catch(error => {
 						alert('У вас недостаточно прав для этого действия!');
 						console.error('Ошибка:', error);
-					} );
+					});
 			}
 		});
 	});
