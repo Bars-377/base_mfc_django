@@ -2120,3 +2120,22 @@ from .upload_file import upload_file_
 @csrf_exempt  # Если используете fetch, нужно отключить CSRF или передавать токен
 async def upload_file(request):
     return await upload_file_(request)
+
+import os
+from django.http import FileResponse, Http404
+from django.conf import settings
+
+def download_file(filename):
+    # Получаем путь к папке "file" внутри вашего проекта
+    file_directory = os.path.join(settings.BASE_DIR, 'file')
+
+    # Строим полный путь к файлу
+    file_path = os.path.join(file_directory, filename)
+
+    # Проверяем, существует ли файл
+    if os.path.exists(file_path):
+        # Отправляем файл в ответ с помощью FileResponse
+        return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=filename)
+    else:
+        # Если файл не найден, возвращаем ошибку 404
+        raise Http404("Файл не найден")

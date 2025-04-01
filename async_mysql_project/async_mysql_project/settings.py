@@ -92,6 +92,11 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Конфигурация для Celery
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Путь к Redis
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # Бекенд для хранения результатов
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -143,8 +148,8 @@ DATABASES = {
         'NAME': 'basemfcdjango',
         'USER': 'root',
         'PASSWORD': 'enigma1418',
-        'HOST': '172.18.11.104',  # или IP, если база на удалённом сервере
-        # 'HOST': 'localhost',  # или IP, если база на удалённом сервере
+        # 'HOST': '172.18.11.104',  # или IP, если база на удалённом сервере
+        'HOST': 'localhost',  # или IP, если база на удалённом сервере
         'PORT': '3306',
         # 'OPTIONS': {
         #     'charset': 'utf8mb4',
@@ -183,6 +188,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # другие приложения
     'data_app',  # ваше приложение с моделью
+    'channels',
 ]
 
 LOGOUT_REDIRECT_URL = '/accounts/login/'  # Укажите правильный путь к вашей странице входа

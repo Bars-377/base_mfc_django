@@ -427,13 +427,25 @@
 
         <h1>Импорт данных из Excel</h1>
 
-        <form id="export-form" onsubmit="showFlashMessage(event)">
+        <form onsubmit="showFlashMessage(event)">
             <div class="alert" id="flash-message" style="display: none;"></div>
-            <input type="file" id="file-input" accept=".xlsx" required style="display: none;" onchange="updateFileName()">
-            <button type="button" class="btn btn-info" id="export-button" onclick="document.getElementById('file-input').click();">Импорт данных из Excel</button>
+            <input type="file" id="file-input" accept=".xlsx" style="display: none;" onchange="updateFileName()">
+            <button type="button" class="btn btn-info" onclick="document.getElementById('file-input').click();">Импорт данных из Excel</button>
             <span id="file-name"></span>
             <div id="loading" style="display: none;">Загрузка...</div>
             <button type="submit" class="btn btn-success" style="display: none;" id="submit-button">Отправить</button>
+
+        <br>
+        <h1>Экспорт услуг в Excel</h1>
+        <br>
+
+        <form id="export-form">
+            <input type="hidden" name="contract_date" value="{% if selected_contract_date_user %}{{ selected_contract_date_user }}{% else %}No{% endif %}">
+            <input type="hidden" name="end_date" value="{% if selected_end_date_user %}{{ selected_end_date_user }}{% else %}No{% endif %}">
+            <div class="alert alert-success" id="flash-message" style="display: none;"></div>
+            <button type="submit" class="btn btn-info" id="export-button">Экспорт в Excel</button>
+        </form>
+
         </form>
     </div>
 {% endblock %}

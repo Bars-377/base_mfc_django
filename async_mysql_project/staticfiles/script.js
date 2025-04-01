@@ -1,112 +1,119 @@
-// const socket = io();  // Инициализация сокета
-// console.log('Сокет инициализирован'); // Лог инициализации сокета
+const socket = new WebSocket("ws://localhost:8000/ws/some_path/"); // Инициализация WebSocket
+console.log("Сокет инициализирован");
 
-// document.addEventListener('DOMContentLoaded', function () {
-// 	const exportButton = document.getElementById('export-button');
-// 	let requestInProgress = false; // Флаг, указывающий на статус запроса
-// 	let taskId = null; // ID задачи Celery
+socket.onopen = function () {
+    console.log("WebSocket подключен!");
+};
 
-// 	exportButton.onclick = function (event) {
-// 		event.preventDefault();  // Предотвращаем стандартное поведение кнопки
+socket.onerror = function (error) {
+    console.log("Ошибка WebSocket:", error);
+};
 
-// 		// Проверяем, есть ли уже активный запрос
-// 		if (requestInProgress) {
-// 			console.log('Запрос уже выполняется, новая отправка отменена'); // Лог если запрос в процессе
-// 			return; // Если запрос в процессе, просто выходим
-// 		}
+document.addEventListener("DOMContentLoaded", function () {
+    const exportButton = document.getElementById("export-button");
+    let requestInProgress = false;
+    let taskId = null;
+    let checkStatusInterval = null;
 
-// 		// Устанавливаем флаг, что запрос начат
-// 		requestInProgress = true;
-// 		console.log('Запрос на экспорт начат'); // Лог начала запроса
+    exportButton.onclick = function (event) {
+        event.preventDefault();
 
-// 		// Отображаем сообщение сразу после нажатия на кнопку
-// 		const flashMessage = document.getElementById('flash-message');
-// 		flashMessage.innerText = 'Пожалуйста, подождите, идёт загрузка!';
-// 		flashMessage.style.display = 'block'; // Убедитесь, что сообщение отображается
+        if (requestInProgress) {
+            console.log("Запрос уже выполняется, новая отправка отменена");
+            return;
+        }
 
-// 		// Создаем временный элемент формы для отправки
-// 		const form = document.getElementById('export-form');
-// 		const formData = new FormData(form);
+        requestInProgress = true;
+        console.log("Запрос на экспорт начат");
 
-// 		// Извлекаем значение года из FormData
-// 		const year = formData.get('year');
-// 		const date_number_no_one = formData.get('date_number_no_one');
-// 		console.log(`Отправка запроса на экспорт для года: ${year}`); // Лог года
+        const flashMessage = document.getElementById("flash-message");
+        flashMessage.innerText = "Пожалуйста, подождите, идёт загрузка!";
+        flashMessage.style.display = "block";
 
-// 		// Отправляем запрос на сервер через WebSocket
-// 		socket.emit('export_excel', { year: year, date_number_no_one: date_number_no_one });
-// 	};
+        const form = document.getElementById("export-form");
 
-// 	// Обработка события 'export_started' от сервера, где передается task_id
-// 	socket.once('export_started', function(data) {
-// 		taskId = data.task_id; // Сохраняем ID задачи
-// 		console.log(`Экспорт начат, ID задачи: ${taskId}`); // Лог ID задачи
+		if (!form) {
+			console.error("Ошибка: форма не найдена!", form);
+			return;
+		}
 
-// 		// Теперь нужно периодически проверять статус задачи по taskId
-// 		const checkStatusInterval = setInterval(function() {
-// 			console.log(`Проверка статуса задачи с ID: ${taskId}`); // Лог проверки статуса
-// 			// Отправляем запрос на проверку статуса задачи
-// 			socket.emit('check_task_status', { task_id: taskId });
-// 		}, 2000); // Проверяем каждые 2 секунды
+        const formData = new FormData(form);
+        const contract_date = formData.get("contract_date");
+        const end_date = formData.get("end_date");
 
-// 		// Остановка проверки после получения результата
-// 		socket.once('export_success', function(data) {
-// 			console.log(`Экспорт завершён успешно: ${data.filename}`); // Лог успешного завершения
-// 			clearInterval(checkStatusInterval); // Останавливаем проверку
+        console.log(`Отправка запроса на экспорт для года: ${contract_date}`);
 
-// 			// Создаем ссылку для скачивания файла
-// 			const link = document.createElement('a');
-// 			link.href = data.file_url; // Используем URL для скачивания файла
-// 			link.download = data.filename;
-// 			link.click();
+        // Отправка JSON через WebSocket
+        socket.send(
+            JSON.stringify({
+                action: "export_excel",
+                contract_date: contract_date,
+                end_date: end_date,
+            })
+        );
+    };
 
-// 			// Скрываем сообщение после успешной загрузки
-// 			const flashMessage = document.getElementById('flash-message');
-// 			flashMessage.innerText = 'Экспорт завершен!';
-// 			flashMessage.style.display = 'block';
+    // Получение сообщений от сервера
+    socket.onmessage = function (event) {
+        const data = JSON.parse(event.data);
 
-// 			// Сбрасываем флаг после завершения загрузки
-// 			requestInProgress = false;
-// 		});
+        if (data.type === "export_started") {
+            taskId = data.task_id;
+            console.log(`Экспорт начат, ID задачи: ${taskId}`);
 
-// 		// Обработка потери соединения
-// 		socket.once('disconnect', function() {
-// 			console.log('Соединение потеряно'); // Лог потери соединения
-// 			const flashMessage = document.getElementById('flash-message');
-// 			flashMessage.innerText = 'Соединение потеряно. Экспорт отменён!';
-// 			flashMessage.style.display = 'block';
+            checkStatusInterval = setInterval(function () {
+                console.log(`Проверка статуса задачи с ID: ${taskId}`);
+                socket.send(JSON.stringify({ action: "check_task_status", task_id: taskId }));
+            }, 2000);
+        }
 
-// 			// Сбрасываем флаг при потере соединения
-// 			requestInProgress = false; // Разрешаем отправку нового запроса
-// 		});
+        if (data.type === "export_success") {
+            console.log(`Экспорт завершён успешно: ${data.filename}`);
+            clearInterval(checkStatusInterval);
 
-// 		// Обработка потери соединения
-// 		socket.once('task_status_pending', function() {
-// 			console.log('В ожидании.. Очень большой объём файла!'); // Лог потери соединения
-// 			const flashMessage = document.getElementById('flash-message');
-// 			flashMessage.innerText = 'В ожидании.. Очень большой объём файла!';
-// 			flashMessage.style.display = 'block';
-// 		});
+            const link = document.createElement("a");
+            link.href = data.file_url;
+            link.download = data.filename;
+            link.click();
 
-// 		// Обработка потери соединения
-// 		socket.once('task_status_failure', function() {
-// 			console.log('Отказ!'); // Лог потери соединения
-// 			const flashMessage = document.getElementById('flash-message');
-// 			flashMessage.innerText = 'Отказ!';
-// 			flashMessage.style.display = 'block';
-// 		});
+            flashMessage.innerText = "Экспорт завершен!";
+            flashMessage.style.display = "block";
+            requestInProgress = false;
+        }
 
-// 		// Обработка потери соединения
-// 		socket.once('export_error', function(data) {
-// 			console.log('Произошла ошибка формирования файла!'); // Лог потери соединения
-// 			const flashMessage = document.getElementById('flash-message');
-// 			flashMessage.innerText = data.message;
-// 			flashMessage.style.display = 'block';
-// 		});
+        if (data.type === "export_error") {
+            console.log("Произошла ошибка формирования файла:", data.message);
+            flashMessage.innerText = data.message;
+            flashMessage.style.display = "block";
+            requestInProgress = false;
+        }
 
-// 	});
+        if (data.type === "task_status_pending") {
+            console.log("Ожидание выполнения... Файл очень большой.");
+            flashMessage.innerText = "В ожидании... Очень большой объём файла!";
+            flashMessage.style.display = "block";
+        }
 
-// });
+        if (data.type === "task_status_failure") {
+            console.log("Ошибка экспорта!");
+            flashMessage.innerText = "Ошибка экспорта!";
+            flashMessage.style.display = "block";
+            requestInProgress = false;
+            clearInterval(checkStatusInterval);
+        }
+
+        // Добавлена обработка разрыва соединения
+        if (data.type === "disconnect") {
+			console.log("Соединение потеряно. Экспорт отменён!");
+			const flashMessage = document.getElementById("flash-message");
+			flashMessage.innerText = "Соединение потеряно. Экспорт отменён!";
+			flashMessage.style.display = "block";
+	
+			requestInProgress = false;
+			clearInterval(checkStatusInterval);
+        }
+    };
+});
 
 document.addEventListener("DOMContentLoaded", function () {
     function formatNumbersInText() {

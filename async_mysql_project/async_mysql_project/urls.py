@@ -44,6 +44,7 @@ urlpatterns = [
     path('delete_record_two/<int:row_id>/', views.delete_record_two, name='delete_record_two'),
     path("upload/", views.upload_file, name="upload_file"),
     path("admin/", admin.site.urls),
+    path("file/<str:filename>/", views.download_file, name="download_file"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Эта строка решает проблема поиска статических файлов
 
 # Для доступа к папке static
