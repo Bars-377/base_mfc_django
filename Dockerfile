@@ -40,4 +40,5 @@ RUN chmod +x /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Команда для запуска приложения
-CMD ["sh", "-c", "cd async_mysql_project && uvicorn async_mysql_project.asgi:application --host 0.0.0.0 --port 8500"]
+# CMD ["sh", "-c", "cd async_mysql_project && uvicorn async_mysql_project.asgi:application --host 0.0.0.0 --port 8500"]
+CMD ["python", "start.py"]

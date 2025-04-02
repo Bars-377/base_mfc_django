@@ -37,7 +37,7 @@ class ExportConsumer(AsyncWebsocketConsumer):
             # Запуск задачи Celery
             task = generate_excel.apply_async(args=[sid, data])
 
-            # print(task)
+            # print('POPAL', task.id)
             # exit()
 
             # Отправляем task_id клиенту

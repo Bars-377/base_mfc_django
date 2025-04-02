@@ -11,6 +11,8 @@ socket.onerror = function (error) {
 
 document.addEventListener("DOMContentLoaded", function () {
 	const exportButton = document.getElementById("export-button");
+	// const flashMessage = document.getElementById("flash-message");
+	const message = document.getElementById("flash-message");
 	let requestInProgress = false;
 	let taskId = null;
 	let checkStatusInterval = null;
@@ -26,9 +28,16 @@ document.addEventListener("DOMContentLoaded", function () {
 		requestInProgress = true;
 		console.log("Запрос на экспорт начат");
 
-		const flashMessage = document.getElementById("flash-message");
-		flashMessage.innerText = "Пожалуйста, подождите, идёт загрузка!";
-		flashMessage.style.display = "block";
+		// Показать сообщение об ошибке
+
+		message.textContent = "Пожалуйста, подождите, идёт загрузка!";
+
+		// // Меняем класс на ошибку
+		// message.classList.remove("alert-success");
+		// message.classList.add("alert-danger");
+		message.classList.add("alert-success");
+
+		message.style.display = "block";
 
 		const form = document.getElementById("export-form");
 
@@ -41,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		const contract_date = formData.get("contract_date");
 		const end_date = formData.get("end_date");
 
-		console.log(`Отправка запроса на экспорт для года: ${contract_date}`);
+		console.log(`Отправка запроса на экспорт для года: ${contract_date} и ${end_date}`);
 
 		// Отправка JSON через WebSocket
 		socket.send(
@@ -76,28 +85,59 @@ document.addEventListener("DOMContentLoaded", function () {
 			link.download = data.filename;
 			link.click();
 
-			flashMessage.innerText = "Экспорт завершен!";
-			flashMessage.style.display = "block";
+			message.textContent = "Экспорт завершен!";
+
+			// // Меняем класс на ошибку
+			// message.classList.remove("alert-success");
+			// message.classList.add("alert-danger");
+			message.classList.add("alert-success");
+
+			message.style.display = "block";
+
 			requestInProgress = false;
 		}
 
 		if (data.type === "export_error") {
 			console.log("Произошла ошибка формирования файла:", data.message);
-			flashMessage.innerText = data.message;
-			flashMessage.style.display = "block";
+
+			message.textContent = data.message;
+
+			// // Меняем класс на ошибку
+			// message.classList.remove("alert-success");
+			// message.classList.add("alert-danger");
+			message.classList.add("alert-danger");
+
+			message.style.display = "block";
+
 			requestInProgress = false;
 		}
 
 		if (data.type === "task_status_pending") {
 			console.log("Ожидание выполнения... Файл очень большой.");
-			flashMessage.innerText = "В ожидании... Очень большой объём файла!";
-			flashMessage.style.display = "block";
+
+			message.textContent = "В ожидании... Очень большой объём файла!";
+
+			// // Меняем класс на ошибку
+			// message.classList.remove("alert-success");
+			// message.classList.add("alert-danger");
+			message.classList.add("alert-success");
+
+			message.style.display = "block";
+
 		}
 
 		if (data.type === "task_status_failure") {
 			console.log("Ошибка экспорта!");
-			flashMessage.innerText = "Ошибка экспорта!";
-			flashMessage.style.display = "block";
+
+			message.textContent = "Ошибка экспорта!";
+
+			// // Меняем класс на ошибку
+			// message.classList.remove("alert-success");
+			// message.classList.add("alert-danger");
+			message.classList.add("alert-danger");
+
+			message.style.display = "block";
+
 			requestInProgress = false;
 			clearInterval(checkStatusInterval);
 		}
@@ -105,9 +145,15 @@ document.addEventListener("DOMContentLoaded", function () {
 		// Добавлена обработка разрыва соединения
 		if (data.type === "disconnect") {
 			console.log("Соединение потеряно. Экспорт отменён!");
-			const flashMessage = document.getElementById("flash-message");
-			flashMessage.innerText = "Соединение потеряно. Экспорт отменён!";
-			flashMessage.style.display = "block";
+
+			message.textContent = "Соединение потеряно. Экспорт отменён!";
+
+			// // Меняем класс на ошибку
+			// message.classList.remove("alert-success");
+			// message.classList.add("alert-danger");
+			message.classList.add("alert-danger");
+
+			message.style.display = "block";
 
 			requestInProgress = false;
 			clearInterval(checkStatusInterval);
@@ -288,8 +334,6 @@ function showFlashMessage(event) {
 			console.error("Ошибка загрузки файла:", error);
 		});
 }
-
-
 
 // Восстанавливаем прокрутку после загрузки страницы
 window.onload = function () {

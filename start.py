@@ -10,7 +10,7 @@ if __name__ == "__main__":
     # Укажите путь к директории, в которой нужно запустить t1
     async_mysql_project_dir = r".\async_mysql_project"
 
-    venv_python = r".\venv_home\Scripts\python.exe"  # для Windows
+    venv_python = r".\venv\Scripts\python.exe"  # для Windows
 
     t1 = threading.Thread(target=run_command, args=([venv_python, "-m", "celery", "-A", "async_mysql_project.celery", "worker", "--concurrency=20", "--loglevel=INFO", "--pool=solo"], async_mysql_project_dir))
     t1.start()
@@ -29,6 +29,9 @@ if __name__ == "__main__":
     t4 = threading.Thread(target=run_command, args=(["uvicorn", "async_mysql_project.asgi:application", "--host", "127.0.0.1", "--port", "8400"], async_mysql_project_dir))
     t4.start()
     time.sleep(2)
+
+    t4 = threading.Thread(target=run_command, args=([venv_python, "app_files.py"],))
+    t4.start()
 
     # ожидание завершения всех потоков
     t1.join()

@@ -317,14 +317,13 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
     query_user_two = await apply_keyword_filter(query_user_two, keyword_two_user_two, selected_column_two_user_two, Services_Three)
 
     # Сортировка
-    from django.db.models import IntegerField, DateField
+    from django.db.models import IntegerField
     from django.db.models.functions import Cast
 
     # Преобразование id_id в целое число и contract_date в дату перед сортировкой
     query = query.annotate(
-        id_id_int=Cast('id_id', IntegerField()),
-        contract_date_date=Cast('contract_date', DateField())
-    ).order_by('id_id_int', 'contract_date_date')
+        id_id_int=Cast('id_id', IntegerField())
+    ).order_by('id_id_int')
 
     # Преобразование id_id в целое число и KOSGU в целое число перед сортировкой
     query_user = query_user.annotate(
@@ -2125,12 +2124,14 @@ import os
 from django.http import FileResponse, Http404
 from django.conf import settings
 
-def download_file(filename):
+def download_file(request, filename):
     # Получаем путь к папке "file" внутри вашего проекта
-    file_directory = os.path.join(settings.BASE_DIR, 'file')
+    file_directory = os.path.join(settings.BASE_DIR, 'async_mysql_project', 'file')
 
     # Строим полный путь к файлу
     file_path = os.path.join(file_directory, filename)
+
+    print(f"Ищем файл по пути: {file_path}")
 
     # Проверяем, существует ли файл
     if os.path.exists(file_path):
