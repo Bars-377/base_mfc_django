@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8900:8900"  # Daphne
+      - "8400:8400"  # Uvicorn
+    volumes:
+      - .:/app
+    command: >
+      sh -c "daphne -b 0.0.0.0 -p 8900 async_mysql_project.asgi:application &&
+            uvicorn async_mysql_project.asgi:application --host 0.0.0.0 --port 8400 &&
+            python app_files.py"
+
+  worker:
+    build: .
+    volumes:
+      - .:/app
+    command: >
+      celery -A async_mysql_project.celery worker --loglevel=INFO --pool=solo
+
+  flower:
+    build: .
+    ports:
+      - "5252:5252"
+    volumes:
+      - .:/app
+    command: >
+      celery -A async_mysql_project.celery flower --port=5252

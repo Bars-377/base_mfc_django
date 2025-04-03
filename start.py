@@ -16,8 +16,7 @@ if __name__ == "__main__":
     t1.start()
     time.sleep(2)
 
-    # t2 = threading.Thread(target=run_command, args=([venv_python, "-m", "celery", "-A", "async_mysql_project.celery", "flower", "--port=6666", "-l", "info"], async_mysql_project_dir))
-    t2 = threading.Thread(target=run_command, args=([venv_python, "-m", "celery", "-A", "async_mysql_project.celery", "flower"], async_mysql_project_dir))
+    t2 = threading.Thread(target=run_command, args=([venv_python, "-m", "celery", "-A", "async_mysql_project.celery", "flower", "--conf=flowerconfig.py"], async_mysql_project_dir))
     t2.start()
     time.sleep(2)
 
@@ -30,11 +29,12 @@ if __name__ == "__main__":
     t4.start()
     time.sleep(2)
 
-    t4 = threading.Thread(target=run_command, args=([venv_python, "app_files.py"],))
-    t4.start()
+    t5 = threading.Thread(target=run_command, args=([venv_python, "app_files.py"],))
+    t5.start()
 
     # ожидание завершения всех потоков
     t1.join()
     t2.join()
     t3.join()
     t4.join()
+    t5.join()
