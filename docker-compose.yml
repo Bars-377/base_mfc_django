@@ -14,8 +14,8 @@ services:
       sh -c "daphne -b 0.0.0.0 -p 8900 async_mysql_project.asgi:application &&
             uvicorn async_mysql_project.asgi:application --host 0.0.0.0 --port 8400 &&
             python app_files.py"
+    restart: unless-stopped
     deploy:
-      restart: unless-stopped
       resources:
         limits:
           memory: 1g
@@ -28,8 +28,8 @@ services:
       - /etc/timezone:/etc/timezone:ro
     command: >
       celery -A async_mysql_project.celery worker --loglevel=INFO --pool=solo
+    restart: unless-stopped
     deploy:
-      restart: unless-stopped
       resources:
         limits:
           memory: 1g
@@ -44,8 +44,8 @@ services:
       - /etc/timezone:/etc/timezone:ro
     command: >
       celery -A async_mysql_project.celery flower --port=5252
+    restart: unless-stopped
     deploy:
-      restart: unless-stopped
       resources:
         limits:
           memory: 1g
