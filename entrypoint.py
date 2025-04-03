@@ -26,16 +26,15 @@ def check_tables_exist():
         return False
 
 def main():
+    manage_py_path = os.path.abspath("async_mysql_project/manage.py")
+    venv_python = os.path.join(os.getenv("VIRTUAL_ENV", ""), "Scripts", "python")
     # Проверяем наличие таблиц
     if check_tables_exist():
         print("Таблицы найдены. Пропускаем миграции.")
     else:
         print("Таблицы отсутствуют. Выполняем миграции...")
-        subprocess.run(["python", "async_mysql_project/manage.py", "makemigrations"], check=True)
-        subprocess.run(["python", "async_mysql_project/manage.py", "migrate"], check=True)
-
-    # Запускаем приложение
-    subprocess.run(sys.argv[1:], check=True)
+        subprocess.run([venv_python, manage_py_path, "makemigrations"], check=True)
+        subprocess.run([venv_python, manage_py_path, "migrate"], check=True)
 
 if __name__ == "__main__":
     main()
