@@ -10,6 +10,8 @@ services:
       - .:/app
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    environment:
+      - DJANGO_SETTINGS_MODULE=async_mysql_project.settings
     command: >
       sh -c "python entrypoint.py && daphne -b 0.0.0.0 -p 8900 async_mysql_project.asgi:application &&
             uvicorn async_mysql_project.asgi:application --host 0.0.0.0 --port 8400 &&
@@ -26,6 +28,8 @@ services:
       - .:/app
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    environment:
+      - DJANGO_SETTINGS_MODULE=async_mysql_project.settings
     command: >
       celery -A async_mysql_project.celery worker --loglevel=INFO --pool=solo
     restart: unless-stopped
@@ -42,6 +46,8 @@ services:
       - .:/app
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    environment:
+      - DJANGO_SETTINGS_MODULE=async_mysql_project.settings
     command: >
       celery -A async_mysql_project.celery flower --port=5252
     restart: unless-stopped
