@@ -57,6 +57,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libmariadb-dev \
     pkg-config \
     gcc \
+    dos2unix \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -79,6 +80,8 @@ EXPOSE 8400 8900 5252
 
 # Копируем entrypoint скрипт
 COPY entrypoint.sh /app/entrypoint.sh
+# Преобразуем файл entrypoint.sh в формат Unix
+RUN dos2unix /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
 # Устанавливаем entrypoint
