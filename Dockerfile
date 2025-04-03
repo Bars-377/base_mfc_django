@@ -78,8 +78,9 @@ RUN pip install -r requirements.txt
 # Открываем порт для приложения
 EXPOSE 8400 8900 5252
 
-# Копируем entrypoint скрипт
-COPY entrypoint.sh /app/entrypoint.sh
+# # Копируем entrypoint скрипт
+# COPY entrypoint.sh /app/entrypoint.sh
+RUN sed -i 's/\r$//' /app/entrypoint.sh
 # Преобразуем файл entrypoint.sh в формат Unix
 RUN dos2unix /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
