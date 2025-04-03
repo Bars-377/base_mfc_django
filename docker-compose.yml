@@ -8,17 +8,31 @@ services:
       - "8400:8400"  # Uvicorn
     volumes:
       - .:/app
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     command: >
       sh -c "daphne -b 0.0.0.0 -p 8900 async_mysql_project.asgi:application &&
             uvicorn async_mysql_project.asgi:application --host 0.0.0.0 --port 8400 &&
             python app_files.py"
+    deploy:
+      restart: unless-stopped
+      resources:
+        limits:
+          memory: 1g
 
   worker:
     build: .
     volumes:
       - .:/app
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     command: >
       celery -A async_mysql_project.celery worker --loglevel=INFO --pool=solo
+    deploy:
+      restart: unless-stopped
+      resources:
+        limits:
+          memory: 1g
 
   flower:
     build: .
@@ -26,5 +40,12 @@ services:
       - "5252:5252"
     volumes:
       - .:/app
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     command: >
       celery -A async_mysql_project.celery flower --port=5252
+    deploy:
+      restart: unless-stopped
+      resources:
+        limits:
+          memory: 1g
