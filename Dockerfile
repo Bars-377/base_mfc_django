@@ -57,7 +57,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libmariadb-dev \
     pkg-config \
     gcc \
-    dos2unix \
+    # dos2unix \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -78,15 +78,15 @@ RUN pip install -r requirements.txt
 # Открываем порт для приложения
 EXPOSE 8400 8900 5252
 
-# # Копируем entrypoint скрипт
-# COPY entrypoint.sh /app/entrypoint.sh
-# Преобразуем файл entrypoint.sh в формат Unix
-RUN dos2unix /app/entrypoint.sh
-RUN sed -i 's/\r$//' /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
+# # # Копируем entrypoint скрипт
+# # COPY entrypoint.sh /app/entrypoint.sh
+# # Преобразуем файл entrypoint.sh в формат Unix
+# RUN dos2unix /app/entrypoint.sh
+# RUN sed -i 's/\r$//' /app/entrypoint.sh
+# RUN chmod +x /app/entrypoint.sh
 
-# Устанавливаем entrypoint
-ENTRYPOINT ["/app/entrypoint.sh"]
+# # Устанавливаем entrypoint
+# ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Команда для запуска приложения
 # CMD ["sh", "-c", "cd async_mysql_project && uvicorn async_mysql_project.asgi:application --host 0.0.0.0 --port 8500"]
