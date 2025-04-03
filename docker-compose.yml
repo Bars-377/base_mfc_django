@@ -11,7 +11,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     command: >
-      sh -c "daphne -b 0.0.0.0 -p 8900 async_mysql_project.asgi:application &&
+      sh -c "/app/entrypoint.sh && daphne -b 0.0.0.0 -p 8900 async_mysql_project.asgi:application &&
             uvicorn async_mysql_project.asgi:application --host 0.0.0.0 --port 8400 &&
             python app_files.py"
     restart: unless-stopped
