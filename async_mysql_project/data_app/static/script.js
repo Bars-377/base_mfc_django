@@ -1,4 +1,4 @@
-const socket = new WebSocket("ws://localhost:8900/ws/some_path/"); // Инициализация WebSocket
+const socket = new WebSocket("ws://172.18.11.104:8900/ws/some_path/"); // Инициализация WebSocket
 console.log("Сокет инициализирован");
 
 socket.onopen = function () {
