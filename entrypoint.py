@@ -1,5 +1,4 @@
 import os
-import sys
 import mysql.connector
 import subprocess
 

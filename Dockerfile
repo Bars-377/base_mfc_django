@@ -64,9 +64,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Копируем файлы проекта в контейнер
 COPY . /app
 
+# Убедитесь, что venv доступен
+RUN python -m venv /venv
+
+# Убедитесь, что venv доступен
+ENV PATH="/venv/bin:$PATH"
+
 # Устанавливаем зависимости
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # # Копируем директорию виртуального окружения в контейнер
 # COPY myenv /app/myenv
