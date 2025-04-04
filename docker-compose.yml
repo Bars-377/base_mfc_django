@@ -34,7 +34,7 @@ services:
       # - CELERY_BROKER_URL=redis://172.18.11.104:6379/0
       # - CELERY_RESULT_BACKEND=redis://172.18.11.104:6379/0
     command: >
-      sh -c ". /venv/bin/activate && daphne -b 0.0.0.0 -p 8900 async_mysql_project.asgi:application"
+      sh -c ". /venv/bin/activate && cd async_mysql_project && daphne -b 0.0.0.0 -p 8900 async_mysql_project.asgi:application"
     restart: unless-stopped
     mem_limit: 1g  # Ограничение памяти
 
