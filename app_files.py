@@ -8,9 +8,6 @@ def process_1():
     # Получаем текущую директорию проекта
     project_dir = os.path.dirname(os.path.abspath(__file__))
 
-    print(project_dir)
-    exit()
-
     # Строим путь к папке file внутри проекта
     folder_path = os.path.join(project_dir, 'async_mysql_project', 'async_mysql_project', 'file')
 
