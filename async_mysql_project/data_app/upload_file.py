@@ -364,11 +364,21 @@ async def upload_file_(request):
                     for index, name in enumerate(names):
                         if name in seen_names:
                             return JsonResponse({
-                                "message": f"Повторяющееся имя '{name}' найдено в строке таблицы {index + 1}!",
+                                "message": f"Повторяющаяся закупка '{name}' найдено в строке таблицы {index + 1}!",
                                 "status": "error",
                                 'success': True
                             }, status=400)
                         seen_names[name] = index  # Сохраняем индекс первого появления имени
+
+                    for index, name in enumerate(names):
+                        context_data = {'name': name}
+                        processor = ContractProcessor(context_data)
+                        if not await processor.validate_Services():
+                            return JsonResponse({
+                                "message": f"Закупка '{name}' уже есть в базе в строке таблицы {index + 1}!",
+                                "status": "error",
+                                'success': True
+                            }, status=400)
 
                     # Преобразование всех значений в строки и добавление пустой строки в конец каждого кортежа
                     data_to_insert = [
