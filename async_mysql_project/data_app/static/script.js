@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		if (data.type === "export_error") {
 			console.log("Произошла ошибка формирования файла:", data.message);
 
-			message.textContent = data.message;
+			message.textContent = "Произошла ошибка формирования файла: " + data.message;
 
 			// // Меняем класс на ошибку
 			// message.classList.remove("alert-success");
@@ -127,9 +127,9 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 
 		if (data.type === "task_status_failure") {
-			console.log("Ошибка экспорта!");
+			console.log("Ошибка экспорта:", data.error);
 
-			message.textContent = "Ошибка экспорта!";
+			message.textContent = "Ошибка экспорта! " + data.error;
 
 			// // Меняем класс на ошибку
 			// message.classList.remove("alert-success");
