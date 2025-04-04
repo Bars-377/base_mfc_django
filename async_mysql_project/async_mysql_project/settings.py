@@ -93,8 +93,8 @@ USE_I18N = True
 USE_TZ = True
 
 # Настройки Celery
-CELERY_BROKER_URL = 'redis://172.18.11.104:6379/0'  # Указываем Redis как брокер
-CELERY_RESULT_BACKEND = 'redis://172.18.11.104:6379/0'  # Указываем Redis для хранения результатов задач
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Указываем Redis как брокер
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # Указываем Redis для хранения результатов задач
 
 # Опционально: таймауты для выполнения задач
 CELERY_TIMEZONE = 'UTC'
@@ -155,8 +155,8 @@ DATABASES = {
         'NAME': 'basemfcdjango',
         'USER': 'root',
         'PASSWORD': 'enigma1418',
-        'HOST': '172.18.11.104',  # или IP, если база на удалённом сервере
-        # 'HOST': 'localhost',  # или IP, если база на удалённом сервере
+        # 'HOST': '172.18.11.104',  # или IP, если база на удалённом сервере
+        'HOST': 'localhost',  # или IP, если база на удалённом сервере
         'PORT': '3306',
         # 'OPTIONS': {
         #     'charset': 'utf8mb4',

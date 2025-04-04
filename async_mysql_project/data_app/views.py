@@ -930,7 +930,7 @@ class ContractProcessor:
     async def validate_execution_plan(self):
         execution_contract_plan = await self.calculate_execution_plan()
         if self.context_data['contract_price']:
-            if f"{execution_contract_plan:g}" != self.context_data['contract_price']:
+            if f"{execution_contract_plan:.2f}" != f"{float(self.context_data['contract_price']):.2f}":
                 return False
         return True
 
@@ -964,21 +964,63 @@ class ContractProcessor:
         # await sync_to_async(messages.error)(self.request, 'Нет сопоставления КОСГУ с ДопФК')
         messages.error(self.request, 'Нет сопоставления КОСГУ с ДопФК')
 
+                'color': request.POST['color'],
+                'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
+                'keyword_one': request.GET.get('keyword_one', None),
+                'keyword_two': request.GET.get('keyword_two', None),
+                'selected_column_one': request.GET.get('selected_column_one', None),
+                'selected_column_two': request.GET.get('selected_column_two', None),
+                'page_user': 1,
+                'KOSGU_user': request.GET.get('KOSGU_user', None),
+                'keyword_one_user': request.GET.get('keyword_one_user', None),
+                'keyword_two_user': request.GET.get('keyword_two_user', None),
+                'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+                'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+                'page_user_two': 1,
+                'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+                'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+                'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+                'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
+
     async def validate_Services(self):
         from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
-
+        # Создаем новый словарь с ключами, добавляющими '__iexact'
+        # Удаляем ненужные ключи из self.context_data
+        keys_to_remove = ['execution',
+                          'contract_balance',
+                          'execution_contract_fact',
+                          'execution_contract_plan',
+                          'color',
+                          'page',
+                          'keyword_one',
+                          'keyword_two',
+                          'selected_column_one',
+                          'selected_column_two',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',]
+        if isinstance(self.context_data, list):
+            filter_kwargs = {f"{key}__iexact": value for key, value in self.context_data[0].items()}
+        else:
+            # for key in keys_to_remove:
+            #     self.context_data.pop(key, None)  # Удаляем ключ, если он существует
+            filter_kwargs = {f"{key}__iexact": value for key, value in self.context_data.items()}
         try:
-            Services_ = await sync_to_async(Services.objects.get, thread_sensitive=True)(name__iexact=self.context_data['name'])
+            Services_ = await sync_to_async(Services.objects.get, thread_sensitive=True)(**filter_kwargs)
             return False
         except MultipleObjectsReturned:
-            Services_ = await sync_to_async(lambda: Services.objects.filter(name__iexact=self.context_data['name']).first())()
+            Services_ = await sync_to_async(lambda: Services.objects.filter(**filter_kwargs).first())()
             return False
         except ObjectDoesNotExist:
             return True
 
     async def validate_Services_message(self):
         # await sync_to_async(messages.error)(self.request, 'Вы добавляете дубликат в Наименовании')
-        messages.error(self.request, 'Вы добавляете дубликат в Наименовании')
+        messages.error(self.request, 'Вы добавляете дубликат Закупки')
 
     async def calculate_execution_plan(self):
         months = [self.context_data[month] for month in [

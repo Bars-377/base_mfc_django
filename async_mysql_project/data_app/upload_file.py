@@ -229,11 +229,11 @@ async def upload_file_(request):
                     df[f'{list[4]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[4]}']])
                     df[f'{list[5]}'] = await asyncio.gather(*[safe_int_conversion(val) for val in df[f'{list[5]}']])
                     df[f'{list[6]}'] = await asyncio.gather(*[safe_int_conversion(val) for val in df[f'{list[6]}']])
-                    df[f'{list[7]}'] = await asyncio.gather(*[safe_int_conversion(val) for val in df[f'{list[7]}']])
+                    df[f'{list[7]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[7]}']])
                     df[f'{list[8]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[8]}']])
                     df[f'{list[9]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[9]}']])
                     df[f'{list[10]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[10]}']])
-                    df[f'{list[11]}'] = await asyncio.gather(*[safe_int_conversion(val) for val in df[f'{list[11]}']])
+                    df[f'{list[11]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[11]}']])
                     df[f'{list[12]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[12]}']])
                     df[f'{list[13]}'] = df[f'{list[13]}'].apply(safe_date_conversion)
                     df[f'{list[14]}'] = df[f'{list[14]}'].apply(safe_date_conversion)
@@ -354,28 +354,90 @@ async def upload_file_(request):
                     for index, row in enumerate(names_search_words_3):
                         if row not in [word.lower() for word in search_words_3]:
                             return JsonResponse({
-                                "message": f"Некорректная колонка Способ закупки в строке {index + 1}. Содержание: {row}",
+                                "message": f"Некорректная колонка Способ закупки в строке таблицы Excel {index + 1}. Содержание: {row}",
                                 "status": "error",
                                 'success': True
                             }, status=400)
 
-                    names = [row[1].lower() for row in data_to_insert]
-                    seen_names = {}
-                    for index, name in enumerate(names):
-                        if name in seen_names:
-                            return JsonResponse({
-                                "message": f"Повторяющаяся закупка '{name}' найдено в строке таблицы {index + 1}!",
-                                "status": "error",
-                                'success': True
-                            }, status=400)
-                        seen_names[name] = index  # Сохраняем индекс первого появления имени
+                    context_data = [{
+                        'name': row[1].lower() if isinstance(row[1], str) else row[1],
+                        'status': row[2].lower() if isinstance(row[2], str) else row[2],
+                        'way': row[3].lower() if isinstance(row[3], str) else row[3],
+                        'initiator': row[4].lower() if isinstance(row[4], str) else row[4],
+                        'KTSSR': row[5].lower() if isinstance(row[5], str) else row[5],
+                        'KOSGU': row[6].lower() if isinstance(row[6], str) else row[6],
+                        'DopFC': row[7].lower() if isinstance(row[7], str) else row[7],
+                        'NMCC': row[8].lower() if isinstance(row[8], str) else row[8],
+                        'saving': row[9].lower() if isinstance(row[9], str) else row[9],
+                        'counterparty': row[10].lower() if isinstance(row[10], str) else row[10],
+                        'registration_number': row[11].lower() if isinstance(row[11], str) else row[11],
+                        'contract_number': row[12].lower() if isinstance(row[12], str) else row[12],
+                        'contract_date': row[13].lower() if isinstance(row[13], str) else row[13],
+                        'end_date': row[14].lower() if isinstance(row[14], str) else row[14],
+                        'contract_price': row[15].lower() if isinstance(row[15], str) else row[15],
+                        # 'execution_contract_plan': row[57].lower() if isinstance(row[57], str) else row[57],
+                        'january_one': row[17].lower() if isinstance(row[17], str) else row[17],
+                        'february': row[18].lower() if isinstance(row[18], str) else row[18],
+                        'march': row[19].lower() if isinstance(row[19], str) else row[19],
+                        'april': row[20].lower() if isinstance(row[20], str) else row[20],
+                        'may': row[21].lower() if isinstance(row[21], str) else row[21],
+                        'june': row[22].lower() if isinstance(row[22], str) else row[22],
+                        'july': row[23].lower() if isinstance(row[23], str) else row[23],
+                        'august': row[24].lower() if isinstance(row[24], str) else row[24],
+                        'september': row[25].lower() if isinstance(row[25], str) else row[25],
+                        'october': row[26].lower() if isinstance(row[26], str) else row[26],
+                        'november': row[27].lower() if isinstance(row[27], str) else row[27],
+                        'december': row[28].lower() if isinstance(row[28], str) else row[28],
+                        'january_two': row[29].lower() if isinstance(row[29], str) else row[29],
+                        # 'execution_contract_fact': row[56].lower() if isinstance(row[56], str) else row[56],
+                        'date_january_one': row[31].lower() if isinstance(row[31], str) else row[31],
+                        'sum_january_one': row[32].lower() if isinstance(row[32], str) else row[32],
+                        'date_february': row[33].lower() if isinstance(row[33], str) else row[33],
+                        'sum_february': row[34].lower() if isinstance(row[34], str) else row[34],
+                        'date_march': row[35].lower() if isinstance(row[35], str) else row[35],
+                        'sum_march':  row[36].lower() if isinstance(row[36], str) else row[36],
+                        'date_april': row[37].lower() if isinstance(row[37], str) else row[37],
+                        'sum_april': row[38].lower() if isinstance(row[38], str) else row[38],
+                        'date_may': row[39].lower() if isinstance(row[39], str) else row[39],
+                        'sum_may': row[40].lower() if isinstance(row[40], str) else row[40],
+                        'date_june': row[41].lower() if isinstance(row[41], str) else row[41],
+                        'sum_june': row[42].lower() if isinstance(row[42], str) else row[42],
+                        'date_july': row[43].lower() if isinstance(row[43], str) else row[43],
+                        'sum_july': row[44].lower() if isinstance(row[44], str) else row[44],
+                        'date_august': row[45].lower() if isinstance(row[45], str) else row[45],
+                        'sum_august': row[46].lower() if isinstance(row[46], str) else row[46],
+                        'date_september': row[47].lower() if isinstance(row[47], str) else row[47],
+                        'sum_september': row[48].lower() if isinstance(row[48], str) else row[48],
+                        'date_october': row[49].lower() if isinstance(row[49], str) else row[49],
+                        'sum_october': row[50].lower() if isinstance(row[50], str) else row[50],
+                        'date_november': row[51].lower() if isinstance(row[51], str) else row[51],
+                        'sum_november': row[52].lower() if isinstance(row[52], str) else row[52],
+                        'date_december': row[53].lower() if isinstance(row[53], str) else row[53],
+                        'sum_december': row[54].lower() if isinstance(row[54], str) else row[54],
+                        'date_january_two': row[55].lower() if isinstance(row[55], str) else row[55],
+                        'sum_january_two': row[56].lower() if isinstance(row[56], str) else row[56]
+                        # 'execution': row[54].lower() if isinstance(row[54], str) else row[54],
+                        # 'contract_balance': row[55].lower() if isinstance(row[55], str) else row[55],
+                    } for row in data_to_insert]
 
-                    for index, name in enumerate(names):
-                        context_data = {'name': name}
+                    # names = [row[1].lower() for row in data_to_insert]
+                    # seen_names = {}
+                    # for index, name in enumerate(names):
+                    #     if name in seen_names:
+                    #         return JsonResponse({
+                    #             "message": f"Повторяющаяся закупка '{name}' найдено в строке таблицы {index + 1}!",
+                    #             "status": "error",
+                    #             'success': True
+                    #         }, status=400)
+                    #     seen_names[name] = index  # Сохраняем индекс первого появления имени
+
+                    for index, name in enumerate(context_data):
                         processor = ContractProcessor(context_data)
+                        # print('POPAL', await processor.validate_Services())
+                        # exit()
                         if not await processor.validate_Services():
                             return JsonResponse({
-                                "message": f"Закупка '{name}' уже есть в базе в строке таблицы {index + 1}!",
+                                "message": f"Закупка уже есть в базе в строке таблицы Excel {index + 1}!",
                                 "status": "error",
                                 'success': True
                             }, status=400)
