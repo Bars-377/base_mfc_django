@@ -31,9 +31,6 @@ class ExportConsumer(AsyncWebsocketConsumer):
             sid = self.channel_name  # Идентификатор соединения
             data = [data.get("contract_date"), data.get("end_date")]
 
-            # print('POPAL')
-            # exit()
-
             # Запуск задачи Celery
             task = generate_excel.apply_async(args=[sid, data])
 

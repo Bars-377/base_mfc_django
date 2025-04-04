@@ -416,7 +416,7 @@ def generate_excel(sid, data):
         project_dir = os.path.dirname(os.path.abspath(__file__))
 
         # Строим путь к папке file внутри проекта
-        file_path = os.path.join(project_dir, 'async_mysql_project', 'async_mysql_project', 'file', f'services_{sid}_{date}.xlsx')
+        file_path = os.path.join(project_dir, 'file', f'services_{sid}_{date}.xlsx')
 
         # Сохраняем файл на диск
         with open(file_path, 'wb') as f:

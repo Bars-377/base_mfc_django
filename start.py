@@ -20,7 +20,7 @@ if __name__ == "__main__":
     t2.start()
     time.sleep(2)
 
-    t3 = threading.Thread(target=run_command, args=([venv_python, "-m", "celery", "-A", "async_mysql_project.celery", "flower", "--conf=flowerconfig.py"], async_mysql_project_dir))
+    t3 = threading.Thread(target=run_command, args=([venv_python, "-m", "celery", "-A", "async_mysql_project.celery", "flower", "--port=5252"], async_mysql_project_dir))
     t3.start()
     time.sleep(2)
 
