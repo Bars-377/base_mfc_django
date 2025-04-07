@@ -431,16 +431,32 @@ async def upload_file_(request):
                     #         }, status=400)
                     #     seen_names[name] = index  # Сохраняем индекс первого появления имени
 
+                    def is_duplicate(t, name):
+                        # Проверяем, что все три значения совпадают (имя, номер контракта и дата контракта)
+                        name_match = (
+                            (t[1].lower() if isinstance(t[1], str) else t[1]) == (name['name'].lower() if isinstance(name['name'], str) else name['name'])
+                        )
+                        contract_number_match = (
+                            (t[12].lower() if isinstance(t[12], str) else t[12]) == (name['contract_number'].lower() if isinstance(name['contract_number'], str) else name['contract_number'])
+                        )
+                        contract_date_match = (
+                            (t[13].lower() if isinstance(t[13], str) else t[13]) == (name['contract_date'].lower() if isinstance(name['contract_date'], str) else name['contract_date'])
+                        )
+
+                        return name_match and contract_number_match and contract_date_match
+
                     for index, name in enumerate(context_data):
                         processor = ContractProcessor(context_data)
-                        # print('POPAL', await processor.validate_Services())
-                        # exit()
                         if not await processor.validate_Services():
-                            return JsonResponse({
-                                "message": f"Закупка уже есть в базе в строке таблицы Excel {index + 1}!",
-                                "status": "error",
-                                'success': True
-                            }, status=400)
+                            # Удаление первого кортежа, который соответствует условиям
+                            data_to_insert = [t for t in data_to_insert if not is_duplicate(t, name)]
+
+                            if not data_to_insert:
+                                return JsonResponse({
+                                    "message": "Эти закупки уже есть в базе!",
+                                    "status": "error",
+                                    'success': True
+                                }, status=400)
 
                     # Преобразование всех значений в строки и добавление пустой строки в конец каждого кортежа
                     data_to_insert = [
