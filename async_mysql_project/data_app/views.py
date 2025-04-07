@@ -2086,7 +2086,10 @@ async def delete_record(request, row_id):
             # Удаляем объект
             await sync_to_async(service.delete, thread_sensitive=True)()
 
-            await log_user_action(request.user, f'Удалил запись из "Закупки" с ID {row_id}')
+            from django.forms.models import model_to_dict
+            service_dict = model_to_dict(service)
+
+            await log_user_action(request.user, f'Удалил запись из "Закупки": {service_dict}')
 
             processor = ContractProcessor(context_data, request)
             await processor.process_delete(service)
@@ -2131,7 +2134,10 @@ async def delete_record_two(request, row_id):
             # Удаляем объект
             await sync_to_async(service.delete, thread_sensitive=True)()
 
-            await log_user_action(request.user, f'Удалил запись из "План-график" с ID {row_id}')
+            from django.forms.models import model_to_dict
+            service_dict = model_to_dict(service)
+
+            await log_user_action(request.user, f'Удалил запись из "План-график": {service_dict}')
 
             processor = ContractProcessor(context_data, request)
             await processor.process_delete_two(service)
