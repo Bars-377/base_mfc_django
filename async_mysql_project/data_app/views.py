@@ -52,9 +52,9 @@ async def clean_number(value):
 
     return number_final
 
-def is_valid_field(model, field_name):
-    """ Проверка, существует ли поле в модели """
-    return field_name in [f.name for f in model._meta.get_fields()]
+# def is_valid_field(model, field_name):
+#     """ Проверка, существует ли поле в модели """
+#     return field_name in [f.name for f in model._meta.get_fields()]
 
 async def get_invalid_costs(qs, field_name):
     return await sync_to_async(list, thread_sensitive=True)(qs.values_list(field_name, flat=True))
@@ -65,23 +65,30 @@ async def calculate_costs(query, keyword_one=None, selected_column_one=None, key
 
     total_cost_111, total_cost_222, total_cost_333 = 0, 0, 0
 
-    if keyword_one and selected_column_one and is_valid_field(query.model, selected_column_one):
+    # if keyword_one and selected_column_one and is_valid_field(query.model, selected_column_one):
+    #     print('POPAL 1')
 
-        filter_conditions = Q(**{f"{selected_column_one}__regex": keyword_one})
+    #     filter_conditions = Q(**{f"{selected_column_one}__regex": keyword_one})
 
-    elif keyword_two and selected_column_two and is_valid_field(query.model, selected_column_two):
+    # elif keyword_two and selected_column_two and is_valid_field(query.model, selected_column_two):
+    #     print('POPAL 2')
 
-        filter_conditions = Q(**{f"{selected_column_two}__regex": keyword_two})
+    #     filter_conditions = Q(**{f"{selected_column_two}__regex": keyword_two})
 
-    elif keyword_one and selected_column_one and is_valid_field(query.model, selected_column_one) and keyword_two and selected_column_two and is_valid_field(query.model, selected_column_two):
+    # elif keyword_one and selected_column_one and is_valid_field(query.model, selected_column_one) and keyword_two and selected_column_two and is_valid_field(query.model, selected_column_two):
+    #     print('POPAL 3')
 
-        filter_conditions = Q(**{f"{selected_column_one}__regex": keyword_one}) & Q(**{f"{selected_column_two}__regex": keyword_two})
+    #     filter_conditions = Q(**{f"{selected_column_one}__regex": keyword_one}) & Q(**{f"{selected_column_two}__regex": keyword_two})
 
-    else:
-        filter_conditions = Q()
+    # else:
+    #     print('POPAL 4')
 
-    # Выполните запрос один раз
-    filtered_query = query.filter(filter_conditions)
+    #     filter_conditions = Q()
+
+    # # Выполните запрос один раз
+    # filtered_query = query.filter(filter_conditions)
+
+    filtered_query = query
 
     # Определите функцию для суммирования стоимостей
     def sum_costs(costs):
@@ -117,7 +124,21 @@ async def calculate_total_budget(query_user, string):
     total_cost = sum(convert_to_number(value) for value in count)
     return total_cost
 
-async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user, KOSGU_user_two, keyword_one_user_two, keyword_two_user_two, selected_column_one_user_two, selected_column_two_user_two, page_user_two):
+from django.conf import settings
+
+async def skeleton(request, user,
+                    contract_date, end_date,
+                    keyword_one, keyword_two,
+                    selected_column_one, selected_column_two,
+                    page, KOSGU_user,
+                    keyword_one_user, keyword_two_user,
+                    selected_column_one_user, selected_column_two_user,
+                    page_user, KOSGU_user_two,
+                    keyword_one_user_two, keyword_two_user_two,
+                    selected_column_one_user_two, selected_column_two_user_two,
+                    page_user_two, keyword_three,
+                    keyword_four, selected_column_three,
+                    selected_column_four):
     async def remove_spaces_if_numeric(text):
         stripped_text = text.replace(" ", "")  # Удаляем все пробелы
         if all(char.isdigit() or char in "+-*/.()" for char in stripped_text):
@@ -137,6 +158,12 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
 
     selected_column_one = await format_input(selected_column_one)
     selected_column_two = await format_input(selected_column_two)
+
+    keyword_three = await format_input_remove(keyword_three)
+    keyword_four = await format_input_remove(keyword_four)
+
+    selected_column_three = await format_input(selected_column_three)
+    selected_column_four = await format_input(selected_column_four)
 
     KOSGU_user = await format_input(KOSGU_user)
     keyword_one_user = await format_input_remove(keyword_one_user)
@@ -311,6 +338,10 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
 
     query = await apply_keyword_filter(query, keyword_one, selected_column_one, Services)
     query = await apply_keyword_filter(query, keyword_two, selected_column_two, Services)
+
+    query = await apply_keyword_filter(query, keyword_three, selected_column_three, Services)
+    query = await apply_keyword_filter(query, keyword_four, selected_column_four, Services)
+
     query_user = await apply_keyword_filter(query_user, keyword_one_user, selected_column_one_user, Services_Two)
     query_user = await apply_keyword_filter(query_user, keyword_two_user, selected_column_two_user, Services_Two)
     query_user_two = await apply_keyword_filter(query_user_two, keyword_one_user_two, selected_column_one_user_two, Services_Three)
@@ -418,7 +449,8 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
 
     total_cost_1_7 = total_cost_17 - (total_cost_1_3 + total_cost_1_4)
 
-    total_cost_111, total_cost_222, total_cost_333 = await calculate_costs(query, keyword_one, selected_column_one, keyword_two, selected_column_two)
+    # total_cost_111, total_cost_222, total_cost_333 = await calculate_costs(query, keyword_one, selected_column_one, keyword_two, selected_column_two)
+    total_cost_111, total_cost_222, total_cost_333 = await calculate_costs(query)
 
     # Пагинация
     paginator = Paginator(query, per_page)
@@ -524,15 +556,19 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
         'selected_KOSGU_user_two': KOSGU_user_two,
         'selected_end_date': end_date,
         'selected_column_one': selected_column_one,
+        'selected_column_one': selected_column_three,
         'selected_column_one_user': selected_column_one_user,
         'selected_column_one_user_two': selected_column_one_user_two,
         'selected_column_two': selected_column_two,
+        'selected_column_two': selected_column_four,
         'selected_column_two_user': selected_column_two_user,
         'selected_column_two_user_two': selected_column_two_user_two,
         'keyword_one': keyword_one,
+        'keyword_one': keyword_three,
         'keyword_one_user': keyword_one_user,
         'keyword_one_user_two': keyword_one_user_two,
         'keyword_two': keyword_two,
+        'keyword_two': keyword_four,
         'keyword_two_user': keyword_two_user,
         'keyword_two_user_two': keyword_two_user_two,
         'page': page,
@@ -550,7 +586,8 @@ async def skeleton(request, user, contract_date, end_date, keyword_one, keyword_
         'service_years': service_years,
         'service_KOSGU_user': service_KOSGU_user,
         'service_KOSGU_user_two': service_KOSGU_user_two,
-        'service_end_date': service_end_date
+        'service_end_date': service_end_date,
+        'connection_websocket': settings.DATABASES['default']['HOST']
     }
 
     return await sync_to_async(render)(request, 'data_table.html', context)
@@ -580,8 +617,12 @@ async def data_table_view(request):
     end_date = request.GET.get('end_date', None)
     keyword_one = request.GET.get('keyword_one', None)
     keyword_two = request.GET.get('keyword_two', None)
+    keyword_three = request.GET.get('keyword_three', None)
+    keyword_four = request.GET.get('keyword_four', None)
     selected_column_one = request.GET.get('selected_column_one', None)
     selected_column_two = request.GET.get('selected_column_two', None)
+    selected_column_three = request.GET.get('selected_column_three', None)
+    selected_column_four = request.GET.get('selected_column_four', None)
 
     total_pages_full_user = request.GET.get('total_pages_full_user', None)
 
@@ -627,7 +668,19 @@ async def data_table_view(request):
     selected_column_one_user_two = request.GET.get('selected_column_one_user_two', None)
     selected_column_two_user_two = request.GET.get('selected_column_two_user_two', None)
 
-    return await skeleton(request, user, contract_date, end_date, keyword_one, keyword_two, selected_column_one, selected_column_two, page, KOSGU_user, keyword_one_user, keyword_two_user, selected_column_one_user, selected_column_two_user, page_user, KOSGU_user_two, keyword_one_user_two, keyword_two_user_two, selected_column_one_user_two, selected_column_two_user_two, page_user_two)
+    return await skeleton(request, user,
+                    contract_date, end_date,
+                    keyword_one, keyword_two,
+                    selected_column_one, selected_column_two,
+                    page, KOSGU_user,
+                    keyword_one_user, keyword_two_user,
+                    selected_column_one_user, selected_column_two_user,
+                    page_user, KOSGU_user_two,
+                    keyword_one_user_two, keyword_two_user_two,
+                    selected_column_one_user_two, selected_column_two_user_two,
+                    page_user_two, keyword_three,
+                    keyword_four, selected_column_three,
+                    selected_column_four)
 
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -762,8 +815,12 @@ async def add(request):
     page = int(request.GET.get('page', 1))
     keyword_one = request.GET.get('keyword_one', None)
     keyword_two = request.GET.get('keyword_two', None)
+    keyword_three = request.GET.get('keyword_three', None)
+    keyword_four = request.GET.get('keyword_four', None)
     selected_column_one = request.GET.get('selected_column_one', None)
     selected_column_two = request.GET.get('selected_column_two', None)
+    selected_column_three = request.GET.get('selected_column_three', None)
+    selected_column_four = request.GET.get('selected_column_four', None)
     selected_contract_date = request.GET.get('contract_date', "No")
     selected_end_date = request.GET.get('end_date', "No")
     total_pages = int(request.GET.get('total_pages', 1))
@@ -776,11 +833,16 @@ async def add(request):
         'page': page,
         'keyword_one': keyword_one,
         'keyword_two': keyword_two,
+        'keyword_three': keyword_three,
+        'keyword_four': keyword_four,
         'selected_column_one': selected_column_one,
         'selected_column_two': selected_column_two,
+        'selected_column_three': selected_column_three,
+        'selected_column_four': selected_column_four,
         'selected_contract_date': selected_contract_date,
         'selected_end_date': selected_end_date,
-        'total_pages': total_pages
+        'total_pages': total_pages,
+        'connection_websocket': settings.DATABASES['default']['HOST']
     }
 
     return await sync_to_async(render)(request, 'add.html', context)
@@ -793,8 +855,12 @@ async def add_two(request):
     page = int(request.GET.get('page', 1))
     keyword_one = request.GET.get('keyword_one', None)
     keyword_two = request.GET.get('keyword_two', None)
+    keyword_three = request.GET.get('keyword_three', None)
+    keyword_four = request.GET.get('keyword_four', None)
     selected_column_one = request.GET.get('selected_column_one', None)
     selected_column_two = request.GET.get('selected_column_two', None)
+    selected_column_three = request.GET.get('selected_column_three', None)
+    selected_column_four = request.GET.get('selected_column_four', None)
     selected_contract_date = request.GET.get('contract_date', "No")
     selected_end_date = request.GET.get('end_date', "No")
     total_pages = int(request.GET.get('total_pages', 1))
@@ -807,11 +873,16 @@ async def add_two(request):
         'page': page,
         'keyword_one': keyword_one,
         'keyword_two': keyword_two,
+        'keyword_three': keyword_three,
+        'keyword_four': keyword_four,
         'selected_column_one': selected_column_one,
         'selected_column_two': selected_column_two,
+        'selected_column_three': selected_column_three,
+        'selected_column_four': selected_column_four,
         'selected_contract_date': selected_contract_date,
         'selected_end_date': selected_end_date,
-        'total_pages': total_pages
+        'total_pages': total_pages,
+        'connection_websocket': settings.DATABASES['default']['HOST']
     }
 
     return await sync_to_async(render)(request, 'add_two.html', context)
@@ -825,8 +896,12 @@ async def edit(request, row_id):
     page = int(request.GET.get('page', 1))
     keyword_one = request.GET.get('keyword_one', None)
     keyword_two = request.GET.get('keyword_two', None)
+    keyword_three = request.GET.get('keyword_three', None)
+    keyword_four = request.GET.get('keyword_four', None)
     selected_column_one = request.GET.get('selected_column_one', None)
     selected_column_two = request.GET.get('selected_column_two', None)
+    selected_column_three = request.GET.get('selected_column_three', None)
+    selected_column_four = request.GET.get('selected_column_four', None)
     selected_contract_date = request.GET.get('contract_date', "No")
     selected_end_date = request.GET.get('end_date', "No")
 
@@ -845,10 +920,15 @@ async def edit(request, row_id):
         'page': page,
         'keyword_one': keyword_one,
         'keyword_two': keyword_two,
+        'keyword_three': keyword_three,
+        'keyword_four': keyword_four,
         'selected_column_one': selected_column_one,
         'selected_column_two': selected_column_two,
+        'selected_column_three': selected_column_three,
+        'selected_column_four': selected_column_four,
         'selected_contract_date': selected_contract_date,
-        'selected_end_date': selected_end_date
+        'selected_end_date': selected_end_date,
+        'connection_websocket': settings.DATABASES['default']['HOST']
     }
 
     return await sync_to_async(render)(request, 'edit.html', context)
@@ -880,7 +960,8 @@ async def edit_user(request, row_id):
         'selected_column_one_user': selected_column_one_user,
         'selected_column_two_user': selected_column_two_user,
         'selected_contract_date_user': selected_contract_date_user,
-        'selected_end_date_user': selected_end_date_user
+        'selected_end_date_user': selected_end_date_user,
+        'connection_websocket': settings.DATABASES['default']['HOST']
     }
 
     return await sync_to_async(render)(request, 'edit_user.html', context)
@@ -912,7 +993,8 @@ async def edit_user_two(request, row_id):
         'selected_column_one_user': selected_column_one_user,
         'selected_column_two_user': selected_column_two_user,
         'selected_contract_date_user': selected_contract_date_user,
-        'selected_end_date_user': selected_end_date_user
+        'selected_end_date_user': selected_end_date_user,
+        'connection_websocket': settings.DATABASES['default']['HOST']
     }
 
     return await sync_to_async(render)(request, 'edit_user_two.html', context)
@@ -1739,7 +1821,8 @@ async def update_record(request, row_id):
                 'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
                 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
                 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
+                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
+                'connection_websocket': settings.DATABASES['default']['HOST']
             }
 
             processor = ContractProcessor(context_data, request)
@@ -1797,7 +1880,8 @@ async def update_record_user(request, row_id):
                 'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
                 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
                 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
+                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
+                'connection_websocket': settings.DATABASES['default']['HOST']
             }
 
             from django.forms.models import model_to_dict
@@ -1875,7 +1959,8 @@ async def update_record_user_two(request, row_id):
                 'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
                 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
                 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
+                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
+                'connection_websocket': settings.DATABASES['default']['HOST']
             }
 
             from django.forms.models import model_to_dict
@@ -1988,7 +2073,8 @@ async def add_record(request):
                 'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
                 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
                 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
+                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
+                'connection_websocket': settings.DATABASES['default']['HOST']
             }
 
             processor = ContractProcessor(context_data, request)
@@ -2080,7 +2166,8 @@ async def delete_record(request, row_id):
                 'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
                 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
                 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
+                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
+                'connection_websocket': settings.DATABASES['default']['HOST']
             }
 
             # Удаляем объект
@@ -2128,7 +2215,8 @@ async def delete_record_two(request, row_id):
                 'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
                 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
                 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
+                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
+                'connection_websocket': settings.DATABASES['default']['HOST']
             }
 
             # Удаляем объект
@@ -2157,7 +2245,6 @@ async def upload_file(request):
 
 import os
 from django.http import FileResponse, Http404
-from django.conf import settings
 
 def download_file(request, filename):
     # Получаем путь к папке "file" внутри вашего проекта

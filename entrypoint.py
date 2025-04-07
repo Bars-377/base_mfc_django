@@ -2,10 +2,18 @@ import os
 import mysql.connector
 import subprocess
 
+import json
+project_dir = os.path.dirname(os.path.abspath(__file__))
+folder_path = os.path.join(project_dir)
+folder_path = os.path.abspath(folder_path)
+# Открываем файл и загружаем данные
+with open(f'{folder_path}//connection.json', 'r') as file:
+    json_object = json.load(file)
+
 def check_tables_exist():
     # Получаем параметры подключения из переменных окружения
     db_config = {
-        "host": os.getenv("DB_HOST", "172.18.11.104"),
+        "host": os.getenv("DB_HOST", f"{json_object['host']}"),
         "user": os.getenv("DB_USER", "root"),
         "password": os.getenv("DB_PASSWORD", "enigma1418"),
         "database": os.getenv("DB_NAME", "basemfcdjango"),

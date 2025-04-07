@@ -1,4 +1,4 @@
-const socket = new WebSocket("ws://172.18.11.104:8900/ws/some_path/"); // Инициализация WebSocket
+const socket = new WebSocket(`ws://${connection_websocket}:8900/ws/some_path/`); // Инициализация WebSocket
 console.log("Сокет инициализирован");
 
 socket.onopen = function () {
@@ -7,6 +7,11 @@ socket.onopen = function () {
 
 socket.onerror = function (error) {
 	console.log("Ошибка WebSocket:", error);
+};
+
+socket.onclose = function (event) {
+	console.log("WebSocket закрыт:", event);
+	// Выполните действия при закрытии соединения
 };
 
 document.addEventListener("DOMContentLoaded", function () {

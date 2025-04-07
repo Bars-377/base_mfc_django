@@ -48,6 +48,10 @@
             {% block content_user_two %}{% endblock %}
     </div>
 
+    <script>
+        const connection_websocket = "{{ connection_websocket }}"; // Теперь это будет строка
+        console.log("Connection WebSocket:", connection_websocket);
+    </script>
     <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'script.js' %}"></script>  <!-- Добавьте ваш JS файл -->
