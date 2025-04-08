@@ -1339,8 +1339,8 @@ class ContractProcessor:
                 elif self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2046102280':
                     Services_Three_.budget_concluded = contract_price_sum_way
 
-            Services_Three_.budget_remainder = await clean_number(Services_Three_.budget_planned) + await clean_number(Services_Three_.budget_planned_old) - await clean_number(Services_Three_.budget_concluded)
-            Services_Three_.off_budget_remainder = await clean_number(Services_Three_.off_budget_planned) + await clean_number(Services_Three_.off_budget_planned_old) - await clean_number(Services_Three_.off_budget_concluded)
+            Services_Three_.budget_remainder = await clean_number(await clean_number(Services_Three_.budget_planned) + await clean_number(Services_Three_.budget_planned_old) - await clean_number(Services_Three_.budget_concluded))
+            Services_Three_.off_budget_remainder = await clean_number(await clean_number(Services_Three_.off_budget_planned) + await clean_number(Services_Three_.off_budget_planned_old) - await clean_number(Services_Three_.off_budget_concluded))
 
             if any(x < 0 for x in [await clean_number(Services_Three_.budget_remainder),
                                 await clean_number(Services_Three_.off_budget_remainder)
@@ -2013,7 +2013,6 @@ async def update_record_user_two(request, row_id):
                 'off_budget_concluded': request.POST['off_budget_concluded'],
                 'budget_remainder': request.POST['budget_remainder'],
                 'off_budget_remainder': request.POST['off_budget_remainder'],
-
                 'color': request.POST['color'],
                 'row_id_user_two': row_id,
                 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
