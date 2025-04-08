@@ -1071,7 +1071,8 @@ class ContractProcessor:
                             'keyword_one_user_two',
                             'keyword_two_user_two',
                             'selected_column_one_user_two',
-                            'selected_column_two_user_two']
+                            'selected_column_two_user_two',
+                            'connection_websocket']
         if isinstance(self.context_data, list):
             filter_kwargs = {f"{key}__iexact": value for key, value in self.context_data[0].items()}
         else:
@@ -1121,6 +1122,23 @@ class ContractProcessor:
         for key, value in self.context_data.items():
             setattr(service, key, value)
 
+        if (await clean_number(service.execution_contract_fact) > await clean_number(service.execution_contract_plan)) \
+            or (await clean_number(service.january_one) < await clean_number(service.sum_january_one)) \
+            or (await clean_number(service.february) < await clean_number(service.sum_february)) \
+            or (await clean_number(service.march) < await clean_number(service.sum_march)) \
+            or (await clean_number(service.april) < await clean_number(service.sum_april)) \
+            or (await clean_number(service.may) < await clean_number(service.sum_may)) \
+            or (await clean_number(service.june) < await clean_number(service.sum_june)) \
+            or (await clean_number(service.july) < await clean_number(service.sum_july)) \
+            or (await clean_number(service.august) < await clean_number(service.sum_august)) \
+            or (await clean_number(service.september) < await clean_number(service.sum_september)) \
+            or (await clean_number(service.november) < await clean_number(service.sum_november)) \
+            or (await clean_number(service.december) < await clean_number(service.sum_december)) \
+            or (await clean_number(service.january_two) < await clean_number(service.sum_january_two)):
+            service.color = '#ffebeb'
+        elif service.color == '#ffebeb':
+            service.color = ''
+
         await sync_to_async(service.save)()
 
     async def creation_new_service(self, saving, execution_contract_plan, execution_contract_fact, new_service):
@@ -1166,6 +1184,23 @@ class ContractProcessor:
                 setattr(new_service, key, value)
         # Добавляем contract_balance в объект new_service
         setattr(new_service, 'contract_balance', contract_balance)
+
+        if (await clean_number(new_service.execution_contract_fact) > await clean_number(new_service.execution_contract_plan)) \
+            or (await clean_number(new_service.january_one) < await clean_number(new_service.sum_january_one)) \
+            or (await clean_number(new_service.february) < await clean_number(new_service.sum_february)) \
+            or (await clean_number(new_service.march) < await clean_number(new_service.sum_march)) \
+            or (await clean_number(new_service.april) < await clean_number(new_service.sum_april)) \
+            or (await clean_number(new_service.may) < await clean_number(new_service.sum_may)) \
+            or (await clean_number(new_service.june) < await clean_number(new_service.sum_june)) \
+            or (await clean_number(new_service.july) < await clean_number(new_service.sum_july)) \
+            or (await clean_number(new_service.august) < await clean_number(new_service.sum_august)) \
+            or (await clean_number(new_service.september) < await clean_number(new_service.sum_september)) \
+            or (await clean_number(new_service.november) < await clean_number(new_service.sum_november)) \
+            or (await clean_number(new_service.december) < await clean_number(new_service.sum_december)) \
+            or (await clean_number(new_service.january_two) < await clean_number(new_service.sum_january_two)):
+            new_service.color = '#ffebeb'
+        elif new_service.color == '#ffebeb':
+            new_service.color = ''
 
         return new_service
 
@@ -1614,8 +1649,47 @@ class ContractProcessor:
 
         await self.message_service_update()
 
+        context_data_copy = self.context_data.copy()  # Создаем копию, чтобы не изменять оригинал
+
+        # Список ключей, которые нужно удалить
+        keys_to_remove = ['service', 'id_id',
+                            'name', 'status',
+                            'way', 'initiator',
+                            'KTSSR', 'KOSGU',
+                            'DopFC', 'NMCC',
+                            'counterparty', 'registration_number',
+                            'contract_number', 'contract_date',
+                            'end_date', 'contract_price',
+                            'january_one', 'february',
+                            'march', 'april',
+                            'may', 'june',
+                            'july', 'august',
+                            'september', 'october',
+                            'november', 'december',
+                            'january_two', 'date_january_one',
+                            'sum_january_one', 'date_february',
+                            'sum_february', 'date_march',
+                            'sum_march', 'date_april',
+                            'sum_april', 'date_may',
+                            'sum_may', 'date_june',
+                            'sum_june', 'date_july',
+                            'sum_july', 'date_august',
+                            'sum_august', 'date_september',
+                            'sum_september', 'date_october',
+                            'sum_october', 'date_november',
+                            'sum_november', 'date_december',
+                            'sum_december', 'date_january_two',
+                            'sum_january_two', 'execution',
+                            'contract_balance', 'execution_contract_fact',
+                            'execution_contract_plan', 'saving',
+                            'color']
+
+        # Удаляем ключи из словаря
+        for key in keys_to_remove:
+            context_data_copy.pop(key, None)  # Удаляем ключ, если он существует
+
         # Кодируем query-параметры
-        query_string = urlencode(self.context_data)
+        query_string = urlencode(context_data_copy)
 
         # Формируем URL с query-параметрами
         redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
@@ -1861,7 +1935,6 @@ async def update_record_user(request, row_id):
                 'off_budget_remainder': request.POST['off_budget_remainder'],
                 'budget_plans': request.POST['budget_plans'],
                 'off_budget_plans': request.POST['off_budget_plans'],
-
                 'color': request.POST['color'],
                 'row_id_user': row_id,
                 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
