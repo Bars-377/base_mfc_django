@@ -377,6 +377,7 @@
                 if (isMandatoryTwo) {
                     field.setAttribute('readonly', true); // Запрещаем редактирование
                     field.style.backgroundColor = '#f0f0f0'; // Устанавливаем цвет фона (светло-серый)
+                    field.value = ''; // Очищаем значение поля
                     console.log(`Поле ${fieldId} отключено для редактирования`);
                 } else {
                     field.style.backgroundColor = ''; // Устанавливаем цвет фона (пусто)
