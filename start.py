@@ -33,8 +33,12 @@ if __name__ == "__main__":
     t5.start()
     time.sleep(2)
 
-    t6 = threading.Thread(target=run_command, args=([venv_python, "app_files.py"],))
+    t6 = threading.Thread(target=run_command, args=([venv_python, "backup_base.py"], async_mysql_project_dir))
     t6.start()
+    time.sleep(2)
+
+    t7 = threading.Thread(target=run_command, args=([venv_python, "app_files.py"],))
+    t7.start()
 
     # ожидание завершения всех потоков
     t1.join()
@@ -43,3 +47,4 @@ if __name__ == "__main__":
     t4.join()
     t5.join()
     t6.join()
+    t7.join()

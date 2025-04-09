@@ -17,7 +17,7 @@ socket.onclose = function (event) {
 document.addEventListener("DOMContentLoaded", function () {
 	const exportButton = document.getElementById("export-button");
 	// const flashMessage = document.getElementById("flash-message");
-	const message = document.getElementById("flash-message");
+	const message = document.getElementById("flash-message-export");
 	let requestInProgress = false;
 	let taskId = null;
 	let checkStatusInterval = null;
@@ -298,7 +298,7 @@ function showFlashMessage(event) {
 				}, 500); // Задержка 500ms
 
 				// Показать сообщение
-				const message = document.getElementById("flash-message");
+				const message = document.getElementById("flash-message-import");
 				message.textContent = data.message;
 
 				// Меняем класс в зависимости от статуса
@@ -327,7 +327,7 @@ function showFlashMessage(event) {
 			loadingIndicator.style.display = "none";
 
 			// Показать сообщение об ошибке
-			const message = document.getElementById("flash-message");
+			const message = document.getElementById("flash-message-import");
 			message.textContent = "У вас недостаточно прав для этого действия!";
 
 			// Меняем класс на ошибку
@@ -339,6 +339,88 @@ function showFlashMessage(event) {
 			console.error("Ошибка загрузки файла:", error);
 		});
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+	// Обработчик для кнопки "Резерв (Вторник)"
+	document.getElementById('backup-one-button').addEventListener('click', function (e) {
+		e.preventDefault();  // Предотвратить стандартное поведение кнопки
+
+		// Подтверждение перед выполнением действия
+		if (!confirm('Вы уверены, что хотите выполнить резервное копирование для вторника?')) {
+			return;  // Прерываем выполнение, если пользователь нажал "Отмена"
+		}
+
+		// Получаем URL из data-атрибута
+		const url = e.target.getAttribute('data-url');
+
+		// Используем fetch для AJAX-запроса
+		fetch(url, {
+			method: 'GET',  // Метод запроса
+		})
+			.then(response => response.json())  // Преобразуем ответ в JSON
+			.then(data => {
+				if (data.success) {
+					document.getElementById('flash-message-one').textContent = 'Удачно!';
+					document.getElementById('flash-message-one').style.display = 'block';
+					document.getElementById('flash-message-one').classList.remove('alert-danger');
+					document.getElementById('flash-message-one').classList.add('alert-success');
+					window.scrollTo(0, 0);  // Сбрасывает скролл на верх страницы
+					window.location.reload(); // Обновление страницы
+				} else {
+					document.getElementById('flash-message-one').textContent = data.message || 'Произошла ошибка!';
+					document.getElementById('flash-message-one').style.display = 'block';
+					document.getElementById('flash-message-one').classList.remove('alert-success');
+					document.getElementById('flash-message-one').classList.add('alert-danger');
+				}
+			})
+			.catch(error => {
+				document.getElementById('flash-message-one').textContent = 'У вас недостаточно прав для этого действия!';
+				document.getElementById('flash-message-one').style.display = 'block';
+				document.getElementById('flash-message-one').classList.remove('alert-success');
+				document.getElementById('flash-message-one').classList.add('alert-danger');
+			});
+	});
+
+	// Обработчик для кнопки "Резерв (Четверг)"
+	document.getElementById('backup-two-button').addEventListener('click', function (e) {
+		e.preventDefault();  // Предотвратить стандартное поведение кнопки
+
+		// Подтверждение перед выполнением действия
+		if (!confirm('Вы уверены, что хотите выполнить резервное копирование для четверга?')) {
+			return;  // Прерываем выполнение, если пользователь нажал "Отмена"
+		}
+
+		// Получаем URL из data-атрибута
+		const url = e.target.getAttribute('data-url');
+
+		// Используем fetch для AJAX-запроса
+		fetch(url, {
+			method: 'GET',  // Метод запроса
+		})
+			.then(response => response.json())  // Преобразуем ответ в JSON
+			.then(data => {
+				if (data.success) {
+					document.getElementById('flash-message-two').textContent = 'Удачно!';
+					document.getElementById('flash-message-two').style.display = 'block';
+					document.getElementById('flash-message-two').classList.remove('alert-danger');
+					document.getElementById('flash-message-two').classList.add('alert-success');
+					window.scrollTo(0, 0);  // Сбрасывает скролл на верх страницы
+					window.location.reload(); // Обновление страницы
+				} else {
+					document.getElementById('flash-message-two').textContent = data.message || 'Произошла ошибка!';
+					document.getElementById('flash-message-two').style.display = 'block';
+					document.getElementById('flash-message-two').classList.remove('alert-success');
+					document.getElementById('flash-message-two').classList.add('alert-danger');
+				}
+			})
+			.catch(error => {
+				document.getElementById('flash-message-two').textContent = 'У вас недостаточно прав для этого действия!';
+				document.getElementById('flash-message-two').style.display = 'block';
+				document.getElementById('flash-message-two').classList.remove('alert-success');
+				document.getElementById('flash-message-two').classList.add('alert-danger');
+			});
+	});
+});
 
 // Восстанавливаем прокрутку после загрузки страницы
 window.onload = function () {

@@ -45,6 +45,8 @@ urlpatterns = [
     path("upload/", views.upload_file, name="upload_file"),
     path("admin/", admin.site.urls),
     path("file/<str:filename>/", views.download_file, name="download_file"),
+    path('backup_one/', views.backup_to_backup_one, name='backup_to_backup_one'),
+    path('backup_two/', views.backup_to_backup_two, name='backup_to_backup_two'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Эта строка решает проблема поиска статических файлов
 
 # Для доступа к папке static

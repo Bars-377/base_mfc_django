@@ -571,7 +571,7 @@
         <h1>Импорт/экспорт Excel</h1>
 
         <form onsubmit="showFlashMessage(event)">
-            <div class="alert" id="flash-message" style="display: none;"></div>
+            <div class="alert" id="flash-message-export" style="display: none;"></div>
             <input type="file" id="file-input" accept=".xlsx" style="display: none;" onchange="updateFileName()">
             <button type="button" class="btn btn-info" onclick="document.getElementById('file-input').click();">Импорт Excel</button>
             <span id="file-name"></span>
@@ -582,11 +582,19 @@
         <form id="export-form">
             <input type="hidden" name="contract_date" value="{% if selected_contract_date %}{{ selected_contract_date }}{% else %}No{% endif %}">
             <input type="hidden" name="end_date" value="{% if selected_end_date %}{{ selected_end_date }}{% else %}No{% endif %}">
-            <div class="alert alert-success" id="flash-message" style="display: none;"></div>
-            <button type="submit" class="btn btn-info" id="export-button">Экспорт Excel</button>
+            <div class="alert alert-success" id="flash-message-import" style="display: none;"></div>
+            <button type="submit" class="btn btn-primary" id="export-button">Экспорт Excel</button>
         </form>
 
+        <h1>Заменить данные из резерва</h1>
+
+        <form>
+            <div class="alert alert-success" id="flash-message-one" style="display: none;"></div>
+            <button type="submit" class="btn btn-secondary" id="backup-one-button" data-url="{% url 'backup_to_backup_one' %}">Резерв (Вторник)</button>
+            <div class="alert alert-success" id="flash-message-two" style="display: none;"></div>
+            <button type="submit" class="btn btn-success" id="backup-two-button" data-url="{% url 'backup_to_backup_two' %}">Резерв (Четверг)</button>
         </form>
+
     </div>
 {% endblock %}
 

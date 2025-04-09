@@ -3,6 +3,7 @@ import os
 import re
 from datetime import datetime
 from django.conf import settings
+import time
 
 def process_1():
     # Получаем текущую директорию проекта
@@ -37,9 +38,10 @@ def process_1():
 
 if __name__ == '__main__':
     process1 = Process(target=process_1)
-    print('app_files.py запущен!')
+    print('🚀 app_files.py запущен!')
     while True:
         if not process1.is_alive():
             process1 = Process(target=process_1)
             process1.start()
             # process1.join()
+        time.sleep(15)

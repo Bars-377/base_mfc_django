@@ -1,7 +1,7 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .models import Services, Services_Two, Services_Three
+from .models import Services, Services_Two, Services_Three, Services_backup_one, Services_backup_two
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -15,6 +15,14 @@ import asyncio
 from .admin import group_required
 import logging
 from .models import UserActionLog
+
+def errors(e):
+    # Вывод подробной информации об ошибке
+    print(f"Поймано исключение: {type(e).__name__}")
+    print(f"Сообщение об ошибке: {str(e)}")
+    import traceback
+    print("Трассировка стека (stack trace):")
+    traceback.print_exc()
 
 @sync_to_async
 def log_user_action(user, action):
@@ -1354,12 +1362,7 @@ class ContractProcessor:
             await sync_to_async(Services_Three_.save)()
 
         except Exception as e:
-            # Вывод подробной информации об ошибке
-            print(f"Поймано исключение: {type(e).__name__}")
-            print(f"Сообщение об ошибке: {str(e)}")
-            import traceback
-            print("Трассировка стека (stack trace):")
-            traceback.print_exc()
+            errors(e)
 
     async def message_service_update(self):
         # await sync_to_async(messages.success)(self.request, "Редактирование прошло успешно!")
@@ -2334,3 +2337,59 @@ def download_file(request, filename):
     else:
         # Если файл не найден, возвращаем ошибку 404
         raise Http404("Файл не найден")
+
+# Асинхронная функция для копирования данных
+@sync_to_async
+def copy_service_to_model(service):
+    fields = {f.name: getattr(service, f.name) for f in service._meta.fields if f.name != 'id'}
+    return fields  # Возвращаем данные для bulk_create
+
+# Асинхронная функция для резервного копирования из Services_backup_one в Services
+@group_required('Администратор', 'Полный')
+async def backup_to_backup_one(request):
+    try:
+        # Удаляем все записи в таблице Services (синхронно)
+        await sync_to_async(Services.objects.all().delete, thread_sensitive=True)()
+
+        # Получаем данные из Services_backup_one (синхронно через sync_to_async)
+        services_backup = await sync_to_async(lambda: list(Services_backup_one.objects.all()))()
+
+        # Копируем данные для вставки в Services
+        services_to_create = await asyncio.gather(
+            *[copy_service_to_model(service) for service in services_backup]
+        )
+
+        # Выполняем bulk_create с помощью sync_to_async
+        await sync_to_async(Services.objects.bulk_create)([Services(**fields) for fields in services_to_create])
+
+        await log_user_action(request.user, 'Резервное копирование в Services из Services_backup_one завершено!')
+        return JsonResponse({'success': True})
+    except Exception as e:
+        errors(e)
+        await log_user_action(request.user, f'Ошибка при резервном копировании: {str(e)}')
+        return JsonResponse({'success': False, 'message': f'Произошла ошибка при копировании данных: {str(e)}'})
+
+# Асинхронная функция для резервного копирования из Services_backup_two в Services
+@group_required('Администратор', 'Полный')
+async def backup_to_backup_two(request):
+    try:
+        # Удаляем все записи в таблице Services (синхронно)
+        await sync_to_async(Services.objects.all().delete, thread_sensitive=True)()
+
+        # Получаем данные из Services_backup_two (синхронно через sync_to_async)
+        services_backup = await sync_to_async(lambda: list(Services_backup_two.objects.all()))()
+
+        # Копируем данные для вставки в Services
+        services_to_create = await asyncio.gather(
+            *[copy_service_to_model(service) for service in services_backup]
+        )
+
+        # Выполняем bulk_create с помощью sync_to_async
+        await sync_to_async(Services.objects.bulk_create)([Services(**fields) for fields in services_to_create])
+
+        await log_user_action(request.user, 'Резервное копирование в Services из Services_backup_two завершено!')
+        return JsonResponse({'success': True})
+    except Exception as e:
+        errors(e)
+        await log_user_action(request.user, f'Ошибка при резервном копировании: {str(e)}')
+        return JsonResponse({'success': False, 'message': f'Произошла ошибка при копировании данных: {str(e)}'})
