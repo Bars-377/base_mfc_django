@@ -416,7 +416,13 @@ def generate_excel(sid, data):
         project_dir = os.path.dirname(os.path.abspath(__file__))
 
         # Строим путь к папке file внутри проекта
-        file_path = os.path.join(project_dir, 'file', f'services_{sid}_{date}.xlsx')
+        file_dir = os.path.join(project_dir, 'file')
+
+        # Создаем директорию file, если она не существует
+        os.makedirs(file_dir, exist_ok=True)
+
+        # Строим полный путь к файлу
+        file_path = os.path.join(file_dir, f'services_{sid}_{date}.xlsx')
 
         # Сохраняем файл на диск
         with open(file_path, 'wb') as f:
