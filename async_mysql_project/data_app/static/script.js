@@ -788,7 +788,8 @@ if (filterFormTwo) {
 
 document.addEventListener('DOMContentLoaded', function () {
 	if (!navigator.userAgent.includes('AppleWebKit')) {
-		document.querySelector('.wrapper').innerHTML = '<p>Sorry! Non webkit users.</p>';
+		// document.querySelector('.wrapper').innerHTML = '<p>Sorry! Non webkit users.</p>';
+		console.log('Sorry! Non webkit users!');
 	}
 });
 

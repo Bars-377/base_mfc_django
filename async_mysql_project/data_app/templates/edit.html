@@ -427,8 +427,10 @@
                 const field = document.getElementById(fieldId);
                 if (isMandatoryTwo) {
                     field.setAttribute('readonly', true); // Запрещаем редактирование
+                    field.style.backgroundColor = '#f0f0f0'; // Устанавливаем цвет фона (светло-серый)
                     console.log(`Поле ${fieldId} отключено для редактирования`);
                 } else {
+                    field.style.backgroundColor = ''; // Устанавливаем цвет фона (пусто)
                     field.removeAttribute('readonly'); // Включаем редактирование
                     console.log(`Поле ${fieldId} включено для редактирования`);
                 }

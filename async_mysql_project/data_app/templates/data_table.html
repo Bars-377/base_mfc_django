@@ -7,14 +7,11 @@
     <div class="container-fluid-neverov">
         <form method="GET" action="/" id="filter-form" class="form-group">
             <div class="form-item">
-                <label for="keyword_one">Слово 1:</label>
-                <input type="text" class="form-control" id="keyword_one" name="keyword_one" placeholder="Слово"
+                <input type="text" class="form-control" id="keyword_one" name="keyword_one" placeholder="Ключевое слово 1"
                     value="{% if request.GET.keyword_one == 'None' %}{% else %}{{ request.GET.keyword_one }}{% endif %}">
-            </div>
-            <div class="form-item">
-                <label for="selected_column_one">Столбец 1:</label>
+            <br>
                 <select name="selected_column_one" id="selected_column_one" class="form-control">
-                    <option data-type="no_format" value="">Столбец</option>
+                    <option data-type="no_format" value="">Столбец 1</option>
                     <option data-type="no_format" value="id_id" {% if selected_column_one == 'id_id' %}selected{% endif %}>№ п/п</option>
                     <option data-type="no_format" value="name" {% if selected_column_one == 'name' %}selected{% endif %}>Наименование закупки</option>
                     <option data-type="no_format" value="status" {% if selected_column_one == 'status' %}selected{% endif %}>Статус</option>
@@ -77,14 +74,11 @@
                 </select>
             </div>
             <div class="form-item">
-                <label for="keyword_two">Слово 2:</label>
-                <input type="text" class="form-control" id="keyword_two" name="keyword_two" placeholder="Слово"
+                <input type="text" class="form-control" id="keyword_two" name="keyword_two" placeholder="Ключевое слово 2"
                     value="{% if request.GET.keyword_two == 'None' %}{% else %}{{ request.GET.keyword_two }}{% endif %}">
-            </div>
-            <div class="form-item">
-                <label for="selected_column_two">Столбец 2:</label>
+            <br>
                 <select name="selected_column_two" id="selected_column_two" class="form-control">
-                    <option data-type="no_format" value="">Столбец</option>
+                    <option data-type="no_format" value="">Столбец 2</option>
                     <option data-type="no_format" value="id_id" {% if selected_column_two == 'id_id' %}selected{% endif %}>№ п/п</option>
                     <option data-type="no_format" value="name" {% if selected_column_two == 'name' %}selected{% endif %}>Наименование закупки</option>
                     <option data-type="no_format" value="status" {% if selected_column_two == 'status' %}selected{% endif %}>Статус</option>
@@ -146,16 +140,12 @@
                     <option data-type="no_format" value="contract_balance" {% if selected_column_two == 'contract_balance' %}selected{% endif %}>Остаток по контракту (формула)</option>
                 </select>
             </div>
-
             <div class="form-item">
-                <label for="keyword_three">Слово 3:</label>
-                <input type="text" class="form-control" id="keyword_three" name="keyword_three" placeholder="Слово"
+                <input type="text" class="form-control" id="keyword_three" name="keyword_three" placeholder="Ключевое слово 3"
                     value="{% if request.GET.keyword_three == 'None' %}{% else %}{{ request.GET.keyword_three }}{% endif %}">
-            </div>
-            <div class="form-item">
-                <label for="selected_column_three">Столбец 3:</label>
+            <br>
                 <select name="selected_column_three" id="selected_column_three" class="form-control">
-                    <option data-type="no_format" value="">Столбец</option>
+                    <option data-type="no_format" value="">Столбец 3</option>
                     <option data-type="no_format" value="id_id" {% if selected_column_three == 'id_id' %}selected{% endif %}>№ п/п</option>
                     <option data-type="no_format" value="name" {% if selected_column_three == 'name' %}selected{% endif %}>Наименование закупки</option>
                     <option data-type="no_format" value="status" {% if selected_column_three == 'status' %}selected{% endif %}>Статус</option>
@@ -217,16 +207,12 @@
                     <option data-type="no_format" value="contract_balance" {% if selected_column_three == 'contract_balance' %}selected{% endif %}>Остаток по контракту (формула)</option>
                 </select>
             </div>
-
             <div class="form-item">
-                <label for="keyword_four">Слово 4:</label>
-                <input type="text" class="form-control" id="keyword_four" name="keyword_four" placeholder="Слово"
+                <input type="text" class="form-control" id="keyword_four" name="keyword_four" placeholder="Ключевое слово 4"
                     value="{% if request.GET.keyword_four == 'None' %}{% else %}{{ request.GET.keyword_four }}{% endif %}">
-            </div>
-            <div class="form-item">
-                <label for="selected_column_four">Столбец 4:</label>
+            <br>
                 <select name="selected_column_four" id="selected_column_four" class="form-control">
-                    <option data-type="no_format" value="">Столбец</option>
+                    <option data-type="no_format" value="">Столбец 4</option>
                     <option data-type="no_format" value="id_id" {% if selected_column_four == 'id_id' %}selected{% endif %}>№ п/п</option>
                     <option data-type="no_format" value="name" {% if selected_column_four == 'name' %}selected{% endif %}>Наименование закупки</option>
                     <option data-type="no_format" value="status" {% if selected_column_four == 'status' %}selected{% endif %}>Статус</option>
@@ -288,22 +274,18 @@
                     <option data-type="no_format" value="contract_balance" {% if selected_column_four == 'contract_balance' %}selected{% endif %}>Остаток по контракту (формула)</option>
                 </select>
             </div>
-
             <div class="form-item">
-                <label for="contract_date">Дата контракта:</label>
                 <select name="contract_date" id="contract_date" class="form-control form-control-year">
-                    <option data-type="no_format" value="No">Год</option>
+                    <option data-type="no_format" value="No">Дата контракта</option>
                     {% for contract_date in service_years %}
                     <option data-type="no_format" value="{{ contract_date }}" {% if contract_date == selected_contract_date %}selected{% endif %}>
                         {{ contract_date }}
                     </option>
                     {% endfor %}
                 </select>
-            </div>
-            <div class="form-item">
-                <label for="end_date">Окончание даты:</label>
+            <br>
                 <select name="end_date" id="end_date" class="form-control form-control-year">
-                    <option data-type="no_format" value="No">Год</option>
+                    <option data-type="no_format" value="No">Окончание даты</option>
                     {% for end_date in service_end_date %}
                     <option data-type="no_format" value="{{ end_date }}" {% if end_date == selected_end_date %}selected{% endif %}>
                         {{ end_date }}
@@ -311,8 +293,9 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="form-item-neverov">
+            <div class="form-item">
                 <button type="submit" class="btn btn-primary">Фильтровать</button>
+                <br>
                 <button type="button" class="btn btn-secondary" id="reset-filters">Сбросить всё</button>
             </div>
         </form>
@@ -611,7 +594,7 @@
         <!--<form method="GET" action="/" id="filter-form-user" class="form-group">-->
             <!--<div class="form-item">-->
             <!--    <label for="keyword_one_user">Поиск по ключевому слову 1:</label>-->
-            <!--    <input type="text" class="form-control" id="keyword_one_user" name="keyword_one_user" placeholder="Слово"-->
+            <!--    <input type="text" class="form-control" id="keyword_one_user" name="keyword_one_user" placeholder="Ключевое слово"-->
             <!--        value="{% if request.GET.keyword_one_user == 'None' %}{% else %}{{ request.GET.keyword_one_user }}{% endif %}">-->
             <!--</div>-->
             <!--<div class="form-item">-->
@@ -640,7 +623,7 @@
             <!--</div>-->
             <!--<div class="form-item">-->
             <!--    <label for="keyword_two_user">Поиск по ключевому слову 2:</label>-->
-            <!--    <input type="text" class="form-control" id="keyword_two_user" name="keyword_two_user" placeholder="Слово"-->
+            <!--    <input type="text" class="form-control" id="keyword_two_user" name="keyword_two_user" placeholder="Ключевое слово"-->
             <!--        value="{% if request.GET.keyword_two_user == 'None' %}{% else %}{{ request.GET.keyword_two_user }}{% endif %}">-->
             <!--</div>-->
             <!--<div class="form-item">-->
@@ -913,7 +896,7 @@
         <!--<form method="GET" action="/" id="filter-form-user-two" class="form-group">-->
             <!--<div class="form-item">-->
             <!--    <label for="keyword_one_user_two">Поиск по ключевому слову 1:</label>-->
-            <!--    <input type="text" class="form-control" id="keyword_one_user_two" name="keyword_one_user_two" placeholder="Слово"-->
+            <!--    <input type="text" class="form-control" id="keyword_one_user_two" name="keyword_one_user_two" placeholder="Ключевое слово"-->
             <!--        value="{% if request.GET.keyword_one_user_two == 'None' %}{% else %}{{ request.GET.keyword_one_user_two }}{% endif %}">-->
             <!--</div>-->
             <!--<div class="form-item">-->
@@ -932,7 +915,7 @@
             <!--</div>-->
             <!--<div class="form-item">-->
             <!--    <label for="keyword_two_user_two">Поиск по ключевому слову 2:</label>-->
-            <!--    <input type="text" class="form-control" id="keyword_two_user_two" name="keyword_two_user_two" placeholder="Слово"-->
+            <!--    <input type="text" class="form-control" id="keyword_two_user_two" name="keyword_two_user_two" placeholder="Ключевое слово"-->
             <!--        value="{% if request.GET.keyword_two_user_two == 'None' %}{% else %}{{ request.GET.keyword_two_user_two }}{% endif %}">-->
             <!--</div>-->
             <!--<div class="form-item">-->
