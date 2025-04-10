@@ -177,6 +177,8 @@ from data_app.models import Services, Services_backup_one, Services_backup_two
 
 def copy_service_to_model(service, backup_model):
     fields = {f.name: getattr(service, f.name) for f in service._meta.fields if f.name != 'id'}
+    # Удаляем все записи в таблице backup_model (синхронно)
+    backup_model.objects.all().delete()
     backup_model.objects.create(**fields)
 
 def backup_to_backup_one():
@@ -193,9 +195,9 @@ def backup_to_backup_two():
 
 if __name__ == '__main__':
     # Планирование задач
-    schedule.every().tuesday.at("09:00").do(backup_to_backup_one)
+    schedule.every().tuesday.at("07:00").do(backup_to_backup_one)
     # schedule.every().wednesday.at("10:08").do(backup_to_backup_two)
-    schedule.every().thursday.at("09:00").do(backup_to_backup_two)
+    schedule.every().thursday.at("07:00").do(backup_to_backup_two)
 
     print("🚀 backup_base.py запущен!")
 
