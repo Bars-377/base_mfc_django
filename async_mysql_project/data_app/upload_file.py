@@ -4,6 +4,15 @@ from django.http import JsonResponse
 import asyncio
 from .views import ContractProcessor, log_user_action, clean_number
 
+import os
+import json
+project_dir = os.path.dirname(os.path.abspath(__file__))
+folder_path = os.path.join(project_dir, '..', '..')
+folder_path = os.path.abspath(folder_path)
+# Открываем файл и загружаем данные
+with open(f'{folder_path}//general_settings.json', 'r', encoding='utf-8-sig') as file:
+    json_object = json.load(file)
+
 async def upload_file_(request):
     if request.method == "POST" and request.FILES.get("file"):
         uploaded_file = request.FILES["file"]
@@ -320,34 +329,48 @@ async def upload_file_(request):
                     # Преобразуем DataFrame в список кортежей
                     data_to_insert = [tuple(x) for x in df.to_numpy()]
 
-                    # Слово, которое мы ищем
-                    search_words_1 = ('Запланировано', 'В торгах', 'Заключено', 'Исполнено', '')
+                    search_words_1 = json_object['statuses']["list"]
+                    search_words_1.append('')
+                    # Если нужно, преобразуем список в кортеж
+                    search_words_1 = tuple(search_words_1)
+
+                    # # Слово, которое мы ищем
+                    # search_words_1 = ('Запланировано', 'В торгах', 'Заключено', 'Исполнено', '')
 
                     # Проверяем, все ли кортежи, где третья колонка, содержат искомые слова
                     if not all(row[2] in search_words_1 for row in data_to_insert):
                         return JsonResponse({"message": "Некорректная колонка Статус в одной из строк!", "status": "error", 'success': True}, status=400)
 
-                    # Слово, которое мы ищем
-                    search_words_2 = ('2046100092', '2046102280')
+                    search_words_2 = json_object['statuses']["KTSSR"]
+                    # Если нужно, преобразуем список в кортеж
+                    search_words_2 = tuple(search_words_2)
+
+                    # # Слово, которое мы ищем
+                    # search_words_2 = ('2046100092', '2046102280')
 
                     # Проверяем, все ли кортежи, где третья колонка, содержат искомые слова
                     if not all(row[5] in search_words_2 for row in data_to_insert):
                         return JsonResponse({"message": "Некорректная колонка КЦСР в одной из строк!", "status": "error", 'success': True}, status=400)
 
-                    # Слово, которое мы ищем
-                    search_words_3 = ('Запрос котировок',
-                                        'ОАЭФ',
-                                        'п.1 ч.1 ст.93',
-                                        'п.4 ч.1 ст.93',
-                                        'п.8 ч.1 ст.93',
-                                        'п.9 ч.1 ст.93',
-                                        'п.12 ч.1 ст.93',
-                                        'п.23 ч.1 ст.93',
-                                        'п.25 ч.1 ст.93',
-                                        'п.29 ч.1 ст.93',
-                                        'п.32 ч.1 ст.93',
-                                        'часть 12 ст.93',
-                                        '')
+                    search_words_3 = json_object['statuses']["purchasing method"]
+                    search_words_3.append('')
+                    # Если нужно, преобразуем список в кортеж
+                    search_words_3 = tuple(search_words_3)
+
+                    # # Слово, которое мы ищем
+                    # search_words_3 = ('Запрос котировок',
+                    #                     'ОАЭФ',
+                    #                     'п.1 ч.1 ст.93',
+                    #                     'п.4 ч.1 ст.93',
+                    #                     'п.8 ч.1 ст.93',
+                    #                     'п.9 ч.1 ст.93',
+                    #                     'п.12 ч.1 ст.93',
+                    #                     'п.23 ч.1 ст.93',
+                    #                     'п.25 ч.1 ст.93',
+                    #                     'п.29 ч.1 ст.93',
+                    #                     'п.32 ч.1 ст.93',
+                    #                     'часть 12 ст.93',
+                    #                     '')
 
                     names_search_words_3 = [row[3].lower() for row in data_to_insert]
 

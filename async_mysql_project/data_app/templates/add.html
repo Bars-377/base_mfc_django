@@ -41,18 +41,6 @@
                     <label for="way">Способ закупки</label>
                     <select class="form-control" id="way" name="way" required title="Выберите cпособ закупки">
                         <option value="" {% if way == "" %}selected{% endif %}>Выберите cпособ закупки</option>
-                        <option value="Запрос котировок" {% if way == "Запрос котировок" %}selected{% endif %}>Запрос котировок</option>
-                        <option value="ОАЭФ" {% if way == "ОАЭФ" %}selected{% endif %}>ОАЭФ</option>
-                        <option value="п.1 ч.1 ст.93" {% if way == "п.1 ч.1 ст.93" %}selected{% endif %}>п.1 ч.1 ст.93</option>
-                        <option value="п.4 ч.1 ст.93" {% if way == "п.4 ч.1 ст.93" %}selected{% endif %}>п.4 ч.1 ст.93</option>
-                        <option value="п.8 ч.1 ст.93" {% if way == "п.8 ч.1 ст.93" %}selected{% endif %}>п.8 ч.1 ст.93</option>
-                        <option value="п.9 ч.1 ст.93" {% if way == "п.9 ч.1 ст.93" %}selected{% endif %}>п.9 ч.1 ст.93</option>
-                        <option value="п.12 ч.1 ст.93" {% if way == "п.12 ч.1 ст.93" %}selected{% endif %}>п.12 ч.1 ст.93</option>
-                        <option value="п.23 ч.1 ст.93" {% if way == "п.23 ч.1 ст.93" %}selected{% endif %}>п.23 ч.1 ст.93</option>
-                        <option value="п.25 ч.1 ст.93" {% if way == "п.25 ч.1 ст.93" %}selected{% endif %}>п.25 ч.1 ст.93</option>
-                        <option value="п.29 ч.1 ст.93" {% if way == "п.29 ч.1 ст.93" %}selected{% endif %}>п.29 ч.1 ст.93</option>
-                        <option value="п.32 ч.1 ст.93" {% if way == "п.32 ч.1 ст.93" %}selected{% endif %}>п.32 ч.1 ст.93</option>
-                        <option value="часть 12 ст.93" {% if way == "часть 12 ст.93" %}selected{% endif %}>часть 12 ст.93</option>
                     </select>
                 </div>
                 <div class="form-item">
@@ -331,6 +319,9 @@
         function checkMandatoryFields() {
             const statusSelect = document.getElementById('status');
             const selectedStatus = statusSelect.value;
+
+            const statusWay = document.getElementById('way');
+            const selectedStatusWay = statusWay.value;
         
             // Сначала парсим весь объект statuses
             const statuses = JSON.parse('{{ statuses|default:"{}"|safe }}');
@@ -339,9 +330,12 @@
             const statusesList = statuses.list || [];
             const statusesBlocking = statuses.blocking || [];
             const statusesMandatory = statuses.mandatory || [];
+            const statusesPurchasing_method = statuses.purchasing_method || [];
 
             const currentStatus = selectedStatus || "{{ status }}";
+            const currentWay = selectedStatusWay || "{{ way }}";
         
+            updateStatusSelect(statusWay, statusesPurchasing_method, currentWay);
             updateStatusSelect(statusSelect, statusesList, currentStatus);
             updateMandatoryFields(currentStatus, statusesMandatory);
             updateBlockingFields(currentStatus, statusesBlocking);

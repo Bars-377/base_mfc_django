@@ -42,7 +42,10 @@
                 <div class="form-item">
                     <label for="status">Статус</label>
                     <select class="form-control" id="status" onchange="checkMandatoryFields()" name="status" required title="Выберите статус">
-                        <option value="" {% if status == "" %}selected{% endif %}>Выберите статус</option>
+                        {% with current_status=service.status|default:status %}
+                        <option value="" {% if current_status == "" %}selected{% endif %}>Выберите статус</option>
+                        <option value="{{ current_status }}" {% if current_status != "" %}selected{% endif %}>{{ current_status }}
+                        {% endwith %}
                     </select>
                 </div>
                 <div class="form-item">
@@ -50,18 +53,7 @@
                     <select class="form-control" id="way" name="way" required title="Выберите cпособ закупки">
                         {% with current_way=service.way|default:way %}
                         <option value="" {% if current_way == "" %}selected{% endif %}>Выберите cпособ закупки</option>
-                        <option value="Запрос котировок" {% if current_way == "Запрос котировок" %}selected{% endif %}>Запрос котировок</option>
-                        <option value="ОАЭФ" {% if current_way == "ОАЭФ" %}selected{% endif %}>ОАЭФ</option>
-                        <option value="п.1 ч.1 ст.93" {% if current_way == "п.1 ч.1 ст.93" %}selected{% endif %}>п.1 ч.1 ст.93</option>
-                        <option value="п.4 ч.1 ст.93" {% if current_way == "п.4 ч.1 ст.93" %}selected{% endif %}>п.4 ч.1 ст.93</option>
-                        <option value="п.8 ч.1 ст.93" {% if current_way == "п.8 ч.1 ст.93" %}selected{% endif %}>п.8 ч.1 ст.93</option>
-                        <option value="п.9 ч.1 ст.93" {% if current_way == "п.9 ч.1 ст.93" %}selected{% endif %}>п.9 ч.1 ст.93</option>
-                        <option value="п.12 ч.1 ст.93" {% if current_way == "п.12 ч.1 ст.93" %}selected{% endif %}>п.12 ч.1 ст.93</option>
-                        <option value="п.23 ч.1 ст.93" {% if current_way == "п.23 ч.1 ст.93" %}selected{% endif %}>п.23 ч.1 ст.93</option>
-                        <option value="п.25 ч.1 ст.93" {% if current_way == "п.25 ч.1 ст.93" %}selected{% endif %}>п.25 ч.1 ст.93</option>
-                        <option value="п.29 ч.1 ст.93" {% if current_way == "п.29 ч.1 ст.93" %}selected{% endif %}>п.29 ч.1 ст.93</option>
-                        <option value="п.32 ч.1 ст.93" {% if current_way == "п.32 ч.1 ст.93" %}selected{% endif %}>п.32 ч.1 ст.93</option>
-                        <option value="часть 12 ст.93" {% if current_way == "часть 12 ст.93" %}selected{% endif %}>часть 12 ст.93</option>
+                        <option value="{{ current_way }}" {% if current_way != "" %}selected{% endif %}>{{ current_way }}
                         {% endwith %}
                     </select>
                 </div>
@@ -381,6 +373,9 @@
         function checkMandatoryFields() {
             const statusSelect = document.getElementById('status');
             const selectedStatus = statusSelect.value;
+
+            const statusWay = document.getElementById('way');
+            const selectedStatusWay = statusWay.value;
         
             // Сначала парсим весь объект statuses
             const statuses = JSON.parse('{{ statuses|default:"{}"|safe }}');
@@ -389,9 +384,12 @@
             const statusesList = statuses.list || [];
             const statusesBlocking = statuses.blocking || [];
             const statusesMandatory = statuses.mandatory || [];
+            const statusesPurchasing_method = statuses.purchasing_method || [];
 
             const currentStatus = selectedStatus || "{{ status }}";
+            const currentWay = selectedStatusWay || "{{ way }}";
         
+            updateStatusSelect(statusWay, statusesPurchasing_method, currentWay);
             updateStatusSelect(statusSelect, statusesList, currentStatus);
             updateMandatoryFields(currentStatus, statusesMandatory);
             updateBlockingFields(currentStatus, statusesBlocking);
