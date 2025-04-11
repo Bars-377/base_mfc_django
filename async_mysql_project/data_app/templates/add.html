@@ -32,14 +32,9 @@
                     <input type="text" class="form-control" id="name" name="name" maxlength="255" required title="Максимальное количество значений 255" value="{{ name }}">
                 </div>
                 <div class="form-item">
-                    <!-- <p>Текущий статус: <strong>{{ status }}</strong></p> -->
                     <label for="status">Статус</label>
                     <select class="form-control" id="status" onchange="checkMandatoryFields()" name="status" required title="Выберите статус">
                         <option value="" {% if status == "" %}selected{% endif %}>Выберите статус</option>
-                        <option value="Запланировано" {% if status == "Запланировано" %}selected{% endif %}>Запланировано</option>
-                        <option value="В торгах" {% if status == "В торгах" %}selected{% endif %}>В торгах</option>
-                        <option value="Заключено" {% if status == "Заключено" %}selected{% endif %}>Заключено</option>
-                        <option value="Исполнено" {% if status == "Исполнено" %}selected{% endif %}>Исполнено</option>
                     </select>
                 </div>
                 <div class="form-item">
@@ -334,58 +329,92 @@
         });
 
         function checkMandatoryFields() {
-            const status = document.getElementById('status').value;
-            console.log('Статус:', status);
+            const statusSelect = document.getElementById('status');
+            const selectedStatus = statusSelect.value;
+        
+            // Сначала парсим весь объект statuses
+            const statuses = JSON.parse('{{ statuses|default:"{}"|safe }}');
 
-            const isMandatory = status === 'Заключено' || status === 'Исполнено';
-            console.log('Обязательные поля:', isMandatory);
+            // Потом достаём нужные поля
+            const statusesList = statuses.list || [];
+            const statusesBlocking = statuses.blocking || [];
+            const statusesMandatory = statuses.mandatory || [];
 
-            // Получаем все обязательные поля
+            const currentStatus = selectedStatus || "{{ status }}";
+        
+            updateStatusSelect(statusSelect, statusesList, currentStatus);
+            updateMandatoryFields(currentStatus, statusesMandatory);
+            updateBlockingFields(currentStatus, statusesBlocking);
+        }
+
+        function updateStatusSelect(selectElement, statuses, currentStatus) {
+            selectElement.innerHTML = '';
+        
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Выберите статус';
+            if (currentStatus === '') defaultOption.selected = true;
+            selectElement.appendChild(defaultOption);
+        
+            statuses.forEach(status => {
+                const option = document.createElement('option');
+                option.value = status;
+                option.textContent = status;
+                if (status === currentStatus) option.selected = true;
+                selectElement.appendChild(option);
+            });
+        }
+        
+        function updateMandatoryFields(status, statusesMandatory) {
+            const isMandatory = statusesMandatory.includes(status);
             const mandatoryFields = ['counterparty', 'contract_number', 'contract_date', 'end_date'];
-
+        
             mandatoryFields.forEach(fieldId => {
                 const field = document.getElementById(fieldId);
+                if (!field) return;
+        
                 if (isMandatory) {
-                    field.setAttribute('required', 'required'); // Устанавливаем обязательность
-                    console.log(`Поле ${fieldId} установлено как обязательное`);
+                    field.setAttribute('required', 'required');
                 } else {
-                    field.removeAttribute('required'); // Убираем обязательность
-                    console.log(`Поле ${fieldId} убрано из обязательных`);
-                }
-            });
-
-            const isMandatoryTwo = status === 'В торгах' || status === 'Запланировано';
-            console.log('Обязательные поля:', isMandatoryTwo);
-
-            // Получаем все обязательные поля
-            const mandatoryFieldsTwo = ['date_january_one', 'sum_january_one',
-                                        'date_february', 'sum_february',
-                                        'date_march', 'sum_march',
-                                        'date_april', 'sum_april',
-                                        'date_may', 'sum_may',
-                                        'date_june', 'sum_june',
-                                        'date_july', 'sum_july',
-                                        'date_august', 'sum_august',
-                                        'date_september', 'sum_september',
-                                        'date_october', 'sum_october',
-                                        'date_november', 'sum_november',
-                                        'date_december', 'sum_december',
-                                        'date_january_two', 'sum_january_two'];
-
-            mandatoryFieldsTwo.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                if (isMandatoryTwo) {
-                    field.setAttribute('readonly', true); // Запрещаем редактирование
-                    field.style.backgroundColor = '#f0f0f0'; // Устанавливаем цвет фона (светло-серый)
-                    field.value = ''; // Очищаем значение поля
-                    console.log(`Поле ${fieldId} отключено для редактирования`);
-                } else {
-                    field.style.backgroundColor = ''; // Устанавливаем цвет фона (пусто)
-                    field.removeAttribute('readonly'); // Включаем редактирование
-                    console.log(`Поле ${fieldId} включено для редактирования`);
+                    field.removeAttribute('required');
                 }
             });
         }
+        
+        function updateBlockingFields(status, statusesBlocking) {
+            const isBlocked = statusesBlocking.includes(status);
+        
+            const fieldsToBlock = [
+                'date_january_one', 'sum_january_one',
+                'date_february', 'sum_february',
+                'date_march', 'sum_march',
+                'date_april', 'sum_april',
+                'date_may', 'sum_may',
+                'date_june', 'sum_june',
+                'date_july', 'sum_july',
+                'date_august', 'sum_august',
+                'date_september', 'sum_september',
+                'date_october', 'sum_october',
+                'date_november', 'sum_november',
+                'date_december', 'sum_december',
+                'date_january_two', 'sum_january_two'
+            ];
+        
+            fieldsToBlock.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field) return;
+        
+                if (isBlocked) {
+                    field.setAttribute('readonly', true);
+                    field.style.backgroundColor = '#f0f0f0';
+                    field.value = '';
+                } else {
+                    field.removeAttribute('readonly');
+                    field.style.backgroundColor = '';
+                }
+            });
+        }
+
     </script>
 
 </body>

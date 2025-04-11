@@ -134,6 +134,15 @@ async def calculate_total_budget(query_user, string):
 
 from django.conf import settings
 
+import os
+
+project_dir = os.path.dirname(os.path.abspath(__file__))
+folder_path = os.path.join(project_dir, '..', '..')
+folder_path = os.path.abspath(folder_path)
+# Открываем файл и загружаем данные
+with open(f'{folder_path}//general_settings.json', 'r', encoding='utf-8') as file:
+    json_object = json.load(file)
+
 async def skeleton(request, user,
                     contract_date, end_date,
                     keyword_one, keyword_two,
@@ -564,19 +573,19 @@ async def skeleton(request, user,
         'selected_KOSGU_user_two': KOSGU_user_two,
         'selected_end_date': end_date,
         'selected_column_one': selected_column_one,
-        'selected_column_one': selected_column_three,
+        'selected_column_three': selected_column_three,
         'selected_column_one_user': selected_column_one_user,
         'selected_column_one_user_two': selected_column_one_user_two,
         'selected_column_two': selected_column_two,
-        'selected_column_two': selected_column_four,
+        'selected_column_four': selected_column_four,
         'selected_column_two_user': selected_column_two_user,
         'selected_column_two_user_two': selected_column_two_user_two,
         'keyword_one': keyword_one,
-        'keyword_one': keyword_three,
+        'keyword_three': keyword_three,
         'keyword_one_user': keyword_one_user,
         'keyword_one_user_two': keyword_one_user_two,
         'keyword_two': keyword_two,
-        'keyword_two': keyword_four,
+        'keyword_four': keyword_four,
         'keyword_two_user': keyword_two_user,
         'keyword_two_user_two': keyword_two_user_two,
         'page': page,
@@ -595,7 +604,8 @@ async def skeleton(request, user,
         'service_KOSGU_user': service_KOSGU_user,
         'service_KOSGU_user_two': service_KOSGU_user_two,
         'service_end_date': service_end_date,
-        'connection_websocket': settings.DATABASES['default']['HOST']
+        'connection_websocket': settings.DATABASES['default']['HOST'],
+        'statuses': json.dumps(json_object['statuses'])
     }
 
     return await sync_to_async(render)(request, 'data_table.html', context)
@@ -850,7 +860,8 @@ async def add(request):
         'selected_contract_date': selected_contract_date,
         'selected_end_date': selected_end_date,
         'total_pages': total_pages,
-        'connection_websocket': settings.DATABASES['default']['HOST']
+        'connection_websocket': settings.DATABASES['default']['HOST'],
+        'statuses': json.dumps(json_object['statuses'])
     }
 
     return await sync_to_async(render)(request, 'add.html', context)
@@ -890,7 +901,8 @@ async def add_two(request):
         'selected_contract_date': selected_contract_date,
         'selected_end_date': selected_end_date,
         'total_pages': total_pages,
-        'connection_websocket': settings.DATABASES['default']['HOST']
+        'connection_websocket': settings.DATABASES['default']['HOST'],
+        'statuses': json.dumps(json_object['statuses'])
     }
 
     return await sync_to_async(render)(request, 'add_two.html', context)
@@ -936,7 +948,8 @@ async def edit(request, row_id):
         'selected_column_four': selected_column_four,
         'selected_contract_date': selected_contract_date,
         'selected_end_date': selected_end_date,
-        'connection_websocket': settings.DATABASES['default']['HOST']
+        'connection_websocket': settings.DATABASES['default']['HOST'],
+        'statuses': json.dumps(json_object['statuses'])
     }
 
     return await sync_to_async(render)(request, 'edit.html', context)
@@ -969,7 +982,8 @@ async def edit_user(request, row_id):
         'selected_column_two_user': selected_column_two_user,
         'selected_contract_date_user': selected_contract_date_user,
         'selected_end_date_user': selected_end_date_user,
-        'connection_websocket': settings.DATABASES['default']['HOST']
+        'connection_websocket': settings.DATABASES['default']['HOST'],
+        'statuses': json.dumps(json_object['statuses'])
     }
 
     return await sync_to_async(render)(request, 'edit_user.html', context)
@@ -1002,7 +1016,8 @@ async def edit_user_two(request, row_id):
         'selected_column_two_user': selected_column_two_user,
         'selected_contract_date_user': selected_contract_date_user,
         'selected_end_date_user': selected_end_date_user,
-        'connection_websocket': settings.DATABASES['default']['HOST']
+        'connection_websocket': settings.DATABASES['default']['HOST'],
+        'statuses': json.dumps(json_object['statuses'])
     }
 
     return await sync_to_async(render)(request, 'edit_user_two.html', context)
@@ -1080,7 +1095,8 @@ class ContractProcessor:
                             'keyword_two_user_two',
                             'selected_column_one_user_two',
                             'selected_column_two_user_two',
-                            'connection_websocket']
+                            'connection_websocket',
+                            'statuses']
         if isinstance(self.context_data, list):
             filter_kwargs = {f"{key}__iexact": value for key, value in self.context_data[0].items()}
         else:
@@ -1899,7 +1915,8 @@ async def update_record(request, row_id):
                 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
                 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
                 'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
-                'connection_websocket': settings.DATABASES['default']['HOST']
+                'connection_websocket': settings.DATABASES['default']['HOST'],
+                'statuses': json.dumps(json_object['statuses'])
             }
 
             processor = ContractProcessor(context_data, request)
@@ -1957,7 +1974,8 @@ async def update_record_user(request, row_id):
                 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
                 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
                 'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
-                'connection_websocket': settings.DATABASES['default']['HOST']
+                'connection_websocket': settings.DATABASES['default']['HOST'],
+                'statuses': json.dumps(json_object['statuses'])
             }
 
             from django.forms.models import model_to_dict
@@ -2035,7 +2053,8 @@ async def update_record_user_two(request, row_id):
                 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
                 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
                 'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
-                'connection_websocket': settings.DATABASES['default']['HOST']
+                'connection_websocket': settings.DATABASES['default']['HOST'],
+                'statuses': json.dumps(json_object['statuses'])
             }
 
             from django.forms.models import model_to_dict
@@ -2149,7 +2168,8 @@ async def add_record(request):
                 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
                 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
                 'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
-                'connection_websocket': settings.DATABASES['default']['HOST']
+                'connection_websocket': settings.DATABASES['default']['HOST'],
+                'statuses': json.dumps(json_object['statuses'])
             }
 
             processor = ContractProcessor(context_data, request)
@@ -2242,7 +2262,8 @@ async def delete_record(request, row_id):
                 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
                 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
                 'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
-                'connection_websocket': settings.DATABASES['default']['HOST']
+                'connection_websocket': settings.DATABASES['default']['HOST'],
+                'statuses': json.dumps(json_object['statuses'])
             }
 
             # Удаляем объект
@@ -2291,7 +2312,8 @@ async def delete_record_two(request, row_id):
                 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
                 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
                 'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
-                'connection_websocket': settings.DATABASES['default']['HOST']
+                'connection_websocket': settings.DATABASES['default']['HOST'],
+                'statuses': json.dumps(json_object['statuses'])
             }
 
             # Удаляем объект
@@ -2318,7 +2340,6 @@ from .upload_file import upload_file_
 async def upload_file(request):
     return await upload_file_(request)
 
-import os
 from django.http import FileResponse, Http404
 
 def download_file(request, filename):

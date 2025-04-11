@@ -450,8 +450,12 @@ function resetFilters() {
 	url.searchParams.set('end_date', 'No');
 	url.searchParams.set('keyword_one', '');
 	url.searchParams.set('keyword_two', '');
+	url.searchParams.set('keyword_three', '');
+	url.searchParams.set('keyword_four', '');
 	url.searchParams.set('selected_column_one', '');
 	url.searchParams.set('selected_column_two', '');
+	url.searchParams.set('selected_column_three', '');
+	url.searchParams.set('selected_column_four', '');
 	url.searchParams.set('total_pages_full', currentPage);
 
 	window.location.href = url; // Перезагружаем страницу с GET параметрами

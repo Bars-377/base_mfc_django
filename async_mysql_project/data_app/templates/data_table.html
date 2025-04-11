@@ -486,6 +486,33 @@
         </div>
     </div>
 
+    <script>
+        // Создаем строку с подстановкой значений
+        const query_string = `contract_date={{selected_contract_date}}&keyword_one={{keyword_one}}&keyword_two={{keyword_two}}&keyword_three={{keyword_three}}&keyword_four={{keyword_four}}&selected_column_one={{selected_column_one}}&selected_column_two={{selected_column_two}}&selected_column_three={{selected_column_three}}&selected_column_four={{selected_column_four}}&end_date={{selected_end_date}}`;
+        
+        // Функция для обновления всех ссылок с нужной query строкой
+        function updateLinks() {
+            // Получаем все ссылки, которые нужно обновить
+            const links = document.querySelectorAll('.pagination .page-link');
+            
+            // Обновляем href каждой ссылки
+            links.forEach(link => {
+                let url = link.getAttribute('href');
+                if (url) {
+                    // Добавляем query_string к каждому href
+                    if (url.includes('?')) {
+                        link.setAttribute('href', url + '&' + query_string);
+                    } else {
+                        link.setAttribute('href', url + '?' + query_string);
+                    }
+                }
+            });
+        }
+        
+        // Вызываем функцию обновления ссылок
+        document.addEventListener('DOMContentLoaded', updateLinks);
+    </script>
+
     <div class="container-fluid-neverov">
         <div style="display: flex; justify-content: flex-end;">
             <!-- Pagination Controls -->
@@ -493,8 +520,7 @@
                 <ul class="pagination">
                     {% if page > 1 %}
                     <li class="page-item">
-                        <a class="page-link"
-                            href="{% url 'data_table_view' %}?contract_date={{ selected_contract_date }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&end_date={{ selected_end_date }}&page={{ page|add:"-1" }}"
+                        <a class="page-link" href="{% url 'data_table_view' %}?page={{ page|add:"-1" }}"
                             aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
@@ -505,7 +531,7 @@
                     {% if start_page > 1 %}
                     <li class="page-item">
                         <a class="page-link"
-                            href="{% url 'data_table_view' %}?contract_date={{ selected_contract_date }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&end_date={{ selected_end_date }}&page=1">1</a>
+                            href="{% url 'data_table_view' %}?page=1">1</a>
                     </li>
                         {% if start_page > 2 %}
                         <li class="page-item disabled"><span class="page-link">...</span></li>
@@ -515,27 +541,20 @@
                     <!-- Show a few pages around the current page -->
                     {% for p in pages %}
                     <li class="page-item {% if p == page %}active{% endif %}">
-                        <a class="page-link"
-                            href="{% url 'data_table_view' %}?contract_date={{ selected_contract_date }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&end_date={{ selected_end_date }}&page={{ p }}">{{ p }}</a>
+                        <a class="page-link" href="{% url 'data_table_view' %}?page={{ p }}">{{ p }}</a>
                     </li>
                     {% endfor %}
 
                     <!-- Show "Next" button if not on the last page group -->
                     {% if end_page < total_pages %}
-                        {% load custom_tags %}
-                        {% if end_page < total_pages|subtract:1 %}
-                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                        {% endif %}
                     <li class="page-item">
-                        <a class="page-link"
-                            href="{% url 'data_table_view' %}?contract_date={{ selected_contract_date }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&end_date={{ selected_end_date }}&page={{ total_pages }}">{{ total_pages }}</a>
+                        <a class="page-link" href="{% url 'data_table_view' %}?page={{ total_pages }}">{{ total_pages }}</a>
                     </li>
                     {% endif %}
 
                     {% if page < total_pages %}
                     <li class="page-item">
-                        <a class="page-link"
-                            href="{% url 'data_table_view' %}?contract_date={{ selected_contract_date }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&end_date={{ selected_end_date }}&page={{ page|add:"1" }}"
+                        <a class="page-link" href="{% url 'data_table_view' %}?page={{ page|add:"1" }}"
                             aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>

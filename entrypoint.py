@@ -7,7 +7,7 @@ project_dir = os.path.dirname(os.path.abspath(__file__))
 folder_path = os.path.join(project_dir)
 folder_path = os.path.abspath(folder_path)
 # Открываем файл и загружаем данные
-with open(f'{folder_path}//connection.json', 'r') as file:
+with open(f'{folder_path}//general_settings.json', 'r', encoding='utf-8') as file:
     json_object = json.load(file)
 
 def check_tables_exist():
