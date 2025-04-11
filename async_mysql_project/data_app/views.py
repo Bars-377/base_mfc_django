@@ -135,12 +135,11 @@ async def calculate_total_budget(query_user, string):
 from django.conf import settings
 
 import os
-
 project_dir = os.path.dirname(os.path.abspath(__file__))
 folder_path = os.path.join(project_dir, '..', '..')
 folder_path = os.path.abspath(folder_path)
 # Открываем файл и загружаем данные
-with open(f'{folder_path}//general_settings.json', 'r', encoding='utf-8') as file:
+with open(f'{folder_path}//general_settings.json', 'r', encoding='utf-8-sig') as file:
     json_object = json.load(file)
 
 async def skeleton(request, user,
