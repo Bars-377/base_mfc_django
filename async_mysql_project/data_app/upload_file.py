@@ -352,7 +352,7 @@ async def upload_file_(request):
                     if not all(row[5] in search_words_2 for row in data_to_insert):
                         return JsonResponse({"message": "Некорректная колонка КЦСР в одной из строк!", "status": "error", 'success': True}, status=400)
 
-                    search_words_3 = json_object['statuses']["purchasing method"]
+                    search_words_3 = json_object['statuses']["purchasing_method"]
                     search_words_3.append('')
                     # Если нужно, преобразуем список в кортеж
                     search_words_3 = tuple(search_words_3)
