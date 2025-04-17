@@ -13,7 +13,8 @@ services:
       # - CELERY_BROKER_URL=redis://172.18.11.104:6379/0
       # - CELERY_RESULT_BACKEND=redis://172.18.11.104:6379/0
     command: >
-      sh -c ". /venv/bin/activate && python entrypoint.py && python start.py & python app_files.py"
+      sh -c ". /venv/bin/activate && python entrypoint.py && cd async_mysql_project &&
+            uvicorn async_mysql_project.asgi:application --host 0.0.0.0 --port 8400 & python backup_base.py & cd /app && python app_files.py"
     restart: unless-stopped
     mem_limit: 1g  # Ограничение памяти
 

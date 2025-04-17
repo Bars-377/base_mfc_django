@@ -159,11 +159,57 @@
 #         schedule.run_pending()
 #         time.sleep(60)
 
-import schedule
-import time
+# import schedule
+# import time
+# import django
+# import os
+# import sys
+
+# # Добавляем путь к проекту (если запускается не из корня)
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# sys.path.append(BASE_DIR)
+
+# # Настройка Django
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'async_mysql_project.settings')
+# django.setup()
+
+# from data_app.models import Services, Services_backup_one, Services_backup_two
+
+# def copy_service_to_model(service, backup_model):
+#     fields = {f.name: getattr(service, f.name) for f in service._meta.fields if f.name != 'id'}
+#     # Удаляем все записи в таблице backup_model (синхронно)
+#     backup_model.objects.all().delete()
+#     backup_model.objects.create(**fields)
+
+# def backup_to_backup_one():
+#     services = Services.objects.all()
+#     for service in services:
+#         copy_service_to_model(service, Services_backup_one)
+#     print("✅ Резервное копирование в Services_backup_one завершено!")
+
+# def backup_to_backup_two():
+#     services = Services.objects.all()
+#     for service in services:
+#         copy_service_to_model(service, Services_backup_two)
+#     print("✅ Резервное копирование в Services_backup_two завершено!")
+
+# if __name__ == '__main__':
+#     # Планирование задач
+#     schedule.every().tuesday.at("07:00").do(backup_to_backup_one)
+#     # schedule.every().wednesday.at("10:08").do(backup_to_backup_two)
+#     schedule.every().thursday.at("07:00").do(backup_to_backup_two)
+
+#     print("🚀 backup_base.py запущен!")
+
+#     while True:
+#         # print(f"Текущее время: {time.strftime('%H:%M:%S')}")
+#         schedule.run_pending()
+#         time.sleep(15)
+
 import django
 import os
 import sys
+import time
 
 # Добавляем путь к проекту (если запускается не из корня)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -178,30 +224,32 @@ from data_app.models import Services, Services_backup_one, Services_backup_two
 def copy_service_to_model(service, backup_model):
     fields = {f.name: getattr(service, f.name) for f in service._meta.fields if f.name != 'id'}
     # Удаляем все записи в таблице backup_model (синхронно)
-    backup_model.objects.all().delete()
     backup_model.objects.create(**fields)
 
 def backup_to_backup_one():
     services = Services.objects.all()
+    Services_backup_one.objects.all().delete()
     for service in services:
         copy_service_to_model(service, Services_backup_one)
     print("✅ Резервное копирование в Services_backup_one завершено!")
 
 def backup_to_backup_two():
     services = Services.objects.all()
+    Services_backup_two.objects.all().delete()
     for service in services:
         copy_service_to_model(service, Services_backup_two)
     print("✅ Резервное копирование в Services_backup_two завершено!")
 
 if __name__ == '__main__':
-    # Планирование задач
-    schedule.every().tuesday.at("07:00").do(backup_to_backup_one)
-    # schedule.every().wednesday.at("10:08").do(backup_to_backup_two)
-    schedule.every().thursday.at("07:00").do(backup_to_backup_two)
-
     print("🚀 backup_base.py запущен!")
-
+    # Здесь вы можете использовать бесконечный цикл для проверки времени
     while True:
-        # print(f"Текущее время: {time.strftime('%H:%M:%S')}")
-        schedule.run_pending()
-        time.sleep(15)
+        current_time = time.strftime('%A %H:%M')  # Получаем текущий день и время
+        print(current_time)
+        if current_time == "Tuesday 07:00":
+            backup_to_backup_one()
+            time.sleep(60)  # Ждем 60 секунд, чтобы избежать повторного выполнения
+        elif current_time == "Thursday 07:00":
+            backup_to_backup_two()
+            time.sleep(60)  # Ждем 60 секунд, чтобы избежать повторного выполнения
+        time.sleep(15)  # Проверяем каждые 15 секунд
