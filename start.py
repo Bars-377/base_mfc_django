@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
     venv_python = "python"  # для Docker
 
-    t1 = threading.Thread(target=run_command, args=(["uvicorn", "async_mysql_project.asgi:application", "--host", "127.0.0.1", "--port", "8400"], async_mysql_project_dir))
+    t1 = threading.Thread(target=run_command, args=(["uvicorn", "async_mysql_project.asgi:application", "--host", "0.0.0.0", "--port", "8400"], async_mysql_project_dir))
     t1.start()
     time.sleep(2)
 
