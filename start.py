@@ -8,9 +8,9 @@ def run_command(command, cwd=None):
 if __name__ == "__main__":
 
     # Укажите путь к директории, в которой нужно запустить t1
-    async_mysql_project_dir = r".\async_mysql_project"
+    async_mysql_project_dir = r"./async_mysql_project" # для Docker
 
-    venv_python = r".\venv\Scripts\python.exe"  # для Windows
+    venv_python = "python"  # для Docker
 
     t1 = threading.Thread(target=run_command, args=(["uvicorn", "async_mysql_project.asgi:application", "--host", "127.0.0.1", "--port", "8400"], async_mysql_project_dir))
     t1.start()
