@@ -2,12 +2,7 @@
 
 ## Настройка
 
-1. Открыть nginx.conf по пути \nginx-1.27.1\conf
-
-   Изменить в location proxy_pass на свой ip
-2. Открыть pyvenv.cfg по пути \venv
-
-   Изменить пути к интерпритаторам
+         general_settings.json
 
 ## Запуск
 
@@ -26,14 +21,13 @@
 
          python manage.py migrate
 
-4. Собираем статическией файлы для создания admin стилей и остального (берётся из STATICFILES_DIRS):
-         python manage.py collectstatic
+4. Запустить приложение:
 
-5. Запустить приложение:
+   Стандартный запуск:
 
-   Зайти в дирректорию async_mysql_project
+         python start_default.py
 
-         uvicorn async_mysql_project.asgi:application --host 127.0.0.1 --port 8500
+   Нестанларнтынй запуск через Docker
 
 ## Дополнительно:
 
@@ -45,16 +39,6 @@
 
       python -m pip install -r requirements.txt
 
-   PowerShell
+PowerShell:
 
-   python -m pip freeze | ForEach-Object { python -m pip uninstall -y $_ }
-
-## Celery:
-
-   Запуск воркера:
-
-      python -m celery -A app:celery worker --loglevel=INFO --pool=solo
-
-   Запуск фловера:
-
-      python -m celery -A app:celery flower
+      python -m pip freeze | ForEach-Object { python -m pip uninstall -y $_ }

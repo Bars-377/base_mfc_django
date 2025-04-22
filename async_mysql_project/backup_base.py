@@ -245,7 +245,7 @@ if __name__ == '__main__':
     # Здесь вы можете использовать бесконечный цикл для проверки времени
     while True:
         current_time = time.strftime('%A %H:%M')  # Получаем текущий день и время
-        print(current_time)
+        # print(current_time)
         if current_time == "Tuesday 07:00":
             backup_to_backup_one()
             time.sleep(60)  # Ждем 60 секунд, чтобы избежать повторного выполнения

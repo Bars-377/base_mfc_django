@@ -1072,6 +1072,9 @@ class ContractProcessor:
         from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
         # Создаем новый словарь с ключами, добавляющими '__iexact'
         # Удаляем ненужные ключи из self.context_data
+        page = self.context_data['page']
+        page_user = self.context_data['page_user']
+        page_user_two = self.context_data['page_user_two']
         keys_to_remove = ['execution',
                             'contract_balance',
                             'execution_contract_fact',
@@ -1102,6 +1105,9 @@ class ContractProcessor:
             for key in keys_to_remove:
                 self.context_data.pop(key, None)  # Удаляем ключ, если он существует
             filter_kwargs = {f"{key}__iexact": value for key, value in self.context_data.items()}
+            self.context_data['page'] = page
+            self.context_data['page_user'] = page_user
+            self.context_data['page_user_two'] = page_user_two
         try:
             Services_ = await sync_to_async(Services.objects.get, thread_sensitive=True)(**filter_kwargs)
             return False
@@ -1762,6 +1768,8 @@ class ContractProcessor:
 
         await self.message_service_add()
 
+        print(self.context_data)
+
         # Кодируем query-параметры
         query_string = urlencode(self.context_data)
 
@@ -2170,6 +2178,8 @@ async def add_record(request):
                 'connection_websocket': settings.DATABASES['default']['HOST'],
                 'statuses': json.dumps(json_object['statuses'])
             }
+
+            # print(context_data)
 
             processor = ContractProcessor(context_data, request)
             return await processor.process_add()
