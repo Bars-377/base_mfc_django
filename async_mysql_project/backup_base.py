@@ -210,6 +210,7 @@ import django
 import os
 import sys
 import time
+from datetime import datetime
 
 # Добавляем путь к проекту (если запускается не из корня)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -242,14 +243,15 @@ def backup_to_backup_two():
 
 if __name__ == '__main__':
     print("🚀 backup_base.py запущен!")
-    # Здесь вы можете использовать бесконечный цикл для проверки времени
+    # Бесконечный цикл для проверки текущего времени
     while True:
-        current_time = time.strftime('%A %H:%M')  # Получаем текущий день и время
+        now = datetime.now()
+        current_time = now.strftime('%A %H:%M')  # Получаем текущий день и время
         # print(current_time)
         if current_time == "Tuesday 07:00":
             backup_to_backup_one()
-            time.sleep(60)  # Ждем 60 секунд, чтобы избежать повторного выполнения
+            time.sleep(60)
         elif current_time == "Thursday 07:00":
             backup_to_backup_two()
-            time.sleep(60)  # Ждем 60 секунд, чтобы избежать повторного выполнения
-        time.sleep(15)  # Проверяем каждые 15 секунд
+            time.sleep(60)
+        time.sleep(15)
