@@ -2392,6 +2392,9 @@ async def backup_to_backup_one(request):
         # Выполняем bulk_create с помощью sync_to_async
         await sync_to_async(Services.objects.bulk_create)([Services(**fields) for fields in services_to_create])
 
+        processor = ContractProcessor(request)
+        await processor.count_dates()
+
         await log_user_action(request.user, 'Резервное копирование в Services из Services_backup_one завершено!')
         return JsonResponse({'success': True})
     except Exception as e:
@@ -2416,6 +2419,9 @@ async def backup_to_backup_two(request):
 
         # Выполняем bulk_create с помощью sync_to_async
         await sync_to_async(Services.objects.bulk_create)([Services(**fields) for fields in services_to_create])
+
+        processor = ContractProcessor(request)
+        await processor.count_dates()
 
         await log_user_action(request.user, 'Резервное копирование в Services из Services_backup_two завершено!')
         return JsonResponse({'success': True})
