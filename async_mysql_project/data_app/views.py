@@ -1768,7 +1768,7 @@ class ContractProcessor:
 
         await self.message_service_add()
 
-        print(self.context_data)
+        # print(self.context_data)
 
         # Кодируем query-параметры
         query_string = urlencode(self.context_data)
