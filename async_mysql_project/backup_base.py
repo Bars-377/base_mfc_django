@@ -221,37 +221,59 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'async_mysql_project.settings')
 django.setup()
 
 from data_app.models import Services, Services_backup_one, Services_backup_two
+from django.db import connection, OperationalError
 
 def copy_service_to_model(service, backup_model):
     fields = {f.name: getattr(service, f.name) for f in service._meta.fields if f.name != 'id'}
-    # Удаляем все записи в таблице backup_model (синхронно)
     backup_model.objects.create(**fields)
 
 def backup_to_backup_one():
-    services = Services.objects.all()
-    Services_backup_one.objects.all().delete()
-    for service in services:
-        copy_service_to_model(service, Services_backup_one)
-    print("✅ Резервное копирование в Services_backup_one завершено!")
+    try:
+        connection.close()  # Закрываем старое соединение, если оно "зависло"
+        print("🔄 Начинаем копирование в Services_backup_one...")
+        services = Services.objects.all()
+        Services_backup_one.objects.all().delete()
+        for service in services:
+            copy_service_to_model(service, Services_backup_one)
+        print("✅ Резервное копирование в Services_backup_one завершено!")
+    except OperationalError as e:
+        print(f"❌ Ошибка при копировании в backup_one: {e}")
+    finally:
+        connection.close()
 
 def backup_to_backup_two():
-    services = Services.objects.all()
-    Services_backup_two.objects.all().delete()
-    for service in services:
-        copy_service_to_model(service, Services_backup_two)
-    print("✅ Резервное копирование в Services_backup_two завершено!")
+    try:
+        connection.close()  # Закрываем старое соединение, если оно "зависло"
+        print("🔄 Начинаем копирование в Services_backup_two...")
+        services = Services.objects.all()
+        Services_backup_two.objects.all().delete()
+        for service in services:
+            copy_service_to_model(service, Services_backup_two)
+        print("✅ Резервное копирование в Services_backup_two завершено!")
+    except OperationalError as e:
+        print(f"❌ Ошибка при копировании в backup_two: {e}")
+    finally:
+        connection.close()
 
 if __name__ == '__main__':
     print("🚀 backup_base.py запущен!")
-    # Бесконечный цикл для проверки текущего времени
+
     while True:
         now = datetime.now()
-        current_time = now.strftime('%A %H:%M')  # Получаем текущий день и время
-        # print(current_time)
-        if current_time == "Tuesday 07:00":
-            backup_to_backup_one()
-            time.sleep(60)
-        elif current_time == "Thursday 07:00":
-            backup_to_backup_two()
-            time.sleep(60)
+        current_time = now.strftime('%A %H:%M')  # Пример: 'Tuesday 07:00'
+
+        try:
+            # if current_time == "Tuesday 07:00":
+            if current_time == "Monday 09:15":
+                backup_to_backup_one()
+                time.sleep(60)
+            # elif current_time == "Thursday 07:00":
+            elif current_time == "Monday 09:16":
+                backup_to_backup_two()
+                time.sleep(60)
+        except Exception as e:
+            print(f"❌ Необработанная ошибка в основном цикле: {e}")
+        finally:
+            connection.close()  # Чистим соединение, даже если ничего не делали
+
         time.sleep(15)
