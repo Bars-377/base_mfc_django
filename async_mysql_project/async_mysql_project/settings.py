@@ -160,9 +160,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'basemfcdjango',
-        'USER': 'root',
-        'PASSWORD': 'enigma1418',
+        'NAME': f'{json_object['base_name']}',
+        'USER': f'{json_object['user']}',
+        'PASSWORD': f'{json_object['password']}',
         'HOST': f'{json_object['host']}',  # или IP, если база на удалённом сервере
         'PORT': '3306',
         # 'OPTIONS': {

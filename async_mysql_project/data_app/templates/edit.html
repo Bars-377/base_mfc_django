@@ -67,8 +67,7 @@
                     <select class="form-control" id="KTSSR" name="KTSSR" required title="Выберите КЦСР">
                         {% with current_KTSSR=service.KTSSR|default:KTSSR %}
                         <option value="" {% if current_KTSSR == "" %}selected{% endif %}>Выберите КЦСР</option>
-                        <option value="2046102280" {% if current_KTSSR == "2046102280" %}selected{% endif %}>2046102280</option>
-                        <option value="2046100092" {% if current_KTSSR == "2046100092" %}selected{% endif %}>2046100092</option>
+                        <option value="{{ current_KTSSR }}" {% if current_KTSSR != "" %}selected{% endif %}>{{ current_KTSSR }}
                         {% endwith %}
                     </select>
                 </div>
@@ -77,28 +76,7 @@
                     <select class="form-control" id="KOSGU" name="KOSGU" required title="Выберите КОСГУ">
                         {% with current_KOSGU=service.KOSGU|default:KOSGU %}
                         <option value="" {% if current_KOSGU == "" %}selected{% endif %}>Выберите КОСГУ</option>
-                        <option value="221" {% if current_KOSGU == "221" %}selected{% endif %}>221</option>
-                        <option value="222" {% if current_KOSGU == "222" %}selected{% endif %}>222</option>
-                        <option value="223" {% if current_KOSGU == "223" %}selected{% endif %}>223</option>
-                        <option value="224" {% if current_KOSGU == "224" %}selected{% endif %}>224</option>
-                        <option value="225" {% if current_KOSGU == "225" %}selected{% endif %}>225</option>
-                        <option value="226" {% if current_KOSGU == "226" %}selected{% endif %}>226</option>
-                        <option value="227" {% if current_KOSGU == "227" %}selected{% endif %}>227</option>
-                        <option value="229" {% if current_KOSGU == "229" %}selected{% endif %}>229</option>
-                        <option value="267" {% if current_KOSGU == "267" %}selected{% endif %}>267</option>
-                        <option value="244" {% if current_KOSGU == "244" %}selected{% endif %}>244</option>
-                        <option value="310" {% if current_KOSGU == "310" %}selected{% endif %}>310</option>
-                        <option value="341" {% if current_KOSGU == "341" %}selected{% endif %}>341</option>
-                        <option value="342" {% if current_KOSGU == "342" %}selected{% endif %}>342</option>
-                        <option value="343" {% if current_KOSGU == "343" %}selected{% endif %}>343</option>
-                        <option value="344" {% if current_KOSGU == "344" %}selected{% endif %}>344</option>
-                        <option value="345" {% if current_KOSGU == "345" %}selected{% endif %}>345</option>
-                        <option value="346" {% if current_KOSGU == "346" %}selected{% endif %}>346</option>
-                        <option value="349" {% if current_KOSGU == "349" %}selected{% endif %}>349</option>
-                        <option value="221" {% if current_KOSGU == "221" %}selected{% endif %}>221</option>
-                        <option value="226" {% if current_KOSGU == "226" %}selected{% endif %}>226</option>
-                        <option value="310" {% if current_KOSGU == "310" %}selected{% endif %}>310</option>
-                        <option value="346" {% if current_KOSGU == "346" %}selected{% endif %}>346</option>
+                        <option value="{{ current_KOSGU }}" {% if current_KOSGU != "" %}selected{% endif %}>{{ current_KOSGU }}
                         {% endwith %}
                     </select>
                 </div>
@@ -107,13 +85,7 @@
                     <select class="form-control" id="DopFC" name="DopFC" required title="Выберите ДопФК">
                         {% with current_DopFC=service.DopFC|default:DopFC %}
                         <option value="" {% if current_DopFC == "" %}selected{% endif %}>Выберите ДопФК</option>
-                        <option value="0000000" {% if current_DopFC == "0000000" %}selected{% endif %}>0000000</option>
-                        <option value="0000021" {% if current_DopFC == "0000021" %}selected{% endif %}>0000021</option>
-                        <option value="0000025" {% if current_DopFC == "0000025" %}selected{% endif %}>0000025</option>
-                        <option value="0000026" {% if current_DopFC == "0000026" %}selected{% endif %}>0000026</option>
-                        <option value="0000028" {% if current_DopFC == "0000028" %}selected{% endif %}>0000028</option>
-                        <option value="0000029" {% if current_DopFC == "0000029" %}selected{% endif %}>0000029</option>
-                        <option value="0000150" {% if current_DopFC == "0000150" %}selected{% endif %}>0000150</option>
+                        <option value="{{ current_DopFC }}" {% if current_DopFC != "" %}selected{% endif %}>{{ current_DopFC }}
                         {% endwith %}
                     </select>
                 </div>
@@ -353,116 +325,11 @@
 
     <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-
     <script>
-        function formatDate(input) {
-            let value = input.value.replace(/\D/g, '');  // Убираем все нецифровые символы
-            if (value.length >= 5) {
-                input.value = value.substring(0, 2) + '.' + value.substring(2, 4) + (value.length > 4 ? '.' + value.substring(4, 8) : '');
-            } else if (value.length >= 3) {
-                input.value = value.substring(0, 2) + '.' + value.substring(2, 4);
-            } else {
-                input.value = value;
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            checkMandatoryFields(); // Вызов функции при загрузке страницы
-        });
-
-        function checkMandatoryFields() {
-            const statusSelect = document.getElementById('status');
-            const selectedStatus = statusSelect.value;
-
-            const statusWay = document.getElementById('way');
-            const selectedStatusWay = statusWay.value;
-        
-            // Сначала парсим весь объект statuses
-            const statuses = JSON.parse('{{ statuses|default:"{}"|safe }}');
-
-            // Потом достаём нужные поля
-            const statusesList = statuses.list || [];
-            const statusesBlocking = statuses.blocking || [];
-            const statusesMandatory = statuses.mandatory || [];
-            const statusesPurchasing_method = statuses.purchasing_method || [];
-
-            const currentStatus = selectedStatus || "{{ status }}";
-            const currentWay = selectedStatusWay || "{{ way }}";
-        
-            updateStatusSelect(statusWay, statusesPurchasing_method, currentWay);
-            updateStatusSelect(statusSelect, statusesList, currentStatus);
-            updateMandatoryFields(currentStatus, statusesMandatory);
-            updateBlockingFields(currentStatus, statusesBlocking);
-        }
-
-        function updateStatusSelect(selectElement, statuses, currentStatus) {
-            selectElement.innerHTML = '';
-        
-            const defaultOption = document.createElement('option');
-            defaultOption.value = '';
-            defaultOption.textContent = 'Выберите статус';
-            if (currentStatus === '') defaultOption.selected = true;
-            selectElement.appendChild(defaultOption);
-        
-            statuses.forEach(status => {
-                const option = document.createElement('option');
-                option.value = status;
-                option.textContent = status;
-                if (status === currentStatus) option.selected = true;
-                selectElement.appendChild(option);
-            });
-        }
-        
-        function updateMandatoryFields(status, statusesMandatory) {
-            const isMandatory = statusesMandatory.includes(status);
-            const mandatoryFields = ['counterparty', 'contract_number', 'contract_date', 'end_date'];
-        
-            mandatoryFields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                if (!field) return;
-        
-                if (isMandatory) {
-                    field.setAttribute('required', 'required');
-                } else {
-                    field.removeAttribute('required');
-                }
-            });
-        }
-        
-        function updateBlockingFields(status, statusesBlocking) {
-            const isBlocked = statusesBlocking.includes(status);
-        
-            const fieldsToBlock = [
-                'date_january_one', 'sum_january_one',
-                'date_february', 'sum_february',
-                'date_march', 'sum_march',
-                'date_april', 'sum_april',
-                'date_may', 'sum_may',
-                'date_june', 'sum_june',
-                'date_july', 'sum_july',
-                'date_august', 'sum_august',
-                'date_september', 'sum_september',
-                'date_october', 'sum_october',
-                'date_november', 'sum_november',
-                'date_december', 'sum_december',
-                'date_january_two', 'sum_january_two'
-            ];
-        
-            fieldsToBlock.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                if (!field) return;
-        
-                if (isBlocked) {
-                    field.setAttribute('readonly', true);
-                    field.style.backgroundColor = '#f0f0f0';
-                    field.value = '';
-                } else {
-                    field.removeAttribute('readonly');
-                    field.style.backgroundColor = '';
-                }
-            });
-        }
+        // Сначала парсим весь объект statuses
+        const statuses = {{ statuses|default:"{}"|safe }};
     </script>
+    <script src="{% static 'script_add_edit.js' %}"></script>  <!-- Добавьте ваш JS файл -->
 
 </body>
 
