@@ -326,61 +326,45 @@ async def upload_file_(request):
                     )
                     """
 
+                    def validate_column(data, allowed_values, column_index, column_name, json_key, allow_empty=False):
+                        """Валидирует значения столбца по допустимому списку"""
+                        values = json_object['statuses'][json_key]
+                        if allow_empty:
+                            values.append('')
+
+                        allowed_set = set(word.lower() for word in values)
+                        for index, row in enumerate(data):
+                            cell_value = str(row[column_index]).lower()
+                            if cell_value not in allowed_set:
+                                return JsonResponse({
+                                    "message": f"Некорректная колонка {column_name} в строке таблицы Excel {index + 1}. Содержание: {cell_value}",
+                                    "status": "error",
+                                    'success': True
+                                }, status=400)
+
                     # Преобразуем DataFrame в список кортежей
                     data_to_insert = [tuple(x) for x in df.to_numpy()]
 
-                    search_words_1 = json_object['statuses']["list"]
-                    search_words_1.append('')
-                    # Если нужно, преобразуем список в кортеж
-                    search_words_1 = tuple(search_words_1)
+                    # Валидация всех нужных колонок
+                    validation_rules = [
+                        {"index": 2, "name": "Статус закупки", "key": "list", "allow_empty": True},
+                        {"index": 5, "name": "КЦСР закупки", "key": "KTSSR", "allow_empty": False},
+                        {"index": 3, "name": "Способ закупки", "key": "purchasing_method", "allow_empty": True},
+                        {"index": 6, "name": "КОСГУ закупки", "key": "KOSGU", "allow_empty": False},
+                        {"index": 7, "name": "ДопФК закупки", "key": "DopFC", "allow_empty": False},
+                    ]
 
-                    # # Слово, которое мы ищем
-                    # search_words_1 = ('Запланировано', 'В торгах', 'Заключено', 'Исполнено', '')
-
-                    # Проверяем, все ли кортежи, где третья колонка, содержат искомые слова
-                    if not all(row[2] in search_words_1 for row in data_to_insert):
-                        return JsonResponse({"message": "Некорректная колонка Статус в одной из строк!", "status": "error", 'success': True}, status=400)
-
-                    search_words_2 = json_object['statuses']["KTSSR"]
-                    # Если нужно, преобразуем список в кортеж
-                    search_words_2 = tuple(search_words_2)
-
-                    # # Слово, которое мы ищем
-                    # search_words_2 = ('2046100092', '2046102280')
-
-                    # Проверяем, все ли кортежи, где третья колонка, содержат искомые слова
-                    if not all(row[5] in search_words_2 for row in data_to_insert):
-                        return JsonResponse({"message": "Некорректная колонка КЦСР в одной из строк!", "status": "error", 'success': True}, status=400)
-
-                    search_words_3 = json_object['statuses']["purchasing_method"]
-                    search_words_3.append('')
-                    # Если нужно, преобразуем список в кортеж
-                    search_words_3 = tuple(search_words_3)
-
-                    # # Слово, которое мы ищем
-                    # search_words_3 = ('Запрос котировок',
-                    #                     'ОАЭФ',
-                    #                     'п.1 ч.1 ст.93',
-                    #                     'п.4 ч.1 ст.93',
-                    #                     'п.8 ч.1 ст.93',
-                    #                     'п.9 ч.1 ст.93',
-                    #                     'п.12 ч.1 ст.93',
-                    #                     'п.23 ч.1 ст.93',
-                    #                     'п.25 ч.1 ст.93',
-                    #                     'п.29 ч.1 ст.93',
-                    #                     'п.32 ч.1 ст.93',
-                    #                     'часть 12 ст.93',
-                    #                     '')
-
-                    names_search_words_3 = [row[3].lower() for row in data_to_insert]
-
-                    for index, row in enumerate(names_search_words_3):
-                        if row not in [word.lower() for word in search_words_3]:
-                            return JsonResponse({
-                                "message": f"Некорректная колонка Способ закупки в строке таблицы Excel {index + 1}. Содержание: {row}",
-                                "status": "error",
-                                'success': True
-                            }, status=400)
+                    for rule in validation_rules:
+                        response = validate_column(
+                            data_to_insert,
+                            json_object['statuses'][rule['key']],
+                            rule['index'],
+                            rule['name'],
+                            rule['key'],
+                            allow_empty=rule['allow_empty']
+                        )
+                        if response:
+                            return response
 
                     context_data = [{
                         'name': row[1].lower() if isinstance(row[1], str) else row[1],

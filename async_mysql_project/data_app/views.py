@@ -1072,9 +1072,15 @@ class ContractProcessor:
         from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
         # Создаем новый словарь с ключами, добавляющими '__iexact'
         # Удаляем ненужные ключи из self.context_data
-        page = self.context_data['page']
-        page_user = self.context_data['page_user']
-        page_user_two = self.context_data['page_user_two']
+        if isinstance(self.context_data, list):
+            first_row = self.context_data[0]  # теперь это словарь
+            page = first_row.get('page', 1)
+            page_user = first_row.get('page_user', 1)
+            page_user_two = first_row.get('page_user_two', 1)
+        else:
+            page = self.context_data.get('page', 1)
+            page_user = self.context_data.get('page_user', 1)
+            page_user_two = self.context_data.get('page_user_two', 1)
         keys_to_remove = ['execution',
                             'contract_balance',
                             'execution_contract_fact',
