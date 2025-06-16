@@ -1239,9 +1239,16 @@ class ContractProcessor:
 
         return new_service
 
-    async def creation_new_service_two(self, new_service):
+    async def creation_new_service_two(self):
+
+        new_service_Two = Services_Two()
+        new_service_Three = Services_Three()
+
         """Формируем запрос для новой записи"""
         from django.db import connection
+
+        print('POPAL')
+        print(self.context_data)
 
         # Сделать синхронную функцию асинхронной
         @sync_to_async
@@ -1254,25 +1261,48 @@ class ContractProcessor:
                     ORDER BY CAST(id_id AS UNSIGNED) DESC
                     LIMIT 1
                 """)
-                row = cursor.fetchone()
-                return row
+                row_1 = cursor.fetchone()
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT id_id FROM services_three
+                    WHERE id_id REGEXP '^[0-9]+$'
+                    ORDER BY CAST(id_id AS UNSIGNED) DESC
+                    LIMIT 1
+                """)
+                row_2 = cursor.fetchone()
+                return row_1, row_2
 
-        latest_service = await get_latest_service()
+        latest_service_two, latest_service_three = await get_latest_service()
 
         try:
-            id_id = (int(latest_service[0]) + 1) if latest_service and latest_service[0].isdigit() else 1
+            id_id_two = (int(latest_service_two[0]) + 1) if latest_service_two and latest_service_two[0].isdigit() else 1
         except ValueError:
             # В случае некорректного значения установить id_id на 1
-            id_id = 1
+            id_id_two = 1
 
-        await log_user_action(self.request.user, f'Добавил запись в "Свод" с ID {id_id}')
+        try:
+            id_id_three = (int(latest_service_three[0]) + 1) if latest_service_three and latest_service_three[0].isdigit() else 1
+        except ValueError:
+            # В случае некорректного значения установить id_id на 1
+            id_id_three = 1
+
+        await log_user_action(self.request.user, f'Добавил запись в "Свод" с ID {id_id_two}')
 
         # Добавляем id_id в объект new_service
-        setattr(new_service, 'id_id', id_id)
+        setattr(new_service_Two, 'id_id', id_id_two)
         for key, value in self.context_data.items():
-            setattr(new_service, key, value)
+            setattr(new_service_Two, key, value)
 
-        return new_service
+        # Добавляем id_id в объект new_service
+        self.context_data.pop('name', None)
+        setattr(new_service_Three, 'id_id', id_id_three)
+        for key, value in self.context_data.items():
+            setattr(new_service_Three, key, value)
+
+        await sync_to_async(new_service_Two.save)()
+        await sync_to_async(new_service_Three.save)()
+
+        return
 
     async def calculate_contract_sums(self, KTSSR, status):
         """Получаем сумму всех contract_price либо execution_contract_fact"""
@@ -1505,6 +1535,11 @@ class ContractProcessor:
 
         # await self.count_dates()
         Services_Two_ = await self.validate_Services_Two()
+
+        if not await self.validate_Services_Two():
+            await self.validate_Services_Two_message()
+            return render(self.request, 'edit.html', self.context_data)
+
         await self.process_budget_services_two(Services_Two_)
 
         await self.message_service_update()
@@ -1627,6 +1662,10 @@ class ContractProcessor:
         """Продолжение предварительных вычислительних операций после обновления или добавления записей"""
 
         Services_Two_ = await self.validate_Services_Two()
+
+        if not await self.validate_Services_Two():
+            await self.validate_Services_Two_message()
+            return render(self.request, 'data_table.html', self.context_data)
 
         Services_Two_ = await self.Services_Two_save(Services_Two_)
 
@@ -1764,6 +1803,10 @@ class ContractProcessor:
 
         Services_Two_ = await self.validate_Services_Two()
 
+        if not await self.validate_Services_Two():
+            await self.validate_Services_Two_message()
+            return render(self.request, 'data_table.html', self.context_data)
+
         await self.Services_Two_save(Services_Two_)
 
         if not await self.total_costs(new_service):
@@ -1789,10 +1832,7 @@ class ContractProcessor:
 
     async def process_add_two(self):
 
-        new_service = Services_Two()
-        new_service = await self.creation_new_service_two(new_service)
-
-        await sync_to_async(new_service.save)()
+        await self.creation_new_service_two()
 
         await self.count_dates()
 
@@ -2204,23 +2244,23 @@ async def add_record_two(request):
                 'name': request.POST['name'],
                 'KOSGU': request.POST['KOSGU'],
                 'DopFC': request.POST['DopFC'],
-                'budget_limit': request.POST['budget_limit'],
-                'off_budget_limit': request.POST['off_budget_limit'],
-                'budget_planned': request.POST['budget_planned'],
-                'off_budget_planned': request.POST['off_budget_planned'],
-                'budget_bargaining': request.POST['budget_bargaining'],
-                'off_budget_bargaining': request.POST['off_budget_bargaining'],
-                'budget_concluded': request.POST['budget_concluded'],
-                'off_budget_concluded': request.POST['off_budget_concluded'],
-                'budget_completed': request.POST['budget_completed'],
-                'off_budget_completed': request.POST['off_budget_completed'],
-                'budget_execution': request.POST['budget_execution'],
-                'off_budget_execution': request.POST['off_budget_execution'],
-                'budget_remainder': request.POST['budget_remainder'],
-                'off_budget_remainder': request.POST['off_budget_remainder'],
-                'budget_plans': request.POST['budget_plans'],
-                'off_budget_plans': request.POST['off_budget_plans'],
-                'color': request.POST['color'],
+                # 'budget_limit': request.POST['budget_limit'],
+                # 'off_budget_limit': request.POST['off_budget_limit'],
+                # 'budget_planned': request.POST['budget_planned'],
+                # 'off_budget_planned': request.POST['off_budget_planned'],
+                # 'budget_bargaining': request.POST['budget_bargaining'],
+                # 'off_budget_bargaining': request.POST['off_budget_bargaining'],
+                # 'budget_concluded': request.POST['budget_concluded'],
+                # 'off_budget_concluded': request.POST['off_budget_concluded'],
+                # 'budget_completed': request.POST['budget_completed'],
+                # 'off_budget_completed': request.POST['off_budget_completed'],
+                # 'budget_execution': request.POST['budget_execution'],
+                # 'off_budget_execution': request.POST['off_budget_execution'],
+                # 'budget_remainder': request.POST['budget_remainder'],
+                # 'off_budget_remainder': request.POST['off_budget_remainder'],
+                # 'budget_plans': request.POST['budget_plans'],
+                # 'off_budget_plans': request.POST['off_budget_plans'],
+                # 'color': request.POST['color'],
                 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
                 'keyword_one': request.GET.get('keyword_one', None),
                 'keyword_two': request.GET.get('keyword_two', None),
@@ -2304,12 +2344,22 @@ async def delete_record_two(request, row_id):
     if request.method == 'POST':
         try:
             # Найдите запись по ID и обновите цвет
-            service = await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id)
+            service_two = await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id)
+            # service_three = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(KOSGU=service_two.KOSGU, DopFC=service_two.DopFC)
+
+            # Удаляем все записи из Services_Three по KOSGU и DopFC из Services_Two
+            await sync_to_async(
+                lambda: Services_Three.objects.filter(
+                    KOSGU=service_two.KOSGU,
+                    DopFC=service_two.DopFC
+                ).delete(),
+                thread_sensitive=True
+            )()
 
             # Возвращаем данные формы обратно в шаблон
             context_data = {
-                'KOSGU': service.KOSGU,
-                'DopFC': service.DopFC,
+                'KOSGU': service_two.KOSGU,
+                'DopFC': service_two.DopFC,
                 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
                 'keyword_one': request.GET.get('keyword_one', None),
                 'keyword_two': request.GET.get('keyword_two', None),
@@ -2332,15 +2382,15 @@ async def delete_record_two(request, row_id):
             }
 
             # Удаляем объект
-            await sync_to_async(service.delete, thread_sensitive=True)()
+            await sync_to_async(service_two.delete, thread_sensitive=True)()
 
             from django.forms.models import model_to_dict
-            service_dict = model_to_dict(service)
+            service_dict = model_to_dict(service_two)
 
-            await log_user_action(request.user, f'Удалил запись из "План-график": {service_dict}')
+            await log_user_action(request.user, f'Удалил запись из "Свод": {service_dict}')
 
             processor = ContractProcessor(context_data, request)
-            await processor.process_delete_two(service)
+            await processor.process_delete_two(service_two)
             return JsonResponse({'success': True}, status=200)
         except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
