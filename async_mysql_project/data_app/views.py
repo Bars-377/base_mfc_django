@@ -1081,6 +1081,7 @@ class ContractProcessor:
             page = self.context_data.get('page', 1)
             page_user = self.context_data.get('page_user', 1)
             page_user_two = self.context_data.get('page_user_two', 1)
+            statuses = self.context_data.get('statuses', None)
         keys_to_remove = ['execution',
                             'contract_balance',
                             'execution_contract_fact',
@@ -1114,6 +1115,7 @@ class ContractProcessor:
             self.context_data['page'] = page
             self.context_data['page_user'] = page_user
             self.context_data['page_user_two'] = page_user_two
+            self.context_data['statuses'] = statuses
         try:
             Services_ = await sync_to_async(Services.objects.get, thread_sensitive=True)(**filter_kwargs)
             return False
@@ -1889,88 +1891,123 @@ async def update_record(request, row_id):
         try:
             # Возвращаем данные формы обратно в шаблон
             context_data = {
+                # 'id_id': request.POST['id_id'],
+                # 'name': request.POST['name'],
+                # 'status': request.POST['status'],
+                # 'way': request.POST['way'],
+                # 'initiator': request.POST['initiator'],
+                # 'KTSSR': request.POST['KTSSR'],
+                # 'KOSGU': request.POST['KOSGU'],
+                # 'DopFC': request.POST['DopFC'],
+                # 'NMCC': request.POST['NMCC'],
+                # 'counterparty': request.POST['counterparty'],
+                # 'registration_number': request.POST['registration_number'],
+                # 'contract_number': request.POST['contract_number'],
+                # 'contract_date': request.POST['contract_date'],
+                # 'end_date': request.POST['end_date'],
+                # 'contract_price': request.POST['contract_price'],
+                # 'january_one': request.POST['january_one'],
+                # 'february': request.POST['february'],
+                # 'march': request.POST['march'],
+                # 'april': request.POST['april'],
+                # 'may': request.POST['may'],
+                # 'june': request.POST['june'],
+                # 'july': request.POST['july'],
+                # 'august': request.POST['august'],
+                # 'september': request.POST['september'],
+                # 'october': request.POST['october'],
+                # 'november': request.POST['november'],
+                # 'december': request.POST['december'],
+                # 'january_two': request.POST['january_two'],
+                # 'date_january_one': request.POST['date_january_one'],
+                # 'sum_january_one': request.POST['sum_january_one'],
+                # 'date_february': request.POST['date_february'],
+                # 'sum_february': request.POST['sum_february'],
+                # 'date_march': request.POST['date_march'],
+                # 'sum_march':  request.POST['sum_march'],
+                # 'date_april': request.POST['date_april'],
+                # 'sum_april': request.POST['sum_april'],
+                # 'date_may': request.POST['date_may'],
+                # 'sum_may': request.POST['sum_may'],
+                # 'date_june': request.POST['date_june'],
+                # 'sum_june': request.POST['sum_june'],
+                # 'date_july': request.POST['date_july'],
+                # 'sum_july': request.POST['sum_july'],
+                # 'date_august': request.POST['date_august'],
+                # 'sum_august': request.POST['sum_august'],
+                # 'date_september': request.POST['date_september'],
+                # 'sum_september': request.POST['sum_september'],
+                # 'date_october': request.POST['date_october'],
+                # 'sum_october': request.POST['sum_october'],
+                # 'date_november': request.POST['date_november'],
+                # 'sum_november': request.POST['sum_november'],
+                # 'date_december': request.POST['date_december'],
+                # 'sum_december': request.POST['sum_december'],
+                # 'date_january_two': request.POST['date_january_two'],
+                # 'sum_january_two': request.POST['sum_january_two'],
+                # 'execution': request.POST['execution'],
+                # 'contract_balance': request.POST['contract_balance'],
+                # 'execution_contract_fact': request.POST['execution_contract_fact'],
+                # 'execution_contract_plan': request.POST['execution_contract_plan'],
+                # 'saving': request.POST['saving'],
+                # 'color': request.POST['color'],
+
                 'service': await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id),
-                'id_id': request.POST['id_id'],
-                'name': request.POST['name'],
-                'status': request.POST['status'],
-                'way': request.POST['way'],
-                'initiator': request.POST['initiator'],
-                'KTSSR': request.POST['KTSSR'],
-                'KOSGU': request.POST['KOSGU'],
-                'DopFC': request.POST['DopFC'],
-                'NMCC': request.POST['NMCC'],
-                'counterparty': request.POST['counterparty'],
-                'registration_number': request.POST['registration_number'],
-                'contract_number': request.POST['contract_number'],
-                'contract_date': request.POST['contract_date'],
-                'end_date': request.POST['end_date'],
-                'contract_price': request.POST['contract_price'],
-                'january_one': request.POST['january_one'],
-                'february': request.POST['february'],
-                'march': request.POST['march'],
-                'april': request.POST['april'],
-                'may': request.POST['may'],
-                'june': request.POST['june'],
-                'july': request.POST['july'],
-                'august': request.POST['august'],
-                'september': request.POST['september'],
-                'october': request.POST['october'],
-                'november': request.POST['november'],
-                'december': request.POST['december'],
-                'january_two': request.POST['january_two'],
-                'date_january_one': request.POST['date_january_one'],
-                'sum_january_one': request.POST['sum_january_one'],
-                'date_february': request.POST['date_february'],
-                'sum_february': request.POST['sum_february'],
-                'date_march': request.POST['date_march'],
-                'sum_march':  request.POST['sum_march'],
-                'date_april': request.POST['date_april'],
-                'sum_april': request.POST['sum_april'],
-                'date_may': request.POST['date_may'],
-                'sum_may': request.POST['sum_may'],
-                'date_june': request.POST['date_june'],
-                'sum_june': request.POST['sum_june'],
-                'date_july': request.POST['date_july'],
-                'sum_july': request.POST['sum_july'],
-                'date_august': request.POST['date_august'],
-                'sum_august': request.POST['sum_august'],
-                'date_september': request.POST['date_september'],
-                'sum_september': request.POST['sum_september'],
-                'date_october': request.POST['date_october'],
-                'sum_october': request.POST['sum_october'],
-                'date_november': request.POST['date_november'],
-                'sum_november': request.POST['sum_november'],
-                'date_december': request.POST['date_december'],
-                'sum_december': request.POST['sum_december'],
-                'date_january_two': request.POST['date_january_two'],
-                'sum_january_two': request.POST['sum_january_two'],
-                'execution': request.POST['execution'],
-                'contract_balance': request.POST['contract_balance'],
-                'execution_contract_fact': request.POST['execution_contract_fact'],
-                'execution_contract_plan': request.POST['execution_contract_plan'],
-                'saving': request.POST['saving'],
-                'color': request.POST['color'],
                 'row_id': row_id,
                 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-                'keyword_one': request.GET.get('keyword_one', None),
-                'keyword_two': request.GET.get('keyword_two', None),
-                'selected_column_one': request.GET.get('selected_column_one', None),
-                'selected_column_two': request.GET.get('selected_column_two', None),
                 'page_user': 1,
-                'KOSGU_user': request.GET.get('KOSGU_user', None),
-                'keyword_one_user': request.GET.get('keyword_one_user', None),
-                'keyword_two_user': request.GET.get('keyword_two_user', None),
-                'selected_column_one_user': request.GET.get('selected_column_one_user', None),
-                'selected_column_two_user': request.GET.get('selected_column_two_user', None),
                 'page_user_two': 1,
-                'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
-                'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
-                'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
-                'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
                 'connection_websocket': settings.DATABASES['default']['HOST'],
-                'statuses': json.dumps(json_object['statuses'])
+                'statuses': json.dumps(json_object['statuses']),
+
+                # 'keyword_one': request.GET.get('keyword_one', None),
+                # 'keyword_two': request.GET.get('keyword_two', None),
+                # 'selected_column_one': request.GET.get('selected_column_one', None),
+                # 'selected_column_two': request.GET.get('selected_column_two', None),
+                # 'KOSGU_user': request.GET.get('KOSGU_user', None),
+                # 'keyword_one_user': request.GET.get('keyword_one_user', None),
+                # 'keyword_two_user': request.GET.get('keyword_two_user', None),
+                # 'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+                # 'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+                # 'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+                # 'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+                # 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+                # 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+                # 'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
             }
+
+            params = [
+                'keyword_one', 'keyword_two',
+                'selected_column_one', 'selected_column_two',
+                'KOSGU_user', 'keyword_one_user', 'keyword_two_user',
+                'selected_column_one_user', 'selected_column_two_user',
+                'KOSGU_user_two', 'keyword_one_user_two', 'keyword_two_user_two',
+                'selected_column_one_user_two', 'selected_column_two_user_two',
+            ]
+
+            params_post = [
+                'id_id', 'name', 'status', 'way', 'initiator', 'KTSSR',
+                'KOSGU', 'DopFC', 'NMCC', 'counterparty',
+                'registration_number', 'contract_number', 'contract_date',
+                'end_date', 'contract_price', 'january_one',
+                'february', 'march', 'april', 'may', 'june', 'july',
+                'august', 'september', 'october', 'november', 'december',
+                'january_two', 'date_january_one', 'sum_january_one',
+                'date_february', 'sum_february', 'date_march', 'sum_march',
+                'date_april', 'sum_april', 'date_may', 'sum_may',
+                'date_june', 'sum_june', 'date_july', 'sum_july',
+                'date_august', 'sum_august', 'date_september', 'sum_september',
+                'date_october', 'sum_october', 'date_november', 'sum_november',
+                'date_december', 'sum_december', 'date_january_two', 'sum_january_two',
+                'execution', 'contract_balance', 'execution_contract_fact', 'execution_contract_plan',
+                'saving', 'color',
+            ]
+
+            for param in params:
+                context_data[param] = request.GET.get(param, None)
+
+            for param in params_post:
+                context_data[param] = request.POST.get(param, None)
 
             processor = ContractProcessor(context_data, request)
             return await processor.process_update()
@@ -1986,50 +2023,77 @@ async def update_record_user(request, row_id):
         try:
             # Возвращаем данные формы обратно в шаблон
             context_data = {
+                # 'id_id': request.POST['id_id'],
+                # 'name': request.POST['name'],
+                # 'KOSGU': request.POST['KOSGU'],
+                # 'DopFC': request.POST['DopFC'],
+                # 'budget_limit': request.POST['budget_limit'],
+                # 'off_budget_limit': request.POST['off_budget_limit'],
+                # 'budget_planned': request.POST['budget_planned'],
+                # 'off_budget_planned': request.POST['off_budget_planned'],
+                # 'budget_bargaining': request.POST['budget_bargaining'],
+                # 'off_budget_bargaining': request.POST['off_budget_bargaining'],
+                # 'budget_concluded': request.POST['budget_concluded'],
+                # 'off_budget_concluded': request.POST['off_budget_concluded'],
+                # 'budget_completed': request.POST['budget_completed'],
+                # 'off_budget_completed': request.POST['off_budget_completed'],
+                # 'budget_completed': request.POST['budget_completed'],
+                # 'budget_execution': request.POST['budget_execution'],
+                # 'off_budget_execution': request.POST['off_budget_execution'],
+                # 'budget_remainder': request.POST['budget_remainder'],
+                # 'off_budget_remainder': request.POST['off_budget_remainder'],
+                # 'budget_plans': request.POST['budget_plans'],
+                # 'off_budget_plans': request.POST['off_budget_plans'],
+                # 'color': request.POST['color'],
+
                 'service_user': await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id),
-                'id_id': request.POST['id_id'],
-                'name': request.POST['name'],
-                'KOSGU': request.POST['KOSGU'],
-                'DopFC': request.POST['DopFC'],
-                'budget_limit': request.POST['budget_limit'],
-                'off_budget_limit': request.POST['off_budget_limit'],
-                'budget_planned': request.POST['budget_planned'],
-                'off_budget_planned': request.POST['off_budget_planned'],
-                'budget_bargaining': request.POST['budget_bargaining'],
-                'off_budget_bargaining': request.POST['off_budget_bargaining'],
-                'budget_concluded': request.POST['budget_concluded'],
-                'off_budget_concluded': request.POST['off_budget_concluded'],
-                'budget_completed': request.POST['budget_completed'],
-                'off_budget_completed': request.POST['off_budget_completed'],
-                'budget_completed': request.POST['budget_completed'],
-                'budget_execution': request.POST['budget_execution'],
-                'off_budget_execution': request.POST['off_budget_execution'],
-                'budget_remainder': request.POST['budget_remainder'],
-                'off_budget_remainder': request.POST['off_budget_remainder'],
-                'budget_plans': request.POST['budget_plans'],
-                'off_budget_plans': request.POST['off_budget_plans'],
-                'color': request.POST['color'],
                 'row_id_user': row_id,
                 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-                'keyword_one': request.GET.get('keyword_one', None),
-                'keyword_two': request.GET.get('keyword_two', None),
-                'selected_column_one': request.GET.get('selected_column_one', None),
-                'selected_column_two': request.GET.get('selected_column_two', None),
-                'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
-                'KOSGU_user': request.GET.get('KOSGU_user', None),
-                'keyword_one_user': request.GET.get('keyword_one_user', None),
-                'keyword_two_user': request.GET.get('keyword_two_user', None),
-                'selected_column_one_user': request.GET.get('selected_column_one_user', None),
-                'selected_column_two_user': request.GET.get('selected_column_two_user', None),
-                'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1,
-                'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
-                'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
-                'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
-                'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
                 'connection_websocket': settings.DATABASES['default']['HOST'],
-                'statuses': json.dumps(json_object['statuses'])
+                'statuses': json.dumps(json_object['statuses']),
+                'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
+                'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1,
+
+                # 'keyword_one': request.GET.get('keyword_one', None),
+                # 'keyword_two': request.GET.get('keyword_two', None),
+                # 'selected_column_one': request.GET.get('selected_column_one', None),
+                # 'selected_column_two': request.GET.get('selected_column_two', None),
+                # 'KOSGU_user': request.GET.get('KOSGU_user', None),
+                # 'keyword_one_user': request.GET.get('keyword_one_user', None),
+                # 'keyword_two_user': request.GET.get('keyword_two_user', None),
+                # 'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+                # 'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+                # 'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+                # 'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+                # 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+                # 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+                # 'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
             }
+
+            params = [
+                'keyword_one', 'keyword_two',
+                'selected_column_one', 'selected_column_two',
+                'KOSGU_user', 'keyword_one_user', 'keyword_two_user',
+                'selected_column_one_user', 'selected_column_two_user',
+                'KOSGU_user_two', 'keyword_one_user_two', 'keyword_two_user_two',
+                'selected_column_one_user_two', 'selected_column_two_user_two',
+            ]
+
+            params_post = [
+                'id_id', 'name', 'KOSGU', 'DopFC', 'budget_limit',
+                'off_budget_limit', 'budget_planned', 'off_budget_planned',
+                'budget_bargaining', 'off_budget_bargaining', 'budget_concluded',
+                'off_budget_concluded', 'budget_completed', 'off_budget_completed',
+                'budget_completed', 'budget_execution', 'off_budget_execution',
+                'budget_remainder', 'off_budget_remainder', 'budget_plans',
+                'off_budget_plans', 'color',
+            ]
+
+            for param in params:
+                context_data[param] = request.GET.get(param, None)
+
+            for param in params_post:
+                context_data[param] = request.POST.get(param, None)
 
             from django.forms.models import model_to_dict
             service_dict = model_to_dict(context_data['service_user'])
@@ -2075,40 +2139,64 @@ async def update_record_user_two(request, row_id):
         try:
             # Возвращаем данные формы обратно в шаблон
             context_data = {
+                # 'id_id': request.POST['id_id'],
+                # 'KOSGU': request.POST['KOSGU'],
+                # 'DopFC': request.POST['DopFC'],
+                # 'budget_planned_old': request.POST['budget_planned_old'],
+                # 'off_budget_planned_old': request.POST['off_budget_planned_old'],
+                # 'budget_planned': request.POST['budget_planned'],
+                # 'off_budget_planned': request.POST['off_budget_planned'],
+                # 'budget_concluded': request.POST['budget_concluded'],
+                # 'off_budget_concluded': request.POST['off_budget_concluded'],
+                # 'budget_remainder': request.POST['budget_remainder'],
+                # 'off_budget_remainder': request.POST['off_budget_remainder'],
+                # 'color': request.POST['color'],
+
                 'service_user_two': await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(id=row_id),
-                'id_id': request.POST['id_id'],
-                'KOSGU': request.POST['KOSGU'],
-                'DopFC': request.POST['DopFC'],
-                'budget_planned_old': request.POST['budget_planned_old'],
-                'off_budget_planned_old': request.POST['off_budget_planned_old'],
-                'budget_planned': request.POST['budget_planned'],
-                'off_budget_planned': request.POST['off_budget_planned'],
-                'budget_concluded': request.POST['budget_concluded'],
-                'off_budget_concluded': request.POST['off_budget_concluded'],
-                'budget_remainder': request.POST['budget_remainder'],
-                'off_budget_remainder': request.POST['off_budget_remainder'],
-                'color': request.POST['color'],
                 'row_id_user_two': row_id,
                 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-                'keyword_one': request.GET.get('keyword_one', None),
-                'keyword_two': request.GET.get('keyword_two', None),
-                'selected_column_one': request.GET.get('selected_column_one', None),
-                'selected_column_two': request.GET.get('selected_column_two', None),
-                'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
-                'KOSGU_user': request.GET.get('KOSGU_user', None),
-                'keyword_one_user': request.GET.get('keyword_one_user', None),
-                'keyword_two_user': request.GET.get('keyword_two_user', None),
-                'selected_column_one_user': request.GET.get('selected_column_one_user', None),
-                'selected_column_two_user': request.GET.get('selected_column_two_user', None),
-                'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1,
-                'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
-                'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
-                'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
-                'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
                 'connection_websocket': settings.DATABASES['default']['HOST'],
-                'statuses': json.dumps(json_object['statuses'])
+                'statuses': json.dumps(json_object['statuses']),
+                'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
+                'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1,
+
+                # 'keyword_one': request.GET.get('keyword_one', None),
+                # 'keyword_two': request.GET.get('keyword_two', None),
+                # 'selected_column_one': request.GET.get('selected_column_one', None),
+                # 'selected_column_two': request.GET.get('selected_column_two', None),
+                # 'KOSGU_user': request.GET.get('KOSGU_user', None),
+                # 'keyword_one_user': request.GET.get('keyword_one_user', None),
+                # 'keyword_two_user': request.GET.get('keyword_two_user', None),
+                # 'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+                # 'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+                # 'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+                # 'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+                # 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+                # 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+                # 'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
             }
+
+            params = [
+                'keyword_one', 'keyword_two',
+                'selected_column_one', 'selected_column_two',
+                'KOSGU_user', 'keyword_one_user', 'keyword_two_user',
+                'selected_column_one_user', 'selected_column_two_user',
+                'KOSGU_user_two', 'keyword_one_user_two', 'keyword_two_user_two',
+                'selected_column_one_user_two', 'selected_column_two_user_two',
+            ]
+
+            params_post = [
+                'id_id', 'KOSGU', 'DopFC', 'budget_planned_old',
+                'off_budget_planned_old', 'budget_planned', 'off_budget_planned',
+                'budget_concluded', 'off_budget_concluded', 'budget_remainder',
+                'off_budget_remainder', 'color',
+            ]
+
+            for param in params:
+                context_data[param] = request.GET.get(param, None)
+
+            for param in params_post:
+                context_data[param] = request.POST.get(param, None)
 
             from django.forms.models import model_to_dict
             service_dict = model_to_dict(context_data['service_user_two'])
@@ -2145,87 +2233,122 @@ async def add_record(request):
         try:
             # Возвращаем данные формы обратно в шаблон
             context_data = {
-                'name': request.POST['name'],
-                'status': request.POST['status'],
-                'way': request.POST['way'],
-                'initiator': request.POST['initiator'],
-                'KTSSR': request.POST['KTSSR'],
-                'KOSGU': request.POST['KOSGU'],
-                'DopFC': request.POST['DopFC'],
-                'NMCC': request.POST['NMCC'],
-                'counterparty': request.POST['counterparty'],
-                'registration_number': request.POST['registration_number'],
-                'contract_number': request.POST['contract_number'],
-                'contract_date': request.POST['contract_date'],
-                'end_date': request.POST['end_date'],
-                'contract_price': request.POST['contract_price'],
-                'january_one': request.POST['january_one'],
-                'february': request.POST['february'],
-                'march': request.POST['march'],
-                'april': request.POST['april'],
-                'may': request.POST['may'],
-                'june': request.POST['june'],
-                'july': request.POST['july'],
-                'august': request.POST['august'],
-                'september': request.POST['september'],
-                'october': request.POST['october'],
-                'november': request.POST['november'],
-                'december': request.POST['december'],
-                'january_two': request.POST['january_two'],
-                'date_january_one': request.POST['date_january_one'],
-                'sum_january_one': request.POST['sum_january_one'],
-                'date_february': request.POST['date_february'],
-                'sum_february': request.POST['sum_february'],
-                'date_march': request.POST['date_march'],
-                'sum_march':  request.POST['sum_march'],
-                'date_april': request.POST['date_april'],
-                'sum_april': request.POST['sum_april'],
-                'date_may': request.POST['date_may'],
-                'sum_may': request.POST['sum_may'],
-                'date_june': request.POST['date_june'],
-                'sum_june': request.POST['sum_june'],
-                'date_july': request.POST['date_july'],
-                'sum_july': request.POST['sum_july'],
-                'date_august': request.POST['date_august'],
-                'sum_august': request.POST['sum_august'],
-                'date_september': request.POST['date_september'],
-                'sum_september': request.POST['sum_september'],
-                'date_october': request.POST['date_october'],
-                'sum_october': request.POST['sum_october'],
-                'date_november': request.POST['date_november'],
-                'sum_november': request.POST['sum_november'],
-                'date_december': request.POST['date_december'],
-                'sum_december': request.POST['sum_december'],
-                'date_january_two': request.POST['date_january_two'],
-                'sum_january_two': request.POST['sum_january_two'],
-                'execution': request.POST['execution'],
-                'contract_balance': request.POST['contract_balance'],
-                'execution_contract_fact': request.POST['execution_contract_fact'],
-                'execution_contract_plan': request.POST['execution_contract_plan'],
-                'saving': request.POST['saving'],
-                'color': request.POST['color'],
+                # 'name': request.POST['name'],
+                # 'status': request.POST['status'],
+                # 'way': request.POST['way'],
+                # 'initiator': request.POST['initiator'],
+                # 'KTSSR': request.POST['KTSSR'],
+                # 'KOSGU': request.POST['KOSGU'],
+                # 'DopFC': request.POST['DopFC'],
+                # 'NMCC': request.POST['NMCC'],
+                # 'counterparty': request.POST['counterparty'],
+                # 'registration_number': request.POST['registration_number'],
+                # 'contract_number': request.POST['contract_number'],
+                # 'contract_date': request.POST['contract_date'],
+                # 'end_date': request.POST['end_date'],
+                # 'contract_price': request.POST['contract_price'],
+                # 'january_one': request.POST['january_one'],
+                # 'february': request.POST['february'],
+                # 'march': request.POST['march'],
+                # 'april': request.POST['april'],
+                # 'may': request.POST['may'],
+                # 'june': request.POST['june'],
+                # 'july': request.POST['july'],
+                # 'august': request.POST['august'],
+                # 'september': request.POST['september'],
+                # 'october': request.POST['october'],
+                # 'november': request.POST['november'],
+                # 'december': request.POST['december'],
+                # 'january_two': request.POST['january_two'],
+                # 'date_january_one': request.POST['date_january_one'],
+                # 'sum_january_one': request.POST['sum_january_one'],
+                # 'date_february': request.POST['date_february'],
+                # 'sum_february': request.POST['sum_february'],
+                # 'date_march': request.POST['date_march'],
+                # 'sum_march':  request.POST['sum_march'],
+                # 'date_april': request.POST['date_april'],
+                # 'sum_april': request.POST['sum_april'],
+                # 'date_may': request.POST['date_may'],
+                # 'sum_may': request.POST['sum_may'],
+                # 'date_june': request.POST['date_june'],
+                # 'sum_june': request.POST['sum_june'],
+                # 'date_july': request.POST['date_july'],
+                # 'sum_july': request.POST['sum_july'],
+                # 'date_august': request.POST['date_august'],
+                # 'sum_august': request.POST['sum_august'],
+                # 'date_september': request.POST['date_september'],
+                # 'sum_september': request.POST['sum_september'],
+                # 'date_october': request.POST['date_october'],
+                # 'sum_october': request.POST['sum_october'],
+                # 'date_november': request.POST['date_november'],
+                # 'sum_november': request.POST['sum_november'],
+                # 'date_december': request.POST['date_december'],
+                # 'sum_december': request.POST['sum_december'],
+                # 'date_january_two': request.POST['date_january_two'],
+                # 'sum_january_two': request.POST['sum_january_two'],
+                # 'execution': request.POST['execution'],
+                # 'contract_balance': request.POST['contract_balance'],
+                # 'execution_contract_fact': request.POST['execution_contract_fact'],
+                # 'execution_contract_plan': request.POST['execution_contract_plan'],
+                # 'saving': request.POST['saving'],
+                # 'color': request.POST['color'],
+
                 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-                'keyword_one': request.GET.get('keyword_one', None),
-                'keyword_two': request.GET.get('keyword_two', None),
-                'selected_column_one': request.GET.get('selected_column_one', None),
-                'selected_column_two': request.GET.get('selected_column_two', None),
                 'page_user': 1,
-                'KOSGU_user': request.GET.get('KOSGU_user', None),
-                'keyword_one_user': request.GET.get('keyword_one_user', None),
-                'keyword_two_user': request.GET.get('keyword_two_user', None),
-                'selected_column_one_user': request.GET.get('selected_column_one_user', None),
-                'selected_column_two_user': request.GET.get('selected_column_two_user', None),
                 'page_user_two': 1,
-                'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
-                'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
-                'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
-                'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
                 'connection_websocket': settings.DATABASES['default']['HOST'],
-                'statuses': json.dumps(json_object['statuses'])
+                'statuses': json.dumps(json_object['statuses']),
+
+                # 'keyword_one': request.GET.get('keyword_one', None),
+                # 'keyword_two': request.GET.get('keyword_two', None),
+                # 'selected_column_one': request.GET.get('selected_column_one', None),
+                # 'selected_column_two': request.GET.get('selected_column_two', None),
+                # 'KOSGU_user': request.GET.get('KOSGU_user', None),
+                # 'keyword_one_user': request.GET.get('keyword_one_user', None),
+                # 'keyword_two_user': request.GET.get('keyword_two_user', None),
+                # 'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+                # 'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+                # 'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+                # 'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+                # 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+                # 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+                # 'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
             }
 
-            # print(context_data)
+            params = [
+                'keyword_one', 'keyword_two',
+                'selected_column_one', 'selected_column_two',
+                'KOSGU_user', 'keyword_one_user', 'keyword_two_user',
+                'selected_column_one_user', 'selected_column_two_user',
+                'KOSGU_user_two', 'keyword_one_user_two', 'keyword_two_user_two',
+                'selected_column_one_user_two', 'selected_column_two_user_two',
+            ]
+
+            params_post = [
+                'name', 'status', 'way', 'initiator', 'KTSSR',
+                'KOSGU', 'DopFC', 'NMCC', 'counterparty',
+                'registration_number', 'contract_number', 'contract_date',
+                'end_date', 'contract_price', 'january_one',
+                'february', 'march', 'april', 'may', 'june', 'july',
+                'august', 'september', 'october', 'november', 'december',
+                'january_two', 'date_january_one', 'sum_january_one',
+                'date_february', 'sum_february', 'date_march', 'sum_march',
+                'date_april', 'sum_april', 'date_may', 'sum_may',
+                'date_june', 'sum_june', 'date_july', 'sum_july',
+                'date_august', 'sum_august', 'date_september', 'sum_september',
+                'date_october', 'sum_october', 'date_november', 'sum_november',
+                'date_december', 'sum_december', 'date_january_two', 'sum_january_two',
+                'execution', 'contract_balance', 'execution_contract_fact', 'execution_contract_plan',
+                'saving', 'color',
+            ]
+
+            for param in params:
+                context_data[param] = request.GET.get(param, None)
+
+            for param in params_post:
+                context_data[param] = request.POST.get(param, None)
+
+            # print('NEVEROV_NEVEROV', context_data)
 
             processor = ContractProcessor(context_data, request)
             return await processor.process_add()
@@ -2241,9 +2364,10 @@ async def add_record_two(request):
         try:
             # Возвращаем данные формы обратно в шаблон
             context_data = {
-                'name': request.POST['name'],
-                'KOSGU': request.POST['KOSGU'],
-                'DopFC': request.POST['DopFC'],
+                # 'name': request.POST['name'],
+                # 'KOSGU': request.POST['KOSGU'],
+                # 'DopFC': request.POST['DopFC'],
+
                 # 'budget_limit': request.POST['budget_limit'],
                 # 'off_budget_limit': request.POST['off_budget_limit'],
                 # 'budget_planned': request.POST['budget_planned'],
@@ -2262,23 +2386,43 @@ async def add_record_two(request):
                 # 'off_budget_plans': request.POST['off_budget_plans'],
                 # 'color': request.POST['color'],
                 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-                'keyword_one': request.GET.get('keyword_one', None),
-                'keyword_two': request.GET.get('keyword_two', None),
-                'selected_column_one': request.GET.get('selected_column_one', None),
-                'selected_column_two': request.GET.get('selected_column_two', None),
                 'page_user': 1,
-                'KOSGU_user': request.GET.get('KOSGU_user', None),
-                'keyword_one_user': request.GET.get('keyword_one_user', None),
-                'keyword_two_user': request.GET.get('keyword_two_user', None),
-                'selected_column_one_user': request.GET.get('selected_column_one_user', None),
-                'selected_column_two_user': request.GET.get('selected_column_two_user', None),
                 'page_user_two': 1,
-                'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
-                'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
-                'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
-                'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
+
+                # 'keyword_one': request.GET.get('keyword_one', None),
+                # 'keyword_two': request.GET.get('keyword_two', None),
+                # 'selected_column_one': request.GET.get('selected_column_one', None),
+                # 'selected_column_two': request.GET.get('selected_column_two', None),
+                # 'KOSGU_user': request.GET.get('KOSGU_user', None),
+                # 'keyword_one_user': request.GET.get('keyword_one_user', None),
+                # 'keyword_two_user': request.GET.get('keyword_two_user', None),
+                # 'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+                # 'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+                # 'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+                # 'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+                # 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+                # 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+                # 'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
             }
+
+            params = [
+                'keyword_one', 'keyword_two',
+                'selected_column_one', 'selected_column_two',
+                'KOSGU_user', 'keyword_one_user', 'keyword_two_user',
+                'selected_column_one_user', 'selected_column_two_user',
+                'KOSGU_user_two', 'keyword_one_user_two', 'keyword_two_user_two',
+                'selected_column_one_user_two', 'selected_column_two_user_two',
+            ]
+
+            params_post = [
+                'name', 'KOSGU', 'DopFC',
+            ]
+
+            for param in params:
+                context_data[param] = request.GET.get(param, None)
+
+            for param in params_post:
+                context_data[param] = request.POST.get(param, None)
 
             processor = ContractProcessor(context_data, request)
             return await processor.process_add_two()
@@ -2300,26 +2444,39 @@ async def delete_record(request, row_id):
             context_data = {
                 'KOSGU': service.KOSGU,
                 'DopFC': service.DopFC,
-                'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-                'keyword_one': request.GET.get('keyword_one', None),
-                'keyword_two': request.GET.get('keyword_two', None),
-                'selected_column_one': request.GET.get('selected_column_one', None),
-                'selected_column_two': request.GET.get('selected_column_two', None),
                 'page_user': 1,
-                'KOSGU_user': request.GET.get('KOSGU_user', None),
-                'keyword_one_user': request.GET.get('keyword_one_user', None),
-                'keyword_two_user': request.GET.get('keyword_two_user', None),
-                'selected_column_one_user': request.GET.get('selected_column_one_user', None),
-                'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+                'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
                 'page_user_two': 1,
-                'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
-                'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
-                'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
-                'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
                 'connection_websocket': settings.DATABASES['default']['HOST'],
-                'statuses': json.dumps(json_object['statuses'])
+                'statuses': json.dumps(json_object['statuses']),
+
+                # 'keyword_one': request.GET.get('keyword_one', None),
+                # 'keyword_two': request.GET.get('keyword_two', None),
+                # 'selected_column_one': request.GET.get('selected_column_one', None),
+                # 'selected_column_two': request.GET.get('selected_column_two', None),
+                # 'KOSGU_user': request.GET.get('KOSGU_user', None),
+                # 'keyword_one_user': request.GET.get('keyword_one_user', None),
+                # 'keyword_two_user': request.GET.get('keyword_two_user', None),
+                # 'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+                # 'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+                # 'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+                # 'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+                # 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+                # 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+                # 'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
             }
+
+            params = [
+                'keyword_one', 'keyword_two',
+                'selected_column_one', 'selected_column_two',
+                'KOSGU_user', 'keyword_one_user', 'keyword_two_user',
+                'selected_column_one_user', 'selected_column_two_user',
+                'KOSGU_user_two', 'keyword_one_user_two', 'keyword_two_user_two',
+                'selected_column_one_user_two', 'selected_column_two_user_two',
+            ]
+
+            for param in params:
+                context_data[param] = request.GET.get(param, None)
 
             # Удаляем объект
             await sync_to_async(service.delete, thread_sensitive=True)()
@@ -2361,25 +2518,38 @@ async def delete_record_two(request, row_id):
                 'KOSGU': service_two.KOSGU,
                 'DopFC': service_two.DopFC,
                 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-                'keyword_one': request.GET.get('keyword_one', None),
-                'keyword_two': request.GET.get('keyword_two', None),
-                'selected_column_one': request.GET.get('selected_column_one', None),
-                'selected_column_two': request.GET.get('selected_column_two', None),
                 'page_user': 1,
-                'KOSGU_user': request.GET.get('KOSGU_user', None),
-                'keyword_one_user': request.GET.get('keyword_one_user', None),
-                'keyword_two_user': request.GET.get('keyword_two_user', None),
-                'selected_column_one_user': request.GET.get('selected_column_one_user', None),
-                'selected_column_two_user': request.GET.get('selected_column_two_user', None),
                 'page_user_two': 1,
-                'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
-                'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
-                'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
-                'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
-                'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None),
                 'connection_websocket': settings.DATABASES['default']['HOST'],
-                'statuses': json.dumps(json_object['statuses'])
+                'statuses': json.dumps(json_object['statuses']),
+
+                # 'keyword_one': request.GET.get('keyword_one', None),
+                # 'keyword_two': request.GET.get('keyword_two', None),
+                # 'selected_column_one': request.GET.get('selected_column_one', None),
+                # 'selected_column_two': request.GET.get('selected_column_two', None),
+                # 'KOSGU_user': request.GET.get('KOSGU_user', None),
+                # 'keyword_one_user': request.GET.get('keyword_one_user', None),
+                # 'keyword_two_user': request.GET.get('keyword_two_user', None),
+                # 'selected_column_one_user': request.GET.get('selected_column_one_user', None),
+                # 'selected_column_two_user': request.GET.get('selected_column_two_user', None),
+                # 'KOSGU_user_two': request.GET.get('KOSGU_user_two', None),
+                # 'keyword_one_user_two': request.GET.get('keyword_one_user_two', None),
+                # 'keyword_two_user_two': request.GET.get('keyword_two_user_two', None),
+                # 'selected_column_one_user_two': request.GET.get('selected_column_one_user_two', None),
+                # 'selected_column_two_user_two': request.GET.get('selected_column_two_user_two', None)
             }
+
+            params = [
+                'keyword_one', 'keyword_two',
+                'selected_column_one', 'selected_column_two',
+                'KOSGU_user', 'keyword_one_user', 'keyword_two_user',
+                'selected_column_one_user', 'selected_column_two_user',
+                'KOSGU_user_two', 'keyword_one_user_two', 'keyword_two_user_two',
+                'selected_column_one_user_two', 'selected_column_two_user_two',
+            ]
+
+            for param in params:
+                context_data[param] = request.GET.get(param, None)
 
             # Удаляем объект
             await sync_to_async(service_two.delete, thread_sensitive=True)()
