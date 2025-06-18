@@ -43,26 +43,7 @@ async def clean_number(value):
             # Если преобразование в число не удалось, возвращаем 0.00
             number_final = 0.00
 
-    # def has_more_than_two_decimals(number):
-    #     # Преобразуем число в строку
-    #     s = str(number)
-
-    #     # Проверяем, есть ли десятичная точка
-    #     if '.' in s:
-    #         # Получаем количество знаков после десятичной точки
-    #         decimal_part = s.split('.')[1]
-    #         return len(decimal_part) > 2
-    #     else:
-    #         return False
-    # if has_more_than_two_decimals(number_final):
-    #     print(f"Число {number_final} имеет больше двух знаков после запятой.")
-    #     exit()
-
     return number_final
-
-# def is_valid_field(model, field_name):
-#     """ Проверка, существует ли поле в модели """
-#     return field_name in [f.name for f in model._meta.get_fields()]
 
 async def get_invalid_costs(qs, field_name):
     return await sync_to_async(list, thread_sensitive=True)(qs.values_list(field_name, flat=True))
@@ -72,29 +53,6 @@ async def calculate_costs(query, keyword_one=None, selected_column_one=None, key
     from django.db.models import Q
 
     total_cost_111, total_cost_222, total_cost_333 = 0, 0, 0
-
-    # if keyword_one and selected_column_one and is_valid_field(query.model, selected_column_one):
-    #     print('POPAL 1')
-
-    #     filter_conditions = Q(**{f"{selected_column_one}__regex": keyword_one})
-
-    # elif keyword_two and selected_column_two and is_valid_field(query.model, selected_column_two):
-    #     print('POPAL 2')
-
-    #     filter_conditions = Q(**{f"{selected_column_two}__regex": keyword_two})
-
-    # elif keyword_one and selected_column_one and is_valid_field(query.model, selected_column_one) and keyword_two and selected_column_two and is_valid_field(query.model, selected_column_two):
-    #     print('POPAL 3')
-
-    #     filter_conditions = Q(**{f"{selected_column_one}__regex": keyword_one}) & Q(**{f"{selected_column_two}__regex": keyword_two})
-
-    # else:
-    #     print('POPAL 4')
-
-    #     filter_conditions = Q()
-
-    # # Выполните запрос один раз
-    # filtered_query = query.filter(filter_conditions)
 
     filtered_query = query
 
@@ -227,7 +185,6 @@ async def skeleton(request, user,
             service_data.update([date_str[-4:] for date_str in matches_dd_mm_yyyy])
             service_data.update([date_str[:4] for date_str in matches_yyyy_mm_dd])
 
-        # service_data = await sync_to_async(sorted)({str(int(year)) for year in service_data if year.isdigit()})
         service_data = sorted({str(int(year)) for year in service_data if year.isdigit()})
         if empty_found:
             service_data.insert(0, 'None')
@@ -245,7 +202,6 @@ async def skeleton(request, user,
 
             service_data.add(field_value)
 
-        # service_data = await sync_to_async(sorted)({str(int(year)) for year in service_data if year.isdigit()})
         service_data = sorted({str(int(year)) for year in service_data if year.isdigit()})
         if empty_found:
             service_data.insert(0, 'None')
@@ -257,14 +213,8 @@ async def skeleton(request, user,
     service_KOSGU_user_two = await process_service_KOSGU(all_KOSGU_user_two, 'KOSGU')
 
     # Построение запроса
-    # query = await sync_to_async(lambda: Services.objects.all())()
-    # query = await sync_to_async(list, thread_sensitive=True)(Services.objects.all())
     query = await sync_to_async(Services.objects.all, thread_sensitive=True)()
-    # query_user = await sync_to_async(lambda: Services_Two.objects.all())()
-    # query_user = await sync_to_async(list, thread_sensitive=True)(Services_Two.objects.all())
     query_user = await sync_to_async(Services_Two.objects.all, thread_sensitive=True)()
-    # query_user_two = await sync_to_async(lambda: Services_Three.objects.all())()
-    # query_user_two = await sync_to_async(list, thread_sensitive=True)(Services_Three.objects.all())
     query_user_two = await sync_to_async(Services_Three.objects.all, thread_sensitive=True)()
 
     if contract_date == 'No':
@@ -276,11 +226,6 @@ async def skeleton(request, user,
         for filter_func in filters:
             query = await sync_to_async(filter_func)(query)
         return query
-
-    # async def apply_filters(query, filters):
-    #     for filter_func in filters:
-    #         query = filter_func(query)  # Просто вызываем без sync_to_async
-    #     return query
 
     from django.db.models import Q
 
@@ -310,36 +255,15 @@ async def skeleton(request, user,
     if KOSGU_user_two == 'No':
         KOSGU_user_two = None
 
-    # if KOSGU_user == 'None':
-    #     query_user = await sync_to_async(query_user.exclude)(Q(KOSGU__regex=pattern_dd_mm_yyyy) | Q(KOSGU__regex=pattern_yyyy_mm_dd))
-    # elif KOSGU_user:
-    #     query_user = await sync_to_async(query_user.filter)(KOSGU__icontains=KOSGU_user)
-
     if KOSGU_user == 'None':
         query_user = query_user.exclude(Q(KOSGU__regex=pattern_dd_mm_yyyy) | Q(KOSGU__regex=pattern_yyyy_mm_dd))
     elif KOSGU_user:
         query_user = query_user.filter(KOSGU__icontains=KOSGU_user)
 
-    # if KOSGU_user_two == 'None':
-    #     query_user_two = await sync_to_async(query_user_two.exclude)(Q(KOSGU__regex=pattern_dd_mm_yyyy) | Q(KOSGU__regex=pattern_yyyy_mm_dd))
-    # elif KOSGU_user_two:
-    #     query_user_two = await sync_to_async(query_user_two.filter)(KOSGU__icontains=KOSGU_user_two)
-
     if KOSGU_user_two == 'None':
         query_user_two = query_user_two.exclude(Q(KOSGU__regex=pattern_dd_mm_yyyy) | Q(KOSGU__regex=pattern_yyyy_mm_dd))
     elif KOSGU_user_two:
         query_user_two = query_user_two.filter(KOSGU__icontains=KOSGU_user_two)
-
-    # async def apply_keyword_filter(query, keyword, column, model):
-    #     if keyword:
-    #         if column and hasattr(model, column):
-    #             query = await sync_to_async(query.filter)(**{column + '__icontains': keyword})
-    #         else:
-    #             filters = Q()
-    #             for field in await sync_to_async(model._meta.get_fields)():
-    #                 filters |= Q(**{field.name + '__icontains': keyword})
-    #             query = await sync_to_async(query.filter)(filters)
-    #     return query
 
     async def apply_keyword_filter(query, keyword, column, model):
         if keyword:
@@ -382,54 +306,22 @@ async def skeleton(request, user,
         kosgu_int=Cast('KOSGU', IntegerField())  # Преобразование KOSGU в целое число
     ).order_by('kosgu_int')  # Сортировка по id_id_int и kosgu_int
 
-    # # Логика подсчета стоимости
-    # total_cost_1 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_limit')))()
-    # total_cost_1 = total_cost_1['budget_limit__sum'] or 0
+    # Логика подсчета стоимости
     total_cost_1 = await calculate_total_budget(query_user, 'budget_limit')
-    # total_cost_2 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_limit')))()
-    # total_cost_2 = total_cost_2['off_budget_limit__sum'] or 0
     total_cost_2 = await calculate_total_budget(query_user, 'off_budget_limit')
-    # total_cost_3 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_planned')))()
-    # total_cost_3 = total_cost_3['budget_planned__sum'] or 0
     total_cost_3 = await calculate_total_budget(query_user, 'budget_planned')
-    # total_cost_4 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_planned')))()
-    # total_cost_4 = total_cost_4['off_budget_planned__sum'] or 0
     total_cost_4 = await calculate_total_budget(query_user, 'off_budget_planned')
-    # total_cost_5 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_bargaining')))()
-    # total_cost_5 = total_cost_5['budget_bargaining__sum'] or 0
     total_cost_5 = await calculate_total_budget(query_user, 'budget_bargaining')
-    # total_cost_6 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_bargaining')))()
-    # total_cost_6 = total_cost_6['off_budget_bargaining__sum'] or 0
     total_cost_6 = await calculate_total_budget(query_user, 'off_budget_bargaining')
-    # total_cost_7 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_concluded')))()
-    # total_cost_7 = total_cost_7['budget_concluded__sum'] or 0
     total_cost_7 = await calculate_total_budget(query_user, 'budget_concluded')
-    # total_cost_8 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_concluded')))()
-    # total_cost_8 = total_cost_8['off_budget_concluded__sum'] or 0
     total_cost_8 = await calculate_total_budget(query_user, 'off_budget_concluded')
-    # total_cost_9 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_completed')))()
-    # total_cost_9 = total_cost_9['budget_completed__sum'] or 0
     total_cost_9 = await calculate_total_budget(query_user, 'budget_completed')
-    # total_cost_10 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_completed')))()
-    # total_cost_10 = total_cost_10['off_budget_completed__sum'] or 0
     total_cost_10 = await calculate_total_budget(query_user, 'off_budget_completed')
-    # total_cost_11 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_execution')))()
-    # total_cost_11 = total_cost_11['budget_execution__sum'] or 0
     total_cost_11 = await calculate_total_budget(query_user, 'budget_execution')
-    # total_cost_12 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_execution')))()
-    # total_cost_12 = total_cost_12['off_budget_execution__sum'] or 0
     total_cost_12 = await calculate_total_budget(query_user, 'off_budget_execution')
-    # total_cost_13 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_remainder')))()
-    # total_cost_13 = total_cost_13['budget_remainder__sum'] or 0
     total_cost_13 = await calculate_total_budget(query_user, 'budget_remainder')
-    # total_cost_14 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_remainder')))()
-    # total_cost_14 = total_cost_14['off_budget_remainder__sum'] or 0
     total_cost_14 = await calculate_total_budget(query_user, 'off_budget_remainder')
-    # total_cost_15 = await sync_to_async(lambda: query_user.aggregate(Sum('budget_plans')))()
-    # total_cost_15 = total_cost_15['budget_plans__sum'] or 0
     total_cost_15 = await calculate_total_budget(query_user, 'budget_plans')
-    # total_cost_16 = await sync_to_async(lambda: query_user.aggregate(Sum('off_budget_plans')))()
-    # total_cost_16 = total_cost_16['off_budget_plans__sum'] or 0
     total_cost_16 = await calculate_total_budget(query_user, 'off_budget_plans')
 
     try:
@@ -441,7 +333,6 @@ async def skeleton(request, user,
         total_cost_18 = 0.00
 
     # Получаем все записи из таблицы Services_Three
-    # Services_Three_ = await sync_to_async(list)(Services_Three.objects.all())
     Services_Three_ = await sync_to_async(list, thread_sensitive=True)(Services_Three.objects.all())
 
     total_cost_1_11 = 0.00
@@ -465,7 +356,6 @@ async def skeleton(request, user,
 
     total_cost_1_7 = total_cost_17 - (total_cost_1_3 + total_cost_1_4)
 
-    # total_cost_111, total_cost_222, total_cost_333 = await calculate_costs(query, keyword_one, selected_column_one, keyword_two, selected_column_two)
     total_cost_111, total_cost_222, total_cost_333 = await calculate_costs(query)
 
     # Пагинация
@@ -1255,26 +1145,18 @@ class ContractProcessor:
         # Сделать синхронную функцию асинхронной
         @sync_to_async
         # Получаем следующий ID
-        def get_latest_service():
+        def get_latest_service(string):
             with connection.cursor() as cursor:
-                cursor.execute("""
-                    SELECT id_id FROM services_two
+                cursor.execute(f"""
+                    SELECT id_id FROM {string}
                     WHERE id_id REGEXP '^[0-9]+$'
                     ORDER BY CAST(id_id AS UNSIGNED) DESC
                     LIMIT 1
                 """)
-                row_1 = cursor.fetchone()
-            with connection.cursor() as cursor:
-                cursor.execute("""
-                    SELECT id_id FROM services_three
-                    WHERE id_id REGEXP '^[0-9]+$'
-                    ORDER BY CAST(id_id AS UNSIGNED) DESC
-                    LIMIT 1
-                """)
-                row_2 = cursor.fetchone()
-                return row_1, row_2
+                row = cursor.fetchone()
+                return row
 
-        latest_service_two, latest_service_three = await get_latest_service()
+        latest_service_two, latest_service_three = await get_latest_service('services_two'), await get_latest_service('services_three')
 
         try:
             id_id_two = (int(latest_service_two[0]) + 1) if latest_service_two and latest_service_two[0].isdigit() else 1
