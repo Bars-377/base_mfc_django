@@ -1,5 +1,5 @@
 ﻿{
-    "host": "172.18.11.104",
+    "host": "localhost",
     "user": "root",
     "password": "enigma1418",
     "base_name": "basemfcdjango",

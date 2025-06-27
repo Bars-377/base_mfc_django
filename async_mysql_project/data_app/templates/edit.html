@@ -122,6 +122,11 @@
                     <input type="number" class="form-control form-control-neverov" id="contract_price" name="contract_price" value="{% if service.contract_price %}{{ service.contract_price }}{% else %}{{ contract_price }}{% endif %}"
                         step="0.01" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
                 </div>
+                <div class="form-item">
+                    <label for="remainder_old_year">Остаток контракта с предыдущего года</label>
+                    <input type="number" class="form-control form-control-neverov" id="remainder_old_year" name="remainder_old_year" value="{% if service.remainder_old_year %}{{ service.remainder_old_year }}{% else %}{{ remainder_old_year }}{% endif %}"
+                        step="0.01" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                </div>
                 <input type="hidden" name="execution_contract_plan" value="{{ '' }}">  <!-- Скрытое поле для Исполнение контракта (план) (формула) -->
                 <div class="form-item">
                     <label for="january_one">Январь (план)</label>
@@ -184,8 +189,13 @@
                         step="0.01" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
                 </div>
                 <div class="form-item">
-                    <label for="january_two">Январь 2 (план)</label>
+                    <label for="january_two">Остаток контракта на следующий год</label>
                     <input type="number" class="form-control form-control-neverov" id="january_two" name="january_two" value="{% if service.january_two %}{{ service.january_two }}{% else %}{{ january_two }}{% endif %}"
+                        step="0.01" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                </div>
+                <div class="form-item">
+                    <label for="remainder_old_year">Оплачено в предыдущем году</label>
+                    <input type="number" class="form-control form-control-neverov" id="remainder_old_year" name="remainder_old_year" value="{% if service.remainder_old_year %}{{ service.remainder_old_year }}{% else %}{{ remainder_old_year }}{% endif %}"
                         step="0.01" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
                 </div>
                 <input type="hidden" name="execution_contract_fact" value="{{ '' }}">  <!-- Скрытое поле для Исполнение контракта (факт) (формула) -->

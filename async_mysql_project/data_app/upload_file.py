@@ -25,7 +25,7 @@ async def upload_file_(request):
 
                 # Получаем количество столбцов
                 num_columns = df.shape[1]
-                if num_columns == 59:
+                if num_columns == 61:
                     # Здесь вы можете работать с DataFrame df
                     import mysql.connector
                     import re
@@ -72,8 +72,8 @@ async def upload_file_(request):
                         return cleaned_string
 
                     # Столбцы, в которые нужно вставить данные
-                    columns_to_fill = [32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56]
-                    columns_to_fill_ = [31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55]
+                    columns_to_fill = [34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58]
+                    columns_to_fill_ = [33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57]
 
                     # Заполняем значения в первой строке данными из второй строки
                     for col in columns_to_fill:
@@ -86,35 +86,35 @@ async def upload_file_(request):
                     for col in columns_to_fill_:
                         df.iloc[0, col] = await clean_string(df.iloc[1, col])
 
-                    df.iloc[0, 29] = 'Январь (план один)' + ' ' + await clean_string(df.iloc[0, 31])
+                    df.iloc[0, 30] = 'Январь (план один)' + ' ' + await clean_string(df.iloc[0, 33])
 
-                    df.iloc[0, 31] = 'Январь (факт 1)' + ' ' + await clean_string(df.iloc[0, 31])
-                    df.iloc[0, 33] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 33])
-                    df.iloc[0, 35] = 'Март (факт)' + ' ' + await clean_string(df.iloc[0, 35])
-                    df.iloc[0, 37] = 'Апрель (факт)' + ' ' + await clean_string(df.iloc[0, 37])
-                    df.iloc[0, 39] = 'Май (факт)' + ' ' + await clean_string(df.iloc[0, 39])
-                    df.iloc[0, 41] = 'Июнь (факт)' + ' ' + await clean_string(df.iloc[0, 41])
-                    df.iloc[0, 43] = 'Июль (факт)' + ' ' + await clean_string(df.iloc[0, 43])
-                    df.iloc[0, 45] = 'Август (факт)' + ' ' + await clean_string(df.iloc[0, 45])
-                    df.iloc[0, 47] = 'Сентябрь (факт)' + ' ' + await clean_string(df.iloc[0, 47])
-                    df.iloc[0, 49] = 'Октябрь (факт)' + ' ' + await clean_string(df.iloc[0, 49])
-                    df.iloc[0, 51] = 'Ноябрь (факт)' + ' ' + await clean_string(df.iloc[0, 51])
-                    df.iloc[0, 53] = 'Декабрь (факт)' + ' ' + await clean_string(df.iloc[0, 53])
-                    df.iloc[0, 55] = 'Январь (факт 2)' + ' ' + await clean_string(df.iloc[0, 55])
+                    df.iloc[0, 33] = 'Январь (факт 1)' + ' ' + await clean_string(df.iloc[0, 33])
+                    df.iloc[0, 35] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 35])
+                    df.iloc[0, 37] = 'Март (факт)' + ' ' + await clean_string(df.iloc[0, 37])
+                    df.iloc[0, 39] = 'Апрель (факт)' + ' ' + await clean_string(df.iloc[0, 39])
+                    df.iloc[0, 41] = 'Май (факт)' + ' ' + await clean_string(df.iloc[0, 41])
+                    df.iloc[0, 43] = 'Июнь (факт)' + ' ' + await clean_string(df.iloc[0, 43])
+                    df.iloc[0, 45] = 'Июль (факт)' + ' ' + await clean_string(df.iloc[0, 45])
+                    df.iloc[0, 47] = 'Август (факт)' + ' ' + await clean_string(df.iloc[0, 47])
+                    df.iloc[0, 49] = 'Сентябрь (факт)' + ' ' + await clean_string(df.iloc[0, 49])
+                    df.iloc[0, 51] = 'Октябрь (факт)' + ' ' + await clean_string(df.iloc[0, 51])
+                    df.iloc[0, 53] = 'Ноябрь (факт)' + ' ' + await clean_string(df.iloc[0, 53])
+                    df.iloc[0, 55] = 'Декабрь (факт)' + ' ' + await clean_string(df.iloc[0, 55])
+                    df.iloc[0, 57] = 'Январь (факт 2)' + ' ' + await clean_string(df.iloc[0, 57])
 
-                    df.iloc[0, 32] = 'Январь (факт 1)' + ' ' + await clean_string(df.iloc[0, 32])
-                    df.iloc[0, 34] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 34])
-                    df.iloc[0, 36] = 'Март (факт)' + ' ' + await clean_string(df.iloc[0, 36])
-                    df.iloc[0, 38] = 'Апрель (факт)' + ' ' + await clean_string(df.iloc[0, 38])
-                    df.iloc[0, 40] = 'Май (факт)' + ' ' + await clean_string(df.iloc[0, 40])
-                    df.iloc[0, 42] = 'Июнь (факт)' + ' ' + await clean_string(df.iloc[0, 42])
-                    df.iloc[0, 44] = 'Июль (факт)' + ' ' + await clean_string(df.iloc[0, 44])
-                    df.iloc[0, 46] = 'Август (факт)' + ' ' + await clean_string(df.iloc[0, 46])
-                    df.iloc[0, 48] = 'Сентябрь (факт)' + ' ' + await clean_string(df.iloc[0, 48])
-                    df.iloc[0, 50] = 'Октябрь (факт)' + ' ' + await clean_string(df.iloc[0, 50])
-                    df.iloc[0, 52] = 'Ноябрь (факт)' + ' ' + await clean_string(df.iloc[0, 52])
-                    df.iloc[0, 54] = 'Декабрь (факт)' + ' ' + await clean_string(df.iloc[0, 54])
-                    df.iloc[0, 56] = 'Январь (факт 2)' + ' ' + await clean_string(df.iloc[0, 56])
+                    df.iloc[0, 34] = 'Январь (факт 1)' + ' ' + await clean_string(df.iloc[0, 34])
+                    df.iloc[0, 36] = 'Февраль (факт)' + ' ' + await clean_string(df.iloc[0, 36])
+                    df.iloc[0, 38] = 'Март (факт)' + ' ' + await clean_string(df.iloc[0, 38])
+                    df.iloc[0, 40] = 'Апрель (факт)' + ' ' + await clean_string(df.iloc[0, 40])
+                    df.iloc[0, 42] = 'Май (факт)' + ' ' + await clean_string(df.iloc[0, 42])
+                    df.iloc[0, 44] = 'Июнь (факт)' + ' ' + await clean_string(df.iloc[0, 44])
+                    df.iloc[0, 46] = 'Июль (факт)' + ' ' + await clean_string(df.iloc[0, 46])
+                    df.iloc[0, 48] = 'Август (факт)' + ' ' + await clean_string(df.iloc[0, 48])
+                    df.iloc[0, 50] = 'Сентябрь (факт)' + ' ' + await clean_string(df.iloc[0, 50])
+                    df.iloc[0, 52] = 'Октябрь (факт)' + ' ' + await clean_string(df.iloc[0, 52])
+                    df.iloc[0, 54] = 'Ноябрь (факт)' + ' ' + await clean_string(df.iloc[0, 54])
+                    df.iloc[0, 56] = 'Декабрь (факт)' + ' ' + await clean_string(df.iloc[0, 56])
+                    df.iloc[0, 58] = 'Январь (факт 2)' + ' ' + await clean_string(df.iloc[0, 58])
 
                     list = []
 
@@ -249,6 +249,7 @@ async def upload_file_(request):
                     df[f'{list[15]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[15]}']])
                     # df[f'{list[16]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[16]}']])
                     df[f'{list[17]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[17]}']])
+
                     df[f'{list[18]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[18]}']])
                     df[f'{list[19]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[19]}']])
                     df[f'{list[20]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[20]}']])
@@ -261,10 +262,14 @@ async def upload_file_(request):
                     df[f'{list[27]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[27]}']])
                     df[f'{list[28]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[28]}']])
                     df[f'{list[29]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[29]}']])
-                    df[f'{list[16]}'] = df[f'{list[17]}'].astype(float) + df[f'{list[18]}'].astype(float) + df[f'{list[19]}'].astype(float) + df[f'{list[20]}'].astype(float) + df[f'{list[21]}'].astype(float) + df[f'{list[22]}'].astype(float) + df[f'{list[23]}'].astype(float) + df[f'{list[24]}'].astype(float) + df[f'{list[25]}'].astype(float) + df[f'{list[26]}'].astype(float) + df[f'{list[27]}'].astype(float) + df[f'{list[28]}'].astype(float) + df[f'{list[29]}'].astype(float)
-                    # df[f'{list[30]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[30]}']])
-                    df[f'{list[31]}'] = df[f'{list[31]}'].apply(safe_date_conversion)
+                    df[f'{list[30]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[30]}']])
+
                     df[f'{list[32]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[32]}']])
+
+                    # df[f'{list[16]}'] = df[f'{list[18]}'].astype(float) + df[f'{list[19]}'].astype(float) + df[f'{list[20]}'].astype(float) + df[f'{list[21]}'].astype(float) + df[f'{list[22]}'].astype(float) + df[f'{list[23]}'].astype(float) + df[f'{list[24]}'].astype(float) + df[f'{list[25]}'].astype(float) + df[f'{list[26]}'].astype(float) + df[f'{list[27]}'].astype(float) + df[f'{list[28]}'].astype(float) + df[f'{list[29]}'].astype(float) + df[f'{list[30]}'].astype(float)
+                    df[f'{list[16]}'] = df[f'{list[17]}'].astype(float) - df[f'{list[30]}'].astype(float)
+                    # df[f'{list[30]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[30]}']])
+
                     df[f'{list[33]}'] = df[f'{list[33]}'].apply(safe_date_conversion)
                     df[f'{list[34]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[34]}']])
                     df[f'{list[35]}'] = df[f'{list[35]}'].apply(safe_date_conversion)
@@ -289,25 +294,29 @@ async def upload_file_(request):
                     df[f'{list[54]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[54]}']])
                     df[f'{list[55]}'] = df[f'{list[55]}'].apply(safe_date_conversion)
                     df[f'{list[56]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[56]}']])
-                    df[f'{list[30]}'] = df[f'{list[32]}'].astype(float) + df[f'{list[34]}'].astype(float) + df[f'{list[36]}'].astype(float) + df[f'{list[38]}'].astype(float) + df[f'{list[40]}'].astype(float) + df[f'{list[42]}'].astype(float) + df[f'{list[44]}'].astype(float) + df[f'{list[46]}'].astype(float) + df[f'{list[48]}'].astype(float) + df[f'{list[50]}'].astype(float) + df[f'{list[52]}'].astype(float) + df[f'{list[54]}'].astype(float) + df[f'{list[56]}'].astype(float)
+                    df[f'{list[57]}'] = df[f'{list[57]}'].apply(safe_date_conversion)
+                    df[f'{list[58]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[58]}']])
+
+                    # df[f'{list[31]}'] = df[f'{list[34]}'].astype(float) + df[f'{list[36]}'].astype(float) + df[f'{list[38]}'].astype(float) + df[f'{list[40]}'].astype(float) + df[f'{list[42]}'].astype(float) + df[f'{list[44]}'].astype(float) + df[f'{list[46]}'].astype(float) + df[f'{list[48]}'].astype(float) + df[f'{list[50]}'].astype(float) + df[f'{list[52]}'].astype(float) + df[f'{list[54]}'].astype(float) + df[f'{list[56]}'].astype(float) + df[f'{list[58]}'].astype(float)
+                    df[f'{list[31]}'] = df[f'{list[32]}'].astype(float) + df[f'{list[34]}'].astype(float) + df[f'{list[36]}'].astype(float) + df[f'{list[38]}'].astype(float) + df[f'{list[40]}'].astype(float) + df[f'{list[42]}'].astype(float) + df[f'{list[44]}'].astype(float) + df[f'{list[46]}'].astype(float) + df[f'{list[48]}'].astype(float) + df[f'{list[50]}'].astype(float) + df[f'{list[52]}'].astype(float) + df[f'{list[54]}'].astype(float) + df[f'{list[56]}'].astype(float) + df[f'{list[58]}'].astype(float)
                     # df[f'{list[57]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[57]}']])
 
                     import numpy as np
 
                     # Преобразуем столбцы в float, используя errors='coerce' для обработки некорректных значений
-                    df[f'{list[30]}'] = pd.to_numeric(df[f'{list[30]}'], errors='coerce')
+                    df[f'{list[31]}'] = pd.to_numeric(df[f'{list[31]}'], errors='coerce')
                     df[f'{list[15]}'] = pd.to_numeric(df[f'{list[15]}'], errors='coerce')
 
                     # Используем np.where для создания нового столбца
-                    df[f'{list[57]}'] = np.where(
-                        df[f'{list[30]}'] != 0,  # Условие: если значение в столбце не равно 0
-                        (df[f'{list[30]}'] / df[f'{list[15]}'] * 100).astype(str),  # Деление и округление
+                    df[f'{list[59]}'] = np.where(
+                        df[f'{list[31]}'] != 0,  # Условие: если значение в столбце не равно 0
+                        (df[f'{list[31]}'] / df[f'{list[15]}'] * 100).astype(str),  # Деление и округление
                         '0'  # Если значение равно 0, то присваиваем '0'
                     )
 
                     # df[f'{list[57]}'] = (round(df[f'{list[30]}'].astype(float) / df[f'{list[15]}'].astype(float), 2) * 100).astype(str)
                     # df[f'{list[58]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[58]}']])
-                    df[f'{list[58]}'] = df[f'{list[15]}'].astype(float) - df[f'{list[30]}'].astype(float)
+                    df[f'{list[60]}'] = df[f'{list[15]}'].astype(float) - df[f'{list[31]}'].astype(float)
 
                     # Определите SQL-запрос для вставки данных
                     insert_query = """
@@ -318,11 +327,11 @@ async def upload_file_(request):
                         may, june, july, august, september, october, november, december, january_two, execution_contract_fact, date_january_one,
                         sum_january_one, date_february, sum_february, date_march, sum_march, date_april, sum_april, date_may, sum_may, date_june,
                         sum_june, date_july, sum_july, date_august, sum_august, date_september, sum_september, date_october, sum_october, date_november,
-                        sum_november, date_december, sum_december, date_january_two, sum_january_two, execution, contract_balance, color
+                        sum_november, date_december, sum_december, date_january_two, sum_january_two, execution, contract_balance, color, remainder_old_year, paid_last_year
                     ) VALUES (
                         %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
                         %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                     )
                     """
 
@@ -422,9 +431,11 @@ async def upload_file_(request):
                         'date_december': row[53].lower() if isinstance(row[53], str) else row[53],
                         'sum_december': row[54].lower() if isinstance(row[54], str) else row[54],
                         'date_january_two': row[55].lower() if isinstance(row[55], str) else row[55],
-                        'sum_january_two': row[56].lower() if isinstance(row[56], str) else row[56]
+                        'sum_january_two': row[56].lower() if isinstance(row[56], str) else row[56],
                         # 'execution': row[54].lower() if isinstance(row[54], str) else row[54],
                         # 'contract_balance': row[55].lower() if isinstance(row[55], str) else row[55],
+                        'remainder_old_year': row[57].lower() if isinstance(row[57], str) else row[57],
+                        'paid_last_year': row[58].lower() if isinstance(row[58], str) else row[58]
                     } for row in data_to_insert]
 
                     # names = [row[1].lower() for row in data_to_insert]

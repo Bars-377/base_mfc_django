@@ -1020,22 +1020,29 @@ class ContractProcessor:
         messages.error(self.request, 'Вы добавляете дубликат Закупки')
 
     async def calculate_execution_plan(self):
-        months = [self.context_data[month] for month in [
-            'january_one', 'february', 'march', 'april', 'may', 'june',
-            'july', 'august', 'september', 'october', 'november', 'december',
-            'january_two'
-        ]]
-        cleaned_numbers = await asyncio.gather(*(clean_number(month) for month in months))
-        return sum(cleaned_numbers)
+        """Суммирование исполнение контракта (план)"""
+        # months = [self.context_data[month] for month in [
+        #     'january_one', 'february', 'march', 'april', 'may', 'june',
+        #     'july', 'august', 'september', 'october', 'november', 'december',
+        #     'january_two'
+        # ]]
+        # cleaned_numbers = await asyncio.gather(*(clean_number(month) for month in months))
+        # return sum(cleaned_numbers)
+
+        cleaned_numbers = await clean_number(self.context_data['remainder_old_year']) - await clean_number(self.context_data['january_two'])
+        return cleaned_numbers
+        # return sum(cleaned_numbers)
 
     async def calculate_execution_fact(self):
+        """Суммирование исполнение контракта (факт)"""
         sum_months = [self.context_data[month] for month in [
             'sum_january_one', 'sum_february', 'sum_march', 'sum_april', 'sum_may', 'sum_june',
             'sum_july', 'sum_august', 'sum_september', 'sum_october', 'sum_november', 'sum_december',
-            'sum_january_two'
+            # 'sum_january_two'
         ]]
         cleaned_numbers = await asyncio.gather(*(clean_number(month) for month in sum_months))
-        return sum(cleaned_numbers)
+        return sum(cleaned_numbers) + clean_number(self.context_data['paid_last_year'])
+        # return sum(cleaned_numbers)
 
     async def update_service(self, saving, execution_contract_plan, execution_contract_fact):
         """Подсчёт Исполнение контракта (план) (формула) и Исполнение контракта (факт) (формула) и обновление записи"""
@@ -1197,15 +1204,39 @@ class ContractProcessor:
 
         if status:
             filters &= Q(status=status)
-            field_to_sum = 'contract_price'
-        else:
-            field_to_sum = 'execution_contract_fact'
+            # field_to_sum = 'contract_price'
 
-        # Асинхронно выполняем агрегацию
-        total_sum = await sync_to_async(self._aggregate_sum)(filters, field_to_sum)
+            months_contract_price = (
+                'january_one', 'february', 'march', 'april', 'may', 'june',
+                'july', 'august', 'september', 'october', 'november', 'december',
+                'january_two'
+            )
+
+            answer = 0
+            for contract_price in months_contract_price:
+                total_sum = await sync_to_async(self._aggregate_sum)(filters, contract_price)
+                answer += await clean_number(total_sum if total_sum not in [None, 'None', ''] else 0)
+
+        else:
+            # field_to_sum = 'execution_contract_fact'
+
+            months_execution_contract_fact = (
+                'sum_january_one', 'sum_february', 'sum_march', 'sum_april', 'sum_may', 'sum_june',
+                'sum_july', 'sum_august', 'sum_september', 'sum_october', 'sum_november', 'sum_december',
+                'sum_january_two'
+            )
+
+            answer = 0
+            for execution_contract_fact in months_execution_contract_fact:
+                total_sum = await sync_to_async(self._aggregate_sum)(filters, execution_contract_fact)
+                answer += await clean_number(total_sum if total_sum not in [None, 'None', ''] else 0)
+
+        # # Асинхронно выполняем агрегацию
+        # total_sum = await sync_to_async(self._aggregate_sum)(filters, field_to_sum)
 
         # Очищаем число, если это необходимо
-        return await clean_number(total_sum if total_sum not in [None, 'None', ''] else 0)
+        return answer
+        # return await clean_number(total_sum if total_sum not in [None, 'None', ''] else 0)
 
     def _aggregate_sum(self, filters, field_to_sum):
         return Services.objects.filter(filters).aggregate(total_sum=Sum(field_to_sum, default=0))['total_sum']
@@ -1882,7 +1913,7 @@ async def update_record(request, row_id):
                 'date_october', 'sum_october', 'date_november', 'sum_november',
                 'date_december', 'sum_december', 'date_january_two', 'sum_january_two',
                 'execution', 'contract_balance', 'execution_contract_fact', 'execution_contract_plan',
-                'saving', 'color',
+                'saving', 'color', 'remainder_old_year'
             ]
 
             for param in params:
@@ -2221,7 +2252,7 @@ async def add_record(request):
                 'date_october', 'sum_october', 'date_november', 'sum_november',
                 'date_december', 'sum_december', 'date_january_two', 'sum_january_two',
                 'execution', 'contract_balance', 'execution_contract_fact', 'execution_contract_plan',
-                'saving', 'color',
+                'saving', 'color', 'remainder_old_year'
             ]
 
             for param in params:
