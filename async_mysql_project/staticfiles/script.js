@@ -797,40 +797,144 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
 });
 
+// // Прокрутка таблицы при нажатии левой кнопки мыши
+// document.addEventListener('DOMContentLoaded', function () {
+// 	const scrollContainers = document.querySelectorAll('.scroll-container');
+
+// 	scrollContainers.forEach((scrollContainer) => {
+// 		let isMouseDown = false;
+// 		let startX;
+// 		let scrollLeft;
+
+// 		scrollContainer.addEventListener('mousedown', (e) => {
+// 			//console.log('Mouse down'); // Добавлено для отладки
+// 			isMouseDown = true;
+// 			startX = e.pageX - scrollContainer.offsetLeft;
+// 			scrollLeft = scrollContainer.scrollLeft;
+// 			scrollContainer.style.cursor = 'grabbing';
+// 		});
+
+// 		scrollContainer.addEventListener('mouseleave', () => {
+// 			isMouseDown = false;
+// 			scrollContainer.style.cursor = 'default';
+// 		});
+
+// 		document.addEventListener('mouseup', () => {
+// 			isMouseDown = false;
+// 			scrollContainer.style.cursor = 'default';
+// 		});
+
+// 		scrollContainer.addEventListener('mousemove', (e) => {
+// 			//console.log('Mouse move'); // Добавлено для отладки
+// 			if (!isMouseDown) return;
+// 			e.preventDefault();
+// 			const x = e.pageX - scrollContainer.offsetLeft;
+// 			const walk = (x - startX) * 2; // Скорость прокрутки
+// 			scrollContainer.scrollLeft = scrollLeft - walk;
+// 		});
+// 	});
+// });
+
 // Прокрутка таблицы при нажатии левой кнопки мыши
 document.addEventListener('DOMContentLoaded', function () {
 	const scrollContainers = document.querySelectorAll('.scroll-container');
 
-	scrollContainers.forEach((scrollContainer) => {
+	scrollContainers.forEach((scrollContainer, index) => {
 		let isMouseDown = false;
+		let isTextHovered = false;
 		let startX;
 		let scrollLeft;
 
+		// console.log(`🌀 Инициализирован scrollContainer[${index}]`);
+
+		const disableTextSelection = () => {
+			document.body.style.userSelect = 'none';
+			document.body.style.webkitUserSelect = 'none'; // Safari
+		};
+
+		const enableTextSelection = () => {
+			document.body.style.userSelect = '';
+			document.body.style.webkitUserSelect = '';
+		};
+
 		scrollContainer.addEventListener('mousedown', (e) => {
-			console.log('Mouse down'); // Добавлено для отладки
+			if (isTextHovered) {
+				// console.log('⛔ Прокрутка заблокирована — курсор над текстом');
+				return;
+			}
 			isMouseDown = true;
 			startX = e.pageX - scrollContainer.offsetLeft;
 			scrollLeft = scrollContainer.scrollLeft;
 			scrollContainer.style.cursor = 'grabbing';
+			disableTextSelection();
+			// console.log(`✅ Mousedown: startX=${startX}, scrollLeft=${scrollLeft}`);
 		});
 
 		scrollContainer.addEventListener('mouseleave', () => {
 			isMouseDown = false;
 			scrollContainer.style.cursor = 'default';
+			enableTextSelection();
+			// console.log('ℹ️ Mouseleave: остановка прокрутки');
 		});
 
 		document.addEventListener('mouseup', () => {
+			if (isMouseDown) {
+				// console.log('🛑 Mouseup: остановка прокрутки');
+			}
 			isMouseDown = false;
-			scrollContainer.style.cursor = 'default';
+			scrollContainer.style.cursor = isTextHovered ? 'text' : 'grab';
+			enableTextSelection();
 		});
 
 		scrollContainer.addEventListener('mousemove', (e) => {
-			console.log('Mouse move'); // Добавлено для отладки
 			if (!isMouseDown) return;
+			if (isTextHovered) {
+				// console.log('⚠️ Прокрутка отменена — курсор над текстом');
+				return;
+			}
 			e.preventDefault();
 			const x = e.pageX - scrollContainer.offsetLeft;
-			const walk = (x - startX) * 2; // Скорость прокрутки
+			const walk = (x - startX) * 2;
 			scrollContainer.scrollLeft = scrollLeft - walk;
+			// console.log(`↔️ Прокрутка: x=${x}, walk=${walk}, scrollLeft=${scrollContainer.scrollLeft}`);
+		});
+
+		function hasVisibleTextUnderCursor(x, y, container) {
+			const el = document.elementFromPoint(x, y);
+			if (!el || !container.contains(el)) return false;
+
+			const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+				acceptNode: function (node) {
+					if (node.nodeValue.trim().length > 0) {
+						const range = document.createRange();
+						range.selectNodeContents(node);
+						const rect = range.getBoundingClientRect();
+						if (
+							y >= rect.top && y <= rect.bottom &&
+							x >= rect.left && x <= rect.right
+						) {
+							return NodeFilter.FILTER_ACCEPT;
+						}
+					}
+					return NodeFilter.FILTER_SKIP;
+				}
+			});
+
+			return !!walker.nextNode();
+		}
+
+		scrollContainer.addEventListener('mousemove', function (e) {
+			const hasText = hasVisibleTextUnderCursor(e.clientX, e.clientY, scrollContainer);
+
+			if (hasText && !isTextHovered) {
+				isTextHovered = true;
+				scrollContainer.style.cursor = 'text';
+				// console.log('🟡 Наведён курсор прямо на видимый текст');
+			} else if (!hasText && isTextHovered) {
+				isTextHovered = false;
+				scrollContainer.style.cursor = isMouseDown ? 'grabbing' : 'grab';
+				// console.log('🔵 Курсор ушёл с текста — прокрутка разрешена');
+			}
 		});
 	});
 });

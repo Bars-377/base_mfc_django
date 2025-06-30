@@ -323,11 +323,11 @@ async def upload_file_(request):
                     INSERT INTO services (
                         id_id, name, status, way, initiator, KTSSR, KOSGU, DopFC, NMCC, saving,
                         counterparty, registration_number, contract_number, contract_date, end_date,
-                        contract_price, execution_contract_plan, january_one, february, march, april,
-                        may, june, july, august, september, october, november, december, january_two, execution_contract_fact, date_january_one,
+                        contract_price, execution_contract_plan, remainder_old_year, january_one, february, march, april,
+                        may, june, july, august, september, october, november, december, january_two, execution_contract_fact, paid_last_year, date_january_one,
                         sum_january_one, date_february, sum_february, date_march, sum_march, date_april, sum_april, date_may, sum_may, date_june,
                         sum_june, date_july, sum_july, date_august, sum_august, date_september, sum_september, date_october, sum_october, date_november,
-                        sum_november, date_december, sum_december, date_january_two, sum_january_two, execution, contract_balance, color, remainder_old_year, paid_last_year
+                        sum_november, date_december, sum_december, date_january_two, sum_january_two, execution, contract_balance, color
                     ) VALUES (
                         %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
                         %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
@@ -375,68 +375,105 @@ async def upload_file_(request):
                         if response:
                             return response
 
-                    context_data = [{
-                        'name': row[1].lower() if isinstance(row[1], str) else row[1],
-                        'status': row[2].lower() if isinstance(row[2], str) else row[2],
-                        'way': row[3].lower() if isinstance(row[3], str) else row[3],
-                        'initiator': row[4].lower() if isinstance(row[4], str) else row[4],
-                        'KTSSR': row[5].lower() if isinstance(row[5], str) else row[5],
-                        'KOSGU': row[6].lower() if isinstance(row[6], str) else row[6],
-                        'DopFC': row[7].lower() if isinstance(row[7], str) else row[7],
-                        'NMCC': row[8].lower() if isinstance(row[8], str) else row[8],
-                        'saving': row[9].lower() if isinstance(row[9], str) else row[9],
-                        'counterparty': row[10].lower() if isinstance(row[10], str) else row[10],
-                        'registration_number': row[11].lower() if isinstance(row[11], str) else row[11],
-                        'contract_number': row[12].lower() if isinstance(row[12], str) else row[12],
-                        'contract_date': row[13].lower() if isinstance(row[13], str) else row[13],
-                        'end_date': row[14].lower() if isinstance(row[14], str) else row[14],
-                        'contract_price': row[15].lower() if isinstance(row[15], str) else row[15],
-                        # 'execution_contract_plan': row[57].lower() if isinstance(row[57], str) else row[57],
-                        'january_one': row[17].lower() if isinstance(row[17], str) else row[17],
-                        'february': row[18].lower() if isinstance(row[18], str) else row[18],
-                        'march': row[19].lower() if isinstance(row[19], str) else row[19],
-                        'april': row[20].lower() if isinstance(row[20], str) else row[20],
-                        'may': row[21].lower() if isinstance(row[21], str) else row[21],
-                        'june': row[22].lower() if isinstance(row[22], str) else row[22],
-                        'july': row[23].lower() if isinstance(row[23], str) else row[23],
-                        'august': row[24].lower() if isinstance(row[24], str) else row[24],
-                        'september': row[25].lower() if isinstance(row[25], str) else row[25],
-                        'october': row[26].lower() if isinstance(row[26], str) else row[26],
-                        'november': row[27].lower() if isinstance(row[27], str) else row[27],
-                        'december': row[28].lower() if isinstance(row[28], str) else row[28],
-                        'january_two': row[29].lower() if isinstance(row[29], str) else row[29],
-                        # 'execution_contract_fact': row[56].lower() if isinstance(row[56], str) else row[56],
-                        'date_january_one': row[31].lower() if isinstance(row[31], str) else row[31],
-                        'sum_january_one': row[32].lower() if isinstance(row[32], str) else row[32],
-                        'date_february': row[33].lower() if isinstance(row[33], str) else row[33],
-                        'sum_february': row[34].lower() if isinstance(row[34], str) else row[34],
-                        'date_march': row[35].lower() if isinstance(row[35], str) else row[35],
-                        'sum_march':  row[36].lower() if isinstance(row[36], str) else row[36],
-                        'date_april': row[37].lower() if isinstance(row[37], str) else row[37],
-                        'sum_april': row[38].lower() if isinstance(row[38], str) else row[38],
-                        'date_may': row[39].lower() if isinstance(row[39], str) else row[39],
-                        'sum_may': row[40].lower() if isinstance(row[40], str) else row[40],
-                        'date_june': row[41].lower() if isinstance(row[41], str) else row[41],
-                        'sum_june': row[42].lower() if isinstance(row[42], str) else row[42],
-                        'date_july': row[43].lower() if isinstance(row[43], str) else row[43],
-                        'sum_july': row[44].lower() if isinstance(row[44], str) else row[44],
-                        'date_august': row[45].lower() if isinstance(row[45], str) else row[45],
-                        'sum_august': row[46].lower() if isinstance(row[46], str) else row[46],
-                        'date_september': row[47].lower() if isinstance(row[47], str) else row[47],
-                        'sum_september': row[48].lower() if isinstance(row[48], str) else row[48],
-                        'date_october': row[49].lower() if isinstance(row[49], str) else row[49],
-                        'sum_october': row[50].lower() if isinstance(row[50], str) else row[50],
-                        'date_november': row[51].lower() if isinstance(row[51], str) else row[51],
-                        'sum_november': row[52].lower() if isinstance(row[52], str) else row[52],
-                        'date_december': row[53].lower() if isinstance(row[53], str) else row[53],
-                        'sum_december': row[54].lower() if isinstance(row[54], str) else row[54],
-                        'date_january_two': row[55].lower() if isinstance(row[55], str) else row[55],
-                        'sum_january_two': row[56].lower() if isinstance(row[56], str) else row[56],
-                        # 'execution': row[54].lower() if isinstance(row[54], str) else row[54],
-                        # 'contract_balance': row[55].lower() if isinstance(row[55], str) else row[55],
-                        'remainder_old_year': row[57].lower() if isinstance(row[57], str) else row[57],
-                        'paid_last_year': row[58].lower() if isinstance(row[58], str) else row[58]
-                    } for row in data_to_insert]
+                    # context_data = [{
+                    #     'name': row[1].lower() if isinstance(row[1], str) else row[1],
+                    #     'status': row[2].lower() if isinstance(row[2], str) else row[2],
+                    #     'way': row[3].lower() if isinstance(row[3], str) else row[3],
+                    #     'initiator': row[4].lower() if isinstance(row[4], str) else row[4],
+                    #     'KTSSR': row[5].lower() if isinstance(row[5], str) else row[5],
+                    #     'KOSGU': row[6].lower() if isinstance(row[6], str) else row[6],
+                    #     'DopFC': row[7].lower() if isinstance(row[7], str) else row[7],
+                    #     'NMCC': row[8].lower() if isinstance(row[8], str) else row[8],
+                    #     'saving': row[9].lower() if isinstance(row[9], str) else row[9],
+                    #     'counterparty': row[10].lower() if isinstance(row[10], str) else row[10],
+                    #     'registration_number': row[11].lower() if isinstance(row[11], str) else row[11],
+                    #     'contract_number': row[12].lower() if isinstance(row[12], str) else row[12],
+                    #     'contract_date': row[13].lower() if isinstance(row[13], str) else row[13],
+                    #     'end_date': row[14].lower() if isinstance(row[14], str) else row[14],
+                    #     'contract_price': row[15].lower() if isinstance(row[15], str) else row[15],
+                    #     # 'execution_contract_plan': row[16].lower() if isinstance(row[16], str) else row[16],
+                    #     'remainder_old_year': row[17].lower() if isinstance(row[17], str) else row[17],
+                    #     'january_one': row[18].lower() if isinstance(row[18], str) else row[18],
+                    #     'february': row[19].lower() if isinstance(row[19], str) else row[19],
+                    #     'march': row[20].lower() if isinstance(row[20], str) else row[20],
+                    #     'april': row[21].lower() if isinstance(row[21], str) else row[21],
+                    #     'may': row[22].lower() if isinstance(row[22], str) else row[22],
+                    #     'june': row[23].lower() if isinstance(row[23], str) else row[23],
+                    #     'july': row[24].lower() if isinstance(row[24], str) else row[24],
+                    #     'august': row[25].lower() if isinstance(row[25], str) else row[25],
+                    #     'september': row[26].lower() if isinstance(row[26], str) else row[26],
+                    #     'october': row[27].lower() if isinstance(row[27], str) else row[27],
+                    #     'november': row[28].lower() if isinstance(row[28], str) else row[28],
+                    #     'december': row[29].lower() if isinstance(row[29], str) else row[29],
+                    #     'january_two': row[30].lower() if isinstance(row[30], str) else row[30],
+                    #     # 'execution_contract_fact': row[31].lower() if isinstance(row[31], str) else row[31],
+                    #     'paid_last_year': row[32].lower() if isinstance(row[32], str) else row[32],
+                    #     'date_january_one': row[33].lower() if isinstance(row[33], str) else row[33],
+                    #     'sum_january_one': row[34].lower() if isinstance(row[34], str) else row[34],
+                    #     'date_february': row[35].lower() if isinstance(row[35], str) else row[35],
+                    #     'sum_february': row[36].lower() if isinstance(row[36], str) else row[36],
+                    #     'date_march': row[37].lower() if isinstance(row[37], str) else row[37],
+                    #     'sum_march':  row[38].lower() if isinstance(row[38], str) else row[38],
+                    #     'date_april': row[39].lower() if isinstance(row[39], str) else row[39],
+                    #     'sum_april': row[40].lower() if isinstance(row[40], str) else row[40],
+                    #     'date_may': row[41].lower() if isinstance(row[41], str) else row[41],
+                    #     'sum_may': row[42].lower() if isinstance(row[42], str) else row[42],
+                    #     'date_june': row[43].lower() if isinstance(row[43], str) else row[43],
+                    #     'sum_june': row[44].lower() if isinstance(row[44], str) else row[44],
+                    #     'date_july': row[45].lower() if isinstance(row[45], str) else row[45],
+                    #     'sum_july': row[46].lower() if isinstance(row[46], str) else row[46],
+                    #     'date_august': row[47].lower() if isinstance(row[47], str) else row[47],
+                    #     'sum_august': row[48].lower() if isinstance(row[48], str) else row[48],
+                    #     'date_september': row[49].lower() if isinstance(row[49], str) else row[49],
+                    #     'sum_september': row[50].lower() if isinstance(row[50], str) else row[50],
+                    #     'date_october': row[51].lower() if isinstance(row[51], str) else row[51],
+                    #     'sum_october': row[52].lower() if isinstance(row[52], str) else row[52],
+                    #     'date_november': row[53].lower() if isinstance(row[53], str) else row[53],
+                    #     'sum_november': row[54].lower() if isinstance(row[54], str) else row[54],
+                    #     'date_december': row[55].lower() if isinstance(row[55], str) else row[55],
+                    #     'sum_december': row[56].lower() if isinstance(row[56], str) else row[56],
+                    #     'date_january_two': row[57].lower() if isinstance(row[57], str) else row[57],
+                    #     'sum_january_two': row[58].lower() if isinstance(row[58], str) else row[58],
+                    #     # 'execution': row[54].lower() if isinstance(row[54], str) else row[54],
+                    #     # 'contract_balance': row[55].lower() if isinstance(row[55], str) else row[55],
+                    # } for row in data_to_insert]
+
+                    def safe_lower(value):
+                        return value.lower() if isinstance(value, str) else value
+
+                    field_names = [
+                        'name', 'status', 'way', 'initiator', 'KTSSR', 'KOSGU', 'DopFC', 'NMCC', 'saving',
+                        'counterparty', 'registration_number', 'contract_number', 'contract_date', 'end_date',
+                        'contract_price',  # 15
+                        # 'execution_contract_plan', 16
+                        'remainder_old_year', 'january_one', 'february', 'march', 'april', 'may', 'june',
+                        'july', 'august', 'september', 'october', 'november', 'december', 'january_two',  # 30
+                        # 'execution_contract_fact', 31
+                        'paid_last_year', 'date_january_one', 'sum_january_one', 'date_february', 'sum_february',
+                        'date_march', 'sum_march', 'date_april', 'sum_april', 'date_may', 'sum_may',
+                        'date_june', 'sum_june', 'date_july', 'sum_july', 'date_august', 'sum_august',
+                        'date_september', 'sum_september', 'date_october', 'sum_october',
+                        'date_november', 'sum_november', 'date_december', 'sum_december',
+                        'date_january_two', 'sum_january_two',
+                        # 'execution', 'contract_balance'
+                    ]
+
+                    # context_data = [
+                    #     {key: safe_lower(row[idx + 1]) for idx, key in enumerate(field_names)}
+                    #     for row in data_to_insert
+                    # ]
+
+                    context_data = []
+                    for row in data_to_insert:
+                        obj = {}
+                        skip_indices = {16, 31}
+                        data_index = 1  # сдвиг на +1 от индекса key в field_names
+                        for key_idx, key in enumerate(field_names):
+                            if data_index in skip_indices:
+                                data_index += 1  # пропускаем этот элемент
+                            obj[key] = safe_lower(row[data_index])
+                            data_index += 1
+                        context_data.append(obj)
 
                     # names = [row[1].lower() for row in data_to_insert]
                     # seen_names = {}
