@@ -219,7 +219,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 });
 
-
 function updateFileName() {
 	const fileInput = document.getElementById('file-input');
 	const fileNameDisplay = document.getElementById('file-name');
@@ -274,6 +273,9 @@ function showFlashMessage(event) {
 		return;
 	}
 
+	const submitButton = document.getElementById('submit-button');
+	submitButton.style.display = 'none';
+
 	// Показываем индикатор загрузки
 	const loadingIndicator = document.getElementById("loading");
 	loadingIndicator.style.display = "block";
@@ -295,6 +297,7 @@ function showFlashMessage(event) {
 				setTimeout(() => {
 					console.log("Скрываю индикатор загрузки...");
 					loadingIndicator.style.display = "none";
+					submitButton.style.display = 'inline-block';
 				}, 500); // Задержка 500ms
 
 				// Показать сообщение
@@ -325,6 +328,7 @@ function showFlashMessage(event) {
 		.catch(error => {
 			// Скрыть индикатор загрузки
 			loadingIndicator.style.display = "none";
+			submitButton.style.display = 'inline-block';
 
 			// Показать сообщение об ошибке
 			const message = document.getElementById("flash-message-import");
@@ -339,6 +343,114 @@ function showFlashMessage(event) {
 			console.error("Ошибка загрузки файла:", error);
 		});
 }
+
+// function hasSelectedFile() {
+//     const fileInput = document.getElementById('file-input');
+//     return fileInput.files.length > 0;
+// }
+
+// function updateFileName() {
+//     const fileInput = document.getElementById('file-input');
+//     const fileNameDisplay = document.getElementById('file-name');
+//     const submitButton = document.getElementById('submit-button');
+
+//     if (hasSelectedFile()) {
+//         const fileName = fileInput.files[0].name;
+//         fileNameDisplay.textContent = "Выбран файл: " + fileName;
+//         fileNameDisplay.style.cssText = `
+//             display: inline-block;
+//             vertical-align: middle;
+//             border: 2px solid red;
+//             padding: 8px 12px;
+//             border-radius: 5px;
+//             margin: 0 10px 20px 10px;
+//         `;
+//         submitButton.style.display = 'inline-block';
+//     } else {
+//         fileNameDisplay.textContent = '';
+//         fileNameDisplay.style.cssText = '';
+//         submitButton.style.display = 'none';
+//     }
+// }
+
+// function showFlashMessage(event) {
+//     event.preventDefault();
+
+//     if (!hasSelectedFile()) {
+//         alert("Выберите файл перед отправкой!");
+//         return;
+//     }
+
+// 	// Показываем индикатор загрузки
+// 	const loadingIndicator = document.getElementById("loading");
+// 	const submitButton = document.getElementById('submit-button');
+	
+// 	loadingIndicator.style.display = "block";
+// 	submitButton.style.display = 'none';
+
+// 	const formData = new FormData();
+// 	formData.append("file", fileInput.files[0]);
+
+// 	fetch("/upload/", {  // URL на Django view
+// 		method: "POST",
+// 		body: formData,
+// 		headers: {
+// 			"X-CSRFToken": getCookie("csrftoken")
+// 		}
+// 	})
+// 		.then(response => response.json())
+// 		.then(data => {
+// 			if (data.success) {
+// 				// Скрыть индикатор загрузки с небольшой задержкой
+// 				setTimeout(() => {
+// 					console.log("Скрываю индикатор загрузки...");
+// 					loadingIndicator.style.display = "none";
+// 					submitButton.style.display = 'inline-block';
+// 				}, 500); // Задержка 500ms
+
+// 				// Показать сообщение
+// 				const message = document.getElementById("flash-message-import");
+// 				message.textContent = data.message;
+
+// 				// Меняем класс в зависимости от статуса
+// 				if (data.status === "success") {
+// 					message.classList.remove("alert-danger");  // Убираем класс ошибки
+// 					message.classList.add("alert-success");    // Добавляем класс успеха
+// 					console.log("Status from server:", data.status);
+// 				} else {
+// 					message.classList.remove("alert-success");  // Убираем класс ошибки
+// 					message.classList.add("alert-danger");     // Добавляем класс ошибки
+// 					console.log("Status from server:", data.status);
+// 				}
+
+// 				message.style.display = "block";
+
+// 				// Перезагрузка страницы через window.location.assign
+// 				setTimeout(() => {
+// 					window.location.assign(window.location.href);  // Переход на текущий URL, что вызывает перезагрузку
+// 				}, 4000);  // Задержка 4 секунда, чтобы успело отобразиться сообщение
+// 			} else {
+// 				console.error("Ошибка:", data);
+// 			}
+// 		})
+// 		.catch(error => {
+// 			// Скрыть индикатор загрузки
+// 			loadingIndicator.style.display = "none";
+// 			submitButton.style.display = 'inline-block';
+
+// 			// Показать сообщение об ошибке
+// 			const message = document.getElementById("flash-message-import");
+// 			message.textContent = "У вас недостаточно прав для этого действия!";
+
+// 			// Меняем класс на ошибку
+// 			message.classList.remove("alert-success");
+// 			message.classList.add("alert-danger");
+
+// 			message.style.display = "block";
+
+// 			console.error("Ошибка загрузки файла:", error);
+// 		});
+// }
 
 document.addEventListener('DOMContentLoaded', function () {
 	// Обработчик для кнопки "Резерв (Вторник)"

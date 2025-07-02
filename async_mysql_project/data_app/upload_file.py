@@ -346,7 +346,7 @@ async def upload_file_(request):
                             cell_value = str(row[column_index]).lower()
                             if cell_value not in allowed_set:
                                 return JsonResponse({
-                                    "message": f"Некорректная колонка {column_name} в строке таблицы Excel {index + 1}. Содержание: {cell_value}",
+                                    "message": f"Некорректная колонка {column_name} в строке таблицы Excel {index + 3}. Содержание: {cell_value}",
                                     "status": "error",
                                     'success': True
                                 }, status=400)
