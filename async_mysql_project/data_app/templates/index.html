@@ -55,5 +55,24 @@
     <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'script.js' %}"></script>  <!-- Добавьте ваш JS файл -->
+
+    <div id="deletion-overlay" style="
+        display: none; 
+        position: fixed; 
+        top: 0; 
+        left: 0;
+        width: 100%; 
+        height: 100%; 
+        background: rgba(0,0,0,0.5); 
+        z-index: 10000;
+        align-items: center; 
+        justify-content: center; 
+        color: white; 
+        font-size: 24px;
+        text-align: center;
+    ">
+        В процессе удаления...
+    </div>
+
 </body>
 </html>

@@ -27,7 +27,7 @@
             {% endif %}
 
             <!-- Форма для редактирования услуги -->
-            <form method="POST" action="{% url 'update_record' row_id=row_id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" class="form-group">
+            <form method="POST" action="{% url 'update_record' row_id=row_id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" class="form-group">
                 <!-- Поле для ввода названия услуги -->
                 <div class="form-item">
                     <label for="id_id">№ п/п</label>
@@ -194,8 +194,8 @@
                         step="0.01" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
                 </div>
                 <div class="form-item">
-                    <label for="remainder_old_year">Оплачено в предыдущем году</label>
-                    <input type="number" class="form-control form-control-neverov" id="remainder_old_year" name="remainder_old_year" value="{% if service.remainder_old_year %}{{ service.remainder_old_year }}{% else %}{{ remainder_old_year }}{% endif %}"
+                    <label for="paid_last_year">Оплачено в предыдущем году</label>
+                    <input type="number" class="form-control form-control-neverov" id="paid_last_year" name="paid_last_year" value="{% if service.paid_last_year %}{{ service.paid_last_year }}{% else %}{{ paid_last_year }}{% endif %}"
                         step="0.01" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
                 </div>
                 <input type="hidden" name="execution_contract_fact" value="{{ '' }}">  <!-- Скрытое поле для Исполнение контракта (факт) (формула) -->

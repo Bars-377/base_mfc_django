@@ -595,12 +595,12 @@ function resetFiltersUser() {
 
 	// Формируем URL с параметрами GET
 	const url = new URL(window.location.href);
-	url.searchParams.set('KOSGU_user', 'No');
+	// url.searchParams.set('KOSGU_user', 'No');
 
-	url.searchParams.set('keyword_one_user', '');
-	url.searchParams.set('keyword_two_user', '');
-	url.searchParams.set('selected_column_one_user', '');
-	url.searchParams.set('selected_column_two_user', '');
+	// url.searchParams.set('keyword_one_user', '');
+	// url.searchParams.set('keyword_two_user', '');
+	// url.searchParams.set('selected_column_one_user', '');
+	// url.searchParams.set('selected_column_two_user', '');
 	url.searchParams.set('total_pages_full_user', currentPage);
 
 	window.location.href = url; // Перезагружаем страницу с GET параметрами
@@ -628,12 +628,12 @@ function resetFiltersUserTwo() {
 
 	// Формируем URL с параметрами GET
 	const url = new URL(window.location.href);
-	url.searchParams.set('KOSGU_user_two', 'No');
+	// url.searchParams.set('KOSGU_user_two', 'No');
 
-	url.searchParams.set('keyword_one_user_two', '');
-	url.searchParams.set('keyword_two_user_two', '');
-	url.searchParams.set('selected_column_one_user_two', '');
-	url.searchParams.set('selected_column_two_user_two', '');
+	// url.searchParams.set('keyword_one_user_two', '');
+	// url.searchParams.set('keyword_two_user_two', '');
+	// url.searchParams.set('selected_column_one_user_two', '');
+	// url.searchParams.set('selected_column_two_user_two', '');
 	url.searchParams.set('total_pages_full_user_two', currentPage);
 
 	window.location.href = url; // Перезагружаем страницу с GET параметрами
@@ -1091,82 +1091,284 @@ function getCookie(name) {
 	return cookieValue;
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-	const deleteButtons = document.querySelectorAll('.delete-button');
+// document.addEventListener('DOMContentLoaded', function () {
+// 	const deleteButtons = document.querySelectorAll('.delete-button');
 
-	deleteButtons.forEach(button => {
-		button.addEventListener('click', function () {
-			const form = this.closest('.delete-form');
-			const serviceId = form.getAttribute('data-id');
-			console.log(`Ищем элемент с id: ${serviceId}`);
+// 	deleteButtons.forEach(button => {
+// 		button.addEventListener('click', function () {
+// 			const form = this.closest('.delete-form');
+// 			const serviceId = form.getAttribute('data-id');
+			
+// 			const page = form.getAttribute('data-page');
+// 			const keyword_one = form.getAttribute('data-keyword-one');
+// 			const keyword_two = form.getAttribute('data-keyword-two');
+// 			const keyword_three = form.getAttribute('data-keyword-three');
+// 			const keyword_four = form.getAttribute('data-keyword-four');
+// 			const selected_column_one = form.getAttribute('data-selected-column-one');
+// 			const selected_column_two = form.getAttribute('data-selected-column-two');
+// 			const contract_date = form.getAttribute('data-contract-date');
+// 			const selected_end_date = form.getAttribute('data-selected-end-date');
+			
+// 			const page_user = form.getAttribute('data-page-user');
 
-			if (confirmDelete()) {
-				fetch(`/delete_record/${serviceId}/`, {  // Убедитесь, что здесь правильный путь
+// 			const page_user_two = form.getAttribute('data-page-user-two');
+
+// 			console.log(`Ищем элемент с id: ${serviceId}`);
+
+// 			if (confirmDelete()) {
+// 				fetch(`/delete_record/`, {  // Убедитесь, что здесь правильный путь
+// 					method: 'POST',
+// 					headers: {
+// 						'Content-Type': 'application/json',
+// 						'X-CSRFToken': getCookie('csrftoken')
+// 					},
+// 					body: JSON.stringify({
+// 						id: serviceId,
+// 						page: page,
+// 						keyword_one: keyword_one,
+// 						keyword_two: keyword_two,
+// 						keyword_three: keyword_three,
+// 						keyword_four: keyword_four,
+// 						selected_column_one: selected_column_one,
+// 						selected_column_two: selected_column_two,
+// 						contract_date: contract_date,
+// 						selected_end_date: selected_end_date,
+
+// 						page_user: page_user,
+
+// 						page_user_two: page_user_two,
+
+// 					})  // Отправка данных, если необходимо
+// 				})
+// 					.then(response => response.json()) // Преобразуем ответ в JSON
+// 					.then(data => {
+// 						if (data.success) { // Предполагаем, что сервер возвращает { success: true } при успешном удалении
+// 							const row = document.querySelector(`.service-row[data-id="${serviceId}"]`);
+// 							console.log(row); // Проверьте, что элемент найден
+// 							if (row) {
+// 								row.remove();
+// 							}
+// 							alert('Элемент успешно удален!'); // Уведомление об успешном удалении
+// 							window.location.reload(); // Обновление страницы
+// 						} else {
+// 							alert('Ошибка:', data); // Если success не true
+// 						}
+// 					})
+// 					.catch(error => {
+// 						alert('У вас недостаточно прав для этого действия!');
+// 						console.error('Ошибка:', error);
+// 					});
+// 			}
+// 		});
+// 	});
+// });
+
+// document.addEventListener('DOMContentLoaded', function () {
+// 	const deleteButtons = document.querySelectorAll('.delete-button');
+
+// 	deleteButtons.forEach(button => {
+// 		button.addEventListener('click', function () {
+// 			const form = this.closest('.delete-form');
+// 			const serviceId = form.getAttribute('data-id');
+
+// 			const page = form.getAttribute('data-page');
+// 			const keyword_one = form.getAttribute('data-keyword-one');
+// 			const keyword_two = form.getAttribute('data-keyword-two');
+// 			const keyword_three = form.getAttribute('data-keyword-three');
+// 			const keyword_four = form.getAttribute('data-keyword-four');
+// 			const selected_column_one = form.getAttribute('data-selected-column-one');
+// 			const selected_column_two = form.getAttribute('data-selected-column-two');
+// 			const contract_date = form.getAttribute('data-contract-date');
+// 			const selected_end_date = form.getAttribute('data-selected-end-date');
+// 			const page_user = form.getAttribute('data-page-user');
+// 			const page_user_two = form.getAttribute('data-page-user-two');
+
+// 			console.log(`Ищем элемент с id: ${serviceId}`);
+
+// 			if (confirmDelete()) {
+// 				// Показать блокирующий оверлей
+// 				const overlay = document.getElementById('deletion-overlay');
+// 				if (overlay) {
+// 					overlay.style.display = 'flex';
+// 				}
+
+// 				fetch(`/delete_record/`, {
+// 					method: 'POST',
+// 					headers: {
+// 						'Content-Type': 'application/json',
+// 						'X-CSRFToken': getCookie('csrftoken')
+// 					},
+// 					body: JSON.stringify({
+// 						id: serviceId,
+// 						page: page,
+// 						keyword_one: keyword_one,
+// 						keyword_two: keyword_two,
+// 						keyword_three: keyword_three,
+// 						keyword_four: keyword_four,
+// 						selected_column_one: selected_column_one,
+// 						selected_column_two: selected_column_two,
+// 						contract_date: contract_date,
+// 						selected_end_date: selected_end_date,
+// 						page_user: page_user,
+// 						page_user_two: page_user_two,
+// 					})
+// 				})
+// 				.then(response => response.json())
+// 				.then(data => {
+// 					if (overlay) overlay.style.display = 'none';
+
+// 					if (data.success) {
+// 						const row = document.querySelector(`.service-row[data-id="${serviceId}"]`);
+// 						console.log(row);
+// 						if (row) {
+// 							row.remove();
+// 						}
+// 						alert('Элемент успешно удален!');
+// 						window.location.reload();
+// 					} else {
+// 						alert('Ошибка: ' + JSON.stringify(data));
+// 					}
+// 				})
+// 				.catch(error => {
+// 					if (overlay) overlay.style.display = 'none';
+// 					alert('У вас недостаточно прав для этого действия!');
+// 					console.error('Ошибка:', error);
+// 				});
+// 			}
+// 		});
+// 	});
+// });
+
+// document.addEventListener('DOMContentLoaded', function () {
+// 	const deleteButtons = document.querySelectorAll('.delete-button-user');
+
+// 	deleteButtons.forEach(button => {
+// 		button.addEventListener('click', function () {
+// 			const form = this.closest('.delete-form-user');
+// 			const serviceId = form.getAttribute('data-id');
+// 			console.log(`Ищем элемент с id: ${serviceId}`);
+
+// 			if (confirmDelete()) {
+// 				fetch(`/delete_record_two/${serviceId}/`, {  // Убедитесь, что здесь правильный путь
+// 					method: 'POST',
+// 					headers: {
+// 						'Content-Type': 'application/json',
+// 						'X-CSRFToken': getCookie('csrftoken')
+// 					},
+// 					body: JSON.stringify({ id: serviceId })  // Отправка данных, если необходимо
+// 				})
+// 					.then(response => {
+// 						if (response.ok) {
+// 							const row = document.querySelector(`.service-row-user[data-id="${serviceId}"]`);
+// 							if (row) {
+// 								row.remove();
+// 							}
+// 							alert('Элемент успешно удален!'); // Уведомление об успешном удалении
+// 							window.location.reload(); // Обновление страницы
+// 						} else {
+// 							alert('Ошибка:', data); // Если success не true
+// 						}
+// 					})
+// 					.catch(error => {
+// 						alert('У вас недостаточно прав для этого действия!');
+// 						console.error('Ошибка:', error);
+// 					});
+// 			}
+// 		});
+// 	});
+// });
+
+document.addEventListener('DOMContentLoaded', () => {
+	const overlay = document.getElementById('deletion-overlay');
+
+	function handleDelete(buttonClass, formClass, fetchUrl, extractDataCallback, rowSelectorPrefix) {
+		const buttons = document.querySelectorAll(buttonClass);
+
+		buttons.forEach(button => {
+			button.addEventListener('click', () => {
+				const form = button.closest(formClass);
+				if (!form) return;
+
+				const serviceId = form.getAttribute('data-id');
+				console.log(`Ищем элемент с id: ${serviceId}`);
+
+				if (!confirmDelete()) return;
+
+				if (overlay) overlay.style.display = 'flex';
+
+				const payload = extractDataCallback(form, serviceId);
+
+				fetch(fetchUrl(serviceId), {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 						'X-CSRFToken': getCookie('csrftoken')
 					},
-					body: JSON.stringify({ id: serviceId })  // Отправка данных, если необходимо
-				})
-					.then(response => response.json()) // Преобразуем ответ в JSON
-					.then(data => {
-						if (data.success) { // Предполагаем, что сервер возвращает { success: true } при успешном удалении
-							const row = document.querySelector(`.service-row[data-id="${serviceId}"]`);
-							console.log(row); // Проверьте, что элемент найден
-							if (row) {
-								row.remove();
-							}
-							alert('Элемент успешно удален!'); // Уведомление об успешном удалении
-							window.location.reload(); // Обновление страницы
-						} else {
-							alert('Ошибка:', data); // Если success не true
-						}
-					})
-					.catch(error => {
-						alert('У вас недостаточно прав для этого действия!');
-						console.error('Ошибка:', error);
-					});
-			}
-		});
-	});
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-	const deleteButtons = document.querySelectorAll('.delete-button-user');
-
-	deleteButtons.forEach(button => {
-		button.addEventListener('click', function () {
-			const form = this.closest('.delete-form-user');
-			const serviceId = form.getAttribute('data-id');
-			console.log(`Ищем элемент с id: ${serviceId}`);
-
-			if (confirmDelete()) {
-				fetch(`/delete_record_two/${serviceId}/`, {  // Убедитесь, что здесь правильный путь
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						'X-CSRFToken': getCookie('csrftoken')
-					},
-					body: JSON.stringify({ id: serviceId })  // Отправка данных, если необходимо
+					body: JSON.stringify(payload)
 				})
 					.then(response => {
-						if (response.ok) {
-							const row = document.querySelector(`.service-row-user[data-id="${serviceId}"]`);
-							if (row) {
-								row.remove();
-							}
-							alert('Элемент успешно удален!'); // Уведомление об успешном удалении
-							window.location.reload(); // Обновление страницы
+						if (overlay) overlay.style.display = 'none';
+						if (!response.ok) throw new Error('Ошибка запроса');
+						return response.json();
+					})
+					.then(data => {
+						if (data.success || fetchUrl(serviceId).includes('delete_record_two')) {
+							const row = document.querySelector(`${rowSelectorPrefix}[data-id="${serviceId}"]`);
+							if (row) row.remove();
+							alert('Элемент успешно удален!');
+							window.location.reload();
 						} else {
-							alert('Ошибка:', data); // Если success не true
+							alert('Ошибка: ' + JSON.stringify(data));
 						}
 					})
 					.catch(error => {
+						if (overlay) overlay.style.display = 'none';
 						alert('У вас недостаточно прав для этого действия!');
 						console.error('Ошибка:', error);
 					});
-			}
+			});
 		});
-	});
+	}
+
+	handleDelete(
+		'.delete-button',
+		'.delete-form',
+		() => '/delete_record/',
+		(form, serviceId) => ({
+			id: serviceId,
+			page: form.getAttribute('data-page'),
+			keyword_one: form.getAttribute('data-keyword-one'),
+			keyword_two: form.getAttribute('data-keyword-two'),
+			keyword_three: form.getAttribute('data-keyword-three'),
+			keyword_four: form.getAttribute('data-keyword-four'),
+			selected_column_one: form.getAttribute('data-selected-column-one'),
+			selected_column_two: form.getAttribute('data-selected-column-two'),
+			contract_date: form.getAttribute('data-contract-date'),
+			selected_end_date: form.getAttribute('data-selected-end-date'),
+			page_user: form.getAttribute('data-page-user'),
+			page_user_two: form.getAttribute('data-page-user-two')
+		}),
+		'.service-row'
+	);
+
+	handleDelete(
+		'.delete-button-user',
+		'.delete-form-user',
+		() => '/delete_record_two/',
+		(form, serviceId) => ({
+			id: serviceId,
+			page: form.getAttribute('data-page'),
+			keyword_one: form.getAttribute('data-keyword-one'),
+			keyword_two: form.getAttribute('data-keyword-two'),
+			keyword_three: form.getAttribute('data-keyword-three'),
+			keyword_four: form.getAttribute('data-keyword-four'),
+			selected_column_one: form.getAttribute('data-selected-column-one'),
+			selected_column_two: form.getAttribute('data-selected-column-two'),
+			contract_date: form.getAttribute('data-contract-date'),
+			selected_end_date: form.getAttribute('data-selected-end-date'),
+			page_user: form.getAttribute('data-page-user'),
+			page_user_two: form.getAttribute('data-page-user-two')
+		}),
+		'.service-row-user'
+	);
 });

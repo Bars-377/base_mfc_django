@@ -263,12 +263,12 @@ if __name__ == '__main__':
         current_time = now.strftime('%A %H:%M')  # Пример: 'Tuesday 07:00'
 
         try:
-            # if current_time == "Tuesday 07:00":
-            if current_time == "Monday 09:15":
+            if current_time == "Tuesday 07:00":
+            # if current_time == "Monday 09:15":
                 backup_to_backup_one()
                 time.sleep(60)
-            # elif current_time == "Thursday 07:00":
-            elif current_time == "Monday 09:16":
+            elif current_time == "Thursday 07:00":
+            # elif current_time == "Monday 09:16":
                 backup_to_backup_two()
                 time.sleep(60)
         except Exception as e:

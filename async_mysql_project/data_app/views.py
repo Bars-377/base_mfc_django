@@ -104,12 +104,14 @@ async def skeleton(request, user,
                     contract_date, end_date,
                     keyword_one, keyword_two,
                     selected_column_one, selected_column_two,
-                    page, KOSGU_user,
-                    keyword_one_user, keyword_two_user,
-                    selected_column_one_user, selected_column_two_user,
-                    page_user, KOSGU_user_two,
-                    keyword_one_user_two, keyword_two_user_two,
-                    selected_column_one_user_two, selected_column_two_user_two,
+                    page,
+                    # KOSGU_user,
+                    # keyword_one_user, keyword_two_user,
+                    # selected_column_one_user, selected_column_two_user,
+                    page_user,
+                    # KOSGU_user_two,
+                    # keyword_one_user_two, keyword_two_user_two,
+                    # selected_column_one_user_two, selected_column_two_user_two,
                     page_user_two, keyword_three,
                     keyword_four, selected_column_three,
                     selected_column_four):
@@ -139,27 +141,27 @@ async def skeleton(request, user,
     selected_column_three = await format_input(selected_column_three)
     selected_column_four = await format_input(selected_column_four)
 
-    KOSGU_user = await format_input(KOSGU_user)
-    keyword_one_user = await format_input_remove(keyword_one_user)
-    keyword_two_user = await format_input_remove(keyword_two_user)
+    # KOSGU_user = await format_input(KOSGU_user)
+    # keyword_one_user = await format_input_remove(keyword_one_user)
+    # keyword_two_user = await format_input_remove(keyword_two_user)
 
-    selected_column_one_user = await format_input(selected_column_one_user)
-    selected_column_two_user = await format_input(selected_column_two_user)
+    # selected_column_one_user = await format_input(selected_column_one_user)
+    # selected_column_two_user = await format_input(selected_column_two_user)
 
-    KOSGU_user_two = await format_input(KOSGU_user_two)
-    keyword_one_user_two = await format_input_remove(keyword_one_user_two)
-    keyword_two_user_two = await format_input_remove(keyword_two_user_two)
+    # KOSGU_user_two = await format_input(KOSGU_user_two)
+    # keyword_one_user_two = await format_input_remove(keyword_one_user_two)
+    # keyword_two_user_two = await format_input_remove(keyword_two_user_two)
 
-    selected_column_one_user_two = await format_input(selected_column_one_user_two)
-    selected_column_two_user_two = await format_input(selected_column_two_user_two)
+    # selected_column_one_user_two = await format_input(selected_column_one_user_two)
+    # selected_column_two_user_two = await format_input(selected_column_two_user_two)
 
     per_page = 20
 
     # Получаем все уникальные значения year и date_number_no_one
     all_years = await sync_to_async(lambda: list(Services.objects.values('contract_date').distinct()), thread_sensitive=True)()
     all_end_date = await sync_to_async(lambda: list(Services.objects.values('end_date').distinct()), thread_sensitive=True)()
-    all_KOSGU_user = await sync_to_async(lambda: list(Services_Two.objects.values('KOSGU').distinct()), thread_sensitive=True)()
-    all_KOSGU_user_two = await sync_to_async(lambda: list(Services_Three.objects.values('KOSGU').distinct()), thread_sensitive=True)()
+    # all_KOSGU_user = await sync_to_async(lambda: list(Services_Two.objects.values('KOSGU').distinct()), thread_sensitive=True)()
+    # all_KOSGU_user_two = await sync_to_async(lambda: list(Services_Three.objects.values('KOSGU').distinct()), thread_sensitive=True)()
 
     # Регулярные выражения для форматов дат
     pattern_dd_mm_yyyy = r'\b\d{2}\.\d{2}\.\d{4}\b'
@@ -209,8 +211,8 @@ async def skeleton(request, user,
 
     service_years = await process_service_data(all_years, 'contract_date')
     service_end_date = await process_service_data(all_end_date, 'end_date')
-    service_KOSGU_user = await process_service_KOSGU(all_KOSGU_user, 'KOSGU')
-    service_KOSGU_user_two = await process_service_KOSGU(all_KOSGU_user_two, 'KOSGU')
+    # service_KOSGU_user = await process_service_KOSGU(all_KOSGU_user, 'KOSGU')
+    # service_KOSGU_user_two = await process_service_KOSGU(all_KOSGU_user_two, 'KOSGU')
 
     # Построение запроса
     query = await sync_to_async(Services.objects.all, thread_sensitive=True)()
@@ -249,21 +251,21 @@ async def skeleton(request, user,
 
     query = await apply_filters(query, filters)
 
-    if KOSGU_user == 'No':
-        KOSGU_user = None
+    # if KOSGU_user == 'No':
+    #     KOSGU_user = None
 
-    if KOSGU_user_two == 'No':
-        KOSGU_user_two = None
+    # if KOSGU_user_two == 'No':
+    #     KOSGU_user_two = None
 
-    if KOSGU_user == 'None':
-        query_user = query_user.exclude(Q(KOSGU__regex=pattern_dd_mm_yyyy) | Q(KOSGU__regex=pattern_yyyy_mm_dd))
-    elif KOSGU_user:
-        query_user = query_user.filter(KOSGU__icontains=KOSGU_user)
+    # if KOSGU_user == 'None':
+    #     query_user = query_user.exclude(Q(KOSGU__regex=pattern_dd_mm_yyyy) | Q(KOSGU__regex=pattern_yyyy_mm_dd))
+    # elif KOSGU_user:
+    #     query_user = query_user.filter(KOSGU__icontains=KOSGU_user)
 
-    if KOSGU_user_two == 'None':
-        query_user_two = query_user_two.exclude(Q(KOSGU__regex=pattern_dd_mm_yyyy) | Q(KOSGU__regex=pattern_yyyy_mm_dd))
-    elif KOSGU_user_two:
-        query_user_two = query_user_two.filter(KOSGU__icontains=KOSGU_user_two)
+    # if KOSGU_user_two == 'None':
+    #     query_user_two = query_user_two.exclude(Q(KOSGU__regex=pattern_dd_mm_yyyy) | Q(KOSGU__regex=pattern_yyyy_mm_dd))
+    # elif KOSGU_user_two:
+    #     query_user_two = query_user_two.filter(KOSGU__icontains=KOSGU_user_two)
 
     async def apply_keyword_filter(query, keyword, column, model):
         if keyword:
@@ -282,10 +284,10 @@ async def skeleton(request, user,
     query = await apply_keyword_filter(query, keyword_three, selected_column_three, Services)
     query = await apply_keyword_filter(query, keyword_four, selected_column_four, Services)
 
-    query_user = await apply_keyword_filter(query_user, keyword_one_user, selected_column_one_user, Services_Two)
-    query_user = await apply_keyword_filter(query_user, keyword_two_user, selected_column_two_user, Services_Two)
-    query_user_two = await apply_keyword_filter(query_user_two, keyword_one_user_two, selected_column_one_user_two, Services_Three)
-    query_user_two = await apply_keyword_filter(query_user_two, keyword_two_user_two, selected_column_two_user_two, Services_Three)
+    # query_user = await apply_keyword_filter(query_user, keyword_one_user, selected_column_one_user, Services_Two)
+    # query_user = await apply_keyword_filter(query_user, keyword_two_user, selected_column_two_user, Services_Two)
+    # query_user_two = await apply_keyword_filter(query_user_two, keyword_one_user_two, selected_column_one_user_two, Services_Three)
+    # query_user_two = await apply_keyword_filter(query_user_two, keyword_two_user_two, selected_column_two_user_two, Services_Three)
 
     # Сортировка
     from django.db.models import IntegerField
@@ -458,25 +460,25 @@ async def skeleton(request, user,
         'total_cost_222': await clean_number(total_cost_222),
         'total_cost_333': await clean_number(total_cost_333),
         'selected_contract_date': contract_date,
-        'selected_KOSGU_user': KOSGU_user,
-        'selected_KOSGU_user_two': KOSGU_user_two,
+        # 'selected_KOSGU_user': KOSGU_user,
+        # 'selected_KOSGU_user_two': KOSGU_user_two,
         'selected_end_date': end_date,
         'selected_column_one': selected_column_one,
         'selected_column_three': selected_column_three,
-        'selected_column_one_user': selected_column_one_user,
-        'selected_column_one_user_two': selected_column_one_user_two,
+        # 'selected_column_one_user': selected_column_one_user,
+        # 'selected_column_one_user_two': selected_column_one_user_two,
         'selected_column_two': selected_column_two,
         'selected_column_four': selected_column_four,
-        'selected_column_two_user': selected_column_two_user,
-        'selected_column_two_user_two': selected_column_two_user_two,
+        # 'selected_column_two_user': selected_column_two_user,
+        # 'selected_column_two_user_two': selected_column_two_user_two,
         'keyword_one': keyword_one,
         'keyword_three': keyword_three,
-        'keyword_one_user': keyword_one_user,
-        'keyword_one_user_two': keyword_one_user_two,
+        # 'keyword_one_user': keyword_one_user,
+        # 'keyword_one_user_two': keyword_one_user_two,
         'keyword_two': keyword_two,
         'keyword_four': keyword_four,
-        'keyword_two_user': keyword_two_user,
-        'keyword_two_user_two': keyword_two_user_two,
+        # 'keyword_two_user': keyword_two_user,
+        # 'keyword_two_user_two': keyword_two_user_two,
         'page': page,
         'page_user': page_user,
         'page_user_two': page_user_two,
@@ -490,8 +492,8 @@ async def skeleton(request, user,
         'end_page_user': end_page_user,
         'end_page_user_two': end_page_user_two,
         'service_years': service_years,
-        'service_KOSGU_user': service_KOSGU_user,
-        'service_KOSGU_user_two': service_KOSGU_user_two,
+        # 'service_KOSGU_user': service_KOSGU_user,
+        # 'service_KOSGU_user_two': service_KOSGU_user_two,
         'service_end_date': service_end_date,
         'connection_websocket': settings.DATABASES['default']['HOST'],
         'statuses': json.dumps(json_object['statuses'])
@@ -563,28 +565,30 @@ async def data_table_view(request):
     else:
         page_user_two = int(request.GET.get('page_user_two', 1))
 
-    KOSGU_user = request.GET.get('KOSGU_user', None)
-    keyword_one_user = request.GET.get('keyword_one_user', None)
-    keyword_two_user = request.GET.get('keyword_two_user', None)
-    selected_column_one_user = request.GET.get('selected_column_one_user', None)
-    selected_column_two_user = request.GET.get('selected_column_two_user', None)
+    # KOSGU_user = request.GET.get('KOSGU_user', None)
+    # keyword_one_user = request.GET.get('keyword_one_user', None)
+    # keyword_two_user = request.GET.get('keyword_two_user', None)
+    # selected_column_one_user = request.GET.get('selected_column_one_user', None)
+    # selected_column_two_user = request.GET.get('selected_column_two_user', None)
 
-    KOSGU_user_two = request.GET.get('KOSGU_user_two', None)
-    keyword_one_user_two = request.GET.get('keyword_one_user_two', None)
-    keyword_two_user_two = request.GET.get('keyword_two_user_two', None)
-    selected_column_one_user_two = request.GET.get('selected_column_one_user_two', None)
-    selected_column_two_user_two = request.GET.get('selected_column_two_user_two', None)
+    # KOSGU_user_two = request.GET.get('KOSGU_user_two', None)
+    # keyword_one_user_two = request.GET.get('keyword_one_user_two', None)
+    # keyword_two_user_two = request.GET.get('keyword_two_user_two', None)
+    # selected_column_one_user_two = request.GET.get('selected_column_one_user_two', None)
+    # selected_column_two_user_two = request.GET.get('selected_column_two_user_two', None)
 
     return await skeleton(request, user,
                     contract_date, end_date,
                     keyword_one, keyword_two,
                     selected_column_one, selected_column_two,
-                    page, KOSGU_user,
-                    keyword_one_user, keyword_two_user,
-                    selected_column_one_user, selected_column_two_user,
-                    page_user, KOSGU_user_two,
-                    keyword_one_user_two, keyword_two_user_two,
-                    selected_column_one_user_two, selected_column_two_user_two,
+                    page,
+                    # KOSGU_user,
+                    # keyword_one_user, keyword_two_user,
+                    # selected_column_one_user, selected_column_two_user,
+                    page_user,
+                    # KOSGU_user_two,
+                    # keyword_one_user_two, keyword_two_user_two,
+                    # selected_column_one_user_two, selected_column_two_user_two,
                     page_user_two, keyword_three,
                     keyword_four, selected_column_three,
                     selected_column_four)
@@ -850,12 +854,10 @@ async def edit_user(request, row_id):
     await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "Свод" с ID {row_id}')
 
     page_user = int(request.GET.get('page_user', 1))
-    keyword_one_user = request.GET.get('keyword_one_user', None)
-    keyword_two_user = request.GET.get('keyword_two_user', None)
-    selected_column_one_user = request.GET.get('selected_column_one_user', None)
-    selected_column_two_user = request.GET.get('selected_column_two_user', None)
-    selected_contract_date_user = request.GET.get('selected_contract_date_user', "No")
-    selected_end_date_user = request.GET.get('selected_end_date_user', "No")
+    # keyword_one_user = request.GET.get('keyword_one_user', None)
+    # keyword_two_user = request.GET.get('keyword_two_user', None)
+    # selected_column_one_user = request.GET.get('selected_column_one_user', None)
+    # selected_column_two_user = request.GET.get('selected_column_two_user', None)
 
     # Получаем объект service_user по id
     service_user = await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id)
@@ -865,12 +867,10 @@ async def edit_user(request, row_id):
         'service_user': service_user,
         'row_id_user': row_id,
         'page_user': page_user,
-        'keyword_one_user': keyword_one_user,
-        'keyword_two_user': keyword_two_user,
-        'selected_column_one_user': selected_column_one_user,
-        'selected_column_two_user': selected_column_two_user,
-        'selected_contract_date_user': selected_contract_date_user,
-        'selected_end_date_user': selected_end_date_user,
+        # 'keyword_one_user': keyword_one_user,
+        # 'keyword_two_user': keyword_two_user,
+        # 'selected_column_one_user': selected_column_one_user,
+        # 'selected_column_two_user': selected_column_two_user,
         'connection_websocket': settings.DATABASES['default']['HOST'],
         'statuses': json.dumps(json_object['statuses'])
     }
@@ -884,12 +884,10 @@ async def edit_user_two(request, row_id):
     await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "План-график" с ID {row_id}')
 
     page_user = int(request.GET.get('page_user', 1))
-    keyword_one_user = request.GET.get('keyword_one_user', None)
-    keyword_two_user = request.GET.get('keyword_two_user', None)
-    selected_column_one_user = request.GET.get('selected_column_one_user', None)
-    selected_column_two_user = request.GET.get('selected_column_two_user', None)
-    selected_contract_date_user = request.GET.get('selected_contract_date_user', "No")
-    selected_end_date_user = request.GET.get('selected_end_date_user', "No")
+    # keyword_one_user = request.GET.get('keyword_one_user', None)
+    # keyword_two_user = request.GET.get('keyword_two_user', None)
+    # selected_column_one_user = request.GET.get('selected_column_one_user', None)
+    # selected_column_two_user = request.GET.get('selected_column_two_user', None)
 
     # Получаем объект service_user_two по id
     service_user_two = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(id=row_id)
@@ -899,12 +897,10 @@ async def edit_user_two(request, row_id):
         'service_user_two': service_user_two,
         'row_id_user_two': row_id,
         'page_user': page_user,
-        'keyword_one_user': keyword_one_user,
-        'keyword_two_user': keyword_two_user,
-        'selected_column_one_user': selected_column_one_user,
-        'selected_column_two_user': selected_column_two_user,
-        'selected_contract_date_user': selected_contract_date_user,
-        'selected_end_date_user': selected_end_date_user,
+        # 'keyword_one_user': keyword_one_user,
+        # 'keyword_two_user': keyword_two_user,
+        # 'selected_column_one_user': selected_column_one_user,
+        # 'selected_column_two_user': selected_column_two_user,
         'connection_websocket': settings.DATABASES['default']['HOST'],
         'statuses': json.dumps(json_object['statuses'])
     }
@@ -925,7 +921,9 @@ class ContractProcessor:
         execution_contract_plan = await self.calculate_execution_plan()
         if self.context_data['contract_price']:
             if f"{execution_contract_plan:.2f}" != f"{float(self.context_data['contract_price']):.2f}":
+                # print('POPAL 1')
                 return False
+        # print('POPAL 2')
         return True
 
     async def validate_execution_plan_message(self):
@@ -983,17 +981,17 @@ class ContractProcessor:
                             'selected_column_one',
                             'selected_column_two',
                             'page_user',
-                            'KOSGU_user',
-                            'keyword_one_user',
-                            'keyword_two_user',
-                            'selected_column_one_user',
-                            'selected_column_two_user',
+                            # 'KOSGU_user',
+                            # 'keyword_one_user',
+                            # 'keyword_two_user',
+                            # 'selected_column_one_user',
+                            # 'selected_column_two_user',
                             'page_user_two',
-                            'KOSGU_user_two',
-                            'keyword_one_user_two',
-                            'keyword_two_user_two',
-                            'selected_column_one_user_two',
-                            'selected_column_two_user_two',
+                            # 'KOSGU_user_two',
+                            # 'keyword_one_user_two',
+                            # 'keyword_two_user_two',
+                            # 'selected_column_one_user_two',
+                            # 'selected_column_two_user_two',
                             'connection_websocket',
                             'statuses']
         if isinstance(self.context_data, list):
@@ -1030,6 +1028,7 @@ class ContractProcessor:
         # return sum(cleaned_numbers)
 
         cleaned_numbers = await clean_number(self.context_data['remainder_old_year']) - await clean_number(self.context_data['january_two'])
+        # print('summ', cleaned_numbers)
         return cleaned_numbers
         # return sum(cleaned_numbers)
 
@@ -1041,7 +1040,7 @@ class ContractProcessor:
             # 'sum_january_two'
         ]]
         cleaned_numbers = await asyncio.gather(*(clean_number(month) for month in sum_months))
-        return sum(cleaned_numbers) + clean_number(self.context_data['paid_last_year'])
+        return sum(cleaned_numbers) + await clean_number(self.context_data['paid_last_year'])
         # return sum(cleaned_numbers)
 
     async def update_service(self, saving, execution_contract_plan, execution_contract_fact):
@@ -1146,8 +1145,8 @@ class ContractProcessor:
         """Формируем запрос для новой записи"""
         from django.db import connection
 
-        print('POPAL')
-        print(self.context_data)
+        # print('POPAL')
+        # print(self.context_data)
 
         # Сделать синхронную функцию асинхронной
         @sync_to_async
@@ -1216,6 +1215,8 @@ class ContractProcessor:
             for contract_price in months_contract_price:
                 total_sum = await sync_to_async(self._aggregate_sum)(filters, contract_price)
                 answer += await clean_number(total_sum if total_sum not in [None, 'None', ''] else 0)
+                # if KTSSR == '2046102280' and status == 'Запланировано':
+                #     print('answer', answer)
 
         else:
             # field_to_sum = 'execution_contract_fact'
@@ -1253,6 +1254,11 @@ class ContractProcessor:
 
         # Асинхронно обрабатываем все месяцы
         cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in budget))
+
+        # print('--------------------------------')
+        # print(cleaned_numbers[0])
+        # print(sum(cleaned_numbers[1:]))
+        # print('--------------------------------')
 
         # Суммируем результат
         Services_Two_.budget_remainder = await clean_number(cleaned_numbers[0] - sum(cleaned_numbers[1:]))
@@ -1395,12 +1401,14 @@ class ContractProcessor:
             if new_service:
                 await sync_to_async(new_service.delete)()
                 await log_user_action(self.request.user, f'Отменилось добавление записи в "Закупки" с ID {new_service.id_id}')
+            # print('TEST 1')
             return False
 
         if total_costs_calc['total_cost_2'] < (total_costs_calc['total_cost_4'] or total_costs_calc['total_cost_6'] or total_costs_calc['total_cost_8'] or total_costs_calc['total_cost_10']):
             if new_service:
                 await sync_to_async(new_service.delete)()
                 await log_user_action(self.request.user, f'Отменилось добавление записи в "Закупки" с ID {new_service.id_id}')
+            # print('TEST 2')
             return False
         return True
 
@@ -1449,6 +1457,7 @@ class ContractProcessor:
     async def process_update_user(self):
 
         # await self.count_dates()
+
         Services_Two_ = await self.validate_Services_Two()
 
         if not await self.validate_Services_Two():
@@ -1890,12 +1899,15 @@ async def update_record(request, row_id):
             }
 
             params = [
-                'keyword_one', 'keyword_two',
+                'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
                 'selected_column_one', 'selected_column_two',
-                'KOSGU_user', 'keyword_one_user', 'keyword_two_user',
-                'selected_column_one_user', 'selected_column_two_user',
-                'KOSGU_user_two', 'keyword_one_user_two', 'keyword_two_user_two',
-                'selected_column_one_user_two', 'selected_column_two_user_two',
+                'contract_date', 'selected_end_date',
+                # 'KOSGU_user',
+                # 'keyword_one_user', 'keyword_two_user',
+                # 'selected_column_one_user', 'selected_column_two_user',
+                # 'KOSGU_user_two',
+                # 'keyword_one_user_two', 'keyword_two_user_two',
+                # 'selected_column_one_user_two', 'selected_column_two_user_two',
             ]
 
             params_post = [
@@ -1913,7 +1925,7 @@ async def update_record(request, row_id):
                 'date_october', 'sum_october', 'date_november', 'sum_november',
                 'date_december', 'sum_december', 'date_january_two', 'sum_january_two',
                 'execution', 'contract_balance', 'execution_contract_fact', 'execution_contract_plan',
-                'saving', 'color', 'remainder_old_year'
+                'saving', 'color', 'remainder_old_year', 'paid_last_year'
             ]
 
             for param in params:
@@ -1923,6 +1935,7 @@ async def update_record(request, row_id):
                 context_data[param] = request.POST.get(param, None)
 
             processor = ContractProcessor(context_data, request)
+            # print(context_data)
             return await processor.process_update()
         except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
@@ -1984,12 +1997,15 @@ async def update_record_user(request, row_id):
             }
 
             params = [
-                'keyword_one', 'keyword_two',
+                'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
                 'selected_column_one', 'selected_column_two',
-                'KOSGU_user', 'keyword_one_user', 'keyword_two_user',
-                'selected_column_one_user', 'selected_column_two_user',
-                'KOSGU_user_two', 'keyword_one_user_two', 'keyword_two_user_two',
-                'selected_column_one_user_two', 'selected_column_two_user_two',
+                'contract_date', 'selected_end_date',
+                # 'KOSGU_user',
+                # 'keyword_one_user','keyword_two_user',
+                # 'selected_column_one_user', 'selected_column_two_user',
+                # 'KOSGU_user_two',
+                # 'keyword_one_user_two', 'keyword_two_user_two',
+                # 'selected_column_one_user_two', 'selected_column_two_user_two',
             ]
 
             params_post = [
@@ -2090,12 +2106,15 @@ async def update_record_user_two(request, row_id):
             }
 
             params = [
-                'keyword_one', 'keyword_two',
+                'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
                 'selected_column_one', 'selected_column_two',
-                'KOSGU_user', 'keyword_one_user', 'keyword_two_user',
-                'selected_column_one_user', 'selected_column_two_user',
-                'KOSGU_user_two', 'keyword_one_user_two', 'keyword_two_user_two',
-                'selected_column_one_user_two', 'selected_column_two_user_two',
+                'contract_date', 'selected_end_date',
+                # 'KOSGU_user',
+                # 'keyword_one_user', 'keyword_two_user',
+                # 'selected_column_one_user', 'selected_column_two_user',
+                # 'KOSGU_user_two',
+                # 'keyword_one_user_two', 'keyword_two_user_two',
+                # 'selected_column_one_user_two', 'selected_column_two_user_two',
             ]
 
             params_post = [
@@ -2229,12 +2248,15 @@ async def add_record(request):
             }
 
             params = [
-                'keyword_one', 'keyword_two',
+                'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
                 'selected_column_one', 'selected_column_two',
-                'KOSGU_user', 'keyword_one_user', 'keyword_two_user',
-                'selected_column_one_user', 'selected_column_two_user',
-                'KOSGU_user_two', 'keyword_one_user_two', 'keyword_two_user_two',
-                'selected_column_one_user_two', 'selected_column_two_user_two',
+                'contract_date', 'selected_end_date',
+                # 'KOSGU_user',
+                # 'keyword_one_user', 'keyword_two_user',
+                # 'selected_column_one_user', 'selected_column_two_user',
+                # 'KOSGU_user_two',
+                # 'keyword_one_user_two', 'keyword_two_user_two',
+                # 'selected_column_one_user_two', 'selected_column_two_user_two',
             ]
 
             params_post = [
@@ -2252,7 +2274,7 @@ async def add_record(request):
                 'date_october', 'sum_october', 'date_november', 'sum_november',
                 'date_december', 'sum_december', 'date_january_two', 'sum_january_two',
                 'execution', 'contract_balance', 'execution_contract_fact', 'execution_contract_plan',
-                'saving', 'color', 'remainder_old_year'
+                'saving', 'color', 'remainder_old_year', 'paid_last_year'
             ]
 
             for param in params:
@@ -2319,12 +2341,15 @@ async def add_record_two(request):
             }
 
             params = [
-                'keyword_one', 'keyword_two',
+                'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
                 'selected_column_one', 'selected_column_two',
-                'KOSGU_user', 'keyword_one_user', 'keyword_two_user',
-                'selected_column_one_user', 'selected_column_two_user',
-                'KOSGU_user_two', 'keyword_one_user_two', 'keyword_two_user_two',
-                'selected_column_one_user_two', 'selected_column_two_user_two',
+                'contract_date', 'selected_end_date',
+                # 'KOSGU_user',
+                # 'keyword_one_user', 'keyword_two_user',
+                # 'selected_column_one_user', 'selected_column_two_user',
+                # 'KOSGU_user_two',
+                # 'keyword_one_user_two', 'keyword_two_user_two',
+                # 'selected_column_one_user_two', 'selected_column_two_user_two',
             ]
 
             params_post = [
@@ -2347,9 +2372,12 @@ async def add_record_two(request):
 
 @group_required('Администратор', 'Полный')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
-async def delete_record(request, row_id):
+async def delete_record(request):
     if request.method == 'POST':
         try:
+            body_unicode = request.body.decode('utf-8')
+            body_data = json.loads(body_unicode)
+            row_id = body_data.get('id')
             # Найдите запись по ID и обновите цвет
             service = await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id)
 
@@ -2357,8 +2385,9 @@ async def delete_record(request, row_id):
             context_data = {
                 'KOSGU': service.KOSGU,
                 'DopFC': service.DopFC,
+                # 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
+                'page': int(body_data.get('page', '1')),
                 'page_user': 1,
-                'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
                 'page_user_two': 1,
                 'connection_websocket': settings.DATABASES['default']['HOST'],
                 'statuses': json.dumps(json_object['statuses']),
@@ -2380,16 +2409,23 @@ async def delete_record(request, row_id):
             }
 
             params = [
-                'keyword_one', 'keyword_two',
+                'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
                 'selected_column_one', 'selected_column_two',
-                'KOSGU_user', 'keyword_one_user', 'keyword_two_user',
-                'selected_column_one_user', 'selected_column_two_user',
-                'KOSGU_user_two', 'keyword_one_user_two', 'keyword_two_user_two',
-                'selected_column_one_user_two', 'selected_column_two_user_two',
+                'contract_date', 'selected_end_date',
+                # 'KOSGU_user',
+                # 'keyword_one_user', 'keyword_two_user',
+                # 'selected_column_one_user', 'selected_column_two_user',
+                # 'KOSGU_user_two',
+                # 'keyword_one_user_two','keyword_two_user_two',
+                # 'selected_column_one_user_two', 'selected_column_two_user_two',
             ]
 
             for param in params:
-                context_data[param] = request.GET.get(param, None)
+                context_data[param] = body_data.get(param, None)
+
+            # print('---------------------------------------')
+            # print(body_data)
+            # print('---------------------------------------')
 
             # Удаляем объект
             await sync_to_async(service.delete, thread_sensitive=True)()
@@ -2410,9 +2446,12 @@ async def delete_record(request, row_id):
 
 @group_required('Администратор', 'Полный')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
-async def delete_record_two(request, row_id):
+async def delete_record_two(request):
     if request.method == 'POST':
         try:
+            body_unicode = request.body.decode('utf-8')
+            body_data = json.loads(body_unicode)
+            row_id = body_data.get('id')
             # Найдите запись по ID и обновите цвет
             service_two = await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id)
             # service_three = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(KOSGU=service_two.KOSGU, DopFC=service_two.DopFC)
@@ -2430,7 +2469,8 @@ async def delete_record_two(request, row_id):
             context_data = {
                 'KOSGU': service_two.KOSGU,
                 'DopFC': service_two.DopFC,
-                'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
+                # 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
+                'page': int(body_data.get('page', '1')),
                 'page_user': 1,
                 'page_user_two': 1,
                 'connection_websocket': settings.DATABASES['default']['HOST'],
@@ -2453,16 +2493,19 @@ async def delete_record_two(request, row_id):
             }
 
             params = [
-                'keyword_one', 'keyword_two',
+                'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
                 'selected_column_one', 'selected_column_two',
-                'KOSGU_user', 'keyword_one_user', 'keyword_two_user',
-                'selected_column_one_user', 'selected_column_two_user',
-                'KOSGU_user_two', 'keyword_one_user_two', 'keyword_two_user_two',
-                'selected_column_one_user_two', 'selected_column_two_user_two',
+                'contract_date', 'selected_end_date',
+                # 'KOSGU_user',
+                # 'keyword_one_user', 'keyword_two_user',
+                # 'selected_column_one_user', 'selected_column_two_user',
+                # 'KOSGU_user_two',
+                # 'keyword_one_user_two', 'keyword_two_user_two',
+                # 'selected_column_one_user_two', 'selected_column_two_user_two',
             ]
 
             for param in params:
-                context_data[param] = request.GET.get(param, None)
+                context_data[param] = body_data.get(param, None)
 
             # Удаляем объект
             await sync_to_async(service_two.delete, thread_sensitive=True)()
