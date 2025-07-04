@@ -2,7 +2,7 @@ import pandas as pd
 from django.db import DataError
 from django.http import JsonResponse
 import asyncio
-from .views import ContractProcessor, log_user_action, clean_number
+from .views import ContractProcessor, log_user_action, format_number
 
 import os
 import json
@@ -142,7 +142,7 @@ async def upload_file_(request):
                             number = match.group(0).replace(',', '.') # Заменяем запятую на точку
                             if number.endswith(".0"):
                                 number = number[:-2] # Удаляем ".0" в конце
-                            return await clean_number(number)
+                            return round(await format_number(number), 2)
                             # return match.group(0).replace(',', '.')  # Заменяем запятую на точку для поддержки формата float
                         return default
 

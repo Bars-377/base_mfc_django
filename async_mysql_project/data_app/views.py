@@ -29,21 +29,38 @@ def log_user_action(user, action):
     # Сохраняем лог в базу данных
     UserActionLog.objects.create(username=user.username, action=action)
 
-async def clean_number(value):
+# def has_more_than_two_decimal_places(number):
+#     """Проверка на двузначный остаток числа"""
+#     # Преобразуем число в строку
+#     number_str = str(number)
+
+#     # Проверяем, есть ли десятичная точка
+#     if '.' in number_str:
+#         # Получаем часть после десятичной точки
+#         decimal_part = number_str.split('.')[1]
+#         # Проверяем, больше ли длина части после запятой двух знаков
+#         return len(decimal_part) > 2
+#     return False
+
+async def format_number(value):
+    """Форматируем число"""
     if isinstance(value, (int, float)):
-        number_final = round(float(value), 2)
+        number_final = float(value)
     elif value is None or not value or str(value).strip() == '' or str(value) == 'None':
         number_final = 0.00
     else:
         try:
             # Удаляем пробелы и заменяем запятую на точку
             value_str = str(value).replace(' ', '').replace(',', '.')
-            number_final = round(float(value_str), 2)
+            number_final = float(value_str)
         except ValueError:
             # Если преобразование в число не удалось, возвращаем 0.00
             number_final = 0.00
-
     return number_final
+
+# async def reduce_number(value):
+#     """Форматируем число"""
+#     return round(value, 2)
 
 async def get_invalid_costs(qs, field_name):
     return await sync_to_async(list, thread_sensitive=True)(qs.values_list(field_name, flat=True))
@@ -347,14 +364,14 @@ async def skeleton(request, user,
     total_cost_1_6 = 0.00
 
     for service in Services_Three_:
-        total_cost_1_11 += await clean_number(service.budget_planned_old)
-        total_cost_1_22 += await clean_number(service.off_budget_planned_old)
-        total_cost_1_1 += await clean_number(service.budget_planned)
-        total_cost_1_2 += await clean_number(service.off_budget_planned)
-        total_cost_1_3 += await clean_number(service.budget_concluded)
-        total_cost_1_4 += await clean_number(service.off_budget_concluded)
-        total_cost_1_5 += await clean_number(service.budget_remainder)
-        total_cost_1_6 += await clean_number(service.off_budget_remainder)
+        total_cost_1_11 += await format_number(service.budget_planned_old)
+        total_cost_1_22 += await format_number(service.off_budget_planned_old)
+        total_cost_1_1 += await format_number(service.budget_planned)
+        total_cost_1_2 += await format_number(service.off_budget_planned)
+        total_cost_1_3 += await format_number(service.budget_concluded)
+        total_cost_1_4 += await format_number(service.off_budget_concluded)
+        total_cost_1_5 += await format_number(service.budget_remainder)
+        total_cost_1_6 += await format_number(service.off_budget_remainder)
 
     total_cost_1_7 = total_cost_17 - (total_cost_1_3 + total_cost_1_4)
 
@@ -429,36 +446,36 @@ async def skeleton(request, user,
         'pages': pages,
         'pages_user': pages_user,
         'pages_user_two': pages_user_two,
-        'total_cost_1': await clean_number(total_cost_1),
-        'total_cost_2': await clean_number(total_cost_2),
-        'total_cost_3': await clean_number(total_cost_3),
-        'total_cost_4': await clean_number(total_cost_4),
-        'total_cost_5': await clean_number(total_cost_5),
-        'total_cost_6': await clean_number(total_cost_6),
-        'total_cost_7': await clean_number(total_cost_7),
-        'total_cost_8': await clean_number(total_cost_8),
-        'total_cost_9': await clean_number(total_cost_9),
-        'total_cost_10': await clean_number(total_cost_10),
-        'total_cost_11': await clean_number(total_cost_11),
-        'total_cost_12': await clean_number(total_cost_12),
-        'total_cost_13': await clean_number(total_cost_13),
-        'total_cost_14': await clean_number(total_cost_14),
-        'total_cost_15': await clean_number(total_cost_15),
-        'total_cost_16': await clean_number(total_cost_16),
-        'total_cost_17': await clean_number(total_cost_17),
-        'total_cost_18': await clean_number(total_cost_18),
-        'total_cost_1_11': await clean_number(total_cost_1_11),
-        'total_cost_1_22': await clean_number(total_cost_1_22),
-        'total_cost_1_1': await clean_number(total_cost_1_1),
-        'total_cost_1_2': await clean_number(total_cost_1_2),
-        'total_cost_1_3': await clean_number(total_cost_1_3),
-        'total_cost_1_4': await clean_number(total_cost_1_4),
-        'total_cost_1_5': await clean_number(total_cost_1_5),
-        'total_cost_1_6': await clean_number(total_cost_1_6),
-        'total_cost_1_7': await clean_number(total_cost_1_7),
-        'total_cost_111': await clean_number(total_cost_111),
-        'total_cost_222': await clean_number(total_cost_222),
-        'total_cost_333': await clean_number(total_cost_333),
+        'total_cost_1': round(await format_number(total_cost_1), 2),
+        'total_cost_2': round(await format_number(total_cost_2), 2),
+        'total_cost_3': round(await format_number(total_cost_3), 2),
+        'total_cost_4': round(await format_number(total_cost_4), 2),
+        'total_cost_5': round(await format_number(total_cost_5), 2),
+        'total_cost_6': round(await format_number(total_cost_6), 2),
+        'total_cost_7': round(await format_number(total_cost_7), 2),
+        'total_cost_8': round(await format_number(total_cost_8), 2),
+        'total_cost_9': round(await format_number(total_cost_9), 2),
+        'total_cost_10': round(await format_number(total_cost_10), 2),
+        'total_cost_11': round(await format_number(total_cost_11), 2),
+        'total_cost_12': round(await format_number(total_cost_12), 2),
+        'total_cost_13': round(await format_number(total_cost_13), 2),
+        'total_cost_14': round(await format_number(total_cost_14), 2),
+        'total_cost_15': round(await format_number(total_cost_15), 2),
+        'total_cost_16': round(await format_number(total_cost_16), 2),
+        'total_cost_17': round(await format_number(total_cost_17), 2),
+        'total_cost_18': round(await format_number(total_cost_18), 2),
+        'total_cost_1_11': round(await format_number(total_cost_1_11), 2),
+        'total_cost_1_22': round(await format_number(total_cost_1_22), 2),
+        'total_cost_1_1': round(await format_number(total_cost_1_1), 2),
+        'total_cost_1_2': round(await format_number(total_cost_1_2), 2),
+        'total_cost_1_3': round(await format_number(total_cost_1_3), 2),
+        'total_cost_1_4': round(await format_number(total_cost_1_4), 2),
+        'total_cost_1_5': round(await format_number(total_cost_1_5), 2),
+        'total_cost_1_6': round(await format_number(total_cost_1_6), 2),
+        'total_cost_1_7': round(await format_number(total_cost_1_7), 2),
+        'total_cost_111': round(await format_number(total_cost_111), 2),
+        'total_cost_222': round(await format_number(total_cost_222), 2),
+        'total_cost_333': round(await format_number(total_cost_333), 2),
         'selected_contract_date': contract_date,
         # 'selected_KOSGU_user': KOSGU_user,
         # 'selected_KOSGU_user_two': KOSGU_user_two,
@@ -1027,7 +1044,7 @@ class ContractProcessor:
         # cleaned_numbers = await asyncio.gather(*(clean_number(month) for month in months))
         # return sum(cleaned_numbers)
 
-        cleaned_numbers = await clean_number(self.context_data['remainder_old_year']) - await clean_number(self.context_data['january_two'])
+        cleaned_numbers = await format_number(self.context_data['remainder_old_year']) - await format_number(self.context_data['january_two'])
         # print('summ', cleaned_numbers)
         return cleaned_numbers
         # return sum(cleaned_numbers)
@@ -1039,8 +1056,8 @@ class ContractProcessor:
             'sum_july', 'sum_august', 'sum_september', 'sum_october', 'sum_november', 'sum_december',
             # 'sum_january_two'
         ]]
-        cleaned_numbers = await asyncio.gather(*(clean_number(month) for month in sum_months))
-        return sum(cleaned_numbers) + await clean_number(self.context_data['paid_last_year'])
+        cleaned_numbers = await asyncio.gather(*(format_number(month) for month in sum_months))
+        return sum(cleaned_numbers) + await format_number(self.context_data['paid_last_year'])
         # return sum(cleaned_numbers)
 
     async def update_service(self, saving, execution_contract_plan, execution_contract_fact):
@@ -1055,19 +1072,19 @@ class ContractProcessor:
         for key, value in self.context_data.items():
             setattr(service, key, value)
 
-        if (await clean_number(service.execution_contract_fact) > await clean_number(service.execution_contract_plan)) \
-            or (await clean_number(service.january_one) < await clean_number(service.sum_january_one)) \
-            or (await clean_number(service.february) < await clean_number(service.sum_february)) \
-            or (await clean_number(service.march) < await clean_number(service.sum_march)) \
-            or (await clean_number(service.april) < await clean_number(service.sum_april)) \
-            or (await clean_number(service.may) < await clean_number(service.sum_may)) \
-            or (await clean_number(service.june) < await clean_number(service.sum_june)) \
-            or (await clean_number(service.july) < await clean_number(service.sum_july)) \
-            or (await clean_number(service.august) < await clean_number(service.sum_august)) \
-            or (await clean_number(service.september) < await clean_number(service.sum_september)) \
-            or (await clean_number(service.november) < await clean_number(service.sum_november)) \
-            or (await clean_number(service.december) < await clean_number(service.sum_december)) \
-            or (await clean_number(service.january_two) < await clean_number(service.sum_january_two)):
+        if (await format_number(service.execution_contract_fact) > await format_number(service.execution_contract_plan)) \
+            or (await format_number(service.january_one) < await format_number(service.sum_january_one)) \
+            or (await format_number(service.february) < await format_number(service.sum_february)) \
+            or (await format_number(service.march) < await format_number(service.sum_march)) \
+            or (await format_number(service.april) < await format_number(service.sum_april)) \
+            or (await format_number(service.may) < await format_number(service.sum_may)) \
+            or (await format_number(service.june) < await format_number(service.sum_june)) \
+            or (await format_number(service.july) < await format_number(service.sum_july)) \
+            or (await format_number(service.august) < await format_number(service.sum_august)) \
+            or (await format_number(service.september) < await format_number(service.sum_september)) \
+            or (await format_number(service.november) < await format_number(service.sum_november)) \
+            or (await format_number(service.december) < await format_number(service.sum_december)) \
+            or (await format_number(service.january_two) < await format_number(service.sum_january_two)):
             service.color = '#ffebeb'
         elif service.color == '#ffebeb':
             service.color = ''
@@ -1102,7 +1119,7 @@ class ContractProcessor:
 
         await log_user_action(self.request.user, f'Добавил запись в "Закупки" с ID {id_id}')
 
-        contract_balance = await clean_number(self.context_data['contract_price']) - await clean_number(execution_contract_fact)
+        contract_balance = await format_number(self.context_data['contract_price']) - await format_number(execution_contract_fact)
 
         # Добавляем id_id в объект new_service
         setattr(new_service, 'id_id', id_id)
@@ -1118,19 +1135,19 @@ class ContractProcessor:
         # Добавляем contract_balance в объект new_service
         setattr(new_service, 'contract_balance', contract_balance)
 
-        if (await clean_number(new_service.execution_contract_fact) > await clean_number(new_service.execution_contract_plan)) \
-            or (await clean_number(new_service.january_one) < await clean_number(new_service.sum_january_one)) \
-            or (await clean_number(new_service.february) < await clean_number(new_service.sum_february)) \
-            or (await clean_number(new_service.march) < await clean_number(new_service.sum_march)) \
-            or (await clean_number(new_service.april) < await clean_number(new_service.sum_april)) \
-            or (await clean_number(new_service.may) < await clean_number(new_service.sum_may)) \
-            or (await clean_number(new_service.june) < await clean_number(new_service.sum_june)) \
-            or (await clean_number(new_service.july) < await clean_number(new_service.sum_july)) \
-            or (await clean_number(new_service.august) < await clean_number(new_service.sum_august)) \
-            or (await clean_number(new_service.september) < await clean_number(new_service.sum_september)) \
-            or (await clean_number(new_service.november) < await clean_number(new_service.sum_november)) \
-            or (await clean_number(new_service.december) < await clean_number(new_service.sum_december)) \
-            or (await clean_number(new_service.january_two) < await clean_number(new_service.sum_january_two)):
+        if (await format_number(new_service.execution_contract_fact) > await format_number(new_service.execution_contract_plan)) \
+            or (await format_number(new_service.january_one) < await format_number(new_service.sum_january_one)) \
+            or (await format_number(new_service.february) < await format_number(new_service.sum_february)) \
+            or (await format_number(new_service.march) < await format_number(new_service.sum_march)) \
+            or (await format_number(new_service.april) < await format_number(new_service.sum_april)) \
+            or (await format_number(new_service.may) < await format_number(new_service.sum_may)) \
+            or (await format_number(new_service.june) < await format_number(new_service.sum_june)) \
+            or (await format_number(new_service.july) < await format_number(new_service.sum_july)) \
+            or (await format_number(new_service.august) < await format_number(new_service.sum_august)) \
+            or (await format_number(new_service.september) < await format_number(new_service.sum_september)) \
+            or (await format_number(new_service.november) < await format_number(new_service.sum_november)) \
+            or (await format_number(new_service.december) < await format_number(new_service.sum_december)) \
+            or (await format_number(new_service.january_two) < await format_number(new_service.sum_january_two)):
             new_service.color = '#ffebeb'
         elif new_service.color == '#ffebeb':
             new_service.color = ''
@@ -1214,7 +1231,7 @@ class ContractProcessor:
             answer = 0
             for contract_price in months_contract_price:
                 total_sum = await sync_to_async(self._aggregate_sum)(filters, contract_price)
-                answer += await clean_number(total_sum if total_sum not in [None, 'None', ''] else 0)
+                answer += await format_number(total_sum if total_sum not in [None, 'None', ''] else 0)
                 # if KTSSR == '2046102280' and status == 'Запланировано':
                 #     print('answer', answer)
 
@@ -1230,13 +1247,13 @@ class ContractProcessor:
             answer = 0
             for execution_contract_fact in months_execution_contract_fact:
                 total_sum = await sync_to_async(self._aggregate_sum)(filters, execution_contract_fact)
-                answer += await clean_number(total_sum if total_sum not in [None, 'None', ''] else 0)
+                answer += await format_number(total_sum if total_sum not in [None, 'None', ''] else 0)
 
         # # Асинхронно выполняем агрегацию
         # total_sum = await sync_to_async(self._aggregate_sum)(filters, field_to_sum)
 
         # Очищаем число, если это необходимо
-        return answer
+        return round(answer, 2)
         # return await clean_number(total_sum if total_sum not in [None, 'None', ''] else 0)
 
     def _aggregate_sum(self, filters, field_to_sum):
@@ -1253,7 +1270,7 @@ class ContractProcessor:
         ]
 
         # Асинхронно обрабатываем все месяцы
-        cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in budget))
+        cleaned_numbers = await asyncio.gather(*(format_number(number) for number in budget))
 
         # print('--------------------------------')
         # print(cleaned_numbers[0])
@@ -1261,7 +1278,7 @@ class ContractProcessor:
         # print('--------------------------------')
 
         # Суммируем результат
-        Services_Two_.budget_remainder = await clean_number(cleaned_numbers[0] - sum(cleaned_numbers[1:]))
+        Services_Two_.budget_remainder = round(await format_number(cleaned_numbers[0] - sum(cleaned_numbers[1:])), 2)
 
         # Создаем список месяцев
         off_budget = [
@@ -1272,14 +1289,14 @@ class ContractProcessor:
         ]
 
         # Асинхронно обрабатываем все месяцы
-        cleaned_numbers = await asyncio.gather(*(clean_number(number) for number in off_budget))
+        cleaned_numbers = await asyncio.gather(*(format_number(number) for number in off_budget))
 
         # Суммируем результат
-        Services_Two_.off_budget_remainder = await clean_number(cleaned_numbers[0] - sum(cleaned_numbers[1:]))
+        Services_Two_.off_budget_remainder = round(await format_number(cleaned_numbers[0] - sum(cleaned_numbers[1:])), 2)
 
         # Расчет планов
-        Services_Two_.budget_plans = await clean_number(await clean_number(Services_Two_.budget_remainder) - await clean_number(Services_Two_.budget_planned))
-        Services_Two_.off_budget_plans = await clean_number(await clean_number(Services_Two_.off_budget_remainder) - await clean_number(Services_Two_.off_budget_planned))
+        Services_Two_.budget_plans = round(await format_number(await format_number(Services_Two_.budget_remainder) - await format_number(Services_Two_.budget_planned)), 2)
+        Services_Two_.off_budget_plans = round(await format_number(await format_number(Services_Two_.off_budget_remainder) - await format_number(Services_Two_.off_budget_planned)), 2)
 
         # def has_more_than_two_decimals(number):
         #     # Преобразуем число в строку
@@ -1296,8 +1313,8 @@ class ContractProcessor:
         #     print(f"Число {await clean_number(Services_Two_.budget_remainder) - await clean_number(Services_Two_.budget_planned)} имеет больше двух знаков после запятой.")
         #     exit()
 
-        if any(x < 0 for x in [await clean_number(Services_Two_.budget_remainder),
-                            await clean_number(Services_Two_.off_budget_remainder)
+        if any(x < 0 for x in [await format_number(Services_Two_.budget_remainder),
+                            await format_number(Services_Two_.off_budget_remainder)
                             # await clean_number(Services_Two_.budget_plans),
                             # await clean_number(Services_Two_.off_budget_plans)
                             ]):
@@ -1325,11 +1342,11 @@ class ContractProcessor:
                 elif self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2046102280':
                     Services_Three_.budget_concluded = contract_price_sum_way
 
-            Services_Three_.budget_remainder = await clean_number(await clean_number(Services_Three_.budget_planned) + await clean_number(Services_Three_.budget_planned_old) - await clean_number(Services_Three_.budget_concluded))
-            Services_Three_.off_budget_remainder = await clean_number(await clean_number(Services_Three_.off_budget_planned) + await clean_number(Services_Three_.off_budget_planned_old) - await clean_number(Services_Three_.off_budget_concluded))
+            Services_Three_.budget_remainder = round(await format_number(await format_number(Services_Three_.budget_planned) + await format_number(Services_Three_.budget_planned_old) - await format_number(Services_Three_.budget_concluded)), 2)
+            Services_Three_.off_budget_remainder = round(await format_number(await format_number(Services_Three_.off_budget_planned) + await format_number(Services_Three_.off_budget_planned_old) - await format_number(Services_Three_.off_budget_concluded)), 2)
 
-            if any(x < 0 for x in [await clean_number(Services_Three_.budget_remainder),
-                                await clean_number(Services_Three_.off_budget_remainder)
+            if any(x < 0 for x in [await format_number(Services_Three_.budget_remainder),
+                                await format_number(Services_Three_.off_budget_remainder)
                                 # await clean_number(Services_Three_.budget_planned),
                                 # await clean_number(Services_Three_.off_budget_planned)
                                 ]):
@@ -1425,9 +1442,9 @@ class ContractProcessor:
         ))
         contract_price_sum_way = 0
         for service in Services_way_:
-            contract_price_sum_way += await clean_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+            contract_price_sum_way += await format_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
-        return contract_price_sum_way
+        return round(contract_price_sum_way, 2)
 
     async def Services_Two_save(self, Services_Two_):
         """Обновление второй базы"""
@@ -1610,14 +1627,14 @@ class ContractProcessor:
 
         execution_contract_plan = await self.calculate_execution_plan()
         execution_contract_fact = await self.calculate_execution_fact()
-        saving = await clean_number(self.context_data['NMCC']) - await clean_number(self.context_data['contract_price'])
+        saving = round(await format_number(self.context_data['NMCC']) - await format_number(self.context_data['contract_price']), 2)
 
-        if await clean_number(self.context_data['contract_price']) == 0:
+        if await format_number(self.context_data['contract_price']) == 0:
             self.context_data['execution'] = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
         else:
-            self.context_data['execution'] = round(await clean_number(execution_contract_fact) / await clean_number(self.context_data['contract_price']), 2) * 100
+            self.context_data['execution'] = round(await format_number(execution_contract_fact) / await format_number(self.context_data['contract_price']), 2) * 100
 
-        self.context_data['contract_balance'] = await clean_number(self.context_data['contract_price']) - await clean_number(execution_contract_fact)
+        self.context_data['contract_balance'] = round(await format_number(self.context_data['contract_price']) - await format_number(execution_contract_fact), 2)
 
         from django.forms.models import model_to_dict
         service_dict = model_to_dict(self.context_data['service'])
@@ -1708,14 +1725,14 @@ class ContractProcessor:
 
         execution_contract_plan = await self.calculate_execution_plan()
         execution_contract_fact = await self.calculate_execution_fact()
-        saving = await clean_number(self.context_data['NMCC']) - await clean_number(self.context_data['contract_price'])
+        saving = round(await format_number(self.context_data['NMCC']) - await format_number(self.context_data['contract_price']), 2)
 
-        if await clean_number(self.context_data['contract_price']) == 0:
+        if await format_number(self.context_data['contract_price']) == 0:
             self.context_data['execution'] = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
         else:
-            self.context_data['execution'] = round(await clean_number(execution_contract_fact) / await clean_number(self.context_data['contract_price']), 2) * 100
+            self.context_data['execution'] = round(await format_number(execution_contract_fact) / await format_number(self.context_data['contract_price']), 2) * 100
 
-        self.context_data['contract_balance'] = await clean_number(self.context_data['contract_price']) - await clean_number(execution_contract_fact)
+        self.context_data['contract_balance'] = round(await format_number(self.context_data['contract_price']) - await format_number(execution_contract_fact), 2)
 
         new_service = Services()
         new_service = await self.creation_new_service(saving, execution_contract_plan, execution_contract_fact, new_service)

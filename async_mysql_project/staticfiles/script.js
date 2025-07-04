@@ -166,36 +166,70 @@ document.addEventListener("DOMContentLoaded", function () {
 	};
 });
 
+// document.addEventListener("DOMContentLoaded", function () {
+// 	function formatNumbersInText() {
+// 		const regex = /\d{1,3}(?:[.,]?\d{3})*(?:[.,]?\d+)?/g; // Поиск чисел с запятыми и точками
+
+// 		// Получаем все текстовые узлы на странице
+// 		const elements = document.querySelectorAll('*');
+
+// 		elements.forEach(element => {
+// 			if (element.getAttribute('data-type') === "no_format") {
+// 				return; // Возвращаем, чтобы пропустить обработку этого элемента
+// 			}
+// 			// Проверяем, есть ли текстовое содержимое
+// 			if (element.childNodes.length > 0) {
+// 				element.childNodes.forEach(node => {
+// 					if (node.nodeType === Node.TEXT_NODE) {
+// 						node.nodeValue = node.nodeValue.replace(regex, match => {
+// 							let num = parseFloat(match.replace(',', '.')); // Меняем запятую на точку
+// 							let formatted = !isNaN(num) ? new Intl.NumberFormat("ru-RU", {
+// 								minimumFractionDigits: match.includes('.') ? 2 : 0, // Две цифры после запятой, если есть дробная часть
+// 								maximumFractionDigits: 2
+// 							}).format(num) : match;
+// 							return formatted.replace(/,/g, '.'); // Заменяем запятые на точки на выходе
+// 						});
+// 					}
+// 				});
+// 			}
+// 		});
+// 	}
+
+// 	formatNumbersInText(); // Запускаем для всего документа
+// });
+
 document.addEventListener("DOMContentLoaded", function () {
 	function formatNumbersInText() {
-		const regex = /\d{1,3}(?:[.,]?\d{3})*(?:[.,]?\d+)?/g; // Поиск чисел с запятыми и точками
+		const regex = /\d+(?:[.,]\d+)?/g; // Поиск чисел с точками или запятыми
 
-		// Получаем все текстовые узлы на странице
 		const elements = document.querySelectorAll('*');
 
 		elements.forEach(element => {
-			if (element.getAttribute('data-type') === "no_format") {
-				return; // Возвращаем, чтобы пропустить обработку этого элемента
-			}
-			// Проверяем, есть ли текстовое содержимое
-			if (element.childNodes.length > 0) {
-				element.childNodes.forEach(node => {
-					if (node.nodeType === Node.TEXT_NODE) {
-						node.nodeValue = node.nodeValue.replace(regex, match => {
-							let num = parseFloat(match.replace(',', '.')); // Меняем запятую на точку
-							let formatted = !isNaN(num) ? new Intl.NumberFormat("ru-RU", {
-								minimumFractionDigits: match.includes('.') ? 2 : 0, // Две цифры после запятой, если есть дробная часть
-								maximumFractionDigits: 2
-							}).format(num) : match;
-							return formatted.replace(/,/g, '.'); // Заменяем запятые на точки на выходе
-						});
-					}
-				});
-			}
+			if (element.getAttribute('data-type') === "no_format") return;
+
+			element.childNodes.forEach(node => {
+				if (node.nodeType === Node.TEXT_NODE) {
+					node.nodeValue = node.nodeValue.replace(regex, match => {
+						// Заменяем запятую на точку для корректного парсинга
+						let num = parseFloat(match.replace(',', '.'));
+
+						if (isNaN(num)) return match;
+
+						// Форматируем с пробелом в тысячах и двумя знаками после запятой
+						let formatted = new Intl.NumberFormat('ru-RU', {
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2
+						}).format(num);
+
+						// Заменяем десятичный разделитель запятую на точку
+						return formatted.replace(',', '.');
+					});
+				}
+			});
 		});
 	}
 
-	formatNumbersInText(); // Запускаем для всего документа
+	formatNumbersInText();
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -384,7 +418,7 @@ function showFlashMessage(event) {
 // 	// Показываем индикатор загрузки
 // 	const loadingIndicator = document.getElementById("loading");
 // 	const submitButton = document.getElementById('submit-button');
-	
+
 // 	loadingIndicator.style.display = "block";
 // 	submitButton.style.display = 'none';
 
@@ -1098,7 +1132,7 @@ function getCookie(name) {
 // 		button.addEventListener('click', function () {
 // 			const form = this.closest('.delete-form');
 // 			const serviceId = form.getAttribute('data-id');
-			
+
 // 			const page = form.getAttribute('data-page');
 // 			const keyword_one = form.getAttribute('data-keyword-one');
 // 			const keyword_two = form.getAttribute('data-keyword-two');
@@ -1108,7 +1142,7 @@ function getCookie(name) {
 // 			const selected_column_two = form.getAttribute('data-selected-column-two');
 // 			const contract_date = form.getAttribute('data-contract-date');
 // 			const selected_end_date = form.getAttribute('data-selected-end-date');
-			
+
 // 			const page_user = form.getAttribute('data-page-user');
 
 // 			const page_user_two = form.getAttribute('data-page-user-two');
