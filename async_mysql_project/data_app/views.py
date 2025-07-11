@@ -1631,9 +1631,6 @@ class ContractProcessor:
                 color='0',
             )
 
-        await update_Services_Two()
-        await update_Services_Three()
-
         # Асинхронная функция для получения данных
         @sync_to_async
         def get_services_two_data():
@@ -1665,6 +1662,9 @@ class ContractProcessor:
                 await process_context('2046100092', status, context_data, request)
 
         if not mode:
+
+            await update_Services_Two()
+            await update_Services_Three()
 
             # Вызов функции
             KOSGU_and_DopFC = await get_services_two_data()

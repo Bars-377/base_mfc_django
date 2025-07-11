@@ -559,7 +559,7 @@ async def upload_file_(request):
                         await log_user_action(request.user, f'Загрузил данные из Excel в "Закупки"')
 
                         processor = ContractProcessor(request)
-                        await processor.count_dates()
+                        await processor.count_dates(False)
 
                         # cursor.executemany(insert_query, data_to_insert)
                         # conn.commit()
