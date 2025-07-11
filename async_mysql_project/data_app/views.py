@@ -973,7 +973,7 @@ class ContractProcessor:
 
     async def validate_execution_fact_message(self):
         # await sync_to_async(messages.error)(self.request, 'Нельзя выставить статус "Исполнено" при неравенстве ячеек «Исполнение контракта (факт)» и «Исполнение контракта (план)»')
-        await messages.error(self.request, 'Нельзя выставить статус "Исполнено" при неравенстве ячеек «Исполнение контракта (факт)» и «Исполнение контракта (план)»')
+        messages.error(self.request, 'Нельзя выставить статус "Исполнено" при неравенстве ячеек «Исполнение контракта (факт)» и «Исполнение контракта (план)»')
 
     async def validate_Services_Two(self):
         try:
@@ -1407,14 +1407,42 @@ class ContractProcessor:
         # await sync_to_async(messages.success)(self.request, "Данные успешно удалены!")
         messages.success(self.request, "Данные успешно удалены!")
 
+    # async def aggregate_fields(self, fields):
+    #     """Суммирование столбцов"""
+    #     filters = {
+    #         'KOSGU': self.context_data.get('KOSGU'),
+    #         'DopFC': self.context_data.get('DopFC'),
+    #         # 'KTSSR': self.context_data.get('KTSSR'),
+    #     }
+    #     results = {}
+    #     # for field in fields:
+    #     #     # Асинхронно выполняем агрегацию по каждому полю
+    #     #     result = await sync_to_async(lambda: Services_Two.objects.aggregate(**{f'{field}__sum': Sum(field)}), thread_sensitive=True)()
+    #     #     # Получаем значение суммы или 0, если оно None
+    #     for field in fields:
+    #         result = await sync_to_async(
+    #             lambda: Services_Two.objects.filter(**filters).aggregate(**{f'{field}__sum': Sum(field)}),
+    #             thread_sensitive=True
+    #         )()
+    #         results[field] = result[f'{field}__sum'] or 0.0
+    #     return results
+
     async def aggregate_fields(self, fields):
-        """Суммирование столбцов"""
+        """Получение фильтрованных данных без агрегации"""
+        filters = {
+            'KOSGU': self.context_data.get('KOSGU'),
+            'DopFC': self.context_data.get('DopFC'),
+            # 'KTSSR': self.context_data.get('KTSSR'),
+        }
+
         results = {}
         for field in fields:
-            # Асинхронно выполняем агрегацию по каждому полю
-            result = await sync_to_async(lambda: Services_Two.objects.aggregate(**{f'{field}__sum': Sum(field)}), thread_sensitive=True)()
-            # Получаем значение суммы или 0, если оно None
-            results[field] = result[f'{field}__sum'] or 0
+            # Получаем значения поля по фильтру
+            values = await sync_to_async(
+                lambda: list(Services_Two.objects.filter(**filters).values_list(field, flat=True)),
+                thread_sensitive=True
+            )()
+            results[field] = float(values[0])
         return results
 
     async def total_costs(self, new_service):
@@ -1450,11 +1478,24 @@ class ContractProcessor:
         'total_cost_10': aggregated_results['off_budget_completed']
         }
 
+        # print(total_costs_calc['total_cost_2'])
+        # print('--------------------')
+        # print(total_costs_calc['total_cost_4'])
+        # print(total_costs_calc['total_cost_6'])
+        # print(total_costs_calc['total_cost_8'])
+        # print(total_costs_calc['total_cost_10'])
+
         if total_costs_calc['total_cost_1'] < (total_costs_calc['total_cost_3'] or total_costs_calc['total_cost_5'] or total_costs_calc['total_cost_7'] or total_costs_calc['total_cost_9']):
             if new_service:
                 await sync_to_async(new_service.delete)()
                 await log_user_action(self.request.user, f'Отменилось добавление записи в "Закупки" с ID {new_service.id_id}')
             # print('TEST 1')
+            # print(total_costs_calc['total_cost_1'])
+            # print('--------------------')
+            # print(total_costs_calc['total_cost_3'])
+            # print(total_costs_calc['total_cost_5'])
+            # print(total_costs_calc['total_cost_7'])
+            # print(total_costs_calc['total_cost_9'])
             return False
 
         if total_costs_calc['total_cost_2'] < (total_costs_calc['total_cost_4'] or total_costs_calc['total_cost_6'] or total_costs_calc['total_cost_8'] or total_costs_calc['total_cost_10']):
@@ -1470,7 +1511,7 @@ class ContractProcessor:
         messages.error(self.request, 'Запрещено вносить новую строку, если после ее ввода сумма контрактов по соответствующему КЦСР, КОСГУ и ДопФК превысит значение поля «Лимиты»')
 
     async def Services_way(self):
-        """Подсчёт Цена контракта (на 2024 год) и Исполнение контракта (план) (формула) если есть way='п.4 ч.1 ст.93'"""
+        """Подсчёт Цена контракта если есть way='п.4 ч.1 ст.93'"""
         from django.db.models import Q
 
         Services_way_ = await sync_to_async(list)(Services.objects.filter(
@@ -1551,7 +1592,7 @@ class ContractProcessor:
 
         # Другие операции, такие как сохранение сервиса и т.д.
 
-    async def count_dates(self):
+    async def count_dates(self, mode):
         """Предварительные вычислительные операции после обновления или добавления записей"""
 
         @sync_to_async(thread_sensitive=True)
@@ -1603,9 +1644,6 @@ class ContractProcessor:
 
             return KOSGU_and_DopFC  # Список с повторяющимися ключами
 
-        # Вызов функции
-        KOSGU_and_DopFC = await get_services_two_data()
-
         async def process_context(KTSSR, status, context_data, request):
             # Обновляем context_data
             context_data.update({'KTSSR': KTSSR, 'status': status})
@@ -1626,14 +1664,38 @@ class ContractProcessor:
             for status in statuses:
                 await process_context('2046100092', status, context_data, request)
 
-        context_data = {}
+        if not mode:
 
-        for key, value in KOSGU_and_DopFC:
+            # Вызов функции
+            KOSGU_and_DopFC = await get_services_two_data()
 
-            context_data.update({'KOSGU': key})  # Добавляем ключ и значение в context_data
-            context_data.update({'DopFC': value})  # Добавляем ключ и значение в context_data
+            context_data = {}
 
-            await handle_multiple_statuses(context_data, self.request)
+            for key, value in KOSGU_and_DopFC:
+
+                # Добавляем ключ и значение в context_data
+                context_data.update({'KOSGU': key})
+                context_data.update({'DopFC': value})
+
+                await handle_multiple_statuses(context_data, self.request)
+
+        elif mode:
+
+            # context_data = {}
+
+            # # Добавляем ключ и значение в context_data
+            # context_data.update({'KOSGU': self.context_data['KOSGU']})
+            # context_data.update({'DopFC': self.context_data['DopFC']})
+            # context_data.update({'KTSSR': self.context_data['KTSSR']})
+            # context_data.update({'status': self.context_data['status']})
+
+            # Инициализация и обработка контекста
+            # processor = ContractProcessor(self.context_data, self.request)
+            if not (self.context_data.get('KTSSR') and self.context_data.get('status')):
+                # print('POPALO SUDA')
+                await handle_multiple_statuses(self.context_data, self.request)
+            else:
+                await self.process_count_dates()
 
     async def process_count_dates(self):
         """Продолжение предварительных вычислительних операций после обновления или добавления записей"""
@@ -1679,14 +1741,21 @@ class ContractProcessor:
 
         await self.update_service(saving, execution_contract_plan, execution_contract_fact)
 
-        await self.count_dates()
+        # print('-------------------------')
+        # print(self.context_data['KOSGU'])
+        # print(self.context_data['DopFC'])
+        # print(self.context_data['KTSSR'])
+        # print(self.context_data['status'])
+        # print('-------------------------')
+
+        await self.count_dates(True)
 
         if not await self.total_costs(None):
 
             self.context_data['contract_price'] = '0'
 
             await self.update_service(saving, execution_contract_plan, execution_contract_fact)
-            await self.count_dates()
+            await self.count_dates(True)
 
             await self.total_costs_message()
             return render(self.request, 'edit.html', self.context_data)
@@ -1790,7 +1859,7 @@ class ContractProcessor:
             await self.total_costs_message()
             return render(self.request, 'add.html', self.context_data)
 
-        await self.count_dates()
+        await self.count_dates(True)
 
         await self.message_service_add()
 
@@ -1811,7 +1880,7 @@ class ContractProcessor:
 
         await self.creation_new_service_two()
 
-        await self.count_dates()
+        await self.count_dates(False)
 
         await self.message_service_add()
 
@@ -1826,9 +1895,9 @@ class ContractProcessor:
 
         # Другие операции, такие как сохранение сервиса и т.д.
 
-    async def process_delete(self, service):
+    async def process_delete(self):
 
-        await self.count_dates()
+        await self.count_dates(True)
 
         await self.message_service_delete()
 
@@ -1843,9 +1912,9 @@ class ContractProcessor:
 
         # Другие операции, такие как сохранение сервиса и т.д.
 
-    async def process_delete_two(self, service):
+    async def process_delete_two(self):
 
-        await self.count_dates()
+        await self.count_dates(True)
 
         await self.message_service_delete()
 
@@ -2459,6 +2528,8 @@ async def delete_record(request):
             context_data = {
                 'KOSGU': service.KOSGU,
                 'DopFC': service.DopFC,
+                'KTSSR': service.KTSSR,
+                'status': service.status,
                 # 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
                 'page': int(body_data.get('page', '1')),
                 'page_user': 1,
@@ -2510,7 +2581,7 @@ async def delete_record(request):
             await log_user_action(request.user, f'Удалил запись из "Закупки": {service_dict}')
 
             processor = ContractProcessor(context_data, request)
-            await processor.process_delete(service)
+            await processor.process_delete()
             return JsonResponse({'success': True}, status=200)
         except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
@@ -2590,7 +2661,7 @@ async def delete_record_two(request):
             await log_user_action(request.user, f'Удалил запись из "Свод": {service_dict}')
 
             processor = ContractProcessor(context_data, request)
-            await processor.process_delete_two(service_two)
+            await processor.process_delete_two()
             return JsonResponse({'success': True}, status=200)
         except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
@@ -2649,7 +2720,7 @@ async def backup_to_backup_one(request):
         await sync_to_async(Services.objects.bulk_create)([Services(**fields) for fields in services_to_create])
 
         processor = ContractProcessor(request)
-        await processor.count_dates()
+        await processor.count_dates(False)
 
         await log_user_action(request.user, 'Резервное копирование в Services из Services_backup_one завершено!')
         return JsonResponse({'success': True})
@@ -2677,7 +2748,7 @@ async def backup_to_backup_two(request):
         await sync_to_async(Services.objects.bulk_create)([Services(**fields) for fields in services_to_create])
 
         processor = ContractProcessor(request)
-        await processor.count_dates()
+        await processor.count_dates(False)
 
         await log_user_action(request.user, 'Резервное копирование в Services из Services_backup_two завершено!')
         return JsonResponse({'success': True})
