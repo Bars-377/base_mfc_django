@@ -1478,12 +1478,20 @@ class ContractProcessor:
         'total_cost_10': aggregated_results['off_budget_completed']
         }
 
-        # print(total_costs_calc['total_cost_2'])
-        # print('--------------------')
-        # print(total_costs_calc['total_cost_4'])
-        # print(total_costs_calc['total_cost_6'])
-        # print(total_costs_calc['total_cost_8'])
-        # print(total_costs_calc['total_cost_10'])
+        print(total_costs_calc['total_cost_2'])
+        print('--------------------')
+        print(total_costs_calc['total_cost_4'])
+        print(total_costs_calc['total_cost_6'])
+        print(total_costs_calc['total_cost_8'])
+        print(total_costs_calc['total_cost_10'])
+        print('--------------------')
+        print('--------------------')
+        print(total_costs_calc['total_cost_1'])
+        print('--------------------')
+        print(total_costs_calc['total_cost_3'])
+        print(total_costs_calc['total_cost_5'])
+        print(total_costs_calc['total_cost_7'])
+        print(total_costs_calc['total_cost_9'])
 
         if total_costs_calc['total_cost_1'] < (total_costs_calc['total_cost_3'] or total_costs_calc['total_cost_5'] or total_costs_calc['total_cost_7'] or total_costs_calc['total_cost_9']):
             if new_service:
@@ -1842,18 +1850,19 @@ class ContractProcessor:
         new_service = Services()
         new_service = await self.creation_new_service(saving, execution_contract_plan, execution_contract_fact, new_service)
 
-        # Services_Two_ = await sync_to_async(lambda: Services_Two.objects.all())()
-        Services_Two_ = await sync_to_async(list, thread_sensitive=True)(Services_Two.objects.all())
+        # # Services_Two_ = await sync_to_async(lambda: Services_Two.objects.all())()
+        # Services_Two_ = await sync_to_async(list, thread_sensitive=True)(Services_Two.objects.all())
 
         await sync_to_async(new_service.save)()
 
-        Services_Two_ = await self.validate_Services_Two()
+        # Services_Two_ = await self.validate_Services_Two()
 
         if not await self.validate_Services_Two():
             await self.validate_Services_Two_message()
             return render(self.request, 'data_table.html', self.context_data)
 
-        await self.Services_Two_save(Services_Two_)
+        # await self.Services_Two_save(Services_Two_)
+        await self.count_dates(True)
 
         if not await self.total_costs(new_service):
             await self.total_costs_message()
