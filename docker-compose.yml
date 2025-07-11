@@ -1,0 +1,71 @@
+services:
+  uvicorn:
+    build: .
+    ports:
+      - "8400:8400"  # Uvicorn
+    volumes:
+      - .:/app
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      - PYTHONPATH=/app
+      - DJANGO_SETTINGS_MODULE=async_mysql_project.settings
+      # - CELERY_BROKER_URL=redis://172.18.11.104:6379/0
+      # - CELERY_RESULT_BACKEND=redis://172.18.11.104:6379/0
+    command: >
+      sh -c ". /venv/bin/activate && python entrypoint.py && cd async_mysql_project &&
+            uvicorn async_mysql_project.asgi:application --host 0.0.0.0 --port 8400 & cd /app && cd async_mysql_project && python backup_base.py & cd /app && python app_files.py"
+    restart: unless-stopped
+    mem_limit: 1g  # Ограничение памяти
+
+  daphne:
+    build: .
+    ports:
+      - "8900:8900"  # Daphne
+    volumes:
+      - .:/app
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      - PYTHONPATH=/app
+      - DJANGO_SETTINGS_MODULE=async_mysql_project.settings
+      # - CELERY_BROKER_URL=redis://172.18.11.104:6379/0
+      # - CELERY_RESULT_BACKEND=redis://172.18.11.104:6379/0
+    command: >
+      sh -c ". /venv/bin/activate && cd async_mysql_project && daphne -b 0.0.0.0 -p 8900 async_mysql_project.asgi:application"
+    restart: unless-stopped
+    mem_limit: 1g  # Ограничение памяти
+
+  worker:
+    build: .
+    volumes:
+      - .:/app
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      - PYTHONPATH=/app
+      - DJANGO_SETTINGS_MODULE=async_mysql_project.settings
+      # - CELERY_BROKER_URL=redis://172.18.11.104:6379/0
+      # - CELERY_RESULT_BACKEND=redis://172.18.11.104:6379/0
+    command: >
+      sh -c ". /venv/bin/activate && cd async_mysql_project && celery -A async_mysql_project.celery worker --loglevel=INFO --pool=solo"
+    restart: unless-stopped
+    mem_limit: 1g  # Ограничение памяти
+
+  flower:
+    build: .
+    ports:
+      - "5252:5252"
+    volumes:
+      - .:/app
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      - PYTHONPATH=/app
+      - DJANGO_SETTINGS_MODULE=async_mysql_project.settings
+      # - CELERY_BROKER_URL=redis://172.18.11.104:6379/0
+      # - CELERY_RESULT_BACKEND=redis://172.18.11.104:6379/0
+    command: >
+      sh -c ". /venv/bin/activate && cd async_mysql_project && celery -A async_mysql_project.celery flower --port=5252"
+    restart: unless-stopped
+    mem_limit: 1g  # Ограничение памяти

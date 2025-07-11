@@ -1,0 +1,8 @@
+# async_mysql_project/__init__.py
+from __future__ import absolute_import, unicode_literals
+from .tasks import *
+
+# Это гарантирует, что приложение Celery будет готово при старте Django
+from .celery import app as celery_app
+
+__all__ = ('celery_app',)

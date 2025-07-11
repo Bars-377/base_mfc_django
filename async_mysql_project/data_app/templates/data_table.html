@@ -1,0 +1,1180 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <div class="container-fluid-neverov">
+        <h3>Закупки</h3>
+    </div>
+    <div class="container-fluid-neverov">
+        <form method="GET" action="/" id="filter-form" class="form-group">
+            <div class="form-item">
+                <input type="text" class="form-control" id="keyword_one" name="keyword_one" placeholder="Ключевое слово 1"
+                    value="{% if request.GET.keyword_one == 'None' %}{% else %}{{ request.GET.keyword_one }}{% endif %}">
+            <br>
+                <select name="selected_column_one" id="selected_column_one" class="form-control">
+                    <option data-type="no_format" value="">Столбец 1</option>
+                    <option data-type="no_format" value="id_id" {% if selected_column_one == 'id_id' %}selected{% endif %}>№ п/п</option>
+                    <option data-type="no_format" value="name" {% if selected_column_one == 'name' %}selected{% endif %}>Наименование закупки</option>
+                    <option data-type="no_format" value="status" {% if selected_column_one == 'status' %}selected{% endif %}>Статус</option>
+                    <option data-type="no_format" value="way" {% if selected_column_one == 'way' %}selected{% endif %}>Способ закупки</option>
+                    <option data-type="no_format" value="initiator" {% if selected_column_one == 'initiator' %}selected{% endif %}>Инициатор закупки (ИТ/АХО)</option>
+                    <option data-type="no_format" value="KTSSR" {% if selected_column_one == 'KTSSR' %}selected{% endif %}>КЦСР</option>
+                    <option data-type="no_format" value="KOSGU" {% if selected_column_one == 'KOSGU' %}selected{% endif %}>КОСГУ</option>
+                    <option data-type="no_format" value="DopFC" {% if selected_column_one == 'DopFC' %}selected{% endif %}>ДопФК</option>
+                    <option data-type="no_format" value="NMCC" {% if selected_column_one == 'NMCC' %}selected{% endif %}>НМЦК</option>
+                    <option data-type="no_format" value="saving" {% if selected_column_one == 'saving' %}selected{% endif %}>Экономия</option>
+                    <option data-type="no_format" value="counterparty" {% if selected_column_one == 'counterparty' %}selected{% endif %}>Контрагент</option>
+                    <option data-type="no_format" value="registration_number" {% if selected_column_one == 'registration_number' %}selected{% endif %}>Реестровый номер контракта (ЕИС)</option>
+                    <option data-type="no_format" value="contract_number" {% if selected_column_one == 'contract_number' %}selected{% endif %}>Номер контракта</option>
+                    <option data-type="no_format" value="contract_date" {% if selected_column_one == 'contract_date'%}selected{% endif %}>Дата контракта</option>
+                    <option data-type="no_format" value="end_date" {% if selected_column_one == 'end_date' %}selected{% endif %}>Окончание даты исполнения</option>
+                    <option data-type="no_format" value="contract_price" {% if selected_column_one == 'contract_price' %}selected{% endif %}>Цена контракта</option>
+                    <option data-type="no_format" value="execution_contract_plan" {% if selected_column_one == 'execution_contract_plan' %}selected{% endif %}>Исполнение контракта (план) (формула)</option>
+                    <option data-type="no_format" value="remainder_old_year" {% if selected_column_one == 'remainder_old_year' %}selected{% endif %}>Остаток контракта с предыдущего года</option>
+                    <option data-type="no_format" value="january_one" {% if selected_column_one == 'january_one' %}selected{% endif %}>Январь (план)</option>
+                    <option data-type="no_format" value="february" {% if selected_column_one == 'february' %}selected{% endif %}>Февраль (план)</option>
+                    <option data-type="no_format" value="march" {% if selected_column_one == 'march' %}selected{% endif %}>Март (план)</option>
+                    <option data-type="no_format" value="april" {% if selected_column_one == 'april' %}selected{% endif %}>Апрель (план)</option>
+                    <option data-type="no_format" value="may" {% if selected_column_one == 'may' %}selected{% endif %}>Май (план)</option>
+                    <option data-type="no_format" value="june" {% if selected_column_one == 'june' %}selected{% endif %}>Июнь (план)</option>
+                    <option data-type="no_format" value="july" {% if selected_column_one == 'july' %}selected{% endif %}>Июль (план)</option>
+                    <option data-type="no_format" value="august" {% if selected_column_one == 'august' %}selected{% endif %}>Август (план)</option>
+                    <option data-type="no_format" value="september" {% if selected_column_one == 'september' %}selected{% endif %}>Сентябрь (план)</option>
+                    <option data-type="no_format" value="october" {% if selected_column_one == 'october' %}selected{% endif %}>Октябрь (план)</option>
+                    <option data-type="no_format" value="november" {% if selected_column_one == 'november' %}selected{% endif %}>Ноябрь (план)</option>
+                    <option data-type="no_format" value="december" {% if selected_column_one == 'december' %}selected{% endif %}>Декабрь (план)</option>
+                    <option data-type="no_format" value="january_two" {% if selected_column_one == 'january_two' %}selected{% endif %}>Остаток контракта на следующий год</option>
+                    <option data-type="no_format" value="execution_contract_fact" {% if selected_column_one == 'execution_contract_fact' %}selected{% endif %}>Исполнение контракта (факт) (формула)</option>
+                    <option data-type="no_format" value="paid_last_year" {% if selected_column_one == 'paid_last_year' %}selected{% endif %}>Оплачено в предыдущем году</option>
+                    <option data-type="no_format" value="date_january_one" {% if selected_column_one == 'date_january_one' %}selected{% endif %}>Дата оплаты Январь (факт 1)</option>
+                    <option data-type="no_format" value="sum_january_one" {% if selected_column_one == 'sum_january_one' %}selected{% endif %}>Сумма оплаты Январь (факт 1)</option>
+                    <option data-type="no_format" value="date_february" {% if selected_column_one == 'date_february' %}selected{% endif %}>Дата оплаты Февраль (факт)</option>
+                    <option data-type="no_format" value="sum_february" {% if selected_column_one == 'sum_february' %}selected{% endif %}>Сумма оплаты Февраль (факт)</option>
+                    <option data-type="no_format" value="date_march" {% if selected_column_one == 'date_march' %}selected{% endif %}>Дата оплаты Март (факт)</option>
+                    <option data-type="no_format" value="sum_march" {% if selected_column_one == 'sum_march' %}selected{% endif %}>Сумма оплаты Март (факт)</option>
+                    <option data-type="no_format" value="date_april" {% if selected_column_one == 'date_april' %}selected{% endif %}>Дата оплаты Апрель (факт)</option>
+                    <option data-type="no_format" value="sum_april" {% if selected_column_one == 'sum_april' %}selected{% endif %}>Сумма оплаты Апрель (факт)</option>
+                    <option data-type="no_format" value="date_may" {% if selected_column_one == 'date_may' %}selected{% endif %}>Дата оплаты Май (факт)</option>
+                    <option data-type="no_format" value="sum_may" {% if selected_column_one == 'sum_may' %}selected{% endif %}>Сумма оплаты Май (факт)</option>
+                    <option data-type="no_format" value="date_june" {% if selected_column_one == 'date_june' %}selected{% endif %}>Дата оплаты Июнь (факт)</option>
+                    <option data-type="no_format" value="sum_june" {% if selected_column_one == 'sum_june' %}selected{% endif %}>Сумма оплаты Июнь (факт)</option>
+                    <option data-type="no_format" value="date_july" {% if selected_column_one == 'date_july' %}selected{% endif %}>Дата оплаты Июль (факт)</option>
+                    <option data-type="no_format" value="sum_july" {% if selected_column_one == 'sum_july' %}selected{% endif %}>Сумма оплаты Июль (факт)</option>
+                    <option data-type="no_format" value="date_august" {% if selected_column_one == 'date_august' %}selected{% endif %}>Дата оплаты Август (факт)</option>
+                    <option data-type="no_format" value="sum_august" {% if selected_column_one == 'sum_august' %}selected{% endif %}>Сумма оплаты Август (факт)</option>
+                    <option data-type="no_format" value="date_september" {% if selected_column_one == 'date_september' %}selected{% endif %}>Дата оплаты Сентябрь (факт)</option>
+                    <option data-type="no_format" value="sum_september" {% if selected_column_one == 'sum_september' %}selected{% endif %}>Сумма оплаты Сентябрь (факт)</option>
+                    <option data-type="no_format" value="date_october" {% if selected_column_one == 'date_october' %}selected{% endif %}>Дата оплаты Октябрь (факт)</option>
+                    <option data-type="no_format" value="sum_october" {% if selected_column_one == 'sum_october' %}selected{% endif %}>Сумма оплаты Октябрь (факт)</option>
+                    <option data-type="no_format" value="date_november" {% if selected_column_one == 'date_november' %}selected{% endif %}>Дата оплаты Ноябрь (факт)</option>
+                    <option data-type="no_format" value="sum_november" {% if selected_column_one == 'sum_november' %}selected{% endif %}>Сумма оплаты Ноябрь (факт)</option>
+                    <option data-type="no_format" value="date_december" {% if selected_column_one == 'date_december' %}selected{% endif %}>Дата оплаты Декабрь (факт)</option>
+                    <option data-type="no_format" value="sum_december" {% if selected_column_one == 'sum_december' %}selected{% endif %}>Сумма оплаты Декабрь (факт)</option>
+                    <option data-type="no_format" value="date_january_two" {% if selected_column_one == 'date_january_two' %}selected{% endif %}>Дата оплаты Январь (факт 2)</option>
+                    <option data-type="no_format" value="sum_january_two" {% if selected_column_one == 'sum_january_two' %}selected{% endif %}>Сумма оплаты Январь (факт 2)</option>
+                    <option data-type="no_format" value="execution" {% if selected_column_one == 'execution' %}selected{% endif %}>% исполнения (формула)</option>
+                    <option data-type="no_format" value="contract_balance" {% if selected_column_one == 'contract_balance' %}selected{% endif %}>Остаток по контракту (формула)</option>
+                </select>
+            </div>
+            <div class="form-item">
+                <input type="text" class="form-control" id="keyword_two" name="keyword_two" placeholder="Ключевое слово 2"
+                    value="{% if request.GET.keyword_two == 'None' %}{% else %}{{ request.GET.keyword_two }}{% endif %}">
+            <br>
+                <select name="selected_column_two" id="selected_column_two" class="form-control">
+                    <option data-type="no_format" value="">Столбец 2</option>
+                    <option data-type="no_format" value="id_id" {% if selected_column_two == 'id_id' %}selected{% endif %}>№ п/п</option>
+                    <option data-type="no_format" value="name" {% if selected_column_two == 'name' %}selected{% endif %}>Наименование закупки</option>
+                    <option data-type="no_format" value="status" {% if selected_column_two == 'status' %}selected{% endif %}>Статус</option>
+                    <option data-type="no_format" value="way" {% if selected_column_two == 'way' %}selected{% endif %}>Способ закупки</option>
+                    <option data-type="no_format" value="initiator" {% if selected_column_two == 'initiator' %}selected{% endif %}>Инициатор закупки (ИТ/АХО)</option>
+                    <option data-type="no_format" value="KTSSR" {% if selected_column_two == 'KTSSR' %}selected{% endif %}>КЦСР</option>
+                    <option data-type="no_format" value="KOSGU" {% if selected_column_two == 'KOSGU' %}selected{% endif %}>КОСГУ</option>
+                    <option data-type="no_format" value="DopFC" {% if selected_column_two == 'DopFC' %}selected{% endif %}>ДопФК</option>
+                    <option data-type="no_format" value="NMCC" {% if selected_column_two == 'NMCC' %}selected{% endif %}>НМЦК</option>
+                    <option data-type="no_format" value="saving" {% if selected_column_two == 'saving' %}selected{% endif %}>Экономия</option>
+                    <option data-type="no_format" value="counterparty" {% if selected_column_two == 'counterparty' %}selected{% endif %}>Контрагент</option>
+                    <option data-type="no_format" value="registration_number" {% if selected_column_two == 'registration_number' %}selected{% endif %}>Реестровый номер контракта (ЕИС)</option>
+                    <option data-type="no_format" value="contract_number" {% if selected_column_two == 'contract_number' %}selected{% endif %}>Номер контракта</option>
+                    <option data-type="no_format" value="contract_date" {% if selected_column_two == 'contract_date'%}selected{% endif %}>Дата контракта</option>
+                    <option data-type="no_format" value="end_date" {% if selected_column_two == 'end_date' %}selected{% endif %}>Окончание даты исполнения</option>
+                    <option data-type="no_format" value="contract_price" {% if selected_column_two == 'contract_price' %}selected{% endif %}>Цена контракта</option>
+                    <option data-type="no_format" value="execution_contract_plan" {% if selected_column_two == 'execution_contract_plan' %}selected{% endif %}>Исполнение контракта (план) (формула)</option>
+                    <option data-type="no_format" value="remainder_old_year" {% if selected_column_two == 'remainder_old_year' %}selected{% endif %}>Остаток контракта с предыдущего года</option>
+                    <option data-type="no_format" value="january_one" {% if selected_column_two == 'january_one' %}selected{% endif %}>Январь (план)</option>
+                    <option data-type="no_format" value="february" {% if selected_column_two == 'february' %}selected{% endif %}>Февраль (план)</option>
+                    <option data-type="no_format" value="march" {% if selected_column_two == 'march' %}selected{% endif %}>Март (план)</option>
+                    <option data-type="no_format" value="april" {% if selected_column_two == 'april' %}selected{% endif %}>Апрель (план)</option>
+                    <option data-type="no_format" value="may" {% if selected_column_two == 'may' %}selected{% endif %}>Май (план)</option>
+                    <option data-type="no_format" value="june" {% if selected_column_two == 'june' %}selected{% endif %}>Июнь (план)</option>
+                    <option data-type="no_format" value="july" {% if selected_column_two == 'july' %}selected{% endif %}>Июль (план)</option>
+                    <option data-type="no_format" value="august" {% if selected_column_two == 'august' %}selected{% endif %}>Август (план)</option>
+                    <option data-type="no_format" value="september" {% if selected_column_two == 'september' %}selected{% endif %}>Сентябрь (план)</option>
+                    <option data-type="no_format" value="october" {% if selected_column_two == 'october' %}selected{% endif %}>Октябрь (план)</option>
+                    <option data-type="no_format" value="november" {% if selected_column_two == 'november' %}selected{% endif %}>Ноябрь (план)</option>
+                    <option data-type="no_format" value="december" {% if selected_column_two == 'december' %}selected{% endif %}>Декабрь (план)</option>
+                    <option data-type="no_format" value="january_two" {% if selected_column_two == 'january_two' %}selected{% endif %}>Остаток контракта на следующий год</option>
+                    <option data-type="no_format" value="execution_contract_fact" {% if selected_column_two == 'execution_contract_fact' %}selected{% endif %}>Исполнение контракта (факт) (формула)</option>
+                    <option data-type="no_format" value="paid_last_year" {% if selected_column_two == 'paid_last_year' %}selected{% endif %}>Оплачено в предыдущем году</option>
+                    <option data-type="no_format" value="date_january_one" {% if selected_column_two == 'date_january_one' %}selected{% endif %}>Дата оплаты Январь (факт 1)</option>
+                    <option data-type="no_format" value="sum_january_one" {% if selected_column_two == 'sum_january_one' %}selected{% endif %}>Сумма оплаты Январь (факт 1)</option>
+                    <option data-type="no_format" value="date_february" {% if selected_column_two == 'date_february' %}selected{% endif %}>Дата оплаты Февраль (факт)</option>
+                    <option data-type="no_format" value="sum_february" {% if selected_column_two == 'sum_february' %}selected{% endif %}>Сумма оплаты Февраль (факт)</option>
+                    <option data-type="no_format" value="date_march" {% if selected_column_two == 'date_march' %}selected{% endif %}>Дата оплаты Март (факт)</option>
+                    <option data-type="no_format" value="sum_march" {% if selected_column_two == 'sum_march' %}selected{% endif %}>Сумма оплаты Март (факт)</option>
+                    <option data-type="no_format" value="date_april" {% if selected_column_two == 'date_april' %}selected{% endif %}>Дата оплаты Апрель (факт)</option>
+                    <option data-type="no_format" value="sum_april" {% if selected_column_two == 'sum_april' %}selected{% endif %}>Сумма оплаты Апрель (факт)</option>
+                    <option data-type="no_format" value="date_may" {% if selected_column_two == 'date_may' %}selected{% endif %}>Дата оплаты Май (факт)</option>
+                    <option data-type="no_format" value="sum_may" {% if selected_column_two == 'sum_may' %}selected{% endif %}>Сумма оплаты Май (факт)</option>
+                    <option data-type="no_format" value="date_june" {% if selected_column_two == 'date_june' %}selected{% endif %}>Дата оплаты Июнь (факт)</option>
+                    <option data-type="no_format" value="sum_june" {% if selected_column_two == 'sum_june' %}selected{% endif %}>Сумма оплаты Июнь (факт)</option>
+                    <option data-type="no_format" value="date_july" {% if selected_column_two == 'date_july' %}selected{% endif %}>Дата оплаты Июль (факт)</option>
+                    <option data-type="no_format" value="sum_july" {% if selected_column_two == 'sum_july' %}selected{% endif %}>Сумма оплаты Июль (факт)</option>
+                    <option data-type="no_format" value="date_august" {% if selected_column_two == 'date_august' %}selected{% endif %}>Дата оплаты Август (факт)</option>
+                    <option data-type="no_format" value="sum_august" {% if selected_column_two == 'sum_august' %}selected{% endif %}>Сумма оплаты Август (факт)</option>
+                    <option data-type="no_format" value="date_september" {% if selected_column_two == 'date_september' %}selected{% endif %}>Дата оплаты Сентябрь (факт)</option>
+                    <option data-type="no_format" value="sum_september" {% if selected_column_two == 'sum_september' %}selected{% endif %}>Сумма оплаты Сентябрь (факт)</option>
+                    <option data-type="no_format" value="date_october" {% if selected_column_two == 'date_october' %}selected{% endif %}>Дата оплаты Октябрь (факт)</option>
+                    <option data-type="no_format" value="sum_october" {% if selected_column_two == 'sum_october' %}selected{% endif %}>Сумма оплаты Октябрь (факт)</option>
+                    <option data-type="no_format" value="date_november" {% if selected_column_two == 'date_november' %}selected{% endif %}>Дата оплаты Ноябрь (факт)</option>
+                    <option data-type="no_format" value="sum_november" {% if selected_column_two == 'sum_november' %}selected{% endif %}>Сумма оплаты Ноябрь (факт)</option>
+                    <option data-type="no_format" value="date_december" {% if selected_column_two == 'date_december' %}selected{% endif %}>Дата оплаты Декабрь (факт)</option>
+                    <option data-type="no_format" value="sum_december" {% if selected_column_two == 'sum_december' %}selected{% endif %}>Сумма оплаты Декабрь (факт)</option>
+                    <option data-type="no_format" value="date_january_two" {% if selected_column_two == 'date_january_two' %}selected{% endif %}>Дата оплаты Январь (факт 2)</option>
+                    <option data-type="no_format" value="sum_january_two" {% if selected_column_two == 'sum_january_two' %}selected{% endif %}>Сумма оплаты Январь (факт 2)</option>
+                    <option data-type="no_format" value="execution" {% if selected_column_two == 'execution' %}selected{% endif %}>% исполнения (формула)</option>
+                    <option data-type="no_format" value="contract_balance" {% if selected_column_two == 'contract_balance' %}selected{% endif %}>Остаток по контракту (формула)</option>
+                </select>
+            </div>
+            <div class="form-item">
+                <input type="text" class="form-control" id="keyword_three" name="keyword_three" placeholder="Ключевое слово 3"
+                    value="{% if request.GET.keyword_three == 'None' %}{% else %}{{ request.GET.keyword_three }}{% endif %}">
+            <br>
+                <select name="selected_column_three" id="selected_column_three" class="form-control">
+                    <option data-type="no_format" value="">Столбец 3</option>
+                    <option data-type="no_format" value="id_id" {% if selected_column_three == 'id_id' %}selected{% endif %}>№ п/п</option>
+                    <option data-type="no_format" value="name" {% if selected_column_three == 'name' %}selected{% endif %}>Наименование закупки</option>
+                    <option data-type="no_format" value="status" {% if selected_column_three == 'status' %}selected{% endif %}>Статус</option>
+                    <option data-type="no_format" value="way" {% if selected_column_three == 'way' %}selected{% endif %}>Способ закупки</option>
+                    <option data-type="no_format" value="initiator" {% if selected_column_three == 'initiator' %}selected{% endif %}>Инициатор закупки (ИТ/АХО)</option>
+                    <option data-type="no_format" value="KTSSR" {% if selected_column_three == 'KTSSR' %}selected{% endif %}>КЦСР</option>
+                    <option data-type="no_format" value="KOSGU" {% if selected_column_three == 'KOSGU' %}selected{% endif %}>КОСГУ</option>
+                    <option data-type="no_format" value="DopFC" {% if selected_column_three == 'DopFC' %}selected{% endif %}>ДопФК</option>
+                    <option data-type="no_format" value="NMCC" {% if selected_column_three == 'NMCC' %}selected{% endif %}>НМЦК</option>
+                    <option data-type="no_format" value="saving" {% if selected_column_three == 'saving' %}selected{% endif %}>Экономия</option>
+                    <option data-type="no_format" value="counterparty" {% if selected_column_three == 'counterparty' %}selected{% endif %}>Контрагент</option>
+                    <option data-type="no_format" value="registration_number" {% if selected_column_three == 'registration_number' %}selected{% endif %}>Реестровый номер контракта (ЕИС)</option>
+                    <option data-type="no_format" value="contract_number" {% if selected_column_three == 'contract_number' %}selected{% endif %}>Номер контракта</option>
+                    <option data-type="no_format" value="contract_date" {% if selected_column_three == 'contract_date'%}selected{% endif %}>Дата контракта</option>
+                    <option data-type="no_format" value="end_date" {% if selected_column_three == 'end_date' %}selected{% endif %}>Окончание даты исполнения</option>
+                    <option data-type="no_format" value="contract_price" {% if selected_column_three == 'contract_price' %}selected{% endif %}>Цена контракта</option>
+                    <option data-type="no_format" value="execution_contract_plan" {% if selected_column_three == 'execution_contract_plan' %}selected{% endif %}>Исполнение контракта (план) (формула)</option>
+                    <option data-type="no_format" value="remainder_old_year" {% if selected_column_three == 'remainder_old_year' %}selected{% endif %}>Остаток контракта с предыдущего года</option>
+                    <option data-type="no_format" value="january_one" {% if selected_column_three == 'january_one' %}selected{% endif %}>Январь (план)</option>
+                    <option data-type="no_format" value="february" {% if selected_column_three == 'february' %}selected{% endif %}>Февраль (план)</option>
+                    <option data-type="no_format" value="march" {% if selected_column_three == 'march' %}selected{% endif %}>Март (план)</option>
+                    <option data-type="no_format" value="april" {% if selected_column_three == 'april' %}selected{% endif %}>Апрель (план)</option>
+                    <option data-type="no_format" value="may" {% if selected_column_three == 'may' %}selected{% endif %}>Май (план)</option>
+                    <option data-type="no_format" value="june" {% if selected_column_three == 'june' %}selected{% endif %}>Июнь (план)</option>
+                    <option data-type="no_format" value="july" {% if selected_column_three == 'july' %}selected{% endif %}>Июль (план)</option>
+                    <option data-type="no_format" value="august" {% if selected_column_three == 'august' %}selected{% endif %}>Август (план)</option>
+                    <option data-type="no_format" value="september" {% if selected_column_three == 'september' %}selected{% endif %}>Сентябрь (план)</option>
+                    <option data-type="no_format" value="october" {% if selected_column_three == 'october' %}selected{% endif %}>Октябрь (план)</option>
+                    <option data-type="no_format" value="november" {% if selected_column_three == 'november' %}selected{% endif %}>Ноябрь (план)</option>
+                    <option data-type="no_format" value="december" {% if selected_column_three == 'december' %}selected{% endif %}>Декабрь (план)</option>
+                    <option data-type="no_format" value="january_two" {% if selected_column_three == 'january_two' %}selected{% endif %}>Остаток контракта на следующий год</option>
+                    <option data-type="no_format" value="execution_contract_fact" {% if selected_column_three == 'execution_contract_fact' %}selected{% endif %}>Исполнение контракта (факт) (формула)</option>
+                    <option data-type="no_format" value="paid_last_year" {% if selected_column_three == 'paid_last_year' %}selected{% endif %}>Оплачено в предыдущем году</option>
+                    <option data-type="no_format" value="date_january_one" {% if selected_column_three == 'date_january_one' %}selected{% endif %}>Дата оплаты Январь (факт 1)</option>
+                    <option data-type="no_format" value="sum_january_one" {% if selected_column_three == 'sum_january_one' %}selected{% endif %}>Сумма оплаты Январь (факт 1)</option>
+                    <option data-type="no_format" value="date_february" {% if selected_column_three == 'date_february' %}selected{% endif %}>Дата оплаты Февраль (факт)</option>
+                    <option data-type="no_format" value="sum_february" {% if selected_column_three == 'sum_february' %}selected{% endif %}>Сумма оплаты Февраль (факт)</option>
+                    <option data-type="no_format" value="date_march" {% if selected_column_three == 'date_march' %}selected{% endif %}>Дата оплаты Март (факт)</option>
+                    <option data-type="no_format" value="sum_march" {% if selected_column_three == 'sum_march' %}selected{% endif %}>Сумма оплаты Март (факт)</option>
+                    <option data-type="no_format" value="date_april" {% if selected_column_three == 'date_april' %}selected{% endif %}>Дата оплаты Апрель (факт)</option>
+                    <option data-type="no_format" value="sum_april" {% if selected_column_three == 'sum_april' %}selected{% endif %}>Сумма оплаты Апрель (факт)</option>
+                    <option data-type="no_format" value="date_may" {% if selected_column_three == 'date_may' %}selected{% endif %}>Дата оплаты Май (факт)</option>
+                    <option data-type="no_format" value="sum_may" {% if selected_column_three == 'sum_may' %}selected{% endif %}>Сумма оплаты Май (факт)</option>
+                    <option data-type="no_format" value="date_june" {% if selected_column_three == 'date_june' %}selected{% endif %}>Дата оплаты Июнь (факт)</option>
+                    <option data-type="no_format" value="sum_june" {% if selected_column_three == 'sum_june' %}selected{% endif %}>Сумма оплаты Июнь (факт)</option>
+                    <option data-type="no_format" value="date_july" {% if selected_column_three == 'date_july' %}selected{% endif %}>Дата оплаты Июль (факт)</option>
+                    <option data-type="no_format" value="sum_july" {% if selected_column_three == 'sum_july' %}selected{% endif %}>Сумма оплаты Июль (факт)</option>
+                    <option data-type="no_format" value="date_august" {% if selected_column_three == 'date_august' %}selected{% endif %}>Дата оплаты Август (факт)</option>
+                    <option data-type="no_format" value="sum_august" {% if selected_column_three == 'sum_august' %}selected{% endif %}>Сумма оплаты Август (факт)</option>
+                    <option data-type="no_format" value="date_september" {% if selected_column_three == 'date_september' %}selected{% endif %}>Дата оплаты Сентябрь (факт)</option>
+                    <option data-type="no_format" value="sum_september" {% if selected_column_three == 'sum_september' %}selected{% endif %}>Сумма оплаты Сентябрь (факт)</option>
+                    <option data-type="no_format" value="date_october" {% if selected_column_three == 'date_october' %}selected{% endif %}>Дата оплаты Октябрь (факт)</option>
+                    <option data-type="no_format" value="sum_october" {% if selected_column_three == 'sum_october' %}selected{% endif %}>Сумма оплаты Октябрь (факт)</option>
+                    <option data-type="no_format" value="date_november" {% if selected_column_three == 'date_november' %}selected{% endif %}>Дата оплаты Ноябрь (факт)</option>
+                    <option data-type="no_format" value="sum_november" {% if selected_column_three == 'sum_november' %}selected{% endif %}>Сумма оплаты Ноябрь (факт)</option>
+                    <option data-type="no_format" value="date_december" {% if selected_column_three == 'date_december' %}selected{% endif %}>Дата оплаты Декабрь (факт)</option>
+                    <option data-type="no_format" value="sum_december" {% if selected_column_three == 'sum_december' %}selected{% endif %}>Сумма оплаты Декабрь (факт)</option>
+                    <option data-type="no_format" value="date_january_two" {% if selected_column_three == 'date_january_two' %}selected{% endif %}>Дата оплаты Январь (факт 2)</option>
+                    <option data-type="no_format" value="sum_january_two" {% if selected_column_three == 'sum_january_two' %}selected{% endif %}>Сумма оплаты Январь (факт 2)</option>
+                    <option data-type="no_format" value="execution" {% if selected_column_three == 'execution' %}selected{% endif %}>% исполнения (формула)</option>
+                    <option data-type="no_format" value="contract_balance" {% if selected_column_three == 'contract_balance' %}selected{% endif %}>Остаток по контракту (формула)</option>
+                </select>
+            </div>
+            <div class="form-item">
+                <input type="text" class="form-control" id="keyword_four" name="keyword_four" placeholder="Ключевое слово 4"
+                    value="{% if request.GET.keyword_four == 'None' %}{% else %}{{ request.GET.keyword_four }}{% endif %}">
+            <br>
+                <select name="selected_column_four" id="selected_column_four" class="form-control">
+                    <option data-type="no_format" value="">Столбец 4</option>
+                    <option data-type="no_format" value="id_id" {% if selected_column_four == 'id_id' %}selected{% endif %}>№ п/п</option>
+                    <option data-type="no_format" value="name" {% if selected_column_four == 'name' %}selected{% endif %}>Наименование закупки</option>
+                    <option data-type="no_format" value="status" {% if selected_column_four == 'status' %}selected{% endif %}>Статус</option>
+                    <option data-type="no_format" value="way" {% if selected_column_four == 'way' %}selected{% endif %}>Способ закупки</option>
+                    <option data-type="no_format" value="initiator" {% if selected_column_four == 'initiator' %}selected{% endif %}>Инициатор закупки (ИТ/АХО)</option>
+                    <option data-type="no_format" value="KTSSR" {% if selected_column_four == 'KTSSR' %}selected{% endif %}>КЦСР</option>
+                    <option data-type="no_format" value="KOSGU" {% if selected_column_four == 'KOSGU' %}selected{% endif %}>КОСГУ</option>
+                    <option data-type="no_format" value="DopFC" {% if selected_column_four == 'DopFC' %}selected{% endif %}>ДопФК</option>
+                    <option data-type="no_format" value="NMCC" {% if selected_column_four == 'NMCC' %}selected{% endif %}>НМЦК</option>
+                    <option data-type="no_format" value="saving" {% if selected_column_four == 'saving' %}selected{% endif %}>Экономия</option>
+                    <option data-type="no_format" value="counterparty" {% if selected_column_four == 'counterparty' %}selected{% endif %}>Контрагент</option>
+                    <option data-type="no_format" value="registration_number" {% if selected_column_four == 'registration_number' %}selected{% endif %}>Реестровый номер контракта (ЕИС)</option>
+                    <option data-type="no_format" value="contract_number" {% if selected_column_four == 'contract_number' %}selected{% endif %}>Номер контракта</option>
+                    <option data-type="no_format" value="contract_date" {% if selected_column_four == 'contract_date'%}selected{% endif %}>Дата контракта</option>
+                    <option data-type="no_format" value="end_date" {% if selected_column_four == 'end_date' %}selected{% endif %}>Окончание даты исполнения</option>
+                    <option data-type="no_format" value="contract_price" {% if selected_column_four == 'contract_price' %}selected{% endif %}>Цена контракта</option>
+                    <option data-type="no_format" value="execution_contract_plan" {% if selected_column_four == 'execution_contract_plan' %}selected{% endif %}>Исполнение контракта (план) (формула)</option>
+                    <option data-type="no_format" value="remainder_old_year" {% if selected_column_four == 'remainder_old_year' %}selected{% endif %}>Остаток контракта с предыдущего года</option>
+                    <option data-type="no_format" value="january_one" {% if selected_column_four == 'january_one' %}selected{% endif %}>Январь (план)</option>
+                    <option data-type="no_format" value="february" {% if selected_column_four == 'february' %}selected{% endif %}>Февраль (план)</option>
+                    <option data-type="no_format" value="march" {% if selected_column_four == 'march' %}selected{% endif %}>Март (план)</option>
+                    <option data-type="no_format" value="april" {% if selected_column_four == 'april' %}selected{% endif %}>Апрель (план)</option>
+                    <option data-type="no_format" value="may" {% if selected_column_four == 'may' %}selected{% endif %}>Май (план)</option>
+                    <option data-type="no_format" value="june" {% if selected_column_four == 'june' %}selected{% endif %}>Июнь (план)</option>
+                    <option data-type="no_format" value="july" {% if selected_column_four == 'july' %}selected{% endif %}>Июль (план)</option>
+                    <option data-type="no_format" value="august" {% if selected_column_four == 'august' %}selected{% endif %}>Август (план)</option>
+                    <option data-type="no_format" value="september" {% if selected_column_four == 'september' %}selected{% endif %}>Сентябрь (план)</option>
+                    <option data-type="no_format" value="october" {% if selected_column_four == 'october' %}selected{% endif %}>Октябрь (план)</option>
+                    <option data-type="no_format" value="november" {% if selected_column_four == 'november' %}selected{% endif %}>Ноябрь (план)</option>
+                    <option data-type="no_format" value="december" {% if selected_column_four == 'december' %}selected{% endif %}>Декабрь (план)</option>
+                    <option data-type="no_format" value="january_two" {% if selected_column_four == 'january_two' %}selected{% endif %}>Остаток контракта на следующий год</option>
+                    <option data-type="no_format" value="execution_contract_fact" {% if selected_column_four == 'execution_contract_fact' %}selected{% endif %}>Исполнение контракта (факт) (формула)</option>
+                    <option data-type="no_format" value="paid_last_year" {% if selected_column_four == 'paid_last_year' %}selected{% endif %}>Оплачено в предыдущем году</option>
+                    <option data-type="no_format" value="date_january_one" {% if selected_column_four == 'date_january_one' %}selected{% endif %}>Дата оплаты Январь (факт 1)</option>
+                    <option data-type="no_format" value="sum_january_one" {% if selected_column_four == 'sum_january_one' %}selected{% endif %}>Сумма оплаты Январь (факт 1)</option>
+                    <option data-type="no_format" value="date_february" {% if selected_column_four == 'date_february' %}selected{% endif %}>Дата оплаты Февраль (факт)</option>
+                    <option data-type="no_format" value="sum_february" {% if selected_column_four == 'sum_february' %}selected{% endif %}>Сумма оплаты Февраль (факт)</option>
+                    <option data-type="no_format" value="date_march" {% if selected_column_four == 'date_march' %}selected{% endif %}>Дата оплаты Март (факт)</option>
+                    <option data-type="no_format" value="sum_march" {% if selected_column_four == 'sum_march' %}selected{% endif %}>Сумма оплаты Март (факт)</option>
+                    <option data-type="no_format" value="date_april" {% if selected_column_four == 'date_april' %}selected{% endif %}>Дата оплаты Апрель (факт)</option>
+                    <option data-type="no_format" value="sum_april" {% if selected_column_four == 'sum_april' %}selected{% endif %}>Сумма оплаты Апрель (факт)</option>
+                    <option data-type="no_format" value="date_may" {% if selected_column_four == 'date_may' %}selected{% endif %}>Дата оплаты Май (факт)</option>
+                    <option data-type="no_format" value="sum_may" {% if selected_column_four == 'sum_may' %}selected{% endif %}>Сумма оплаты Май (факт)</option>
+                    <option data-type="no_format" value="date_june" {% if selected_column_four == 'date_june' %}selected{% endif %}>Дата оплаты Июнь (факт)</option>
+                    <option data-type="no_format" value="sum_june" {% if selected_column_four == 'sum_june' %}selected{% endif %}>Сумма оплаты Июнь (факт)</option>
+                    <option data-type="no_format" value="date_july" {% if selected_column_four == 'date_july' %}selected{% endif %}>Дата оплаты Июль (факт)</option>
+                    <option data-type="no_format" value="sum_july" {% if selected_column_four == 'sum_july' %}selected{% endif %}>Сумма оплаты Июль (факт)</option>
+                    <option data-type="no_format" value="date_august" {% if selected_column_four == 'date_august' %}selected{% endif %}>Дата оплаты Август (факт)</option>
+                    <option data-type="no_format" value="sum_august" {% if selected_column_four == 'sum_august' %}selected{% endif %}>Сумма оплаты Август (факт)</option>
+                    <option data-type="no_format" value="date_september" {% if selected_column_four == 'date_september' %}selected{% endif %}>Дата оплаты Сентябрь (факт)</option>
+                    <option data-type="no_format" value="sum_september" {% if selected_column_four == 'sum_september' %}selected{% endif %}>Сумма оплаты Сентябрь (факт)</option>
+                    <option data-type="no_format" value="date_october" {% if selected_column_four == 'date_october' %}selected{% endif %}>Дата оплаты Октябрь (факт)</option>
+                    <option data-type="no_format" value="sum_october" {% if selected_column_four == 'sum_october' %}selected{% endif %}>Сумма оплаты Октябрь (факт)</option>
+                    <option data-type="no_format" value="date_november" {% if selected_column_four == 'date_november' %}selected{% endif %}>Дата оплаты Ноябрь (факт)</option>
+                    <option data-type="no_format" value="sum_november" {% if selected_column_four == 'sum_november' %}selected{% endif %}>Сумма оплаты Ноябрь (факт)</option>
+                    <option data-type="no_format" value="date_december" {% if selected_column_four == 'date_december' %}selected{% endif %}>Дата оплаты Декабрь (факт)</option>
+                    <option data-type="no_format" value="sum_december" {% if selected_column_four == 'sum_december' %}selected{% endif %}>Сумма оплаты Декабрь (факт)</option>
+                    <option data-type="no_format" value="date_january_two" {% if selected_column_four == 'date_january_two' %}selected{% endif %}>Дата оплаты Январь (факт 2)</option>
+                    <option data-type="no_format" value="sum_january_two" {% if selected_column_four == 'sum_january_two' %}selected{% endif %}>Сумма оплаты Январь (факт 2)</option>
+                    <option data-type="no_format" value="execution" {% if selected_column_four == 'execution' %}selected{% endif %}>% исполнения (формула)</option>
+                    <option data-type="no_format" value="contract_balance" {% if selected_column_four == 'contract_balance' %}selected{% endif %}>Остаток по контракту (формула)</option>
+                </select>
+            </div>
+            <div class="form-item">
+                <select name="contract_date" id="contract_date" class="form-control form-control-year">
+                    <option data-type="no_format" value="No">Дата контракта</option>
+                    {% for contract_date in service_years %}
+                    <option data-type="no_format" value="{{ contract_date }}" {% if contract_date == selected_contract_date %}selected{% endif %}>
+                        {{ contract_date }}
+                    </option>
+                    {% endfor %}
+                </select>
+            <br>
+                <select name="end_date" id="end_date" class="form-control form-control-year">
+                    <option data-type="no_format" value="No">Окончание даты</option>
+                    {% for end_date in service_end_date %}
+                    <option data-type="no_format" value="{{ end_date }}" {% if end_date == selected_end_date %}selected{% endif %}>
+                        {{ end_date }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-item">
+                <button type="submit" class="btn btn-primary">Фильтровать</button>
+                <br>
+                <button type="button" class="btn btn-secondary" id="reset-filters">Сбросить всё</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="container-fluid-neverov">
+        <a href="{% url 'add' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить закупку</a>
+    </div>
+
+    <div class="container-fluid-neverov">
+
+        <div class="scroll-container top-scroll">
+            <div class="scroll-content"></div>
+        </div>
+
+        <div class="scroll-container main-scroll">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th rowspan="2" class="fixed-width">Управление</th>
+                        <th rowspan="2" class="fixed-width">Смена цвета</th>
+                        <th rowspan="2" class="fixed-width">№ п/п</th>
+                        <th rowspan="2" class="stretch-width-min">Наименование закупки</th>
+                        <th rowspan="2" class="stretch-width">Статус</th>
+                        <th rowspan="2" class="fixed-width">Способ закупки</th>
+                        <th rowspan="2" class="stretch-width">Инициатор закупки (ИТ/АХО)</th>
+                        <th rowspan="2" class="fixed-width">КЦСР</th>
+                        <th rowspan="2" class="stretch-width">КОСГУ</th>
+                        <th rowspan="2" class="fixed-width-medium">ДопФК</th>
+                        <th rowspan="2" class="fixed-width-date">НМЦК</th>
+                        <th rowspan="2" class="stretch-width">Экономия</th>
+                        <th rowspan="2" class="stretch-width-min">Контрагент</th>
+                        <th rowspan="2" class="fixed-width-date">Реестровый номер контракта (ЕИС)</th>
+                        <th rowspan="2" class="fixed-width-date">Номер контракта</th>
+                        <th rowspan="2" class="fixed-width-date">Дата контракта</th>
+                        <th rowspan="2" class="fixed-width-small">Окончание даты исполнения</th>
+                        <th rowspan="2" class="fixed-width-small">Цена контракта</th>
+                        <th rowspan="2" class="fixed-width-small">Исполнение контракта (план) (формула)</th>
+                        <th rowspan="2" class="fixed-width-small">Остаток контракта с предыдущего года</th>
+                        <th rowspan="2" class="stretch-width">Январь (план)</th>
+                        <th rowspan="2" class="fixed-width">Февраль (план)</th>
+                        <th rowspan="2" class="fixed-width">Март (план)</th>
+                        <th rowspan="2" class="fixed-width">Апрель (план)</th>
+                        <th rowspan="2" class="fixed-width">Май (план)</th>
+                        <th rowspan="2" class="fixed-width">Июнь (план)</th>
+                        <th rowspan="2" class="fixed-width">Июль (план)</th>
+                        <th rowspan="2" class="fixed-width">Август (план)</th>
+                        <th rowspan="2" class="fixed-width">Сентябрь (план)</th>
+                        <th rowspan="2" class="fixed-width">Октябрь (план)</th>
+                        <th rowspan="2" class="fixed-width">Ноябрь (план)</th>
+                        <th rowspan="2" class="fixed-width">Декабрь (план)</th>
+                        <th rowspan="2" class="fixed-width">Остаток контракта на следующий год</th>
+                        <th rowspan="2" class="fixed-width">Исполнение контракта (факт) (формула)</th>
+                        <th rowspan="2" class="fixed-width">Оплачено в предыдущем году</th>
+                        <th colspan="2" class="fixed-width">Январь (факт)</th>
+                        <th colspan="2" class="fixed-width">Февраль (факт)</th>
+                        <th colspan="2" class="fixed-width">Март (факт)</th>
+                        <th colspan="2" class="fixed-width">Апрель (факт)</th>
+                        <th colspan="2" class="fixed-width">Май (факт)</th>
+                        <th colspan="2" class="fixed-width">Июнь (факт)</th>
+                        <th colspan="2" class="fixed-width">Июль (факт)</th>
+                        <th colspan="2" class="fixed-width">Август (факт)</th>
+                        <th colspan="2" class="fixed-width">Сентябрь (факт)</th>
+                        <th colspan="2" class="fixed-width">Октябрь (факт)</th>
+                        <th colspan="2" class="fixed-width">Ноябрь (факт)</th>
+                        <th colspan="2" class="fixed-width">Декабрь (факт)</th>
+                        <th colspan="2" class="fixed-width">Январь (факт)</th>
+                        <th rowspan="2" class="fixed-width">% исполнения (формула)</th>
+                        <th rowspan="2" class="fixed-width">Остаток по контракту (формула)</th>
+                    </tr>
+                    <tr>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                        <th class="fixed-width">Дата оплаты</th>
+                        <th class="fixed-width">Сумма оплаты</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in data %}
+                    <tr class="service-row" data-id="{% if user.is_authenticated %}{{ item.id }}{% else %}0{% endif %}">
+                        <td class="stretch-width">
+                            <!-- Управление -->
+                            <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
+                                <a href="{% url 'edit' row_id=item.id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}"
+                                class="btn btn-sm btn-warning">Edit</a>
+                                <form class="delete-form"
+                                    data-id="{{ item.id }}"
+                                    data-page="{{ page }}"
+                                    data-keyword-one="{{ keyword_one }}"
+                                    data-keyword-two="{{ keyword_two }}"
+                                    data-keyword-three="{{ keyword_three }}"
+                                    data-keyword-four="{{ keyword_four }}" 
+                                    data-selected-column-one="{{ selected_column_one }}"
+                                    data-selected-column-two="{{ selected_column_two }}"
+                                    data-contract-date="{{ selected_contract_date }}" 
+                                    data-selected-end-date="{{ selected_end_date }}"
+
+                                    data-page-user="{{ page_user }}"
+
+                                    data-page-user-two="{{ page_user_two }}"
+
+                                style="display:inline;">
+
+                                    <button type="button" class="btn btn-sm btn-danger delete-button">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                        <td class="stretch-width">
+                            <!-- Выбор цвета -->
+                            <!-- <p>User ID: {{ user.id }}</p> -->
+                            <!-- <p>Authenticated: {{ user.is_authenticated }}</p> -->
+                            <select class="form-control color-select" data-id="{% if user.is_authenticated %}{{ item.id }}{% else %}0{% endif %}">
+                                <option value="#ffffff">Default</option>
+                                <option value="#eaf7ff" {% if item.color == '#eaf7ff' %}selected{% endif %}>Light Blue</option>
+                                <option value="#ffebeb" {% if item.color == '#ffebeb' %}selected{% endif %}>Light Red</option>
+                                <option value="#dff0d8" {% if item.color == '#dff0d8' %}selected{% endif %}>Light Green</option>
+                                <option value="#f5f5f5" {% if item.color == '#f5f5f5' %}selected{% endif %}>Light Grey</option>
+                                <option value="#fff8e1" {% if item.color == '#fff8e1' %}selected{% endif %}>Light Yellow</option>
+                            </select>
+                        </td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.id_id }}</td>
+                        <td class="stretch-width-min" style="background-color: {{ item.color|default:'' }}"><div data-type="no_format" class="text-content">{{ item.name }}</div><button class="toggle-button">Показать больше</button></td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.status }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.way }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.initiator }}</td>
+                        <td data-type="no_format" class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.KTSSR }}</td>
+                        <td data-type="no_format" class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
+                        <td data-type="no_format" class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.NMCC }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.saving }}</td>
+                        <td data-type="no_format" class="stretch-width-min" style="background-color: {{ item.color|default:'' }}">{{ item.counterparty }}</td>
+                        <td data-type="no_format" class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.registration_number }}</td>
+                        <td data-type="no_format" class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.contract_number }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.contract_date }}</td>
+                        <td data-type="no_format" class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.end_date }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.contract_price }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.execution_contract_plan }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.remainder_old_year }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.january_one }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.february }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.march }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.april }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.may }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.june }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.july }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.august }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.september }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.october }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.november }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.december }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.january_two }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.execution_contract_fact }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.paid_last_year }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_january_one }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_january_one }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_february }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_february }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_march }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_march }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_april }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_april }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_may }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_may }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_june }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_june }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_july }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_july }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_august }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_august }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_september }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_september }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_october }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_october }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_november }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_november }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_december }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_december }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.date_january_two }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.sum_january_two }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.execution }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.contract_balance }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Создаем строку с подстановкой значений
+        const query_string = `contract_date={{selected_contract_date}}&keyword_one={{keyword_one}}&keyword_two={{keyword_two}}&keyword_three={{keyword_three}}&keyword_four={{keyword_four}}&selected_column_one={{selected_column_one}}&selected_column_two={{selected_column_two}}&selected_column_three={{selected_column_three}}&selected_column_four={{selected_column_four}}&end_date={{selected_end_date}}`;
+        
+        // Функция для обновления всех ссылок с нужной query строкой
+        function updateLinks() {
+            // Получаем все ссылки, которые нужно обновить
+            const links = document.querySelectorAll('.pagination .page-link');
+            
+            // Обновляем href каждой ссылки
+            links.forEach(link => {
+                let url = link.getAttribute('href');
+                if (url) {
+                    // Добавляем query_string к каждому href
+                    if (url.includes('?')) {
+                        link.setAttribute('href', url + '&' + query_string);
+                    } else {
+                        link.setAttribute('href', url + '?' + query_string);
+                    }
+                }
+            });
+        }
+        
+        // Вызываем функцию обновления ссылок
+        document.addEventListener('DOMContentLoaded', updateLinks);
+    </script>
+
+    <div class="container-fluid-neverov">
+        <div style="display: flex; justify-content: flex-end;">
+            <!-- Pagination Controls -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if page > 1 %}
+                    <li class="page-item">
+                        <a data-type="no_format" class="page-link" href="{% url 'data_table_view' %}?page={{ page|add:"-1" }}"
+                            aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    <!-- Show "Previous" button if not on the first page group -->
+                    {% if start_page > 1 %}
+                    <li class="page-item">
+                        <a data-type="no_format" class="page-link"
+                            href="{% url 'data_table_view' %}?page=1">1</a>
+                    </li>
+                        {% if start_page > 2 %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                    {% endif %}
+
+                    <!-- Show a few pages around the current page -->
+                    {% for p in pages %}
+                    <li class="page-item {% if p == page %}active{% endif %}">
+                        <a data-type="no_format" class="page-link" href="{% url 'data_table_view' %}?page={{ p }}">{{ p }}</a>
+                    </li>
+                    {% endfor %}
+
+                    <!-- Show "Next" button if not on the last page group -->
+                    {% if end_page < total_pages %}
+                    <li class="page-item">
+                        <a data-type="no_format" class="page-link" href="{% url 'data_table_view' %}?page={{ total_pages }}">{{ total_pages }}</a>
+                    </li>
+                    {% endif %}
+
+                    {% if page < total_pages %}
+                    <li class="page-item">
+                        <a data-type="no_format" class="page-link" href="{% url 'data_table_view' %}?page={{ page|add:"1" }}"
+                            aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container-fluid-neverov">
+        <h4>Итог НМЦК: {{ total_cost_111 }}</h4>
+        <h4>Итог Цена контракта: {{ total_cost_222 }}</h4>
+        <h4>Итог Исполнение контракта (факт): {{ total_cost_333 }}</h4>
+
+        <h1>Импорт/экспорт Excel</h1>
+
+        <form onsubmit="showFlashMessage(event)">
+            <div class="alert" id="flash-message-export" style="display: none;"></div>
+            <input type="file" id="file-input" accept=".xlsx" style="display: none;" onchange="updateFileName()">
+            <button type="button" class="btn btn-info" onclick="document.getElementById('file-input').click();">Импорт Excel</button>
+            <span id="file-name"></span>
+            <div id="loading" style="display: none;">Загрузка...</div>
+            <button type="submit" class="btn btn-success" style="display: none;" id="submit-button">Отправить</button>
+        </form>
+
+        <form id="export-form">
+            <input type="hidden" name="contract_date" value="{% if selected_contract_date %}{{ selected_contract_date }}{% else %}No{% endif %}">
+            <input type="hidden" name="end_date" value="{% if selected_end_date %}{{ selected_end_date }}{% else %}No{% endif %}">
+            <div class="alert alert-success" id="flash-message-import" style="display: none;"></div>
+            <button type="submit" class="btn btn-primary" id="export-button">Экспорт Excel</button>
+        </form>
+
+        <h1>Заменить данные из резерва</h1>
+
+        <form>
+            <div class="alert alert-success" id="flash-message-one" style="display: none;"></div>
+            <button type="submit" class="btn btn-secondary" id="backup-one-button" data-url="{% url 'backup_to_backup_one' %}">Резерв (Вторник)</button>
+            <div class="alert alert-success" id="flash-message-two" style="display: none;"></div>
+            <button type="submit" class="btn btn-success" id="backup-two-button" data-url="{% url 'backup_to_backup_two' %}">Резерв (Четверг)</button>
+        </form>
+
+    </div>
+{% endblock %}
+
+{% block content_user %}
+    <div class="container-fluid-neverov">
+        <h3>Свод</h3>
+    </div>
+
+    <div class="container-fluid-neverov">
+                <a href="{% url 'add_two' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить свод</a>
+    </div>
+
+    <!--<div class="container-fluid-neverov">-->
+        <!--<form method="GET" action="/" id="filter-form-user" class="form-group">-->
+            <!--<div class="form-item">-->
+            <!--    <label for="keyword_one_user">Поиск по ключевому слову 1:</label>-->
+            <!--    <input type="text" class="form-control" id="keyword_one_user" name="keyword_one_user" placeholder="Ключевое слово"-->
+            <!--        value="{% if request.GET.keyword_one_user == 'None' %}{% else %}{{ request.GET.keyword_one_user }}{% endif %}">-->
+            <!--</div>-->
+            <!--<div class="form-item">-->
+            <!--    <label for="selected_column_one_user">Выберите столбец 1:</label>-->
+            <!--    <select name="selected_column_one_user" id="selected_column_one_user" class="form-control">-->
+            <!--        <option value="">Столбец</option>-->
+            <!--        <option value="id_id" {% if selected_column_one_user == 'id_id' %}selected{% endif %}>№ п/п</option>-->
+            <!--        <option value="name" {% if selected_column_one_user == 'name' %}selected{% endif %}>Наименование</option>-->
+            <!--        <option value="KOSGU" {% if selected_column_one_user == 'KOSGU' %}selected{% endif %}>КОСГУ</option>-->
+            <!--        <option value="DopFC" {% if selected_column_one_user == 'DopFC' %}selected{% endif %}>ДопФК</option>-->
+            <!--        <option value="budget_limit" {% if selected_column_one_user == 'budget_limit' %}selected{% endif %}>Бюджет (Лимиты)</option>-->
+            <!--        <option value="off_budget_limit" {% if selected_column_one_user == 'off_budget_limit' %}selected{% endif %}>Внебюджет (Лимиты)</option>-->
+            <!--        <option value="budget_planned" {% if selected_column_one_user == 'budget_planned' %}selected{% endif %}>Бюджет (Запланировано)</option>-->
+            <!--        <option value="off_budget_planned" {% if selected_column_one_user == 'off_budget_planned' %}selected{% endif %}>Внебюджет (Запланировано)</option>-->
+            <!--        <option value="budget_concluded" {% if selected_column_one_user == 'budget_concluded' %}selected{% endif %}>Бюджет (Заключено)</option>-->
+            <!--        <option value="off_budget_concluded" {% if selected_column_one_user == 'off_budget_concluded' %}selected{% endif %}>Внебюджет (Заключено)</option>-->
+            <!--        <option value="budget_completed" {% if selected_column_one_user == 'budget_completed' %}selected{% endif %}>Бюджет (Исполнено)</option>-->
+            <!--        <option value="off_budget_completed" {% if selected_column_one_user == 'off_budget_completed' %}selected{% endif %}>Внебюджет (Исполнено)</option>-->
+            <!--        <option value="budget_execution" {% if selected_column_one_user == 'budget_execution'%}selected{% endif %}>Бюджет (Кассовое исполнение)</option>-->
+            <!--        <option value="off_budget_execution" {% if selected_column_one_user == 'off_budget_execution' %}selected{% endif %}>Внебюджет (Кассовое исполнение)</option>-->
+            <!--        <option value="budget_remainder" {% if selected_column_one_user == 'budget_remainder' %}selected{% endif %}>Бюджет (Остаток)</option>-->
+            <!--        <option value="off_budget_remainder" {% if selected_column_one_user == 'off_budget_remainder' %}selected{% endif %}>Внебюджет (Остаток)</option>-->
+            <!--        <option value="budget_plans" {% if selected_column_one_user == 'budget_plans' %}selected{% endif %}>Бюджет (Остаток с учетом планов)</option>-->
+            <!--        <option value="off_budget_plans" {% if selected_column_one_user == 'off_budget_plans' %}selected{% endif %}>Внебюджет (Остаток с учетом планов)</option>-->
+            <!--    </select>-->
+            <!--</div>-->
+            <!--<div class="form-item">-->
+            <!--    <label for="keyword_two_user">Поиск по ключевому слову 2:</label>-->
+            <!--    <input type="text" class="form-control" id="keyword_two_user" name="keyword_two_user" placeholder="Ключевое слово"-->
+            <!--        value="{% if request.GET.keyword_two_user == 'None' %}{% else %}{{ request.GET.keyword_two_user }}{% endif %}">-->
+            <!--</div>-->
+            <!--<div class="form-item">-->
+            <!--    <label for="selected_column_two_user">Выберите столбец 2:</label>-->
+            <!--    <select name="selected_column_two_user" id="selected_column_two_user" class="form-control">-->
+            <!--        <option value="">Столбец</option>-->
+            <!--        <option value="id_id" {% if selected_column_two_user == 'id_id' %}selected{% endif %}>№ п/п</option>-->
+            <!--        <option value="name" {% if selected_column_two_user == 'name' %}selected{% endif %}>Наименование</option>-->
+            <!--        <option value="KOSGU" {% if selected_column_two_user == 'KOSGU' %}selected{% endif %}>КОСГУ</option>-->
+            <!--        <option value="DopFC" {% if selected_column_two_user == 'DopFC' %}selected{% endif %}>ДопФК</option>-->
+            <!--        <option value="budget_limit" {% if selected_column_two_user == 'budget_limit' %}selected{% endif %}>Бюджет (Лимиты)</option>-->
+            <!--        <option value="off_budget_limit" {% if selected_column_two_user == 'off_budget_limit' %}selected{% endif %}>Внебюджет (Лимиты)</option>-->
+            <!--        <option value="budget_planned" {% if selected_column_two_user == 'budget_planned' %}selected{% endif %}>Бюджет (Запланировано)</option>-->
+            <!--        <option value="off_budget_planned" {% if selected_column_two_user == 'off_budget_planned' %}selected{% endif %}>Внебюджет (Запланировано)</option>-->
+            <!--        <option value="budget_concluded" {% if selected_column_two_user == 'budget_concluded' %}selected{% endif %}>Бюджет (Заключено)</option>-->
+            <!--        <option value="off_budget_concluded" {% if selected_column_two_user == 'off_budget_concluded' %}selected{% endif %}>Внебюджет (Заключено)</option>-->
+            <!--        <option value="budget_completed" {% if selected_column_two_user == 'budget_completed' %}selected{% endif %}>Бюджет (Исполнено)</option>-->
+            <!--        <option value="off_budget_completed" {% if selected_column_two_user == 'off_budget_completed' %}selected{% endif %}>Внебюджет (Исполнено)</option>-->
+            <!--        <option value="budget_execution" {% if selected_column_two_user == 'budget_execution'%}selected{% endif %}>Бюджет (Кассовое исполнение)</option>-->
+            <!--        <option value="off_budget_execution" {% if selected_column_two_user == 'off_budget_execution' %}selected{% endif %}>Внебюджет (Кассовое исполнение)</option>-->
+            <!--        <option value="budget_remainder" {% if selected_column_two_user == 'budget_remainder' %}selected{% endif %}>Бюджет (Остаток)</option>-->
+            <!--        <option value="off_budget_remainder" {% if selected_column_two_user == 'off_budget_remainder' %}selected{% endif %}>Внебюджет (Остаток)</option>-->
+            <!--        <option value="budget_plans" {% if selected_column_two_user == 'budget_plans' %}selected{% endif %}>Бюджет (Остаток с учетом планов)</option>-->
+            <!--        <option value="off_budget_plans" {% if selected_column_two_user == 'off_budget_plans' %}selected{% endif %}>Внебюджет (Остаток с учетом планов)</option>-->
+            <!--    </select>-->
+            <!--</div>-->
+
+            <!--<div class="form-item">-->
+            <!--    <label for="KOSGU_user">КОСГУ:</label>-->
+            <!--    <select name="KOSGU_user" id="KOSGU_user" class="form-control form-control-year">-->
+            <!--        <option value="No">Номер</option>-->
+            <!--        {% for KOSGU_user in service_KOSGU_user %}-->
+            <!--        <option value="{{ KOSGU_user }}" {% if KOSGU_user == selected_KOSGU_user %}selected{% endif %}>-->
+            <!--            {{ KOSGU_user }}-->
+            <!--        </option>-->
+            <!--        {% endfor %}-->
+            <!--    </select>-->
+            <!--</div>-->
+
+            <!--<div class="form-item-neverov">-->
+            <!--    <button type="submit" class="btn btn-primary">Фильтровать</button>-->
+            <!--    <button type="button" class="btn btn-secondary" id="reset-filters-user">Сбросить всё</button>-->
+            <!--</div>-->
+        <!--</form>-->
+    <!--</div>-->
+    <div class="container-fluid-neverov">
+
+        <div class="scroll-container top-scroll">
+            <div class="scroll-content"></div>
+        </div>
+
+        <div class="scroll-container main-scroll">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th rowspan="2" class="fixed-width">Управление</th>
+
+                        <th rowspan="2" class="stretch-width">Наименование</th>
+                        <th rowspan="2" class="stretch-width">КОСГУ</th>
+                        <th rowspan="2" class="fixed-width">ДопФК</th>
+                        <th colspan="2" class="stretch-width">Лимиты</th>
+                        <th colspan="2" class="fixed-width">Запланировано</th>
+                        <th colspan="2" class="fixed-width">В торгах</th>
+                        <th colspan="2" class="fixed-width">Заключено</th>
+                        <th colspan="2" class="fixed-width-medium">Исполнено</th>
+                        <th colspan="2" class="fixed-width-medium">Кассовое исполнение</th>
+                        <th colspan="2" class="fixed-width-date">Остаток</th>
+                        <th colspan="2" class="stretch-width">Остаток с учетом планов</th>
+
+                    </tr>
+                    <tr>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in data_user %}
+                    <tr class="service-row-user" data-id="{% if user.is_authenticated %}{{ item.id }}{% else %}0{% endif %}">
+
+                        <td class="stretch-width">
+                            <!-- Управление -->
+                            <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
+                                <a href="{% url 'edit_user' row_id=item.id %}?page_user={{ page_user }}"
+                                class="btn btn-sm btn-warning">Edit</a>
+                                <form class="delete-form-user"
+                                    data-id="{{ item.id }}"
+                                    data-page="{{ page }}"
+                                    data-keyword_one="{{ keyword_one }}"
+                                    data-keyword_two="{{ keyword_two }}"
+                                    data-keyword_three="{{ keyword_three }}"
+                                    data-keyword_four="{{ keyword_four }}"
+                                    data-selected_column_one="{{ selected_column_one }}"
+                                    data-selected_column_two="{{ selected_column_two }}"
+                                    data-contract_date="{{ selected_contract_date }}" 
+                                    data-selected_end_date="{{ selected_end_date }}" 
+
+                                    data-page-user="{{ page_user }}"
+
+                                    data-page-user-two="{{ page_user_two }}"
+
+                                style="display:inline;">
+                                    <button type="button" class="btn btn-sm btn-danger delete-button-user">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.name }}</td>
+                        <td data-type="no_format" class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
+                        <td data-type="no_format" class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.budget_limit }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_limit }}</td>
+                        <td class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.budget_planned }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_planned }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.budget_bargaining }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_bargaining }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.budget_concluded }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_concluded }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.budget_completed }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_completed }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.budget_execution }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_execution }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.budget_remainder }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_remainder }}</td>
+                        <td class="stretch-width" style="background-color: {{ item.color|default:'' }}">{{ item.budget_plans }}</td>
+                        <td class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_plans }}</td>
+
+                    </tr>
+                    {% endfor %}
+                    <tr class="service-row-user">
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width">Итого:</td>
+                        <td class="fixed-width">{{ total_cost_1 }}</td>
+                        <td class="fixed-width">{{ total_cost_2 }}</td>
+                        <td class="fixed-width">{{ total_cost_3 }}</td>
+                        <td class="fixed-width">{{ total_cost_4 }}</td>
+                        <td class="fixed-width">{{ total_cost_5 }}</td>
+                        <td class="fixed-width">{{ total_cost_6 }}</td>
+                        <td class="fixed-width">{{ total_cost_7 }}</td>
+                        <td class="fixed-width">{{ total_cost_8 }}</td>
+                        <td class="fixed-width">{{ total_cost_9 }}</td>
+                        <td class="fixed-width">{{ total_cost_10 }}</td>
+                        <td class="fixed-width">{{ total_cost_11 }}</td>
+                        <td class="fixed-width">{{ total_cost_12 }}</td>
+                        <td class="fixed-width">{{ total_cost_13 }}</td>
+                        <td class="fixed-width">{{ total_cost_14 }}</td>
+                        <td class="fixed-width">{{ total_cost_15 }}</td>
+                        <td class="fixed-width">{{ total_cost_16 }}</td>
+                    </tr>
+                    <tr>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width">Итого СГОЗ:</td>
+                        <td class="fixed-width">{{ total_cost_17 }}</td>
+                    </tr>
+                    <tr>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width">Итого Кассовое исполнение:</td>
+                        <td class="fixed-width">{{ total_cost_18 }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!--<div class="container-fluid-neverov"> -->
+    <!--    <div style="display: flex; justify-content: flex-end;"> -->
+            <!-- Pagination Controls -->
+    <!--        <nav aria-label="Page navigation"> -->
+    <!--            <ul class="pagination"> -->
+    <!--                {% if page_user > 1 %} -->
+    <!--                <li class="page-item"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ page_user|add:"-1" }}" -->
+    <!--                        aria-label="Previous"> -->
+    <!--                        <span aria-hidden="true">&laquo;</span> -->
+    <!--                    </a> -->
+    <!--                </li> -->
+    <!--                {% endif %} -->
+
+                    <!-- Show "Previous" button if not on the first page group -->
+    <!--                {% if start_page_user > 1 %} -->
+    <!--                <li class="page-item"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user=1">1</a> -->
+    <!--                </li> -->
+    <!--                    {% if start_page_user > 2 %} -->
+    <!--                    <li class="page-item disabled"><span class="page-link">...</span></li> -->
+    <!--                    {% endif %} -->
+    <!--                {% endif %} -->
+
+                    <!-- Show a few pages around the current page -->
+    <!--                {% for p in pages_user %} -->
+    <!--                <li class="page-item {% if p == page_user %}active{% endif %}"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ p }}">{{ p }}</a> -->
+    <!--                </li> -->
+    <!--                {% endfor %} -->
+
+                    <!-- Show "Next" button if not on the last page group -->
+    <!--                {% if end_page_user < total_pages_user %} -->
+    <!--                    {% load custom_tags %} -->
+    <!--                    {% if end_page_user < total_pages_user|subtract:1 %} -->
+    <!--                    <li class="page-item disabled"><span class="page-link">...</span></li> -->
+    <!--                    {% endif %} -->
+    <!--                <li class="page-item"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ total_pages_user }}">{{ total_pages_user }}</a> -->
+    <!--                </li> -->
+    <!--                {% endif %} -->
+
+    <!--                {% if page_user < total_pages_user %} -->
+    <!--                <li class="page-item"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ page_user|add:"1" }}" -->
+    <!--                        aria-label="Next"> -->
+    <!--                        <span aria-hidden="true">&raquo;</span> -->
+    <!--                    </a> -->
+    <!--                </li> -->
+    <!--                {% endif %} -->
+    <!--            </ul> -->
+    <!--        </nav> -->
+    <!--    </div> -->
+    <!--</div> -->
+
+    <div class="container-fluid-neverov">
+    <!--    <h4>Итого Лимиты (Бюджет): {{ total_cost_1 }}</h4> -->
+    <!--    <h4>Итого Лимиты (Внебюджет): {{ total_cost_2 }}</h4> -->
+    <!--    <h4>Итого Запланировано (Бюджет): {{ total_cost_3 }}</h4> -->
+    <!--    <h4>Итого Запланировано (Внебюджет): {{ total_cost_4 }}</h4> -->
+    <!--    <h4>Итого В торгах (Бюджет): {{ total_cost_5 }}</h4> -->
+    <!--    <h4>Итого В торгах (Внебюджет): {{ total_cost_6 }}</h4> -->
+    <!--    <h4>Итого Заключено (Бюджет): {{ total_cost_7 }}</h4> -->
+    <!--    <h4>Итого Заключено (Внебюджет): {{ total_cost_8 }}</h4> -->
+    <!--    <h4>Итого Исполнено (Бюджет): {{ total_cost_9 }}</h4> -->
+    <!--    <h4>Итого Исполнено (Внебюджет): {{ total_cost_10 }}</h4> -->
+    <!--    <h4>Итого Кассовое исполнение (Бюджет): {{ total_cost_11 }}</h4> -->
+    <!--    <h4>Итого Кассовое исполнение (Внебюджет): {{ total_cost_12 }}</h4> -->
+    <!--    <h4>Итого Остаток (Бюджет): {{ total_cost_13 }}</h4> -->
+    <!--    <h4>Итого Остаток (Внебюджет): {{ total_cost_14 }}</h4> -->
+    <!--    <h4>Итого Остаток с учетом планов (Бюджет): {{ total_cost_15 }}</h4> -->
+    <!--    <h4>Итого Остаток с учетом планов (Внебюджет): {{ total_cost_16 }}</h4> -->
+
+    <!--    <h4>Итого СГОЗ: {{ total_cost_17 }}</h4> -->
+    <!--    <h4>Итого Кассовое исполнение: {{ total_cost_18 }}</h4> -->
+
+        <!-- <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4> -->
+        <!-- <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4> -->
+
+        <!-- <h1>Экспорт услуг в Excel</h1> -->
+        <!-- <br> -->
+
+        <!-- <form id="export-form" onsubmit="showFlashMessage(event)"> -->
+        <!--     <input type="hidden" name="contract_date" value="{% if selected_contract_date %}{{ selected_contract_date }}{% else %}No{% endif %}"> -->
+        <!--     <input type="hidden" name="end_date" value="{% if selected_end_date %}{{ selected_end_date }}{% else %}No{% endif %}"> -->
+        <!--     <div class="alert alert-success" id="flash-message" style="display: none;"></div> -->
+        <!--     <button type="submit" class="btn btn-info" id="export-button">Экспорт в Excel</button> -->
+        <!-- </form> -->
+    </div>
+{% endblock %}
+
+{% block content_user_two %}
+    <div class="container-fluid-neverov">
+        <h3>План-график</h3>
+    </div>
+    <!--<div class="container-fluid-neverov">-->
+        <!--<form method="GET" action="/" id="filter-form-user-two" class="form-group">-->
+            <!--<div class="form-item">-->
+            <!--    <label for="keyword_one_user_two">Поиск по ключевому слову 1:</label>-->
+            <!--    <input type="text" class="form-control" id="keyword_one_user_two" name="keyword_one_user_two" placeholder="Ключевое слово"-->
+            <!--        value="{% if request.GET.keyword_one_user_two == 'None' %}{% else %}{{ request.GET.keyword_one_user_two }}{% endif %}">-->
+            <!--</div>-->
+            <!--<div class="form-item">-->
+            <!--    <label for="selected_column_one_user_two">Выберите столбец 1:</label>-->
+            <!--    <select name="selected_column_one_user_two" id="selected_column_one_user_two" class="form-control">-->
+            <!--        <option value="">Столбец</option>-->
+            <!--        <option value="KOSGU" {% if selected_column_one_user_two == 'KOSGU' %}selected{% endif %}>КОСГУ</option>-->
+            <!--        <option value="DopFC" {% if selected_column_one_user_two == 'DopFC' %}selected{% endif %}>ДопФК</option>-->
+            <!--        <option value="budget_planned" {% if selected_column_one_user_two == 'budget_planned' %}selected{% endif %}>Бюджет (Запланировано)</option>-->
+            <!--        <option value="off_budget_planned" {% if selected_column_one_user_two == 'off_budget_planned' %}selected{% endif %}>Внебюджет (Запланировано)</option>-->
+            <!--        <option value="budget_concluded" {% if selected_column_one_user_two == 'budget_concluded' %}selected{% endif %}>Бюджет (Заключено)</option>-->
+            <!--        <option value="off_budget_concluded" {% if selected_column_one_user_two == 'off_budget_concluded' %}selected{% endif %}>Внебюджет (Заключено)</option>-->
+            <!--        <option value="budget_remainder" {% if selected_column_one_user_two == 'budget_remainder' %}selected{% endif %}>Бюджет (Остаток)</option>-->
+            <!--        <option value="off_budget_remainder" {% if selected_column_one_user_two == 'off_budget_remainder' %}selected{% endif %}>Внебюджет (Остаток)</option>-->
+            <!--    </select>-->
+            <!--</div>-->
+            <!--<div class="form-item">-->
+            <!--    <label for="keyword_two_user_two">Поиск по ключевому слову 2:</label>-->
+            <!--    <input type="text" class="form-control" id="keyword_two_user_two" name="keyword_two_user_two" placeholder="Ключевое слово"-->
+            <!--        value="{% if request.GET.keyword_two_user_two == 'None' %}{% else %}{{ request.GET.keyword_two_user_two }}{% endif %}">-->
+            <!--</div>-->
+            <!--<div class="form-item">-->
+            <!--    <label for="selected_column_two_user_two">Выберите столбец 2:</label>-->
+            <!--    <select name="selected_column_two_user_two" id="selected_column_two_user_two" class="form-control">-->
+            <!--        <option value="">Столбец</option>-->
+            <!--        <option value="KOSGU" {% if selected_column_two_user_two == 'KOSGU' %}selected{% endif %}>КОСГУ</option>-->
+            <!--        <option value="DopFC" {% if selected_column_two_user_two == 'DopFC' %}selected{% endif %}>ДопФК</option>-->
+            <!--        <option value="budget_planned" {% if selected_column_two_user_two == 'budget_planned' %}selected{% endif %}>Бюджет (Запланировано)</option>-->
+            <!--        <option value="off_budget_planned" {% if selected_column_two_user_two == 'off_budget_planned' %}selected{% endif %}>Внебюджет (Запланировано)</option>-->
+            <!--        <option value="budget_concluded" {% if selected_column_two_user_two == 'budget_concluded' %}selected{% endif %}>Бюджет (Заключено)</option>-->
+            <!--        <option value="off_budget_concluded" {% if selected_column_two_user_two == 'off_budget_concluded' %}selected{% endif %}>Внебюджет (Заключено)</option>-->
+            <!--        <option value="budget_remainder" {% if selected_column_two_user_two == 'budget_remainder' %}selected{% endif %}>Бюджет (Остаток)</option>-->
+            <!--        <option value="off_budget_remainder" {% if selected_column_two_user_two == 'off_budget_remainder' %}selected{% endif %}>Внебюджет (Остаток)</option>-->
+            <!--    </select>-->
+            <!--</div>-->
+
+            <!--<div class="form-item">-->
+            <!--    <label for="KOSGU_user_two">КОСГУ:</label>-->
+            <!--    <select name="KOSGU_user_two" id="KOSGU_user_two" class="form-control form-control-year">-->
+            <!--        <option value="No">Номер</option>-->
+            <!--        {% for KOSGU_user_two in service_KOSGU_user_two %}-->
+            <!--        <option value="{{ KOSGU_user_two }}" {% if KOSGU_user_two == selected_KOSGU_user_two %}selected{% endif %}>-->
+            <!--            {{ KOSGU_user_two }}-->
+            <!--        </option>-->
+            <!--        {% endfor %}-->
+            <!--    </select>-->
+            <!--</div>-->
+
+            <!--<div class="form-item-neverov">-->
+            <!--    <button type="submit" class="btn btn-primary">Фильтровать</button>-->
+            <!--    <button type="button" class="btn btn-secondary" id="reset-filters-user-two">Сбросить всё</button>-->
+            <!--</div>-->
+        <!--</form>-->
+    <!--</div>-->
+    <div class="container-fluid-neverov">
+
+        <div class="scroll-container top-scroll">
+            <div class="scroll-content"></div>
+        </div>
+
+        <div class="scroll-container main-scroll">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th rowspan="2" class="fixed-width">Управление</th>
+                        <th rowspan="2" class="stretch-width">КОСГУ</th>
+                        <th rowspan="2" class="stretch-width">ДопФК</th>
+                        <th colspan="2" class="fixed-width">Внесено в план - график (прошлый год)</th>
+                        <th colspan="2" class="fixed-width">Внесено в план - график (настоящий год)</th>
+                        <th colspan="2" class="fixed-width">Заключено</th>
+                        <th colspan="2" class="fixed-width-date">Остаток</th>
+                    </tr>
+                    <tr>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                        <th class="fixed-width">Бюджет</th>
+                        <th class="fixed-width">Внебюджет</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in data_user_two %}
+                    <tr class="service-row-user-two" data-id="{% if user.is_authenticated %}{{ item.id }}{% else %}0{% endif %}">
+                        <td class="stretch-width">
+                            <!-- Управление -->
+                            <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
+                                <a href="{% url 'edit_user_two' row_id=item.id %}?page_user_two={{ page_user_two }}"
+                                class="btn btn-sm btn-warning">Edit</a>
+
+                            </div>
+                        </td>
+                        <td data-type="no_format" class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.KOSGU }}</td>
+                        <td data-type="no_format" class="fixed-width" style="background-color: {{ item.color|default:'' }}">{{ item.DopFC }}</td>
+                        <td class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.budget_planned_old }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_planned_old }}</td>
+                        <td class="fixed-width-medium" style="background-color: {{ item.color|default:'' }}">{{ item.budget_planned }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_planned }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.budget_concluded }}</td>
+                        <td class="fixed-width-date" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_concluded }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.budget_remainder }}</td>
+                        <td class="fixed-width-small" style="background-color: {{ item.color|default:'' }}">{{ item.off_budget_remainder }}</td>
+
+                    </tr>
+                    {% endfor %}
+
+                    <tr class="service-row-user">
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width">Итого:</td>
+                        <td class="fixed-width">{{ total_cost_1_11 }}</td>
+                        <td class="fixed-width">{{ total_cost_1_22 }}</td>
+                        <td class="fixed-width">{{ total_cost_1_1 }}</td>
+                        <td class="fixed-width">{{ total_cost_1_2 }}</td>
+                        <td class="fixed-width">{{ total_cost_1_3 }}</td>
+                        <td class="fixed-width">{{ total_cost_1_4 }}</td>
+                        <td class="fixed-width">{{ total_cost_1_5 }}</td>
+                        <td class="fixed-width">{{ total_cost_1_6 }}</td>
+                    </tr>
+                    <tr>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width">Итого СГОЗ:</td>
+                        <td class="fixed-width">{{ total_cost_17 }}</td>
+                    </tr>
+                    <tr>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width"></td>
+                        <td class="fixed-width">Остаток:</td>
+                        <td class="fixed-width">{{ total_cost_1_7 }}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!--<div class="container-fluid-neverov"> -->
+    <!--    <div style="display: flex; justify-content: flex-end;"> -->
+            <!-- Pagination Controls -->
+    <!--        <nav aria-label="Page navigation"> -->
+    <!--            <ul class="pagination"> -->
+    <!--                {% if page_user_two > 1 %} -->
+    <!--                <li class="page-item"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two={{ page_user_two|add:"-1" }}" -->
+    <!--                        aria-label="Previous"> -->
+    <!--                        <span aria-hidden="true">&laquo;</span> -->
+    <!--                    </a> -->
+    <!--                </li> -->
+    <!--                {% endif %} -->
+
+                    <!-- Show "Previous" button if not on the first page group -->
+    <!--                {% if start_page_user_two > 1 %} -->
+    <!--                <li class="page-item"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two=1">1</a> -->
+    <!--                </li> -->
+    <!--                    {% if start_page_user_two > 2 %} -->
+    <!--                    <li class="page-item disabled"><span class="page-link">...</span></li> -->
+    <!--                    {% endif %} -->
+    <!--                {% endif %} -->
+
+                    <!-- Show a few pages around the current page -->
+    <!--                {% for p in pages_user_two %} -->
+    <!--                <li class="page-item {% if p == page_user_two %}active{% endif %}"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two={{ p }}">{{ p }}</a> -->
+    <!--                </li> -->
+    <!--                {% endfor %} -->
+
+                    <!-- Show "Next" button if not on the last page group -->
+    <!--                {% if end_page_user_two < total_pages_user_two %} -->
+    <!--                    {% load custom_tags %} -->
+    <!--                    {% if end_page_user_two < total_pages_user_two|subtract:1 %} -->
+    <!--                    <li class="page-item disabled"><span class="page-link">...</span></li> -->
+    <!--                    {% endif %} -->
+    <!--                <li class="page-item"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two={{ total_pages_user_two }}">{{ total_pages_user_two }}</a> -->
+    <!--                </li> -->
+    <!--                {% endif %} -->
+
+    <!--                {% if page_user_two < total_pages_user_two %} -->
+    <!--                <li class="page-item"> -->
+    <!--                    <a class="page-link" -->
+    <!--                        href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two={{ page_user_two|add:"1" }}" -->
+    <!--                        aria-label="Next"> -->
+    <!--                        <span aria-hidden="true">&raquo;</span> -->
+    <!--                    </a> -->
+    <!--                </li> -->
+    <!--                {% endif %} -->
+    <!--            </ul> -->
+    <!--        </nav> -->
+    <!--    </div> -->
+    <!--</div> -->
+
+    <div class="container-fluid-neverov">
+
+        <!-- <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4> -->
+        <!-- <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4> -->
+        <!-- <br> -->
+
+        <!-- <a href="{% url 'add' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить данные</a> -->
+
+        <!-- <br> -->
+        <!-- <h1>Экспорт услуг в Excel</h1> -->
+        <!-- <br> -->
+
+        <!-- <form id="export-form" onsubmit="showFlashMessage(event)"> -->
+        <!--     <input type="hidden" name="contract_date" value="{% if selected_contract_date %}{{ selected_contract_date }}{% else %}No{% endif %}"> -->
+        <!--     <input type="hidden" name="end_date" value="{% if selected_end_date %}{{ selected_end_date }}{% else %}No{% endif %}"> -->
+        <!--     <div class="alert alert-success" id="flash-message" style="display: none;"></div> -->
+        <!--     <button type="submit" class="btn btn-info" id="export-button">Экспорт в Excel</button> -->
+        <!-- </form> -->
+    </div>
+{% endblock %}

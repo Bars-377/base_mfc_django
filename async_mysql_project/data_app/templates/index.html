@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Государственные закупки</title>
+    {% comment %} {% load static %} {% endcomment %}
+    {% load cache_busting %}
+    <link rel="stylesheet" href="{% bust_static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% bust_static 'style.css' %}">
+    <link rel="icon" href="{% bust_static 'favicon.ico' %}" type="image/x-icon">
+</head>
+<body>
+
+    <div class="center-content">
+        <div class="container-fluid-neverov">
+
+            <h1>Государственные закупки</h1>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} mt-3">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="center-content">
+                <ul class="navbar-nav ml-auto">
+                    {% if user.is_authenticated %}
+                        <h4 data-type="no_format" style="color: #007bff;">Пользователь: {{ user.username }}</h4>
+                        <a class="btn btn-sm btn-danger delete-button d-button" href="{% url 'admin:index' %}">Админ панель</a>
+                        <!-- Замена ссылки на выход на форму -->
+                        <form method="POST" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">Выход</button>
+                        </form>
+                    {% else %}
+                        <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+                        <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+            {% block content %}{% endblock %}
+            {% if user.id != 20 and user.id != 21 %}
+                {% block content_user %}{% endblock %}
+            {% endif %}
+            {% block content_user_two %}{% endblock %}
+    </div>
+
+    <script>
+        const connection_websocket = "{{ connection_websocket }}"; // Теперь это будет строка
+        console.log("Connection WebSocket:", connection_websocket);
+    </script>
+    <script src="{% bust_static 'js/jquery-3.5.1.slim.min.js' %}"></script>
+    <script src="{% bust_static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% bust_static 'script.js' %}"></script>  <!-- Добавьте ваш JS файл -->
+
+    <div id="deletion-overlay" style="
+        display: none; 
+        position: fixed; 
+        top: 0; 
+        left: 0;
+        width: 100%; 
+        height: 100%; 
+        background: rgba(0,0,0,0.5); 
+        z-index: 10000;
+        align-items: center; 
+        justify-content: center; 
+        color: white; 
+        font-size: 24px;
+        text-align: center;
+    ">
+        В процессе удаления...
+    </div>
+
+</body>
+</html>

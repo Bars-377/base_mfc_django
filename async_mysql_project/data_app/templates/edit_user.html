@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование записи</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+</head>
+
+<body>
+    <!-- Контейнер для основного контента страницы -->
+    <div class="container-fluid-neverov">
+        <!-- Заголовок страницы -->
+        <h1 class="mt-5">Редактирование записи</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} mt-3">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Форма для редактирования услуги -->
+        <form method="POST" action="{% url 'update_record_user' row_id=row_id_user %}?page_user={{ page_user }}" class="form-group">
+            <!-- Поле для ввода названия услуги -->
+            <div class="form-item">
+                <label for="budget_limit">Бюджет (Лимиты)</label>
+                <input type="number" class="form-control form-control-neverov" id="budget_limit" name="budget_limit" value="{% if service_user.budget_limit %}{{ service_user.budget_limit }}{% else %}{{ budget_limit }}{% endif %}"
+                    step="0.01" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+            </div>
+            <div class="form-item">
+                <label for="off_budget_limit">Внебюджет (Лимиты)</label>
+                <input type="number" class="form-control form-control-neverov" id="off_budget_limit" name="off_budget_limit" value="{% if service_user.off_budget_limit %}{{ service_user.off_budget_limit }}{% else %}{{ off_budget_limit }}{% endif %}"
+                    step="0.01" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+            </div>
+
+            <input type="hidden" name="id_id" value="{{ service_user.id_id }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="name" value="{{ service_user.name }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="KOSGU" value="{{ service_user.KOSGU }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="DopFC" value="{{ service_user.DopFC }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="budget_planned" value="{{ service_user.budget_planned }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="off_budget_planned" value="{{ service_user.off_budget_planned }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="budget_bargaining" value="{{ service_user.budget_bargaining }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="off_budget_bargaining" value="{{ service_user.off_budget_bargaining }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="budget_concluded" value="{{ service_user.budget_concluded }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="off_budget_concluded" value="{{ service_user.off_budget_concluded }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="budget_completed" value="{{ service_user.budget_completed }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="off_budget_completed" value="{{ service_user.off_budget_completed }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="budget_execution" value="{{ service_user.budget_execution }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="off_budget_execution" value="{{ service_user.off_budget_execution }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="budget_remainder" value="{{ service_user.budget_remainder }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="off_budget_remainder" value="{{ service_user.off_budget_remainder }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="budget_plans" value="{{ service_user.budget_plans }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="off_budget_plans" value="{{ service_user.off_budget_plans }}">  <!-- Скрытое поле цвета -->
+            <input type="hidden" name="color" value="{{ service_user.color }}">  <!-- Скрытое поле цвета -->
+            <!-- Кнопка для отправки формы -->
+            <button type="submit" class="btn btn-primary btn-neverov">Внести изменения</button>
+            <!-- Ссылка для возврата на главную страницу -->
+            <a href="{% url 'data_table_view' %}?page_user={{ page_user }}" class="btn btn-secondary btn-neverov clear-btn">Вернуться назад</a>
+        </form>
+
+    </div>
+
+    <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+</body>
+
+</html>

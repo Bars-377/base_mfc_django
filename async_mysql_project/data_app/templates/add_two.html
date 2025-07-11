@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавление новой записи</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+</head>
+
+<body>
+    <div class="center-content">
+        <div class="container-fluid-neverov">
+            <h1 class="mt-5">Добавление новой записи</h1>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} mt-3">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Форма для добавления новой услуги -->
+            <form method="POST" action="{% url 'add_record_two' %}?page={{ total_pages }}" class="form-group">
+                <!-- Пример изменения отступов в форме с помощью классов -->
+                <div class="form-item">
+                    <label for="name">Наименование закупки</label>
+                    <input type="text" class="form-control" id="name" name="name" maxlength="255" required title="Максимальное количество значений 255" value="{{ name }}">
+                </div>
+                <div class="form-item">
+                    <label for="KOSGU">КОСГУ</label>
+                    <select class="form-control" id="KOSGU" name="KOSGU" required title="Выберите статус">
+                        <option value="" {% if KOSGU == "" %}selected{% endif %}>Выберите КОСГУ</option>
+                        <option value="221" {% if KOSGU == "221" %}selected{% endif %}>221</option>
+                        <option value="222" {% if KOSGU == "222" %}selected{% endif %}>222</option>
+                        <option value="223" {% if KOSGU == "223" %}selected{% endif %}>223</option>
+                        <option value="224" {% if KOSGU == "224" %}selected{% endif %}>224</option>
+                        <option value="225" {% if KOSGU == "225" %}selected{% endif %}>225</option>
+                        <option value="226" {% if KOSGU == "226" %}selected{% endif %}>226</option>
+                        <option value="227" {% if KOSGU == "227" %}selected{% endif %}>227</option>
+                        <option value="229" {% if KOSGU == "229" %}selected{% endif %}>229</option>
+                        <option value="267" {% if KOSGU == "267" %}selected{% endif %}>267</option>
+                        <option value="244" {% if KOSGU == "244" %}selected{% endif %}>244</option>
+                        <option value="310" {% if KOSGU == "310" %}selected{% endif %}>310</option>
+                        <option value="341" {% if KOSGU == "341" %}selected{% endif %}>341</option>
+                        <option value="342" {% if KOSGU == "342" %}selected{% endif %}>342</option>
+                        <option value="343" {% if KOSGU == "343" %}selected{% endif %}>343</option>
+                        <option value="344" {% if KOSGU == "344" %}selected{% endif %}>344</option>
+                        <option value="345" {% if KOSGU == "345" %}selected{% endif %}>345</option>
+                        <option value="346" {% if KOSGU == "346" %}selected{% endif %}>346</option>
+                        <option value="349" {% if KOSGU == "349" %}selected{% endif %}>349</option>
+
+                        <option value="221" {% if KOSGU == "221" %}selected{% endif %}>221</option>
+                        <option value="226" {% if KOSGU == "226" %}selected{% endif %}>226</option>
+                        <option value="310" {% if KOSGU == "310" %}selected{% endif %}>310</option>
+                        <option value="346" {% if KOSGU == "346" %}selected{% endif %}>346</option>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <label for="DopFC">ДопФК</label>
+                    <select class="form-control" id="DopFC" name="DopFC" required title="Выберите статус" value="{{ DopFC }}">
+                        <option value="" {% if DopFC == "" %}selected{% endif %}>Выберите КОСГУ</option>
+                        <option value="0000000" {% if DopFC == "0000000" %}selected{% endif %}>0000000</option>
+                        <option value="0000021" {% if DopFC == "0000021" %}selected{% endif %}>0000021</option>
+                        <option value="0000025" {% if DopFC == "0000025" %}selected{% endif %}>0000025</option>
+                        <option value="0000026" {% if DopFC == "0000026" %}selected{% endif %}>0000026</option>
+                        <option value="0000028" {% if DopFC == "0000028" %}selected{% endif %}>0000028</option>
+                        <option value="0000029" {% if DopFC == "0000029" %}selected{% endif %}>0000029</option>
+                        <option value="0000150" {% if DopFC == "0000150" %}selected{% endif %}>0000150</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary clear-btn">Добавить запись</button>
+                <a href="{% url 'data_table_view' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" class="btn btn-secondary btn-neverov clear-btn">Вернуться назад</a>
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+</body>
+
+</html>
