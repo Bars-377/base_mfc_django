@@ -505,7 +505,12 @@ class ContractProcessor:
                 lambda: list(Services_Two.objects.filter(**filters).values_list(field, flat=True)),
                 thread_sensitive=True
             )()
-            results[field] = float(values[0])
+            # results[field] = float(values[0])
+            value_str = values[0] if values[0] != '' else None
+            if not value_str:
+                results[field] = float(value_str)
+            else:
+                results[field] = 0.00
         return results
 
     async def total_costs(self, new_service):
