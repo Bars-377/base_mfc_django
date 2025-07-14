@@ -2,7 +2,8 @@ import pandas as pd
 from django.db import DataError
 from django.http import JsonResponse
 import asyncio
-from .views import ContractProcessor, log_user_action, format_number
+from .views import log_user_action, format_number
+from .processors import ContractProcessor
 
 import os
 import json
