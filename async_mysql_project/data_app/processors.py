@@ -507,7 +507,7 @@ class ContractProcessor:
             )()
             # results[field] = float(values[0])
             value_str = values[0] if values[0] != '' else None
-            if not value_str:
+            if value_str is not None:
                 results[field] = float(value_str)
             else:
                 results[field] = 0.00
@@ -590,14 +590,28 @@ class ContractProcessor:
         """Подсчёт Цена контракта если есть way='п.4 ч.1 ст.93'"""
         from django.db.models import Q
 
-        Services_way_ = await sync_to_async(list)(Services.objects.filter(
-            Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
-        ))
-        contract_price_sum_way = 0
-        for service in Services_way_:
-            contract_price_sum_way += await format_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
+        # Services_way_ = await sync_to_async(list)(Services.objects.filter(
+        #     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
+        # ))
+        # contract_price_sum_way = 0
+        # for service in Services_way_:
+        #     contract_price_sum_way += await format_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
-        return round(contract_price_sum_way, 2)
+        # Общий фильтр для обоих случаев
+        filters = Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
+
+        months_contract_price = (
+            'january_one', 'february', 'march', 'april', 'may', 'june',
+            'july', 'august', 'september', 'october', 'november', 'december',
+            # 'january_two'
+        )
+
+        answer = 0
+        for contract_price in months_contract_price:
+            total_sum = await sync_to_async(self._aggregate_sum)(filters, contract_price)
+            answer += await format_number(total_sum if total_sum not in [None, 'None', ''] else 0)
+
+        return round(answer, 2)
 
     async def Services_Two_save(self, Services_Two_):
         """Обновление второй базы"""
