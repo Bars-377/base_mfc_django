@@ -436,9 +436,9 @@ class ContractProcessor:
             if budget_concluded:
                 contract_price_sum_way = await self.Services_way()
 
-                if self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2046100092':
+                if self.context_data['KTSSR'] == '2046100092':
                     Services_Three_.off_budget_concluded = contract_price_sum_way
-                elif self.context_data['status'] == 'Заключено' and self.context_data['KTSSR'] == '2046102280':
+                elif self.context_data['KTSSR'] == '2046102280':
                     Services_Three_.budget_concluded = contract_price_sum_way
 
             Services_Three_.budget_remainder = round(await format_number(await format_number(Services_Three_.budget_planned) + await format_number(Services_Three_.budget_planned_old) - await format_number(Services_Three_.budget_concluded)), 2)
@@ -598,7 +598,7 @@ class ContractProcessor:
         #     contract_price_sum_way += await format_number(service.contract_price if service.contract_price not in [None, 'None', ''] else 0)
 
         # Общий фильтр для обоих случаев
-        filters = Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & Q(status=self.context_data['status']) & Q(way='п.4 ч.1 ст.93')
+        filters = Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & ~Q(status='Запланировано') & Q(way='п.4 ч.1 ст.93')
 
         months_contract_price = (
             'january_one', 'february', 'march', 'april', 'may', 'june',
