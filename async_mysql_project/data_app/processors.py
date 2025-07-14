@@ -878,10 +878,10 @@ class ContractProcessor:
 
             await self.update_service(saving, execution_contract_plan, execution_contract_fact)
 
+            await self.count_dates(True)
+
             await self.total_costs_message()
             return render(self.request, 'edit.html', self.context_data)
-
-        await self.count_dates(True)
 
         await log_user_action(self.request.user, f'Отредактировал запись в "Закупки" с ID {self.context_data['id_id']},\nСтало: {self.context_data}')
 
@@ -982,10 +982,10 @@ class ContractProcessor:
         await self.count_dates(True)
 
         if not await self.total_costs(new_service):
+            await self.count_dates(True)
+
             await self.total_costs_message()
             return render(self.request, 'add.html', self.context_data)
-
-        await self.count_dates(True)
 
         await self.message_service_add()
 
