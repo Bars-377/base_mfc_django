@@ -43,10 +43,11 @@
             </div>
         </div>
             {% block content %}{% endblock %}
-            {% if user.id != 20 and user.id != 21 %}
-                {% block content_user %}{% endblock %}
-            {% endif %}
+            {% block content_user %}{% endblock %}
             {% block content_user_two %}{% endblock %}
+            {% comment %} {% if user.id != 20 and user.id != 21 %}
+                {% block content_user_two %}{% endblock %}
+            {% endif %} {% endcomment %}
     </div>
 
     <script>
