@@ -5,10 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Добавление новой записи</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    {% comment %} {% load static %} {% endcomment %}
+    {% load cache_busting %}
+    <link rel="stylesheet" href="{% bust_static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% bust_static 'style.css' %}">
+    <link rel="icon" href="{% bust_static 'favicon.ico' %}" type="image/x-icon">
 </head>
 
 <body>
@@ -33,13 +34,13 @@
                 </div>
                 <div class="form-item">
                     <label for="status">Статус</label>
-                    <select class="form-control" id="status" onchange="checkMandatoryFields()" name="status" required title="Выберите статус">
+                    <select class="form-control" id="status" onchange="checkMandatoryFields()" name="status" required title="Выберите статус" value="{{ status }}">
                         <option value="" {% if status == "" %}selected{% endif %}>Выберите статус</option>
                     </select>
                 </div>
                 <div class="form-item">
                     <label for="way">Способ закупки</label>
-                    <select class="form-control" id="way" name="way" required title="Выберите cпособ закупки">
+                    <select class="form-control" id="way" name="way" required title="Выберите cпособ закупки" value="{{ way }}">
                         <option value="" {% if way == "" %}selected{% endif %}>Выберите cпособ закупки</option>
                     </select>
                 </div>
@@ -49,13 +50,13 @@
                 </div>
                 <div class="form-item">
                     <label for="KTSSR">КЦСР</label>
-                    <select class="form-control" id="KTSSR" name="KTSSR" required title="Выберите статус">
+                    <select class="form-control" id="KTSSR" name="KTSSR" required title="Выберите КЦСР" value="{{ KTSSR }}">
                         <option value="" {% if KTSSR == "" %}selected{% endif %}>Выберите КЦСР</option>
                     </select>
                 </div>
                 <div class="form-item">
                     <label for="KOSGU">КОСГУ</label>
-                    <select class="form-control" id="KOSGU" name="KOSGU" required title="Выберите КОСГУ">
+                    <select class="form-control" id="KOSGU" name="KOSGU" required title="Выберите КОСГУ" value="{{ KOSGU }}">
                         <option value="" {% if KOSGU == "" %}selected{% endif %}>Выберите КОСГУ</option>
                     </select>
                 </div>
@@ -271,8 +272,8 @@
         </div>
     </div>
 
-    <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% bust_static 'js/jquery-3.5.1.slim.min.js' %}"></script>
+    <script src="{% bust_static 'js/bootstrap.bundle.min.js' %}"></script>
     <script>
         // Сначала парсим весь объект statuses
         const statuses = {{ statuses|default:"{}"|safe }};
@@ -285,7 +286,7 @@
         });
 
     </script>
-    <script src="{% static 'script_add_edit.js' %}"></script>  <!-- Добавьте ваш JS файл -->
+    <script src="{% bust_static 'script_add_edit.js' %}"></script>  <!-- Добавьте ваш JS файл -->
 
 </body>
 

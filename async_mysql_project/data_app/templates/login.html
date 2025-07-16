@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход в систему</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    {% comment %} {% load static %} {% endcomment %}
+    {% load cache_busting %}
+    <link rel="stylesheet" href="{% bust_static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% bust_static 'style.css' %}">
+    <link rel="icon" href="{% bust_static 'favicon.ico' %}" type="image/x-icon">
 </head>
 <body>
     <div class="center-content-login">

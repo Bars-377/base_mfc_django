@@ -14,21 +14,68 @@ document.addEventListener('DOMContentLoaded', function () {
     checkMandatoryFields(); // Вызов функции при загрузке страницы
 });
 
+// function checkMandatoryFields() {
+//     const statusSelect = document.getElementById('status');
+//     const selectedStatus = statusSelect.value;
+
+//     const statusWay = document.getElementById('way');
+//     const selectedStatusWay = statusWay.value;
+
+//     const statusKTSSR = document.getElementById('KTSSR');
+//     const selectedStatusKTSSR = statusKTSSR.value;
+
+//     const statusDopFC = document.getElementById('DopFC');
+//     const selectedStatusDopFC = statusDopFC.value;
+
+//     const statusKOSGU = document.getElementById('KOSGU');
+//     const selectedStatusKOSGU = statusKOSGU.value;
+
+//     // Потом достаём нужные поля
+//     const statusesList = statuses.list || [];
+//     const statusesBlocking = statuses.blocking || [];
+//     const statusesMandatory = statuses.mandatory || [];
+//     const statusesPurchasing_method = statuses.purchasing_method || [];
+//     const statusesKTSSR = statuses.KTSSR || [];
+//     const statusesDopFC = statuses.DopFC || [];
+//     const statusesKOSGU = statuses.KOSGU || [];
+
+//     const currentStatus = selectedStatus || "{{ status }}";
+//     const currentWay = selectedStatusWay || "{{ way }}";
+//     const currentKTSSR = selectedStatusKTSSR || "{{ KTSSR }}";
+//     const currentDopFC = selectedStatusDopFC || "{{ DopFC }}";
+//     const currentKOSGU = selectedStatusKOSGU || "{{ KOSGU }}";
+
+//     updateStatusSelect(statusWay, statusesPurchasing_method, currentWay);
+//     updateStatusSelect(statusSelect, statusesList, currentStatus);
+//     updateStatusSelect(statusKTSSR, statusesKTSSR, currentKTSSR);
+//     updateStatusSelect(statusDopFC, statusesDopFC, currentDopFC);
+//     updateStatusSelect(statusKOSGU, statusesKOSGU, currentKOSGU);
+//     updateMandatoryFields(currentStatus, statusesMandatory);
+//     updateBlockingFields(currentStatus, statusesBlocking);
+//     console.log("Завершение script_add_edit.js");
+// }
+
 function checkMandatoryFields() {
+    // Функция для безопасного получения value
+    function safeValue(id) {
+        const el = document.getElementById(id);
+        return el ? el.value : null;
+    }
+
     const statusSelect = document.getElementById('status');
-    const selectedStatus = statusSelect.value;
+    const selectedStatus = safeValue('status');
 
     const statusWay = document.getElementById('way');
-    const selectedStatusWay = statusWay.value;
+    const selectedStatusWay = safeValue('way');
 
     const statusKTSSR = document.getElementById('KTSSR');
-    const selectedStatusKTSSR = statusKTSSR.value;
+    const selectedStatusKTSSR = safeValue('KTSSR');
 
     const statusDopFC = document.getElementById('DopFC');
-    const selectedStatusDopFC = statusDopFC.value;
+    const selectedStatusDopFC = safeValue('DopFC');
 
     const statusKOSGU = document.getElementById('KOSGU');
-    const selectedStatusKOSGU = statusKOSGU.value;
+    const selectedStatusKOSGU = safeValue('KOSGU');
 
     // Потом достаём нужные поля
     const statusesList = statuses.list || [];
@@ -45,13 +92,16 @@ function checkMandatoryFields() {
     const currentDopFC = selectedStatusDopFC || "{{ DopFC }}";
     const currentKOSGU = selectedStatusKOSGU || "{{ KOSGU }}";
 
-    updateStatusSelect(statusWay, statusesPurchasing_method, currentWay);
-    updateStatusSelect(statusSelect, statusesList, currentStatus);
-    updateStatusSelect(statusKTSSR, statusesKTSSR, currentKTSSR);
-    updateStatusSelect(statusDopFC, statusesDopFC, currentDopFC);
-    updateStatusSelect(statusKOSGU, statusesKOSGU, currentKOSGU);
+    // Для каждого элемента — обновляем, если он существует
+    if (statusWay) updateStatusSelect(statusWay, statusesPurchasing_method, currentWay);
+    if (statusSelect) updateStatusSelect(statusSelect, statusesList, currentStatus);
+    if (statusKTSSR) updateStatusSelect(statusKTSSR, statusesKTSSR, currentKTSSR);
+    if (statusDopFC) updateStatusSelect(statusDopFC, statusesDopFC, currentDopFC);
+    if (statusKOSGU) updateStatusSelect(statusKOSGU, statusesKOSGU, currentKOSGU);
+
     updateMandatoryFields(currentStatus, statusesMandatory);
     updateBlockingFields(currentStatus, statusesBlocking);
+
     console.log("Завершение script_add_edit.js");
 }
 
