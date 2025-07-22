@@ -409,7 +409,7 @@
                         <td class="stretch-width">
                             <!-- Управление -->
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                <a href="{% url 'edit' row_id=item.id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}"
+                                <a href="{% url 'edit' row_id=item.id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}"
                                 class="btn btn-sm btn-warning">Edit</a>
                                 <form class="delete-form"
                                     data-id="{{ item.id }}"

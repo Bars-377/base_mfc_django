@@ -27,7 +27,7 @@
         {% endif %}
 
         <!-- Форма для редактирования услуги -->
-        <form method="POST" action="{% url 'update_record_user_two' row_id=row_id_user_two %}?page_user={{ page_user }}" class="form-group">
+        <form method="POST" action="{% url 'update_record_user_two' row_id=row_id_user_two %}?page_user_two={{ page_user_two }}" class="form-group">
             <!-- Поле для ввода названия услуги -->
             <div class="form-item">
                 <label for="budget_planned_old">Бюджет (Запланировано)</label>

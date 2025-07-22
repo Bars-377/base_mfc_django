@@ -87,21 +87,86 @@ folder_path = os.path.abspath(folder_path)
 with open(f'{folder_path}//general_settings.json', 'r', encoding='utf-8-sig') as file:
     json_object = json.load(file)
 
+def link_generation(request, mode, page, page_user='', page_user_two='', service=None, row_id=None):
+    # Списки имён параметров для получения из GET-запроса
+    params_with_int_default_1 = [page, page_user, page_user_two]
+    params_with_int_default_1 = [p for p in params_with_int_default_1 if p != '']
+
+    user = request.user
+
+    params_optional = [
+        'keyword_one',
+        'keyword_two',
+        'keyword_three',
+        'keyword_four',
+        'selected_column_one',
+        'selected_column_two',
+        'selected_column_three',
+        'selected_column_four',
+        'contract_date',
+        'end_date'
+    ]
+
+    # Создаем словарь для хранения результатов
+    params = {}
+
+    # Получаем остальные параметры без преобразования
+    for param in params_optional:
+        if param in ('contract_date', 'end_date'):
+            params[f'selected_{param}'] = request.GET.get(param, "No")
+        else:
+            params[param] = request.GET.get(param, None)
+
+    # Получаем параметры с преобразованием в int и значением по умолчанию 1
+    for param in params_with_int_default_1:
+        try:
+            params[param] = int(request.GET.get(param, 1))
+        except ValueError:
+            params[param] = 1  # На случай, если параметр не преобразуется в int
+
+    if mode:
+        SSR = [request, user]
+
+        for key in params:
+            SSR.append(params[key])
+
+        return SSR
+    else:
+        if service and row_id:
+            # Подготовка контекста для шаблона
+            context = {
+                'service': service,
+                'row_id': row_id,
+                'connection_websocket': settings.DATABASES['default']['HOST'],
+                'statuses': json.dumps(json_object['statuses'])
+            }
+        else:
+            # Подготовка контекста для шаблона
+            context = {
+                'user': user,
+                'connection_websocket': settings.DATABASES['default']['HOST'],
+                'statuses': json.dumps(json_object['statuses'])
+            }
+
+        for key in params:
+            context[key] = params[key]
+
+        return context
+
 async def skeleton(request, user,
+                    keyword_one, keyword_two, keyword_three,
+                    keyword_four, selected_column_one, selected_column_two,
+                    selected_column_three, selected_column_four,
                     contract_date, end_date,
-                    keyword_one, keyword_two,
-                    selected_column_one, selected_column_two,
-                    page,
                     # KOSGU_user,
                     # keyword_one_user, keyword_two_user,
                     # selected_column_one_user, selected_column_two_user,
-                    page_user,
                     # KOSGU_user_two,
                     # keyword_one_user_two, keyword_two_user_two,
                     # selected_column_one_user_two, selected_column_two_user_two,
-                    page_user_two, keyword_three,
-                    keyword_four, selected_column_three,
-                    selected_column_four):
+                    page,
+                    page_user,
+                    page_user_two):
     async def remove_spaces_if_numeric(text):
         stripped_text = text.replace(" ", "")  # Удаляем все пробелы
         if all(char.isdigit() or char in "+-*/.()" for char in stripped_text):
@@ -511,10 +576,65 @@ async def data_table_view(request):
     user = request.user
 
     total_pages_full = request.GET.get('total_pages_full', None)
+    total_pages_full_user = request.GET.get('total_pages_full_user', None)
+    total_pages_full_user_two = request.GET.get('total_pages_full_user_two', None)
+
+    # contract_date = request.GET.get('contract_date', None)
+    # end_date = request.GET.get('end_date', None)
+    # keyword_one = request.GET.get('keyword_one', None)
+    # keyword_two = request.GET.get('keyword_two', None)
+    # keyword_three = request.GET.get('keyword_three', None)
+    # keyword_four = request.GET.get('keyword_four', None)
+    # selected_column_one = request.GET.get('selected_column_one', None)
+    # selected_column_two = request.GET.get('selected_column_two', None)
+    # selected_column_three = request.GET.get('selected_column_three', None)
+    # selected_column_four = request.GET.get('selected_column_four', None)
+    # page = int(request.GET.get('page', 1))
+    # page_user = int(request.GET.get('page_user', 1))
+    # page_user_two = int(request.GET.get('page_user_two', 1))
+
+    SSR = link_generation(request, True, 'page', 'page_user', 'page_user_two')
+
+    # # Списки имён параметров для получения из GET-запроса
+    # params_with_int_default_1 = ['page', 'page_user', 'page_user_two']
+    # params_optional = [
+    #     'keyword_one',
+    #     'keyword_two',
+    #     'keyword_three',
+    #     'keyword_four',
+    #     'selected_column_one',
+    #     'selected_column_two',
+    #     'selected_column_three',
+    #     'selected_column_four',
+    #     'contract_date',
+    #     'end_date',
+    #     # 'total_pages_full',
+    #     # 'total_pages_full_user',
+    #     # 'total_pages_full_user_two',
+    # ]
+
+    # # Создаем словарь для хранения результатов
+    # params = {}
+
+    # # Получаем остальные параметры без преобразования
+    # for param in params_optional:
+    #     params[param] = request.GET.get(param, None)
+
+    # # Получаем параметры с преобразованием в int и значением по умолчанию 1
+    # for param in params_with_int_default_1:
+    #     try:
+    #         params[param] = int(request.GET.get(param, 1))
+    #     except ValueError:
+    #         params[param] = 1  # На случай, если параметр не преобразуется в int
+
+    # SSR = [request, user]
+
+    # for key in params:
+    #     SSR.append(params[key])
+
+    per_page = 20
 
     if total_pages_full:
-        per_page = 20
-
         # query = await sync_to_async(lambda: Services.objects.all())()
         # query = await sync_to_async(list, thread_sensitive=True)(Services.objects.all())
         query = await sync_to_async(Services.objects.all, thread_sensitive=True)()
@@ -523,25 +643,9 @@ async def data_table_view(request):
         # total_services_full = query.count()  # Также без sync_to_async
         total_services_full = await sync_to_async(query.count, thread_sensitive=True)()  # Используем async обертку для count
         page = (total_services_full + per_page - 1) // per_page
-    else:
-        page = int(request.GET.get('page', 1))
-
-    contract_date = request.GET.get('contract_date', None)
-    end_date = request.GET.get('end_date', None)
-    keyword_one = request.GET.get('keyword_one', None)
-    keyword_two = request.GET.get('keyword_two', None)
-    keyword_three = request.GET.get('keyword_three', None)
-    keyword_four = request.GET.get('keyword_four', None)
-    selected_column_one = request.GET.get('selected_column_one', None)
-    selected_column_two = request.GET.get('selected_column_two', None)
-    selected_column_three = request.GET.get('selected_column_three', None)
-    selected_column_four = request.GET.get('selected_column_four', None)
-
-    total_pages_full_user = request.GET.get('total_pages_full_user', None)
+        SSR[-3] = page
 
     if total_pages_full_user:
-        per_page = 20
-
         # query_user = await sync_to_async(lambda: Services_Two.objects.all())()
         # query_user = await sync_to_async(list, thread_sensitive=True)(Services_Two.objects.all())
         query_user = await sync_to_async(Services_Two.objects.all, thread_sensitive=True)()
@@ -550,14 +654,9 @@ async def data_table_view(request):
         # total_services_full_user = query_user.count()  # Также без sync_to_async
         total_services_full_user = await sync_to_async(query_user.count, thread_sensitive=True)()
         page_user = (total_services_full_user + per_page - 1) // per_page
-    else:
-        page_user = int(request.GET.get('page_user', 1))
-
-    total_pages_full_user_two = request.GET.get('total_pages_full_user_two', None)
+        SSR[-2] = page_user
 
     if total_pages_full_user_two:
-        per_page = 20
-
         # query_user_two = await sync_to_async(lambda: Services_Three.objects.all())()
         # query_user_two = await sync_to_async(list, thread_sensitive=True)(Services_Three.objects.all())
         query_user_two = await sync_to_async(Services_Three.objects.all, thread_sensitive=True)()
@@ -566,8 +665,7 @@ async def data_table_view(request):
         # total_services_full_user_two = query_user_two.count()  # Также без sync_to_async
         total_services_full_user_two = await sync_to_async(query_user_two.count, thread_sensitive=True)()
         page_user_two = (total_services_full_user_two + per_page - 1) // per_page
-    else:
-        page_user_two = int(request.GET.get('page_user_two', 1))
+        SSR[-1] = page_user_two
 
     # KOSGU_user = request.GET.get('KOSGU_user', None)
     # keyword_one_user = request.GET.get('keyword_one_user', None)
@@ -581,21 +679,24 @@ async def data_table_view(request):
     # selected_column_one_user_two = request.GET.get('selected_column_one_user_two', None)
     # selected_column_two_user_two = request.GET.get('selected_column_two_user_two', None)
 
-    return await skeleton(request, user,
-                    contract_date, end_date,
-                    keyword_one, keyword_two,
-                    selected_column_one, selected_column_two,
-                    page,
-                    # KOSGU_user,
-                    # keyword_one_user, keyword_two_user,
-                    # selected_column_one_user, selected_column_two_user,
-                    page_user,
-                    # KOSGU_user_two,
-                    # keyword_one_user_two, keyword_two_user_two,
-                    # selected_column_one_user_two, selected_column_two_user_two,
-                    page_user_two, keyword_three,
-                    keyword_four, selected_column_three,
-                    selected_column_four)
+    return await skeleton(*SSR)
+
+    # return await skeleton(request, user,
+    #                 contract_date, end_date,
+    #                 keyword_one, keyword_two,
+    #                 selected_column_one, selected_column_two,
+    #                 # KOSGU_user,
+    #                 # keyword_one_user, keyword_two_user,
+    #                 # selected_column_one_user, selected_column_two_user,
+    #                 # KOSGU_user_two,
+    #                 # keyword_one_user_two, keyword_two_user_two,
+    #                 # selected_column_one_user_two, selected_column_two_user_two,
+
+    #                 keyword_four, selected_column_three,
+    #                 selected_column_four, keyword_three,
+    #                 page,
+    #                 page_user,
+    #                 page_user_two)
 
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -727,39 +828,88 @@ async def update_color_user_two(request, row_id):
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def add(request):
     await log_user_action(request.user, f'Перешёл на страницу добавления записи в "Закупки"')
-    page = int(request.GET.get('page', 1))
-    keyword_one = request.GET.get('keyword_one', None)
-    keyword_two = request.GET.get('keyword_two', None)
-    keyword_three = request.GET.get('keyword_three', None)
-    keyword_four = request.GET.get('keyword_four', None)
-    selected_column_one = request.GET.get('selected_column_one', None)
-    selected_column_two = request.GET.get('selected_column_two', None)
-    selected_column_three = request.GET.get('selected_column_three', None)
-    selected_column_four = request.GET.get('selected_column_four', None)
-    selected_contract_date = request.GET.get('contract_date', "No")
-    selected_end_date = request.GET.get('end_date', "No")
-    total_pages = int(request.GET.get('total_pages', 1))
+
+    # keyword_one = request.GET.get('keyword_one', None)
+    # keyword_two = request.GET.get('keyword_two', None)
+    # keyword_three = request.GET.get('keyword_three', None)
+    # keyword_four = request.GET.get('keyword_four', None)
+    # selected_column_one = request.GET.get('selected_column_one', None)
+    # selected_column_two = request.GET.get('selected_column_two', None)
+    # selected_column_three = request.GET.get('selected_column_three', None)
+    # selected_column_four = request.GET.get('selected_column_four', None)
+    # selected_contract_date = request.GET.get('contract_date', "No")
+    # selected_end_date = request.GET.get('end_date', "No")
+    # page = int(request.GET.get('page', 1))
+    # total_pages = int(request.GET.get('total_pages', 1))
+
+    print('--------------------------------')
+    print('selected_contract_date', request.GET.get('contract_date', "No"))
+    print('--------------------------------')
 
     user = request.user
 
-    # Подготовка контекста для шаблона
-    context = {
-        'user': user,
-        'page': page,
-        'keyword_one': keyword_one,
-        'keyword_two': keyword_two,
-        'keyword_three': keyword_three,
-        'keyword_four': keyword_four,
-        'selected_column_one': selected_column_one,
-        'selected_column_two': selected_column_two,
-        'selected_column_three': selected_column_three,
-        'selected_column_four': selected_column_four,
-        'selected_contract_date': selected_contract_date,
-        'selected_end_date': selected_end_date,
-        'total_pages': total_pages,
-        'connection_websocket': settings.DATABASES['default']['HOST'],
-        'statuses': json.dumps(json_object['statuses'])
-    }
+    context = link_generation(request, False, 'page', 'total_pages')
+
+    # # Списки имён параметров для получения из GET-запроса
+    # params_with_int_default_1 = ['page', 'total_pages']
+    # params_optional = [
+    #     'keyword_one',
+    #     'keyword_two',
+    #     'keyword_three',
+    #     'keyword_four',
+    #     'selected_column_one',
+    #     'selected_column_two',
+    #     'selected_column_three',
+    #     'selected_column_four',
+    #     'contract_date',
+    #     'end_date'
+    # ]
+
+    # # Создаем словарь для хранения результатов
+    # params = {}
+
+    # # Получаем остальные параметры без преобразования
+    # for param in params_optional:
+    #     if param in ('contract_date', 'end_date'):
+    #         params[f'selected_{param}'] = request.GET.get(param, "No")
+    #     else:
+    #         params[param] = request.GET.get(param, None)
+
+    # # Получаем параметры с преобразованием в int и значением по умолчанию 1
+    # for param in params_with_int_default_1:
+    #     try:
+    #         params[param] = int(request.GET.get(param, 1))
+    #     except ValueError:
+    #         params[param] = 1  # На случай, если параметр не преобразуется в int
+
+    # # Подготовка контекста для шаблона
+    # context = {
+    #     'user': user,
+    #     'connection_websocket': settings.DATABASES['default']['HOST'],
+    #     'statuses': json.dumps(json_object['statuses'])
+    # }
+
+    # for key in params:
+    #     context[key] = params[key]
+
+    # # Подготовка контекста для шаблона
+    # context = {
+    #     'user': user,
+    #     'page': page,
+    #     'keyword_one': keyword_one,
+    #     'keyword_two': keyword_two,
+    #     'keyword_three': keyword_three,
+    #     'keyword_four': keyword_four,
+    #     'selected_column_one': selected_column_one,
+    #     'selected_column_two': selected_column_two,
+    #     'selected_column_three': selected_column_three,
+    #     'selected_column_four': selected_column_four,
+    #     'selected_contract_date': selected_contract_date,
+    #     'selected_end_date': selected_end_date,
+    #     'total_pages': total_pages,
+    #     'connection_websocket': settings.DATABASES['default']['HOST'],
+    #     'statuses': json.dumps(json_object['statuses'])
+    # }
 
     return await sync_to_async(render)(request, 'add.html', context)
     # return await render(request, 'add.html', context)
@@ -768,39 +918,86 @@ async def add(request):
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def add_two(request):
     await log_user_action(request.user, f'Перешёл на страницу добавления записи в "Свод"')
-    page = int(request.GET.get('page', 1))
-    keyword_one = request.GET.get('keyword_one', None)
-    keyword_two = request.GET.get('keyword_two', None)
-    keyword_three = request.GET.get('keyword_three', None)
-    keyword_four = request.GET.get('keyword_four', None)
-    selected_column_one = request.GET.get('selected_column_one', None)
-    selected_column_two = request.GET.get('selected_column_two', None)
-    selected_column_three = request.GET.get('selected_column_three', None)
-    selected_column_four = request.GET.get('selected_column_four', None)
-    selected_contract_date = request.GET.get('contract_date', "No")
-    selected_end_date = request.GET.get('end_date', "No")
-    total_pages = int(request.GET.get('total_pages', 1))
 
-    user = request.user
+    # keyword_one = request.GET.get('keyword_one', None)
+    # keyword_two = request.GET.get('keyword_two', None)
+    # keyword_three = request.GET.get('keyword_three', None)
+    # keyword_four = request.GET.get('keyword_four', None)
+    # selected_column_one = request.GET.get('selected_column_one', None)
+    # selected_column_two = request.GET.get('selected_column_two', None)
+    # selected_column_three = request.GET.get('selected_column_three', None)
+    # selected_column_four = request.GET.get('selected_column_four', None)
+    # selected_contract_date = request.GET.get('contract_date', "No")
+    # selected_end_date = request.GET.get('end_date', "No")
+    # page = int(request.GET.get('page', 1))
+    # total_pages = int(request.GET.get('total_pages', 1))
 
-    # Подготовка контекста для шаблона
-    context = {
-        'user': user,
-        'page': page,
-        'keyword_one': keyword_one,
-        'keyword_two': keyword_two,
-        'keyword_three': keyword_three,
-        'keyword_four': keyword_four,
-        'selected_column_one': selected_column_one,
-        'selected_column_two': selected_column_two,
-        'selected_column_three': selected_column_three,
-        'selected_column_four': selected_column_four,
-        'selected_contract_date': selected_contract_date,
-        'selected_end_date': selected_end_date,
-        'total_pages': total_pages,
-        'connection_websocket': settings.DATABASES['default']['HOST'],
-        'statuses': json.dumps(json_object['statuses'])
-    }
+    # user = request.user
+
+    # # Подготовка контекста для шаблона
+    # context = {
+    #     'user': user,
+    #     'page': page,
+    #     'keyword_one': keyword_one,
+    #     'keyword_two': keyword_two,
+    #     'keyword_three': keyword_three,
+    #     'keyword_four': keyword_four,
+    #     'selected_column_one': selected_column_one,
+    #     'selected_column_two': selected_column_two,
+    #     'selected_column_three': selected_column_three,
+    #     'selected_column_four': selected_column_four,
+    #     'selected_contract_date': selected_contract_date,
+    #     'selected_end_date': selected_end_date,
+    #     'total_pages': total_pages,
+    #     'connection_websocket': settings.DATABASES['default']['HOST'],
+    #     'statuses': json.dumps(json_object['statuses'])
+    # }
+
+    # user = request.user
+
+    context = link_generation(request, False, 'page', 'total_pages')
+
+    # # Списки имён параметров для получения из GET-запроса
+    # params_with_int_default_1 = ['page', 'total_pages']
+    # params_optional = [
+    #     'keyword_one',
+    #     'keyword_two',
+    #     'keyword_three',
+    #     'keyword_four',
+    #     'selected_column_one',
+    #     'selected_column_two',
+    #     'selected_column_three',
+    #     'selected_column_four',
+    #     'contract_date',
+    #     'end_date'
+    # ]
+
+    # # Создаем словарь для хранения результатов
+    # params = {}
+
+    # # Получаем остальные параметры без преобразования
+    # for param in params_optional:
+    #     if param in ('contract_date', 'end_date'):
+    #         params[f'selected_{param}'] = request.GET.get(param, "No")
+    #     else:
+    #         params[param] = request.GET.get(param, None)
+
+    # # Получаем параметры с преобразованием в int и значением по умолчанию 1
+    # for param in params_with_int_default_1:
+    #     try:
+    #         params[param] = int(request.GET.get(param, 1))
+    #     except ValueError:
+    #         params[param] = 1  # На случай, если параметр не преобразуется в int
+
+    # # Подготовка контекста для шаблона
+    # context = {
+    #     'user': user,
+    #     'connection_websocket': settings.DATABASES['default']['HOST'],
+    #     'statuses': json.dumps(json_object['statuses'])
+    # }
+
+    # for key in params:
+    #     context[key] = params[key]
 
     return await sync_to_async(render)(request, 'add_two.html', context)
     # return render(request, 'add_two.html', context)
@@ -810,44 +1007,89 @@ async def add_two(request):
 async def edit(request, row_id):
     await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "Закупки" с ID {row_id}')
 
-    page = int(request.GET.get('page', 1))
-    keyword_one = request.GET.get('keyword_one', None)
-    keyword_two = request.GET.get('keyword_two', None)
-    keyword_three = request.GET.get('keyword_three', None)
-    keyword_four = request.GET.get('keyword_four', None)
-    selected_column_one = request.GET.get('selected_column_one', None)
-    selected_column_two = request.GET.get('selected_column_two', None)
-    selected_column_three = request.GET.get('selected_column_three', None)
-    selected_column_four = request.GET.get('selected_column_four', None)
-    selected_contract_date = request.GET.get('contract_date', "No")
-    selected_end_date = request.GET.get('end_date', "No")
+    # page = int(request.GET.get('page', 1))
+    # keyword_one = request.GET.get('keyword_one', None)
+    # keyword_two = request.GET.get('keyword_two', None)
+    # keyword_three = request.GET.get('keyword_three', None)
+    # keyword_four = request.GET.get('keyword_four', None)
+    # selected_column_one = request.GET.get('selected_column_one', None)
+    # selected_column_two = request.GET.get('selected_column_two', None)
+    # selected_column_three = request.GET.get('selected_column_three', None)
+    # selected_column_four = request.GET.get('selected_column_four', None)
+    # selected_contract_date = request.GET.get('contract_date', "No")
+    # selected_end_date = request.GET.get('end_date', "No")
 
     # Получаем объект service по id
     service = await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id)
 
-    # Подготовка контекста для шаблона
-    context = {
-        'service': service,
-        'status': '',
-        'way': '',
-        'KTSSR': '',
-        'KOSGU': '',
-        'DopFC': '',
-        'row_id': row_id,
-        'page': page,
-        'keyword_one': keyword_one,
-        'keyword_two': keyword_two,
-        'keyword_three': keyword_three,
-        'keyword_four': keyword_four,
-        'selected_column_one': selected_column_one,
-        'selected_column_two': selected_column_two,
-        'selected_column_three': selected_column_three,
-        'selected_column_four': selected_column_four,
-        'selected_contract_date': selected_contract_date,
-        'selected_end_date': selected_end_date,
-        'connection_websocket': settings.DATABASES['default']['HOST'],
-        'statuses': json.dumps(json_object['statuses'])
-    }
+    context = link_generation(request, False, 'page', service, row_id)
+
+    # # Списки имён параметров для получения из GET-запроса
+    # params_with_int_default_1 = ['page']
+    # params_optional = [
+    #     'keyword_one',
+    #     'keyword_two',
+    #     'keyword_three',
+    #     'keyword_four',
+    #     'selected_column_one',
+    #     'selected_column_two',
+    #     'selected_column_three',
+    #     'selected_column_four',
+    #     'contract_date',
+    #     'end_date'
+    # ]
+
+    # # Создаем словарь для хранения результатов
+    # params = {}
+
+    # # Получаем остальные параметры без преобразования
+    # for param in params_optional:
+    #     if param in ('contract_date', 'end_date'):
+    #         params[f'selected_{param}'] = request.GET.get(param, "No")
+    #     else:
+    #         params[param] = request.GET.get(param, None)
+
+    # # Получаем параметры с преобразованием в int и значением по умолчанию 1
+    # for param in params_with_int_default_1:
+    #     try:
+    #         params[param] = int(request.GET.get(param, 1))
+    #     except ValueError:
+    #         params[param] = 1  # На случай, если параметр не преобразуется в int
+
+    # # Подготовка контекста для шаблона
+    # context = {
+    #     'service': service,
+    #     'row_id': row_id,
+    #     'connection_websocket': settings.DATABASES['default']['HOST'],
+    #     'statuses': json.dumps(json_object['statuses'])
+    # }
+
+    # for key in params:
+    #     context[key] = params[key]
+
+    # # Подготовка контекста для шаблона
+    # context = {
+    #     'service': service,
+    #     'status': '',
+    #     'way': '',
+    #     'KTSSR': '',
+    #     'KOSGU': '',
+    #     'DopFC': '',
+    #     'row_id': row_id,
+    #     'page': page,
+    #     'keyword_one': keyword_one,
+    #     'keyword_two': keyword_two,
+    #     'keyword_three': keyword_three,
+    #     'keyword_four': keyword_four,
+    #     'selected_column_one': selected_column_one,
+    #     'selected_column_two': selected_column_two,
+    #     'selected_column_three': selected_column_three,
+    #     'selected_column_four': selected_column_four,
+    #     'selected_contract_date': selected_contract_date,
+    #     'selected_end_date': selected_end_date,
+    #     'connection_websocket': settings.DATABASES['default']['HOST'],
+    #     'statuses': json.dumps(json_object['statuses'])
+    # }
 
     return await sync_to_async(render)(request, 'edit.html', context)
     # return render(request, 'edit.html', context)
@@ -857,27 +1099,72 @@ async def edit(request, row_id):
 async def edit_user(request, row_id):
     await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "Свод" с ID {row_id}')
 
-    page_user = int(request.GET.get('page_user', 1))
-    # keyword_one_user = request.GET.get('keyword_one_user', None)
-    # keyword_two_user = request.GET.get('keyword_two_user', None)
-    # selected_column_one_user = request.GET.get('selected_column_one_user', None)
-    # selected_column_two_user = request.GET.get('selected_column_two_user', None)
+    # page_user = int(request.GET.get('page_user', 1))
+    # # keyword_one_user = request.GET.get('keyword_one_user', None)
+    # # keyword_two_user = request.GET.get('keyword_two_user', None)
+    # # selected_column_one_user = request.GET.get('selected_column_one_user', None)
+    # # selected_column_two_user = request.GET.get('selected_column_two_user', None)
 
     # Получаем объект service_user по id
     service_user = await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id)
 
-    # Подготовка контекста для шаблона
-    context = {
-        'service_user': service_user,
-        'row_id_user': row_id,
-        'page_user': page_user,
-        # 'keyword_one_user': keyword_one_user,
-        # 'keyword_two_user': keyword_two_user,
-        # 'selected_column_one_user': selected_column_one_user,
-        # 'selected_column_two_user': selected_column_two_user,
-        'connection_websocket': settings.DATABASES['default']['HOST'],
-        'statuses': json.dumps(json_object['statuses'])
-    }
+    context = link_generation(request, False, 'page_user', service_user, row_id)
+
+    # # Списки имён параметров для получения из GET-запроса
+    # params_with_int_default_1 = ['page_user']
+    # params_optional = [
+    #     'keyword_one',
+    #     'keyword_two',
+    #     'keyword_three',
+    #     'keyword_four',
+    #     'selected_column_one',
+    #     'selected_column_two',
+    #     'selected_column_three',
+    #     'selected_column_four',
+    #     'contract_date',
+    #     'end_date'
+    # ]
+
+    # # Создаем словарь для хранения результатов
+    # params = {}
+
+    # # Получаем остальные параметры без преобразования
+    # for param in params_optional:
+    #     if param in ('contract_date', 'end_date'):
+    #         params[f'selected_{param}'] = request.GET.get(param, "No")
+    #     else:
+    #         params[param] = request.GET.get(param, None)
+
+    # # Получаем параметры с преобразованием в int и значением по умолчанию 1
+    # for param in params_with_int_default_1:
+    #     try:
+    #         params[param] = int(request.GET.get(param, 1))
+    #     except ValueError:
+    #         params[param] = 1  # На случай, если параметр не преобразуется в int
+
+    # # Подготовка контекста для шаблона
+    # context = {
+    #     'service': service_user,
+    #     'row_id': row_id,
+    #     'connection_websocket': settings.DATABASES['default']['HOST'],
+    #     'statuses': json.dumps(json_object['statuses'])
+    # }
+
+    # for key in params:
+    #     context[key] = params[key]
+
+    # # Подготовка контекста для шаблона
+    # context = {
+    #     'service_user': service_user,
+    #     'row_id_user': row_id,
+    #     'page_user': page_user,
+    #     # 'keyword_one_user': keyword_one_user,
+    #     # 'keyword_two_user': keyword_two_user,
+    #     # 'selected_column_one_user': selected_column_one_user,
+    #     # 'selected_column_two_user': selected_column_two_user,
+    #     'connection_websocket': settings.DATABASES['default']['HOST'],
+    #     'statuses': json.dumps(json_object['statuses'])
+    # }
 
     return await sync_to_async(render)(request, 'edit_user.html', context)
     # return render(request, 'edit_user.html', context)
@@ -887,27 +1174,72 @@ async def edit_user(request, row_id):
 async def edit_user_two(request, row_id):
     await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "План-график" с ID {row_id}')
 
-    page_user = int(request.GET.get('page_user', 1))
-    # keyword_one_user = request.GET.get('keyword_one_user', None)
-    # keyword_two_user = request.GET.get('keyword_two_user', None)
-    # selected_column_one_user = request.GET.get('selected_column_one_user', None)
-    # selected_column_two_user = request.GET.get('selected_column_two_user', None)
+    # page_user = int(request.GET.get('page_user', 1))
+    # # keyword_one_user = request.GET.get('keyword_one_user', None)
+    # # keyword_two_user = request.GET.get('keyword_two_user', None)
+    # # selected_column_one_user = request.GET.get('selected_column_one_user', None)
+    # # selected_column_two_user = request.GET.get('selected_column_two_user', None)
 
     # Получаем объект service_user_two по id
     service_user_two = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(id=row_id)
 
-    # Подготовка контекста для шаблона
-    context = {
-        'service_user_two': service_user_two,
-        'row_id_user_two': row_id,
-        'page_user': page_user,
-        # 'keyword_one_user': keyword_one_user,
-        # 'keyword_two_user': keyword_two_user,
-        # 'selected_column_one_user': selected_column_one_user,
-        # 'selected_column_two_user': selected_column_two_user,
-        'connection_websocket': settings.DATABASES['default']['HOST'],
-        'statuses': json.dumps(json_object['statuses'])
-    }
+    context = link_generation(request, False, 'page_user_two', service_user_two, row_id)
+
+    # # Списки имён параметров для получения из GET-запроса
+    # params_with_int_default_1 = ['page_user_two']
+    # params_optional = [
+    #     'keyword_one',
+    #     'keyword_two',
+    #     'keyword_three',
+    #     'keyword_four',
+    #     'selected_column_one',
+    #     'selected_column_two',
+    #     'selected_column_three',
+    #     'selected_column_four',
+    #     'contract_date',
+    #     'end_date'
+    # ]
+
+    # # Создаем словарь для хранения результатов
+    # params = {}
+
+    # # Получаем остальные параметры без преобразования
+    # for param in params_optional:
+    #     if param in ('contract_date', 'end_date'):
+    #         params[f'selected_{param}'] = request.GET.get(param, "No")
+    #     else:
+    #         params[param] = request.GET.get(param, None)
+
+    # # Получаем параметры с преобразованием в int и значением по умолчанию 1
+    # for param in params_with_int_default_1:
+    #     try:
+    #         params[param] = int(request.GET.get(param, 1))
+    #     except ValueError:
+    #         params[param] = 1  # На случай, если параметр не преобразуется в int
+
+    # # Подготовка контекста для шаблона
+    # context = {
+    #     'service': service_user_two,
+    #     'row_id': row_id,
+    #     'connection_websocket': settings.DATABASES['default']['HOST'],
+    #     'statuses': json.dumps(json_object['statuses'])
+    # }
+
+    # for key in params:
+    #     context[key] = params[key]
+
+    # # Подготовка контекста для шаблона
+    # context = {
+    #     'service_user_two': service_user_two,
+    #     'row_id_user_two': row_id,
+    #     'page_user': page_user,
+    #     # 'keyword_one_user': keyword_one_user,
+    #     # 'keyword_two_user': keyword_two_user,
+    #     # 'selected_column_one_user': selected_column_one_user,
+    #     # 'selected_column_two_user': selected_column_two_user,
+    #     'connection_websocket': settings.DATABASES['default']['HOST'],
+    #     'statuses': json.dumps(json_object['statuses'])
+    # }
 
     return await sync_to_async(render)(request, 'edit_user_two.html', context)
     # return render(request, 'edit_user_two.html', context)

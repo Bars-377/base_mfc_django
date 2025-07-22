@@ -989,7 +989,22 @@ class ContractProcessor:
 
         await self.message_service_add()
 
-        # print(self.context_data)
+        key_deleting = [
+            'keyword_one',
+            'keyword_two',
+            'keyword_three',
+            'keyword_four',
+            'selected_column_one',
+            'selected_column_two',
+            'selected_column_three',
+            'selected_column_four',
+            'contract_date',
+            'end_date'
+        ]
+
+        self.context_data = {
+            k: v for k, v in self.context_data.items() if k in key_deleting
+        }
 
         # Кодируем query-параметры
         query_string = urlencode(self.context_data)
@@ -1009,6 +1024,23 @@ class ContractProcessor:
         await self.count_dates(False)
 
         await self.message_service_add()
+
+        key_deleting = [
+            'keyword_one',
+            'keyword_two',
+            'keyword_three',
+            'keyword_four',
+            'selected_column_one',
+            'selected_column_two',
+            'selected_column_three',
+            'selected_column_four',
+            'contract_date',
+            'end_date'
+        ]
+
+        self.context_data = {
+            k: v for k, v in self.context_data.items() if k in key_deleting
+        }
 
         # Кодируем query-параметры
         query_string = urlencode(self.context_data)
