@@ -9,6 +9,25 @@ from .common import format_number, log_user_action, errors
 from django.shortcuts import render
 from django.db.models import Sum
 
+def key_deleting(context_data):
+    key_deleting = [
+        'keyword_one',
+        'keyword_two',
+        'keyword_three',
+        'keyword_four',
+        'selected_column_one',
+        'selected_column_two',
+        'selected_column_three',
+        'selected_column_four',
+        'contract_date',
+        'end_date'
+    ]
+
+    context_data = {
+        k: v for k, v in context_data.items() if k in key_deleting
+    }
+    return context_data
+
 class ContractProcessor:
     def __init__(self, context_data=None, request=None):
         self.context_data = context_data
@@ -670,6 +689,25 @@ class ContractProcessor:
 
         await self.message_service_update()
 
+        # key_deleting = [
+        #     'keyword_one',
+        #     'keyword_two',
+        #     'keyword_three',
+        #     'keyword_four',
+        #     'selected_column_one',
+        #     'selected_column_two',
+        #     'selected_column_three',
+        #     'selected_column_four',
+        #     'contract_date',
+        #     'end_date'
+        # ]
+
+        # self.context_data = {
+        #     k: v for k, v in self.context_data.items() if k in key_deleting
+        # }
+
+        self.context_data = key_deleting(self.context_data)
+
         # Кодируем query-параметры
         query_string = urlencode(self.context_data)
 
@@ -688,6 +726,25 @@ class ContractProcessor:
         await self.process_budget_services_three(False)
 
         await self.message_service_update()
+
+        # key_deleting = [
+        #     'keyword_one',
+        #     'keyword_two',
+        #     'keyword_three',
+        #     'keyword_four',
+        #     'selected_column_one',
+        #     'selected_column_two',
+        #     'selected_column_three',
+        #     'selected_column_four',
+        #     'contract_date',
+        #     'end_date'
+        # ]
+
+        # self.context_data = {
+        #     k: v for k, v in self.context_data.items() if k in key_deleting
+        # }
+
+        self.context_data = key_deleting(self.context_data)
 
         # Кодируем query-параметры
         query_string = urlencode(self.context_data)
@@ -887,47 +944,67 @@ class ContractProcessor:
 
         await self.message_service_update()
 
-        context_data_copy = self.context_data.copy()  # Создаем копию, чтобы не изменять оригинал
+        # key_deleting = [
+        #     'keyword_one',
+        #     'keyword_two',
+        #     'keyword_three',
+        #     'keyword_four',
+        #     'selected_column_one',
+        #     'selected_column_two',
+        #     'selected_column_three',
+        #     'selected_column_four',
+        #     'contract_date',
+        #     'end_date'
+        # ]
 
-        # Список ключей, которые нужно удалить
-        keys_to_remove = ['service', 'id_id',
-                            'name', 'status',
-                            'way', 'initiator',
-                            'KTSSR', 'KOSGU',
-                            'DopFC', 'NMCC',
-                            'counterparty', 'registration_number',
-                            'contract_number', 'contract_date',
-                            'end_date', 'contract_price',
-                            'january_one', 'february',
-                            'march', 'april',
-                            'may', 'june',
-                            'july', 'august',
-                            'september', 'october',
-                            'november', 'december',
-                            'january_two', 'date_january_one',
-                            'sum_january_one', 'date_february',
-                            'sum_february', 'date_march',
-                            'sum_march', 'date_april',
-                            'sum_april', 'date_may',
-                            'sum_may', 'date_june',
-                            'sum_june', 'date_july',
-                            'sum_july', 'date_august',
-                            'sum_august', 'date_september',
-                            'sum_september', 'date_october',
-                            'sum_october', 'date_november',
-                            'sum_november', 'date_december',
-                            'sum_december', 'date_january_two',
-                            'sum_january_two', 'execution',
-                            'contract_balance', 'execution_contract_fact',
-                            'execution_contract_plan', 'saving',
-                            'color']
+        # self.context_data = {
+        #     k: v for k, v in self.context_data.items() if k in key_deleting
+        # }
 
-        # Удаляем ключи из словаря
-        for key in keys_to_remove:
-            context_data_copy.pop(key, None)  # Удаляем ключ, если он существует
+        self.context_data = key_deleting(self.context_data)
+
+        # context_data_copy = self.context_data.copy()  # Создаем копию, чтобы не изменять оригинал
+
+        # # Список ключей, которые нужно удалить
+        # keys_to_remove = ['service', 'id_id',
+        #                     'name', 'status',
+        #                     'way', 'initiator',
+        #                     'KTSSR', 'KOSGU',
+        #                     'DopFC', 'NMCC',
+        #                     'counterparty', 'registration_number',
+        #                     'contract_number', 'contract_date',
+        #                     'end_date', 'contract_price',
+        #                     'january_one', 'february',
+        #                     'march', 'april',
+        #                     'may', 'june',
+        #                     'july', 'august',
+        #                     'september', 'october',
+        #                     'november', 'december',
+        #                     'january_two', 'date_january_one',
+        #                     'sum_january_one', 'date_february',
+        #                     'sum_february', 'date_march',
+        #                     'sum_march', 'date_april',
+        #                     'sum_april', 'date_may',
+        #                     'sum_may', 'date_june',
+        #                     'sum_june', 'date_july',
+        #                     'sum_july', 'date_august',
+        #                     'sum_august', 'date_september',
+        #                     'sum_september', 'date_october',
+        #                     'sum_october', 'date_november',
+        #                     'sum_november', 'date_december',
+        #                     'sum_december', 'date_january_two',
+        #                     'sum_january_two', 'execution',
+        #                     'contract_balance', 'execution_contract_fact',
+        #                     'execution_contract_plan', 'saving',
+        #                     'color']
+
+        # # Удаляем ключи из словаря
+        # for key in keys_to_remove:
+        #     context_data_copy.pop(key, None)  # Удаляем ключ, если он существует
 
         # Кодируем query-параметры
-        query_string = urlencode(context_data_copy)
+        query_string = urlencode(self.context_data)
+        # query_string = urlencode(context_data_copy)
 
         # Формируем URL с query-параметрами
         redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
@@ -989,22 +1066,24 @@ class ContractProcessor:
 
         await self.message_service_add()
 
-        key_deleting = [
-            'keyword_one',
-            'keyword_two',
-            'keyword_three',
-            'keyword_four',
-            'selected_column_one',
-            'selected_column_two',
-            'selected_column_three',
-            'selected_column_four',
-            'contract_date',
-            'end_date'
-        ]
+        # key_deleting = [
+        #     'keyword_one',
+        #     'keyword_two',
+        #     'keyword_three',
+        #     'keyword_four',
+        #     'selected_column_one',
+        #     'selected_column_two',
+        #     'selected_column_three',
+        #     'selected_column_four',
+        #     'contract_date',
+        #     'end_date'
+        # ]
 
-        self.context_data = {
-            k: v for k, v in self.context_data.items() if k in key_deleting
-        }
+        # self.context_data = {
+        #     k: v for k, v in self.context_data.items() if k in key_deleting
+        # }
+
+        self.context_data = key_deleting(self.context_data)
 
         # Кодируем query-параметры
         query_string = urlencode(self.context_data)
@@ -1025,22 +1104,24 @@ class ContractProcessor:
 
         await self.message_service_add()
 
-        key_deleting = [
-            'keyword_one',
-            'keyword_two',
-            'keyword_three',
-            'keyword_four',
-            'selected_column_one',
-            'selected_column_two',
-            'selected_column_three',
-            'selected_column_four',
-            'contract_date',
-            'end_date'
-        ]
+        # key_deleting = [
+        #     'keyword_one',
+        #     'keyword_two',
+        #     'keyword_three',
+        #     'keyword_four',
+        #     'selected_column_one',
+        #     'selected_column_two',
+        #     'selected_column_three',
+        #     'selected_column_four',
+        #     'contract_date',
+        #     'end_date'
+        # ]
 
-        self.context_data = {
-            k: v for k, v in self.context_data.items() if k in key_deleting
-        }
+        # self.context_data = {
+        #     k: v for k, v in self.context_data.items() if k in key_deleting
+        # }
+
+        self.context_data = key_deleting(self.context_data)
 
         # Кодируем query-параметры
         query_string = urlencode(self.context_data)

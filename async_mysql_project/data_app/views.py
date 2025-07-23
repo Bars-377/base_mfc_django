@@ -88,6 +88,16 @@ with open(f'{folder_path}//general_settings.json', 'r', encoding='utf-8-sig') as
     json_object = json.load(file)
 
 def link_generation(request, mode, page, page_user='', page_user_two='', service=None, row_id=None):
+    # print('---------------------')
+    # print('request', request)
+    # print('mode', mode)
+    # print('page', page)
+    # print('page_user', page_user)
+    # print('page_user_two', page_user_two)
+    # print('service', service)
+    # print('row_id', row_id)
+    # print('---------------------')
+    # exit()
     # Списки имён параметров для получения из GET-запроса
     params_with_int_default_1 = [page, page_user, page_user_two]
     params_with_int_default_1 = [p for p in params_with_int_default_1 if p != '']
@@ -1022,7 +1032,7 @@ async def edit(request, row_id):
     # Получаем объект service по id
     service = await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id)
 
-    context = link_generation(request, False, 'page', service, row_id)
+    context = link_generation(request, False, 'page', service=service, row_id=row_id)
 
     # # Списки имён параметров для получения из GET-запроса
     # params_with_int_default_1 = ['page']
@@ -1098,7 +1108,6 @@ async def edit(request, row_id):
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit_user(request, row_id):
     await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "Свод" с ID {row_id}')
-
     # page_user = int(request.GET.get('page_user', 1))
     # # keyword_one_user = request.GET.get('keyword_one_user', None)
     # # keyword_two_user = request.GET.get('keyword_two_user', None)
@@ -1108,7 +1117,7 @@ async def edit_user(request, row_id):
     # Получаем объект service_user по id
     service_user = await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id)
 
-    context = link_generation(request, False, 'page_user', service_user, row_id)
+    context = link_generation(request, False, 'page_user', service=service_user, row_id=row_id)
 
     # # Списки имён параметров для получения из GET-запроса
     # params_with_int_default_1 = ['page_user']
@@ -1183,7 +1192,7 @@ async def edit_user_two(request, row_id):
     # Получаем объект service_user_two по id
     service_user_two = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(id=row_id)
 
-    context = link_generation(request, False, 'page_user_two', service_user_two, row_id)
+    context = link_generation(request, False, 'page_user_two', service=service_user_two, row_id=row_id)
 
     # # Списки имён параметров для получения из GET-запроса
     # params_with_int_default_1 = ['page_user_two']
@@ -1410,7 +1419,7 @@ async def update_record_user(request, row_id):
                 # 'color': request.POST['color'],
 
                 'service_user': await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id),
-                'row_id_user': row_id,
+                'row_id': row_id,
                 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
                 'connection_websocket': settings.DATABASES['default']['HOST'],
                 'statuses': json.dumps(json_object['statuses']),
@@ -1530,7 +1539,7 @@ async def update_record_user_two(request, row_id):
                 # 'color': request.POST['color'],
 
                 'service_user_two': await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(id=row_id),
-                'row_id_user_two': row_id,
+                'row_id': row_id,
                 'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
                 'connection_websocket': settings.DATABASES['default']['HOST'],
                 'statuses': json.dumps(json_object['statuses']),
