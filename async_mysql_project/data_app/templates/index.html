@@ -10,38 +10,85 @@
     <link rel="stylesheet" href="{% bust_static 'style.css' %}">
     <link rel="icon" href="{% bust_static 'favicon.ico' %}" type="image/x-icon">
 </head>
+
+<style>
+    .header-flex {
+        display: flex;
+        align-items: stretch; /* чтобы выровнять по вертикали */
+        flex-wrap: wrap;
+        width: 100%;
+      }
+      
+      /* Левый блок — только размер картинки */
+      .header-flex > .container-fluid-neverov:first-child {
+        flex: 0 0 auto; /* как у вас */
+        margin-right: 20px;
+        display: flex;             /* превращаем в flex */
+        justify-content: center;   /* центрируем по горизонтали */
+        align-items: center;       /* центрируем по вертикали */
+      }
+      
+      /* Правый блок — остальное пространство */
+      .header-flex > .container-fluid-neverov:last-child {
+        flex: 1 1 0;
+        min-width: 0; /* чтобы текст не выталкивал */
+      }
+      
+      @media (max-width: 768px) {
+        .header-flex {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .header-flex > .container-fluid-neverov:first-child {
+          margin-right: 0;
+          margin-bottom: 10px;
+        }
+        .header-flex > .container-fluid-neverov:last-child {
+          flex: 1 1 100%;
+        }
+      }      
+</style>
+
 <body>
 
     <div class="center-content">
-        <div class="container-fluid-neverov">
+        <!-- ОБЁРТКА ТОЛЬКО ДЛЯ ПЕРВЫХ ДВУХ БЛОКОВ -->
+        <div class="header-flex">
+        
+            <div class="container-fluid-neverov">
+                <img src="{% bust_static 'logo.svg' %}" alt="Логотип" style="height: 150px;">
+            </div>
 
-            <h1>Государственные закупки</h1>
+            <div class="container-fluid-neverov">
+                <h1>Государственные закупки</h1>
 
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} mt-3">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} mt-3">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
 
-            <div class="center-content">
-                <ul class="navbar-nav ml-auto">
-                    {% if user.is_authenticated %}
-                        <h4 data-type="no_format" style="color: #007bff;">Пользователь: {{ user.username }}</h4>
-                        <a class="btn btn-sm btn-danger delete-button d-button" href="{% url 'admin:index' %}">Админ панель</a>
-                        <!-- Замена ссылки на выход на форму -->
-                        <form method="POST" action="{% url 'logout' %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-success">Выход</button>
-                        </form>
-                    {% else %}
-                        <a class="nav-link" href="{% url 'account_login' %}">Login</a>
-                        <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
-                    {% endif %}
-                </ul>
+                <div class="center-content">
+                    <ul class="navbar-nav ml-auto">
+                        {% if user.is_authenticated %}
+                            <h4 data-type="no_format" style="color: #007bff;">Пользователь: {{ user.username }}</h4>
+                            <a class="btn btn-sm btn-danger delete-button d-button" href="{% url 'admin:index' %}">Админ панель</a>
+                            <!-- Замена ссылки на выход на форму -->
+                            <form method="POST" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success">Выход</button>
+                            </form>
+                        {% else %}
+                            <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+                            <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
+                        {% endif %}
+                    </ul>
+                </div>
             </div>
         </div>
+        <!-- ВСЁ, ЧТО ИДЁТ НИЖЕ, БУДЕТ УЖЕ ПОД ЭТИМ ФЛЕКС-КОНТЕЙНЕРОМ -->
             {% block content %}{% endblock %}
             {% block content_user %}{% endblock %}
             {% block content_user_two %}{% endblock %}
