@@ -24,6 +24,22 @@ async def upload_file_(request):
             try:
                 df = pd.read_excel(uploaded_file, header=None, dtype=str)
 
+                nan_mask = df.iloc[1].isna()
+                mask_values = nan_mask.tolist()  # превращаем в обычный список True/False
+
+                # проверка:
+                condition = (
+                    all(mask_values[i] is True  for i in range(0, 33)) and
+                    all(mask_values[i] is False for i in range(33, 59)) and
+                    all(mask_values[i] is True  for i in range(59, 61))
+                )
+
+                if not condition:
+                    return JsonResponse({"message": "Структура заголовков неправильная", "status": "error", 'success': True}, status=400)
+
+                # if not nan_mask.all():
+                #     return JsonResponse({"message": "Структура заголовков неправильная", "status": "error", 'success': True}, status=400)
+
                 # Получаем количество столбцов
                 num_columns = df.shape[1]
                 if num_columns == 61:
