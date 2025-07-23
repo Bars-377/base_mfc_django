@@ -1034,6 +1034,12 @@ async def edit(request, row_id):
 
     context = link_generation(request, False, 'page', service=service, row_id=row_id)
 
+    context['status'] = ''
+    context['way'] = ''
+    context['KTSSR'] = ''
+    context['KOSGU'] = ''
+    context['DopFC'] = ''
+
     # # Списки имён параметров для получения из GET-запроса
     # params_with_int_default_1 = ['page']
     # params_optional = [
