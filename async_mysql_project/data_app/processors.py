@@ -456,8 +456,10 @@ class ContractProcessor:
                 contract_price_sum_way = await self.Services_way()
 
                 if self.context_data['KTSSR'] == '2046100092':
+                    Services_Three_.budget_concluded = '0.00'
                     Services_Three_.off_budget_concluded = contract_price_sum_way
                 elif self.context_data['KTSSR'] == '2046102280':
+                    Services_Three_.off_budget_concluded = '0.00'
                     Services_Three_.budget_concluded = contract_price_sum_way
 
             Services_Three_.budget_remainder = round(await format_number(await format_number(Services_Three_.budget_planned) + await format_number(Services_Three_.budget_planned_old) - await format_number(Services_Three_.budget_concluded)), 2)
