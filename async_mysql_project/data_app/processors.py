@@ -456,10 +456,8 @@ class ContractProcessor:
                 contract_price_sum_way = await self.Services_way()
 
                 if self.context_data['KTSSR'] == '2046100092':
-                    Services_Three_.budget_concluded = '0.00'
                     Services_Three_.off_budget_concluded = contract_price_sum_way
                 elif self.context_data['KTSSR'] == '2046102280':
-                    Services_Three_.off_budget_concluded = '0.00'
                     Services_Three_.budget_concluded = contract_price_sum_way
 
             Services_Three_.budget_remainder = round(await format_number(await format_number(Services_Three_.budget_planned) + await format_number(Services_Three_.budget_planned_old) - await format_number(Services_Three_.budget_concluded)), 2)
@@ -808,25 +806,29 @@ class ContractProcessor:
 
             return KOSGU_and_DopFC  # Список с повторяющимися ключами
 
-        async def process_context(KTSSR, status, context_data, request):
+        async def process_context(KTSSR, status, context_data, request, mode):
             # Обновляем context_data
             context_data.update({'KTSSR': KTSSR, 'status': status})
 
-            # Инициализация и обработка контекста
-            processor = ContractProcessor(context_data, request)
-            await processor.process_count_dates()
+            if not mode:
+                # Инициализация и обработка контекста
+                processor = ContractProcessor(context_data, request)
+                await processor.process_count_dates()
+                await self.process_count_dates_services_three()
+            else:
+                await self.process_count_dates_services_three()
 
-        async def handle_multiple_statuses(context_data, request):
+        async def handle_multiple_statuses(context_data, request, mode):
             # Список статусов для обработки
             statuses = ['Запланировано', 'В торгах', 'Заключено', 'Исполнено']
 
             # Обработка для KTSSR 2046102280
             for status in statuses:
-                await process_context('2046102280', status, context_data, request)
+                await process_context('2046102280', status, context_data, request, mode)
 
             # Обработка для KTSSR 2046100092
             for status in statuses:
-                await process_context('2046100092', status, context_data, request)
+                await process_context('2046100092', status, context_data, request, mode)
 
         if not mode:
 
@@ -844,7 +846,7 @@ class ContractProcessor:
                 context_data.update({'KOSGU': key})
                 context_data.update({'DopFC': value})
 
-                await handle_multiple_statuses(context_data, self.request)
+                await handle_multiple_statuses(context_data, self.request, mode)
 
         elif mode:
 
@@ -856,13 +858,17 @@ class ContractProcessor:
             # context_data.update({'KTSSR': self.context_data['KTSSR']})
             # context_data.update({'status': self.context_data['status']})
 
-            # Инициализация и обработка контекста
-            # processor = ContractProcessor(self.context_data, self.request)
-            if not (self.context_data.get('KTSSR') and self.context_data.get('status')):
-                # print('POPALO SUDA')
-                await handle_multiple_statuses(self.context_data, self.request)
-            else:
-                await self.process_count_dates()
+            # # Инициализация и обработка контекста
+            # # processor = ContractProcessor(self.context_data, self.request)
+            # if not (self.context_data.get('KTSSR') and self.context_data.get('status')):
+            #     # print('POPALO SUDA')
+            #     await handle_multiple_statuses(self.context_data, self.request, mode)
+            # else:
+            #     await self.process_count_dates()
+            #     await self.process_count_dates_services_three()
+
+            await self.process_count_dates()
+            await handle_multiple_statuses(self.context_data, self.request, mode)
 
     async def process_count_dates(self):
         """Продолжение предварительных вычислительних операций после обновления или добавления записей"""
@@ -876,6 +882,11 @@ class ContractProcessor:
         Services_Two_ = await self.Services_Two_save(Services_Two_)
 
         await self.process_budget_services_two(Services_Two_)
+
+        # await self.process_budget_services_three(True)
+
+    async def process_count_dates_services_three(self):
+        """Продолжение предварительных вычислительних операций после обновления или добавления записей"""
 
         await self.process_budget_services_three(True)
 
