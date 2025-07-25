@@ -154,6 +154,10 @@ class ContractProcessor:
         # await sync_to_async(messages.error)(self.request, 'Вы добавляете дубликат в Наименовании')
         messages.error(self.request, 'Вы добавляете дубликат Закупки')
 
+    async def KOSGU_DopFC_message(self):
+        # await sync_to_async(messages.error)(self.request, 'Вы добавляете дубликат в Наименовании')
+        messages.error(self.request, 'Запись с данным КОСГУ и ДопФК уже существует')
+
     async def calculate_execution_plan(self):
         """Суммирование исполнение контракта (план)"""
         months = [self.context_data[month] for month in [
@@ -311,6 +315,31 @@ class ContractProcessor:
             # В случае некорректного значения установить id_id на 1
             id_id_three = 1
 
+        # --- НОВОЕ: проверяем, есть ли уже такая запись ---
+        kosgu_value = self.context_data.get('KOSGU')
+        dopfc_value = self.context_data.get('DopFC')
+
+        # Если оба значения есть, проверяем в БД
+        if kosgu_value is not None and dopfc_value is not None:
+
+            exists_two = await sync_to_async(
+                lambda: Services_Two.objects.filter(KOSGU=kosgu_value, DopFC=dopfc_value).exists()
+            )()
+            exists_three = await sync_to_async(
+                lambda: Services_Three.objects.filter(KOSGU=kosgu_value, DopFC=dopfc_value).exists()
+            )()
+
+            if exists_two or exists_three:
+                # Можно залогировать или выбросить исключение
+
+                await log_user_action(
+                    self.request.user,
+                    f'Попытка добавить дубликат записи с KOSGU={kosgu_value} и DopFC={dopfc_value}'
+                )
+                # Прерываем выполнение:
+
+                return False
+
         await log_user_action(self.request.user, f'Добавил запись в "Свод" с ID {id_id_two}')
 
         # Добавляем id_id в объект new_service
@@ -327,7 +356,7 @@ class ContractProcessor:
         await sync_to_async(new_service_Two.save)()
         await sync_to_async(new_service_Three.save)()
 
-        return
+        return True
 
     async def calculate_contract_sums(self, KTSSR, status):
         """Получаем сумму всех contract_price либо execution_contract_fact"""
@@ -448,9 +477,17 @@ class ContractProcessor:
 
             from django.db.models import Q
 
-            Services_Three_ = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(
-                Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
-            )
+            # print('---------------------------')
+            # print(self.context_data['KOSGU'])
+            # print(self.context_data['DopFC'])
+            # print('---------------------------')
+
+            try:
+                Services_Three_ = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(
+                    Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
+                )
+            except Services_Three.DoesNotExist:
+                return
 
             if budget_concluded:
                 contract_price_sum_way = await self.Services_way()
@@ -813,10 +850,12 @@ class ContractProcessor:
             if not mode:
                 # Инициализация и обработка контекста
                 processor = ContractProcessor(context_data, request)
-                await processor.process_count_dates()
-                await self.process_count_dates_services_three()
+                await processor.process_count_dates_services_two()
+                await processor.process_count_dates_services_three()
+                # print('POPAL 1')
             else:
                 await self.process_count_dates_services_three()
+                # print('POPAL 2')
 
         async def handle_multiple_statuses(context_data, request, mode):
             # Список статусов для обработки
@@ -867,11 +906,15 @@ class ContractProcessor:
             #     await self.process_count_dates()
             #     await self.process_count_dates_services_three()
 
-            await self.process_count_dates()
+            await self.process_count_dates_services_two()
+            # print('----------------------------')
+            # print(self.context_data)
+            # print('----------------------------')
+            # exit()
             await handle_multiple_statuses(self.context_data, self.request, mode)
 
-    async def process_count_dates(self):
-        """Продолжение предварительных вычислительних операций после обновления или добавления записей"""
+    async def process_count_dates_services_two(self):
+        """Предварительные вычислительния операций во второй таблице после обновления или добавления записей"""
 
         Services_Two_ = await self.validate_Services_Two()
 
@@ -886,7 +929,7 @@ class ContractProcessor:
         # await self.process_budget_services_three(True)
 
     async def process_count_dates_services_three(self):
-        """Продолжение предварительных вычислительних операций после обновления или добавления записей"""
+        """Предварительные вычислительния операций в третьей таблице после обновления или добавления записей"""
 
         await self.process_budget_services_three(True)
 
@@ -937,14 +980,14 @@ class ContractProcessor:
 
             # self.context_data['contract_price'] = '0'
 
-            months_contract_price = (
-                            'january_one', 'february', 'march', 'april', 'may', 'june',
-                            'july', 'august', 'september', 'october', 'november', 'december',
-                            # 'january_two'
-                        )
+            # months_contract_price = (
+            #                 'january_one', 'february', 'march', 'april', 'may', 'june',
+            #                 'july', 'august', 'september', 'october', 'november', 'december',
+            #                 # 'january_two'
+            #             )
 
-            for contract_price in months_contract_price:
-                self.context_data[contract_price] = '0'
+            # for contract_price in months_contract_price:
+            #     self.context_data[contract_price] = '0'
 
             await self.update_service(saving, execution_contract_plan, execution_contract_fact)
 
@@ -1064,9 +1107,10 @@ class ContractProcessor:
 
         # Services_Two_ = await self.validate_Services_Two()
 
-        if not await self.validate_Services_Two():
-            await self.validate_Services_Two_message()
-            return render(self.request, 'data_table.html', self.context_data)
+        # НЕ ЗНАЮ РАСКОМЕНТИТЬ ИЛИ НЕТ
+        # if not await self.validate_Services_Two():
+        #     await self.validate_Services_Two_message()
+        #     return render(self.request, 'data_table.html', self.context_data)
 
         # await self.Services_Two_save(Services_Two_)
         await self.count_dates(True)
@@ -1110,8 +1154,9 @@ class ContractProcessor:
         # Другие операции, такие как сохранение сервиса и т.д.
 
     async def process_add_two(self):
-
-        await self.creation_new_service_two()
+        if not await self.creation_new_service_two():
+            await self.KOSGU_DopFC_message()
+            return render(self.request, 'add_two.html', self.context_data)
 
         await self.count_dates(False)
 
@@ -1166,7 +1211,7 @@ class ContractProcessor:
 
     async def process_delete_two(self):
 
-        await self.count_dates(True)
+        # await self.count_dates(True)
 
         await self.message_service_delete()
 

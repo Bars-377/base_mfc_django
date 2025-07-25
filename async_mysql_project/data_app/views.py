@@ -852,11 +852,7 @@ async def add(request):
     # page = int(request.GET.get('page', 1))
     # total_pages = int(request.GET.get('total_pages', 1))
 
-    print('--------------------------------')
-    print('selected_contract_date', request.GET.get('contract_date', "No"))
-    print('--------------------------------')
-
-    user = request.user
+    # user = request.user
 
     context = link_generation(request, False, 'page', 'total_pages')
 
