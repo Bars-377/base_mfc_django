@@ -1158,7 +1158,7 @@ class ContractProcessor:
             await self.KOSGU_DopFC_message()
             return render(self.request, 'add_two.html', self.context_data)
 
-        await self.count_dates(False)
+        await self.count_dates(True)
 
         await self.message_service_add()
 
