@@ -604,9 +604,13 @@
             <div class="alert" id="flash-message-export" style="display: none;"></div>
             <input type="file" id="file-input" accept=".xlsx" style="display: none;" onchange="updateFileName()">
             <button type="button" class="btn btn-info" onclick="document.getElementById('file-input').click();">Импорт Excel</button>
-            <span id="file-name"></span>
-            <div id="loading" style="display: none;">Загрузка...</div>
-            <button type="submit" class="btn btn-success" style="display: none;" id="submit-button">Отправить</button>
+            <div>
+                <span id="file-name"></span>
+            </div>
+            {% comment %} <div id="loading" style="display: none;">Загрузка...</div> {% endcomment %}
+            <div>
+                <button type="submit" class="btn btn-success" style="display: none;" id="submit-button">Отправить</button>
+            </div>
         </form>
 
         <form id="export-form">
