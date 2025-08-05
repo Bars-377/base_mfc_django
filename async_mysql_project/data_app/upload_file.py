@@ -265,79 +265,95 @@ async def upload_file_(request):
 
                     df.columns = df.iloc[0]  # Используем первую строку как заголовки столбцов
                     df = df.drop(index=[0, 1])  # Удаляем первые две строки
-                    # print(df.columns)
-                    # exit()
-                    # print(df.columns[df.columns.duplicated()])
-                    # exit()
-                    df[f'{list[0]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[0]}']])
-                    df[f'{list[1]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[1]}']])
-                    df[f'{list[2]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[2]}']])
-                    df[f'{list[3]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[3]}']])
-                    df[f'{list[4]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[4]}']])
-                    df[f'{list[5]}'] = await asyncio.gather(*[safe_int_conversion(val) for val in df[f'{list[5]}']])
-                    df[f'{list[6]}'] = await asyncio.gather(*[safe_int_conversion(val) for val in df[f'{list[6]}']])
-                    df[f'{list[7]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[7]}']])
-                    df[f'{list[8]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[8]}']])
-                    df[f'{list[9]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[9]}']])
-                    df[f'{list[10]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[10]}']])
-                    df[f'{list[11]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[11]}']])
-                    df[f'{list[12]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[12]}']])
-                    df[f'{list[13]}'] = df[f'{list[13]}'].apply(safe_date_conversion)
-                    df[f'{list[14]}'] = df[f'{list[14]}'].apply(safe_date_conversion)
-                    df[f'{list[15]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[15]}']])
-                    # df[f'{list[16]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[16]}']])
-                    df[f'{list[17]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[17]}']])
 
-                    df[f'{list[18]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[18]}']])
-                    df[f'{list[19]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[19]}']])
-                    df[f'{list[20]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[20]}']])
-                    df[f'{list[21]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[21]}']])
-                    df[f'{list[22]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[22]}']])
-                    df[f'{list[23]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[23]}']])
-                    df[f'{list[24]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[24]}']])
-                    df[f'{list[25]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[25]}']])
-                    df[f'{list[26]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[26]}']])
-                    df[f'{list[27]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[27]}']])
-                    df[f'{list[28]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[28]}']])
-                    df[f'{list[29]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[29]}']])
-                    df[f'{list[30]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[30]}']])
+                    # Колонки по типам конвертации
+                    to_safe_conversion = [0, 1, 2, 3, 4, 7, 10, 11, 12, 13, 14]
+                    to_safe_int_conversion = [5, 6]
+                    to_safe_float_conversion = [
+                        8, 9, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
+                        28, 29, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58
+                    ]
+                    to_safe_date_conversion = [33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57]
 
-                    df[f'{list[32]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[32]}']])
+                    # Обработка safe_conversion
+                    for idx in to_safe_conversion:
+                        df[f'{list[idx]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[idx]}']])
+
+                    # Обработка safe_int_conversion
+                    for idx in to_safe_int_conversion:
+                        df[f'{list[idx]}'] = await asyncio.gather(*[safe_int_conversion(val) for val in df[f'{list[idx]}']])
+
+                    # Обработка safe_float_conversion
+                    for idx in to_safe_float_conversion:
+                        df[f'{list[idx]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[idx]}']])
+
+                    # Обработка safe_date_conversion
+                    for idx in to_safe_date_conversion:
+                        df[f'{list[idx]}'] = df[f'{list[idx]}'].apply(safe_date_conversion)
+
+                    # df[f'{list[0]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[0]}']])
+                    # df[f'{list[1]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[1]}']])
+                    # df[f'{list[2]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[2]}']])
+                    # df[f'{list[3]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[3]}']])
+                    # df[f'{list[4]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[4]}']])
+                    # df[f'{list[5]}'] = await asyncio.gather(*[safe_int_conversion(val) for val in df[f'{list[5]}']])
+                    # df[f'{list[6]}'] = await asyncio.gather(*[safe_int_conversion(val) for val in df[f'{list[6]}']])
+                    # df[f'{list[7]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[7]}']])
+                    # df[f'{list[8]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[8]}']])
+                    # df[f'{list[9]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[9]}']])
+                    # df[f'{list[10]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[10]}']])
+                    # df[f'{list[11]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[11]}']])
+                    # df[f'{list[12]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[12]}']])
+                    # df[f'{list[13]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[13]}']])
+                    # df[f'{list[14]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[14]}']])
+                    # df[f'{list[15]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[15]}']])
+
+                    # df[f'{list[17]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[17]}']])
+                    # df[f'{list[18]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[18]}']])
+                    # df[f'{list[19]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[19]}']])
+                    # df[f'{list[20]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[20]}']])
+                    # df[f'{list[21]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[21]}']])
+                    # df[f'{list[22]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[22]}']])
+                    # df[f'{list[23]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[23]}']])
+                    # df[f'{list[24]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[24]}']])
+                    # df[f'{list[25]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[25]}']])
+                    # df[f'{list[26]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[26]}']])
+                    # df[f'{list[27]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[27]}']])
+                    # df[f'{list[28]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[28]}']])
+                    # df[f'{list[29]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[29]}']])
+                    # df[f'{list[30]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[30]}']])
+                    # df[f'{list[32]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[32]}']])
 
                     df[f'{list[16]}'] = df[f'{list[17]}'].astype(float) + df[f'{list[30]}'].astype(float) + df[f'{list[18]}'].astype(float) + df[f'{list[19]}'].astype(float) + df[f'{list[20]}'].astype(float) + df[f'{list[21]}'].astype(float) + df[f'{list[22]}'].astype(float) + df[f'{list[23]}'].astype(float) + df[f'{list[24]}'].astype(float) + df[f'{list[25]}'].astype(float) + df[f'{list[26]}'].astype(float) + df[f'{list[27]}'].astype(float) + df[f'{list[28]}'].astype(float) + df[f'{list[29]}'].astype(float)
-                    # df[f'{list[16]}'] = df[f'{list[17]}'].astype(float) - df[f'{list[30]}'].astype(float)
-                    # df[f'{list[30]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[30]}']])
 
-                    df[f'{list[33]}'] = df[f'{list[33]}'].apply(safe_date_conversion)
-                    df[f'{list[34]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[34]}']])
-                    df[f'{list[35]}'] = df[f'{list[35]}'].apply(safe_date_conversion)
-                    df[f'{list[36]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[36]}']])
-                    df[f'{list[37]}'] = df[f'{list[37]}'].apply(safe_date_conversion)
-                    df[f'{list[38]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[38]}']])
-                    df[f'{list[39]}'] = df[f'{list[39]}'].apply(safe_date_conversion)
-                    df[f'{list[40]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[40]}']])
-                    df[f'{list[41]}'] = df[f'{list[41]}'].apply(safe_date_conversion)
-                    df[f'{list[42]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[42]}']])
-                    df[f'{list[43]}'] = df[f'{list[43]}'].apply(safe_date_conversion)
-                    df[f'{list[44]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[44]}']])
-                    df[f'{list[45]}'] = df[f'{list[45]}'].apply(safe_date_conversion)
-                    df[f'{list[46]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[46]}']])
-                    df[f'{list[47]}'] = df[f'{list[47]}'].apply(safe_date_conversion)
-                    df[f'{list[48]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[48]}']])
-                    df[f'{list[49]}'] = df[f'{list[49]}'].apply(safe_date_conversion)
-                    df[f'{list[50]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[50]}']])
-                    df[f'{list[51]}'] = df[f'{list[51]}'].apply(safe_date_conversion)
-                    df[f'{list[52]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[52]}']])
-                    df[f'{list[53]}'] = df[f'{list[53]}'].apply(safe_date_conversion)
-                    df[f'{list[54]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[54]}']])
-                    df[f'{list[55]}'] = df[f'{list[55]}'].apply(safe_date_conversion)
-                    df[f'{list[56]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[56]}']])
-                    df[f'{list[57]}'] = df[f'{list[57]}'].apply(safe_date_conversion)
-                    df[f'{list[58]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[58]}']])
+                    # df[f'{list[33]}'] = df[f'{list[33]}'].apply(safe_date_conversion)
+                    # df[f'{list[34]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[34]}']])
+                    # df[f'{list[35]}'] = df[f'{list[35]}'].apply(safe_date_conversion)
+                    # df[f'{list[36]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[36]}']])
+                    # df[f'{list[37]}'] = df[f'{list[37]}'].apply(safe_date_conversion)
+                    # df[f'{list[38]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[38]}']])
+                    # df[f'{list[39]}'] = df[f'{list[39]}'].apply(safe_date_conversion)
+                    # df[f'{list[40]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[40]}']])
+                    # df[f'{list[41]}'] = df[f'{list[41]}'].apply(safe_date_conversion)
+                    # df[f'{list[42]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[42]}']])
+                    # df[f'{list[43]}'] = df[f'{list[43]}'].apply(safe_date_conversion)
+                    # df[f'{list[44]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[44]}']])
+                    # df[f'{list[45]}'] = df[f'{list[45]}'].apply(safe_date_conversion)
+                    # df[f'{list[46]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[46]}']])
+                    # df[f'{list[47]}'] = df[f'{list[47]}'].apply(safe_date_conversion)
+                    # df[f'{list[48]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[48]}']])
+                    # df[f'{list[49]}'] = df[f'{list[49]}'].apply(safe_date_conversion)
+                    # df[f'{list[50]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[50]}']])
+                    # df[f'{list[51]}'] = df[f'{list[51]}'].apply(safe_date_conversion)
+                    # df[f'{list[52]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[52]}']])
+                    # df[f'{list[53]}'] = df[f'{list[53]}'].apply(safe_date_conversion)
+                    # df[f'{list[54]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[54]}']])
+                    # df[f'{list[55]}'] = df[f'{list[55]}'].apply(safe_date_conversion)
+                    # df[f'{list[56]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[56]}']])
+                    # df[f'{list[57]}'] = df[f'{list[57]}'].apply(safe_date_conversion)
+                    # df[f'{list[58]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[58]}']])
 
-                    # df[f'{list[31]}'] = df[f'{list[34]}'].astype(float) + df[f'{list[36]}'].astype(float) + df[f'{list[38]}'].astype(float) + df[f'{list[40]}'].astype(float) + df[f'{list[42]}'].astype(float) + df[f'{list[44]}'].astype(float) + df[f'{list[46]}'].astype(float) + df[f'{list[48]}'].astype(float) + df[f'{list[50]}'].astype(float) + df[f'{list[52]}'].astype(float) + df[f'{list[54]}'].astype(float) + df[f'{list[56]}'].astype(float) + df[f'{list[58]}'].astype(float)
                     df[f'{list[31]}'] = df[f'{list[32]}'].astype(float) + df[f'{list[34]}'].astype(float) + df[f'{list[36]}'].astype(float) + df[f'{list[38]}'].astype(float) + df[f'{list[40]}'].astype(float) + df[f'{list[42]}'].astype(float) + df[f'{list[44]}'].astype(float) + df[f'{list[46]}'].astype(float) + df[f'{list[48]}'].astype(float) + df[f'{list[50]}'].astype(float) + df[f'{list[52]}'].astype(float) + df[f'{list[54]}'].astype(float) + df[f'{list[56]}'].astype(float)
-                    # df[f'{list[57]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[57]}']])
 
                     import numpy as np
 
