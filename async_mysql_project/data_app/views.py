@@ -107,7 +107,8 @@ def link_generation(request, mode, page, page_user='', page_user_two='', service
     # Получаем остальные параметры без преобразования
     for param in params_optional:
         if param in ('contract_date', 'end_date'):
-            params_view += f'&selected_{param}={request.GET.get(param, "No")}'
+            # params_view += f'&selected_{param}={request.GET.get(param, "No")}'
+            params_view += f'&{param}={request.GET.get(param, "No")}'
         else:
             params_view += f'&{param}={request.GET.get(param, None)}'
 
@@ -167,8 +168,6 @@ async def skeleton(request, user,
     # Извлечь значения после знака "="
     values_params = re.findall(r'=(.*?)(&|$)', params)
     values_only_params = [val[0] for val in values_params]
-
-    print(params, type(params))
 
     keyword_one, keyword_two, keyword_three, keyword_four, selected_column_one, selected_column_two, selected_column_three, selected_column_four, contract_date, end_date = values_only_params
 
@@ -460,8 +459,8 @@ async def skeleton(request, user,
         'total_cost_222': round(await format_number(total_cost_222), 2),
         'total_cost_333': round(await format_number(total_cost_333), 2),
 
-        # 'selected_contract_date': contract_date,
-        # 'selected_end_date': end_date,
+        'selected_contract_date': contract_date,
+        'selected_end_date': end_date,
         # 'selected_column_one': selected_column_one,
         # 'selected_column_three': selected_column_three,
         # 'selected_column_two': selected_column_two,
