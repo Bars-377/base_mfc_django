@@ -28,7 +28,8 @@
             {% endif %}
 
             <!-- Форма для редактирования услуги -->
-            <form method="POST" action="{% url 'update_record' row_id=row_id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" class="form-group">
+            {% comment %} <form method="POST" action="{% url 'update_record' row_id=row_id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" class="form-group"> {% endcomment %}
+                <form method="POST" action="{% url 'update_record' row_id=row_id %}?page={{ page }}{{ params }}" class="form-group">
                 <!-- Поле для ввода названия услуги -->
                 <div class="form-item">
                     <label for="id_id">№ п/п</label>
@@ -328,7 +329,8 @@
                 <!-- Кнопка для отправки формы -->
                 <button type="submit" class="btn btn-primary btn-neverov">Внести изменения</button>
                 <!-- Ссылка для возврата на главную страницу -->
-                <a href="{% url 'data_table_view' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" class="btn btn-secondary btn-neverov clear-btn">Вернуться назад</a>
+                {% comment %} <a href="{% url 'data_table_view' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" class="btn btn-secondary btn-neverov clear-btn">Вернуться назад</a> {% endcomment %}
+                <a href="{% url 'data_table_view' %}?page={{ page }}{{ params }}" class="btn btn-secondary btn-neverov clear-btn">Вернуться назад</a>
             </form>
 
         </div>

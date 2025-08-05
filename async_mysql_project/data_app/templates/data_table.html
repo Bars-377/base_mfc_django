@@ -310,7 +310,8 @@
     </div>
 
     <div class="container-fluid-neverov">
-        <a href="{% url 'add' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить закупку</a>
+        {% comment %} <a href="{% url 'add' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить закупку</a> {% endcomment %}
+        <a href="{% url 'add' %}?page={{ page }}{{ params }}" class="btn btn-warning">Добавить закупку</a>
     </div>
 
     <div class="container-fluid-neverov">
@@ -409,7 +410,8 @@
                         <td class="stretch-width">
                             <!-- Управление -->
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                <a href="{% url 'edit' row_id=item.id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}"
+                                {% comment %} <a href="{% url 'edit' row_id=item.id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" {% endcomment %}
+                                <a href="{% url 'edit' row_id=item.id %}?page={{ page }}{{ params }}"
                                 class="btn btn-sm btn-warning">Edit</a>
                                 <form class="delete-form"
                                     data-id="{{ item.id }}"
@@ -638,7 +640,8 @@
     </div>
 
     <div class="container-fluid-neverov">
-                <a href="{% url 'add_two' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить свод</a>
+        {% comment %} <a href="{% url 'add_two' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить свод</a> {% endcomment %}
+        <a href="{% url 'add_two' %}?page={{ page }}{{ params }}" class="btn btn-warning">Добавить свод</a>
     </div>
 
     <!--<div class="container-fluid-neverov">-->
@@ -771,7 +774,9 @@
                         <td class="stretch-width">
                             <!-- Управление -->
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                <a href="{% url 'edit_user' row_id=item.id %}?page_user={{ page_user }}"
+                                {% comment %} <a href="{% url 'edit_user' row_id=item.id %}?page_user={{ page_user }}" {% endcomment %}
+                                {% comment %} <a href="{% url 'edit_user' row_id=item.id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" {% endcomment %}
+                                <a href="{% url 'edit_user' row_id=item.id %}?page={{ page }}{{ params }}"
                                 class="btn btn-sm btn-warning">Edit</a>
                                 <form class="delete-form-user"
                                     data-id="{{ item.id }}"
@@ -1052,7 +1057,9 @@
                         <td class="stretch-width">
                             <!-- Управление -->
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                <a href="{% url 'edit_user_two' row_id=item.id %}?page_user_two={{ page_user_two }}"
+                                {% comment %} <a href="{% url 'edit_user_two' row_id=item.id %}?page_user_two={{ page_user_two }}" {% endcomment %}
+                                {% comment %} <a href="{% url 'edit_user_two' row_id=item.id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" {% endcomment %}
+                                <a href="{% url 'edit_user_two' row_id=item.id %}?page={{ page }}{{ params }}"
                                 class="btn btn-sm btn-warning">Edit</a>
 
                             </div>

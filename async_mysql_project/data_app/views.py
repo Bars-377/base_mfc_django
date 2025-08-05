@@ -95,12 +95,23 @@ def link_generation(request, mode, page, page_user='', page_user_two='', service
     # Создаем словарь для хранения результатов
     params = {}
 
+    # # Получаем остальные параметры без преобразования
+    # for param in params_optional:
+    #     if param in ('contract_date', 'end_date'):
+    #         params[f'selected_{param}'] = request.GET.get(param, "No")
+    #     else:
+    #         params[param] = request.GET.get(param, None)
+
+    params_view = ''
+
     # Получаем остальные параметры без преобразования
     for param in params_optional:
         if param in ('contract_date', 'end_date'):
-            params[f'selected_{param}'] = request.GET.get(param, "No")
+            params_view += f'&selected_{param}={request.GET.get(param, "No")}'
         else:
-            params[param] = request.GET.get(param, None)
+            params_view += f'&{param}={request.GET.get(param, None)}'
+
+    params['params'] = params_view
 
     # Получаем параметры с преобразованием в int и значением по умолчанию 1
     for param in params_with_int_default_1:
@@ -138,14 +149,29 @@ def link_generation(request, mode, page, page_user='', page_user_two='', service
 
         return context
 
+# async def skeleton(request, user,
+#                     keyword_one, keyword_two, keyword_three,
+#                     keyword_four, selected_column_one, selected_column_two,
+#                     selected_column_three, selected_column_four,
+#                     contract_date, end_date,
+#                     page,
+#                     page_user,
+#                     page_user_two):
+
 async def skeleton(request, user,
-                    keyword_one, keyword_two, keyword_three,
-                    keyword_four, selected_column_one, selected_column_two,
-                    selected_column_three, selected_column_four,
-                    contract_date, end_date,
+                    params,
                     page,
                     page_user,
                     page_user_two):
+
+    # Извлечь значения после знака "="
+    values_params = re.findall(r'=(.*?)(&|$)', params)
+    values_only_params = [val[0] for val in values_params]
+
+    print(params, type(params))
+
+    keyword_one, keyword_two, keyword_three, keyword_four, selected_column_one, selected_column_two, selected_column_three, selected_column_four, contract_date, end_date = values_only_params
+
     async def remove_spaces_if_numeric(text):
         stripped_text = text.replace(" ", "")  # Удаляем все пробелы
         if all(char.isdigit() or char in "+-*/.()" for char in stripped_text):
@@ -433,16 +459,19 @@ async def skeleton(request, user,
         'total_cost_111': round(await format_number(total_cost_111), 2),
         'total_cost_222': round(await format_number(total_cost_222), 2),
         'total_cost_333': round(await format_number(total_cost_333), 2),
-        'selected_contract_date': contract_date,
-        'selected_end_date': end_date,
-        'selected_column_one': selected_column_one,
-        'selected_column_three': selected_column_three,
-        'selected_column_two': selected_column_two,
-        'selected_column_four': selected_column_four,
-        'keyword_one': keyword_one,
-        'keyword_three': keyword_three,
-        'keyword_two': keyword_two,
-        'keyword_four': keyword_four,
+
+        # 'selected_contract_date': contract_date,
+        # 'selected_end_date': end_date,
+        # 'selected_column_one': selected_column_one,
+        # 'selected_column_three': selected_column_three,
+        # 'selected_column_two': selected_column_two,
+        # 'selected_column_four': selected_column_four,
+        # 'keyword_one': keyword_one,
+        # 'keyword_three': keyword_three,
+        # 'keyword_two': keyword_two,
+        # 'keyword_four': keyword_four,
+        'params': params,
+
         'page': page,
         'page_user': page_user,
         'page_user_two': page_user_two,

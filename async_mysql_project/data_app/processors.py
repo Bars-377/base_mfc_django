@@ -130,7 +130,8 @@ class ContractProcessor:
         """Суммирование исполнение контракта (план)"""
         months = [self.context_data[month] for month in [
             'january_one', 'february', 'march', 'april', 'may', 'june',
-            'july', 'august', 'september', 'october', 'november', 'december'
+            'july', 'august', 'september', 'october', 'november', 'december',
+            'remainder_old_year', 'january_two'
         ]]
         cleaned_numbers = await asyncio.gather(*(format_number(month) for month in months))
         return sum(cleaned_numbers)
