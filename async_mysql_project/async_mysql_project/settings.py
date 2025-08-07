@@ -101,8 +101,8 @@ with open(f'{folder_path}//general_settings.json', 'r', encoding='utf-8-sig') as
     json_object = json.load(file)
 
 # Настройки Celery
-CELERY_BROKER_URL = f'redis://{json_object['host']}:6379/0'  # Указываем Redis как брокер
-CELERY_RESULT_BACKEND = f'redis://{json_object['host']}:6379/0'  # Указываем Redis для хранения результатов задач
+CELERY_BROKER_URL = f'redis://{json_object['host']}:6379/1'  # Указываем Redis как брокер
+CELERY_RESULT_BACKEND = f'redis://{json_object['host']}:6379/1'  # Указываем Redis для хранения результатов задач
 
 # Опционально: таймауты для выполнения задач
 CELERY_TIMEZONE = 'UTC'
