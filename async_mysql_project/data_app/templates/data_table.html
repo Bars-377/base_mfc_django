@@ -518,8 +518,11 @@
 
     <script>
         // Создаем строку с подстановкой значений
-        const query_string = `contract_date={{selected_contract_date}}&keyword_one={{keyword_one}}&keyword_two={{keyword_two}}&keyword_three={{keyword_three}}&keyword_four={{keyword_four}}&selected_column_one={{selected_column_one}}&selected_column_two={{selected_column_two}}&selected_column_three={{selected_column_three}}&selected_column_four={{selected_column_four}}&end_date={{selected_end_date}}`;
-        
+        {% comment %} const query_string = `contract_date={{selected_contract_date}}&keyword_one={{keyword_one}}&keyword_two={{keyword_two}}&keyword_three={{keyword_three}}&keyword_four={{keyword_four}}&selected_column_one={{selected_column_one}}&selected_column_two={{selected_column_two}}&selected_column_three={{selected_column_three}}&selected_column_four={{selected_column_four}}&end_date={{selected_end_date}}`; {% endcomment %}
+        const raw_query_string = `{{ params|safe }}`;
+        // Удаляем первый символ (например, &)
+        const query_string = raw_query_string.startsWith('&') ? raw_query_string.slice(1) : raw_query_string;
+
         // Функция для обновления всех ссылок с нужной query строкой
         function updateLinks() {
             // Получаем все ссылки, которые нужно обновить
