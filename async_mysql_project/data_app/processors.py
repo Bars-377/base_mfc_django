@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from urllib.parse import urlencode
+# from urllib.parse import urlencode
 from django.contrib import messages
 from asgiref.sync import sync_to_async
 from .models import Services, Services_Two, Services_Three
@@ -10,23 +10,28 @@ from django.shortcuts import render
 from django.db.models import Sum
 from django.db.models import Q
 
-def key_deleting(context_data):
+def key_no_deleting(context_data):
+    """Список нужных ключей, которые оставить в словаре."""
+
     key_deleting = [
-        'keyword_one',
-        'keyword_two',
-        'keyword_three',
-        'keyword_four',
-        'selected_column_one',
-        'selected_column_two',
-        'selected_column_three',
-        'selected_column_four',
-        'contract_date',
-        'end_date'
+        # 'keyword_one',
+        # 'keyword_two',
+        # 'keyword_three',
+        # 'keyword_four',
+        # 'selected_column_one',
+        # 'selected_column_two',
+        # 'selected_column_three',
+        # 'selected_column_four',
+        # 'contract_date',
+        # 'end_date',
+        'params'
     ]
+
 
     context_data = {
         k: v for k, v in context_data.items() if k in key_deleting
     }
+
     return context_data
 
 from dataclasses import dataclass
@@ -154,6 +159,29 @@ class ContractProcessor:
         self.context_data['execution_contract_plan'] = execution_contract_plan
         self.context_data['execution_contract_fact'] = execution_contract_fact
 
+        params_post = [
+            'name', 'status', 'way', 'initiator', 'KTSSR',
+            'KOSGU', 'DopFC', 'NMCC', 'counterparty',
+            'registration_number', 'contract_number', 'contract_date',
+            'end_date', 'contract_price', 'january_one',
+            'february', 'march', 'april', 'may', 'june', 'july',
+            'august', 'september', 'october', 'november', 'december',
+            'january_two', 'date_january_one', 'sum_january_one',
+            'date_february', 'sum_february', 'date_march', 'sum_march',
+            'date_april', 'sum_april', 'date_may', 'sum_may',
+            'date_june', 'sum_june', 'date_july', 'sum_july',
+            'date_august', 'sum_august', 'date_september', 'sum_september',
+            'date_october', 'sum_october', 'date_november', 'sum_november',
+            'date_december', 'sum_december', 'date_january_two', 'sum_january_two',
+            'execution', 'contract_balance', 'execution_contract_fact', 'execution_contract_plan',
+            'saving', 'color', 'remainder_old_year', 'paid_last_year'
+        ]
+
+        context_data_cache = {}
+
+        for key in params_post:
+            context_data_cache[key] = getattr(service, key, None)  # None — значение по умолчанию, если атрибута нет
+
         for key, value in self.context_data.items():
             setattr(service, key, value)
 
@@ -175,6 +203,20 @@ class ContractProcessor:
             service.color = ''
 
         await sync_to_async(service.save)()
+
+        # print('-----------------------------')
+        # print(self.context_data['KTSSR'])
+        # print('-----------------------------')
+
+        # # for key, value in context_data_cache.items():
+        # #     if key in self.context_data:
+        # #         self.context_data[key] = value
+
+        # print('-----------------------------')
+        # print(self.context_data['KTSSR'])
+        # print('-----------------------------')
+
+        return context_data_cache
 
     async def creation_new_service(self, saving, execution_contract_plan, execution_contract_fact, new_service):
         """Формируем запрос для новой записи"""
@@ -478,7 +520,7 @@ class ContractProcessor:
                 results[field] = 0.00
         return results
 
-    async def total_costs(self, new_service):
+    async def total_costs(self):
         """Удаление новой записи если условия соответствуют"""
         # Определите список всех полей, которые нужно агрегировать
         fields = [
@@ -511,17 +553,16 @@ class ContractProcessor:
         'total_cost_10': aggregated_results['off_budget_completed']
         }
 
-        if total_costs_calc['total_cost_1'] < (total_costs_calc['total_cost_3'] or total_costs_calc['total_cost_5'] or total_costs_calc['total_cost_7'] or total_costs_calc['total_cost_9']):
-            if new_service:
-                await sync_to_async(new_service.delete)()
-                await log_user_action(self.request.user, f'Отменилось добавление записи в "Закупки" с ID {new_service.id_id}')
-            return False
+        services = self.context_data['service']
 
-        if total_costs_calc['total_cost_2'] < (total_costs_calc['total_cost_4'] or total_costs_calc['total_cost_6'] or total_costs_calc['total_cost_8'] or total_costs_calc['total_cost_10']):
-            if new_service:
-                await sync_to_async(new_service.delete)()
-                await log_user_action(self.request.user, f'Отменилось добавление записи в "Закупки" с ID {new_service.id_id}')
-            return False
+        if services.KTSSR == '2046102280':
+            if total_costs_calc['total_cost_1'] < (total_costs_calc['total_cost_3'] or total_costs_calc['total_cost_5'] or total_costs_calc['total_cost_7'] or total_costs_calc['total_cost_9']):
+                return False
+
+        if services.KTSSR == '2046100092':
+            if total_costs_calc['total_cost_2'] < (total_costs_calc['total_cost_4'] or total_costs_calc['total_cost_6'] or total_costs_calc['total_cost_8'] or total_costs_calc['total_cost_10']):
+                return False
+
         return True
 
     async def total_costs_message(self):
@@ -572,21 +613,21 @@ class ContractProcessor:
 
         Services_Two_ = await self.validate_Services_Two()
 
-        if not await self.validate_Services_Two():
-            await self.validate_Services_Two_message()
-            return render(self.request, 'edit.html', self.context_data)
+        # if not await self.validate_Services_Two():
+        #     await self.validate_Services_Two_message()
+        #     return render(self.request, 'edit.html', self.context_data)
 
         await self.process_budget_services_two(Services_Two_)
 
         await self.message_service_update()
 
-        self.context_data = key_deleting(self.context_data)
+        self.context_data = key_no_deleting(self.context_data)
 
-        # Кодируем query-параметры
-        query_string = urlencode(self.context_data)
+        # # Кодируем query-параметры
+        # query_string = urlencode(self.context_data)
 
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)
@@ -597,13 +638,13 @@ class ContractProcessor:
 
         await self.message_service_update()
 
-        self.context_data = key_deleting(self.context_data)
+        self.context_data = key_no_deleting(self.context_data)
 
-        # Кодируем query-параметры
-        query_string = urlencode(self.context_data)
+        # # Кодируем query-параметры
+        # query_string = urlencode(self.context_data)
 
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)
@@ -775,11 +816,11 @@ class ContractProcessor:
 
         await log_user_action(self.request.user, f'Отредактировал запись в "Закупки" с ID {service_dict['id_id']},\nБыло: {service_dict}')
 
-        await self.update_service(saving, execution_contract_plan, execution_contract_fact)
+        context_data_cache = await self.update_service(saving, execution_contract_plan, execution_contract_fact)
 
         await self.count_dates(True)
 
-        if not await self.total_costs(None):
+        if not await self.total_costs():
 
             # self.context_data['contract_price'] = '0'
 
@@ -792,25 +833,40 @@ class ContractProcessor:
             # for contract_price in months_contract_price:
             #     self.context_data[contract_price] = '0'
 
+            # await self.update_service(saving, execution_contract_plan, execution_contract_fact)
+
+            # print('-----------------------------')
+            # print(self.context_data['KTSSR'])
+            # print('-----------------------------')
+
+            for key, value in context_data_cache.items():
+                if key in self.context_data:
+                    self.context_data[key] = value
+
+            # print('-----------------------------')
+            # print(self.context_data['KTSSR'])
+            # print('-----------------------------')
+
             await self.update_service(saving, execution_contract_plan, execution_contract_fact)
+            # await sync_to_async(service_cache.save)()
 
             await self.count_dates(True)
 
             await self.total_costs_message()
+
             return render(self.request, 'edit.html', self.context_data)
 
         await log_user_action(self.request.user, f'Отредактировал запись в "Закупки" с ID {self.context_data['id_id']},\nСтало: {self.context_data}')
 
         await self.message_service_update()
 
-        self.context_data = key_deleting(self.context_data)
+        self.context_data = key_no_deleting(self.context_data)
 
-        # Кодируем query-параметры
-        query_string = urlencode(self.context_data)
-        # query_string = urlencode(context_data_copy)
+        # # Кодируем query-параметры
+        # query_string = urlencode(self.context_data)
 
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)
@@ -849,21 +905,24 @@ class ContractProcessor:
         # await self.Services_Two_save(Services_Two_)
         await self.count_dates(True)
 
-        if not await self.total_costs(new_service):
+        if not await self.total_costs():
             await self.count_dates(True)
+
+            await sync_to_async(new_service.delete)()
+            await log_user_action(self.request.user, f'Отменилось добавление записи в "Закупки" с ID {new_service.id_id}')
 
             await self.total_costs_message()
             return render(self.request, 'add.html', self.context_data)
 
         await self.message_service_add()
 
-        self.context_data = key_deleting(self.context_data)
+        self.context_data = key_no_deleting(self.context_data)
 
-        # Кодируем query-параметры
-        query_string = urlencode(self.context_data)
+        # # Кодируем query-параметры
+        # query_string = urlencode(self.context_data)
 
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)
@@ -877,13 +936,13 @@ class ContractProcessor:
 
         await self.message_service_add()
 
-        self.context_data = key_deleting(self.context_data)
+        self.context_data = key_no_deleting(self.context_data)
 
-        # Кодируем query-параметры
-        query_string = urlencode(self.context_data)
+        # # Кодируем query-параметры
+        # query_string = urlencode(self.context_data)
 
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)
@@ -894,11 +953,11 @@ class ContractProcessor:
 
         await self.message_service_delete()
 
-        # Кодируем query-параметры
-        query_string = urlencode(self.context_data)
+        # # Кодируем query-параметры
+        # query_string = urlencode(self.context_data)
 
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)
@@ -907,11 +966,11 @@ class ContractProcessor:
 
         await self.message_service_delete()
 
-        # Кодируем query-параметры
-        query_string = urlencode(self.context_data)
+        # # Кодируем query-параметры
+        # query_string = urlencode(self.context_data)
 
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{query_string}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)

@@ -70,6 +70,21 @@ folder_path = os.path.abspath(folder_path)
 with open(f'{folder_path}//general_settings.json', 'r', encoding='utf-8-sig') as file:
     json_object = json.load(file)
 
+# from urllib.parse import parse_qs
+
+# def get_query_param(params_str, key):
+#     """
+#     Возвращает значение параметра key из query строки params_str.
+#     Например: get_query_param("&a=1&b=2", "a") → "1"
+#     """
+#     if not params_str:
+#         return ""
+#     # Удалим ведущий &
+#     if params_str.startswith("&"):
+#         params_str = params_str[1:]
+#     parsed = parse_qs(params_str)
+#     return parsed.get(key, [""])[0]
+
 def link_generation(request, mode, page, page_user='', page_user_two='', service=None, row_id=None):
     """Создание передаваемых параметров с их значениями"""
 
@@ -686,22 +701,31 @@ async def edit_user_two(request, row_id):
 async def update_record(request, row_id):
     if request.method == 'POST':
         try:
-            # Возвращаем данные формы обратно в шаблон
-            context_data = {
-                'service': await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id),
-                'row_id': row_id,
-                'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-                'page_user': 1,
-                'page_user_two': 1,
-                'connection_websocket': settings.DATABASES['default']['HOST'],
-                'statuses': json.dumps(json_object['statuses'])
-            }
+            # # Возвращаем данные формы обратно в шаблон
+            # context_data = {
+            #     'service': await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id),
+            #     'row_id': row_id,
+            #     'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
+            #     'page_user': 1,
+            #     'page_user_two': 1,
+            #     'connection_websocket': settings.DATABASES['default']['HOST'],
+            #     'statuses': json.dumps(json_object['statuses'])
+            # }
 
-            params = [
-                'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
-                'selected_column_one', 'selected_column_two',
-                'contract_date', 'selected_end_date'
-            ]
+            # params = [
+            #     'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
+            #     'selected_column_one', 'selected_column_two',
+            #     'contract_date', 'selected_end_date'
+            # ]
+
+            # Получаем объект service по id
+            service = await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id)
+            context = link_generation(request, False, 'page', 'page_user', 'page_user_two', service=service, row_id=row_id)
+
+            # print(request.GET.get('keyword_one'))
+            # print('------------------')
+            # # print(get_query_param(request.GET.get(params), 'keyword_one'))
+            # print('------------------')
 
             params_post = [
                 'id_id', 'name', 'status', 'way', 'initiator', 'KTSSR',
@@ -721,13 +745,13 @@ async def update_record(request, row_id):
                 'saving', 'color', 'remainder_old_year', 'paid_last_year'
             ]
 
-            for param in params:
-                context_data[param] = request.GET.get(param, None)
+            # for param in params:
+            #     context[param] = request.GET.get(param, None)
 
             for param in params_post:
-                context_data[param] = request.POST.get(param, None)
+                context[param] = request.POST.get(param, None)
 
-            processor = ContractProcessor(context_data, request)
+            processor = ContractProcessor(context, request)
 
             return await processor.process_update()
         except Services.DoesNotExist:
@@ -740,59 +764,69 @@ async def update_record(request, row_id):
 async def update_record_user(request, row_id):
     if request.method == 'POST':
         try:
-            # Возвращаем данные формы обратно в шаблон
-            context_data = {
-                'service_user': await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id),
-                'row_id': row_id,
-                'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-                'connection_websocket': settings.DATABASES['default']['HOST'],
-                'statuses': json.dumps(json_object['statuses']),
-                'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
-                'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1
-            }
+            # # Возвращаем данные формы обратно в шаблон
+            # context_data = {
+            #     'service_user': await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id),
+            #     'row_id': row_id,
+            #     'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
+            #     'connection_websocket': settings.DATABASES['default']['HOST'],
+            #     'statuses': json.dumps(json_object['statuses']),
+            #     'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
+            #     'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1
+            # }
 
-            params = [
-                'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
-                'selected_column_one', 'selected_column_two',
-                'contract_date', 'selected_end_date'
-            ]
+            # params = [
+            #     'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
+            #     'selected_column_one', 'selected_column_two',
+            #     'contract_date', 'selected_end_date'
+            # ]
+
+            # Получаем объект service_user по id
+            service_user = await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id)
+            context = link_generation(request, False, 'page', 'page_user', 'page_user_two', service=service_user, row_id=row_id)
 
             params_post = [
                 'id_id', 'name', 'KOSGU', 'DopFC', 'budget_limit',
                 'off_budget_limit', 'budget_planned', 'off_budget_planned',
                 'budget_bargaining', 'off_budget_bargaining', 'budget_concluded',
                 'off_budget_concluded', 'budget_completed', 'off_budget_completed',
-                'budget_completed', 'budget_execution', 'off_budget_execution',
+                'budget_execution', 'off_budget_execution',
                 'budget_remainder', 'off_budget_remainder', 'budget_plans',
                 'off_budget_plans', 'color',
             ]
 
-            for param in params:
-                context_data[param] = request.GET.get(param, None)
+            # print('---------------')
+            # print(context['params'])
+            # print('---------------')
+
+            # for param in params:
+            #     context[param] = request.GET.get(param, None)
 
             for param in params_post:
-                context_data[param] = request.POST.get(param, None)
+                context[param] = request.POST.get(param, None)
 
             from django.forms.models import model_to_dict
-            service_dict = model_to_dict(context_data['service_user'])
+            service_dict = model_to_dict(context['service'])
             await log_user_action(request.user, f'Отредактировал запись в "Свод" с ID {service_dict['id_id']},\nБыло: budget_limit: {service_dict['budget_limit']}, off_budget_limit: {service_dict['off_budget_limit']}')
 
-            fields_to_copy = [
-                'id_id', 'name', 'KOSGU', 'DopFC', 'budget_limit', 'off_budget_limit',
-                'budget_planned', 'off_budget_planned', 'budget_bargaining', 'off_budget_bargaining',
-                'budget_concluded', 'off_budget_concluded', 'budget_completed', 'off_budget_completed',
-                'budget_execution', 'off_budget_execution', 'budget_remainder', 'off_budget_remainder',
-                'budget_plans', 'off_budget_plans', 'color'
-            ]
+            # fields_to_copy = [
+            #     'id_id', 'name', 'KOSGU', 'DopFC', 'budget_limit',
+            #     'off_budget_limit', 'budget_planned', 'off_budget_planned',
+            #     'budget_bargaining', 'off_budget_bargaining', 'budget_concluded',
+            #     'off_budget_concluded', 'budget_completed', 'off_budget_completed',
+            #     'budget_execution', 'off_budget_execution',
+            #     'budget_remainder', 'off_budget_remainder', 'budget_plans',
+            #     'off_budget_plans', 'color'
+            # ]
 
-            for field in fields_to_copy:
-                setattr(context_data['service_user'], field, context_data[field])
+            for field in params_post:
+                setattr(context['service'], field, context[field])
 
-            await sync_to_async(context_data['service_user'].save)()
+            await sync_to_async(context['service'].save)()
 
-            await log_user_action(request.user, f'Отредактировал запись в "Свод" с ID {context_data['id_id']},\nСтало: budget_limit: {context_data['budget_limit']}, off_budget_limit: {context_data['off_budget_limit']}')
+            await log_user_action(request.user, f'Отредактировал запись в "Свод" с ID {context['id_id']},\nСтало: budget_limit: {context['budget_limit']}, off_budget_limit: {context['off_budget_limit']}')
 
-            processor = ContractProcessor(context_data, request)
+            processor = ContractProcessor(context, request)
             return await processor.process_update_user()
         except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
@@ -804,55 +838,59 @@ async def update_record_user(request, row_id):
 async def update_record_user_two(request, row_id):
     if request.method == 'POST':
         try:
-            # Возвращаем данные формы обратно в шаблон
-            context_data = {
-                'service_user_two': await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(id=row_id),
-                'row_id': row_id,
-                'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-                'connection_websocket': settings.DATABASES['default']['HOST'],
-                'statuses': json.dumps(json_object['statuses']),
-                'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
-                'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1
-            }
+            # # Возвращаем данные формы обратно в шаблон
+            # context_data = {
+            #     'service_user_two': await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(id=row_id),
+            #     'row_id': row_id,
+            #     'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
+            #     'connection_websocket': settings.DATABASES['default']['HOST'],
+            #     'statuses': json.dumps(json_object['statuses']),
+            #     'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
+            #     'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1
+            # }
 
-            params = [
-                'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
-                'selected_column_one', 'selected_column_two',
-                'contract_date', 'selected_end_date'
-            ]
+            # params = [
+            #     'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
+            #     'selected_column_one', 'selected_column_two',
+            #     'contract_date', 'selected_end_date'
+            # ]
+
+            # Получаем объект service_user по id
+            service_user_two = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(id=row_id)
+            context = link_generation(request, False, 'page', 'page_user', 'page_user_two', service=service_user_two, row_id=row_id)
 
             params_post = [
                 'id_id', 'KOSGU', 'DopFC', 'budget_planned_old',
                 'off_budget_planned_old', 'budget_planned', 'off_budget_planned',
-                'budget_concluded', 'off_budget_concluded', 'budget_remainder',
-                'off_budget_remainder', 'color',
+                'budget_concluded', 'off_budget_concluded',
+                'budget_remainder', 'off_budget_remainder', 'color',
             ]
 
-            for param in params:
-                context_data[param] = request.GET.get(param, None)
+            # for param in params:
+            #     context_data[param] = request.GET.get(param, None)
 
             for param in params_post:
-                context_data[param] = request.POST.get(param, None)
+                context[param] = request.POST.get(param, None)
 
             from django.forms.models import model_to_dict
-            service_dict = model_to_dict(context_data['service_user_two'])
+            service_dict = model_to_dict(context['service'])
             await log_user_action(request.user, f'Отредактировал запись в "План-график" с ID {service_dict['id_id']},\nБыло: budget_planned: {service_dict['budget_planned']}, off_budget_planned: {service_dict['off_budget_planned']}')
 
-            fields_to_copy = [
-                'id_id', 'KOSGU', 'DopFC', 'budget_planned_old', 'off_budget_planned_old',
-                'budget_planned', 'off_budget_planned',
-                'budget_concluded', 'off_budget_concluded',
-                'budget_remainder', 'off_budget_remainder', 'color'
-            ]
+            # fields_to_copy = [
+            #     'id_id', 'KOSGU', 'DopFC', 'budget_planned_old',
+            #     'off_budget_planned_old', 'budget_planned', 'off_budget_planned',
+            #     'budget_concluded', 'off_budget_concluded',
+            #     'budget_remainder', 'off_budget_remainder', 'color'
+            # ]
 
-            for field in fields_to_copy:
-                setattr(context_data['service_user_two'], field, context_data[field])
+            for field in params_post:
+                setattr(context['service'], field, context[field])
 
-            await sync_to_async(context_data['service_user_two'].save)()
+            await sync_to_async(context['service'].save)()
 
-            await log_user_action(request.user, f'Отредактировал запись в "План-график" с ID {context_data['id_id']},\Стало: budget_planned: {context_data['budget_planned']}, off_budget_planned: {context_data['off_budget_planned']}')
+            await log_user_action(request.user, f'Отредактировал запись в "План-график" с ID {context['id_id']},\Стало: budget_planned: {context['budget_planned']}, off_budget_planned: {context['off_budget_planned']}')
 
-            processor = ContractProcessor(context_data, request)
+            processor = ContractProcessor(context, request)
             return await processor.process_update_user_two()
         except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
@@ -864,20 +902,22 @@ async def update_record_user_two(request, row_id):
 async def add_record(request):
     if request.method == 'POST':
         try:
-            # Возвращаем данные формы обратно в шаблон
-            context_data = {
-                'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-                'page_user': 1,
-                'page_user_two': 1,
-                'connection_websocket': settings.DATABASES['default']['HOST'],
-                'statuses': json.dumps(json_object['statuses'])
-            }
+            # # Возвращаем данные формы обратно в шаблон
+            # context_data = {
+            #     'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
+            #     'page_user': 1,
+            #     'page_user_two': 1,
+            #     'connection_websocket': settings.DATABASES['default']['HOST'],
+            #     'statuses': json.dumps(json_object['statuses'])
+            # }
 
-            params = [
-                'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
-                'selected_column_one', 'selected_column_two',
-                'contract_date', 'selected_end_date'
-            ]
+            # params = [
+            #     'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
+            #     'selected_column_one', 'selected_column_two',
+            #     'contract_date', 'selected_end_date'
+            # ]
+
+            context = link_generation(request, False, 'page', 'page_user', 'page_user_two')
 
             params_post = [
                 'name', 'status', 'way', 'initiator', 'KTSSR',
@@ -897,13 +937,13 @@ async def add_record(request):
                 'saving', 'color', 'remainder_old_year', 'paid_last_year'
             ]
 
-            for param in params:
-                context_data[param] = request.GET.get(param, None)
+            # for param in params:
+            #     context[param] = request.GET.get(param, None)
 
             for param in params_post:
-                context_data[param] = request.POST.get(param, None)
+                context[param] = request.POST.get(param, None)
 
-            processor = ContractProcessor(context_data, request)
+            processor = ContractProcessor(context, request)
             return await processor.process_add()
         except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
@@ -915,30 +955,32 @@ async def add_record(request):
 async def add_record_two(request):
     if request.method == 'POST':
         try:
-            # Возвращаем данные формы обратно в шаблон
-            context_data = {
-                'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-                'page_user': 1,
-                'page_user_two': 1
-            }
+            # # Возвращаем данные формы обратно в шаблон
+            # context_data = {
+            #     'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
+            #     'page_user': 1,
+            #     'page_user_two': 1
+            # }
 
-            params = [
-                'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
-                'selected_column_one', 'selected_column_two',
-                'contract_date', 'selected_end_date'
-            ]
+            # params = [
+            #     'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
+            #     'selected_column_one', 'selected_column_two',
+            #     'contract_date', 'selected_end_date'
+            # ]
+
+            context = link_generation(request, False, 'page', 'page_user', 'page_user_two')
 
             params_post = [
                 'name', 'KOSGU', 'DopFC',
             ]
 
-            for param in params:
-                context_data[param] = request.GET.get(param, None)
+            # for param in params:
+            #     context[param] = request.GET.get(param, None)
 
             for param in params_post:
-                context_data[param] = request.POST.get(param, None)
+                context[param] = request.POST.get(param, None)
 
-            processor = ContractProcessor(context_data, request)
+            processor = ContractProcessor(context, request)
             return await processor.process_add_two()
         except Services.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Service not found.'}, status=404)
@@ -957,27 +999,33 @@ async def delete_record(request):
             # Найдите запись по ID и обновите цвет
             service = await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id)
 
-            # Возвращаем данные формы обратно в шаблон
-            context_data = {
-                'KOSGU': service.KOSGU,
-                'DopFC': service.DopFC,
-                'KTSSR': service.KTSSR,
-                'status': service.status,
-                'page': int(body_data.get('page', '1')),
-                'page_user': 1,
-                'page_user_two': 1,
-                'connection_websocket': settings.DATABASES['default']['HOST'],
-                'statuses': json.dumps(json_object['statuses'])
-            }
+            # # Возвращаем данные формы обратно в шаблон
+            # context_data = {
+            #     'KOSGU': service.KOSGU,
+            #     'DopFC': service.DopFC,
+            #     'KTSSR': service.KTSSR,
+            #     'status': service.status,
+            #     'page': int(body_data.get('page', '1')),
+            #     'page_user': 1,
+            #     'page_user_two': 1,
+            #     'connection_websocket': settings.DATABASES['default']['HOST'],
+            #     'statuses': json.dumps(json_object['statuses'])
+            # }
 
-            params = [
-                'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
-                'selected_column_one', 'selected_column_two',
-                'contract_date', 'selected_end_date'
-            ]
+            # params = [
+            #     'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
+            #     'selected_column_one', 'selected_column_two',
+            #     'contract_date', 'selected_end_date'
+            # ]
 
-            for param in params:
-                context_data[param] = body_data.get(param, None)
+            context = link_generation(request, False, 'page', 'page_user', 'page_user_two')
+            context['KOSGU'] = service.KOSGU
+            context['DopFC'] = service.DopFC
+            context['KTSSR'] = service.KTSSR
+            context['status'] = service.status
+
+            # for param in params:
+            #     context[param] = body_data.get(param, None)
 
             # Удаляем объект
             await sync_to_async(service.delete, thread_sensitive=True)()
@@ -987,7 +1035,7 @@ async def delete_record(request):
 
             await log_user_action(request.user, f'Удалил запись из "Закупки": {service_dict}')
 
-            processor = ContractProcessor(context_data, request)
+            processor = ContractProcessor(context, request)
             await processor.process_delete()
             return JsonResponse({'success': True}, status=200)
         except Services.DoesNotExist:
@@ -1017,25 +1065,29 @@ async def delete_record_two(request):
                 thread_sensitive=True
             )()
 
-            # Возвращаем данные формы обратно в шаблон
-            context_data = {
-                'KOSGU': service_two.KOSGU,
-                'DopFC': service_two.DopFC,
-                'page': int(body_data.get('page', '1')),
-                'page_user': 1,
-                'page_user_two': 1,
-                'connection_websocket': settings.DATABASES['default']['HOST'],
-                'statuses': json.dumps(json_object['statuses'])
-            }
+            # # Возвращаем данные формы обратно в шаблон
+            # context_data = {
+            #     'KOSGU': service_two.KOSGU,
+            #     'DopFC': service_two.DopFC,
+            #     'page': int(body_data.get('page', '1')),
+            #     'page_user': 1,
+            #     'page_user_two': 1,
+            #     'connection_websocket': settings.DATABASES['default']['HOST'],
+            #     'statuses': json.dumps(json_object['statuses'])
+            # }
 
-            params = [
-                'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
-                'selected_column_one', 'selected_column_two',
-                'contract_date', 'selected_end_date'
-            ]
+            # params = [
+            #     'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
+            #     'selected_column_one', 'selected_column_two',
+            #     'contract_date', 'selected_end_date'
+            # ]
 
-            for param in params:
-                context_data[param] = body_data.get(param, None)
+            context = link_generation(request, False, 'page', 'page_user', 'page_user_two')
+            context['KOSGU'] = service_two.KOSGU
+            context['DopFC'] = service_two.DopFC
+
+            # for param in params:
+            #     context[param] = body_data.get(param, None)
 
             # Удаляем объект
             await sync_to_async(service_two.delete, thread_sensitive=True)()
@@ -1045,7 +1097,7 @@ async def delete_record_two(request):
 
             await log_user_action(request.user, f'Удалил запись из "Свод": {service_dict}')
 
-            processor = ContractProcessor(context_data, request)
+            processor = ContractProcessor(context, request)
             await processor.process_delete_two()
             return JsonResponse({'success': True}, status=200)
         except Services.DoesNotExist:
