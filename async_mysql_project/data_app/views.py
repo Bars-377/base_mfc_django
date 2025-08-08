@@ -663,7 +663,7 @@ async def edit(request, row_id):
     # Получаем объект service по id
     service = await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id)
 
-    context = link_generation(request, False, 'page', service=service, row_id=row_id)
+    context = link_generation(request, False, 'page', 'page_user', 'page_user_two', service=service, row_id=row_id)
 
     context['status'] = ''
     context['way'] = ''
@@ -681,7 +681,7 @@ async def edit_user(request, row_id):
     # Получаем объект service_user по id
     service_user = await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id)
 
-    context = link_generation(request, False, 'page_user', service=service_user, row_id=row_id)
+    context = link_generation(request, False, 'page', 'page_user', 'page_user_two', service=service_user, row_id=row_id)
 
     return await sync_to_async(render)(request, 'edit_user.html', context)
 
@@ -693,7 +693,7 @@ async def edit_user_two(request, row_id):
     # Получаем объект service_user_two по id
     service_user_two = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(id=row_id)
 
-    context = link_generation(request, False, 'page_user_two', service=service_user_two, row_id=row_id)
+    context = link_generation(request, False, 'page', 'page_user', 'page_user_two', service=service_user_two, row_id=row_id)
 
     return await sync_to_async(render)(request, 'edit_user_two.html', context)
 

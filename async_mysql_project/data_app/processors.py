@@ -48,6 +48,8 @@ class ContractProcessor:
 
     async def validate_execution_plan(self):
         execution_contract_plan = await self.calculate_execution_plan()
+        # print(f"{execution_contract_plan:.2f}")
+        # print(f"{float(self.context_data['contract_price']):.2f}")
         if self.context_data['contract_price']:
             if f"{execution_contract_plan:.2f}" != f"{float(self.context_data['contract_price']):.2f}":
                 return False
@@ -520,7 +522,7 @@ class ContractProcessor:
                 results[field] = 0.00
         return results
 
-    async def total_costs(self):
+    async def total_costs(self, new_service=None):
         """Удаление новой записи если условия соответствуют"""
         # Определите список всех полей, которые нужно агрегировать
         fields = [
@@ -553,7 +555,12 @@ class ContractProcessor:
         'total_cost_10': aggregated_results['off_budget_completed']
         }
 
-        services = self.context_data['service']
+        if new_service:
+            services = new_service
+        else:
+            services = self.context_data['service']
+
+        # services = self.context_data['service']
 
         if services.KTSSR == '2046102280':
             if total_costs_calc['total_cost_1'] < (total_costs_calc['total_cost_3'] or total_costs_calc['total_cost_5'] or total_costs_calc['total_cost_7'] or total_costs_calc['total_cost_9']):
@@ -905,7 +912,7 @@ class ContractProcessor:
         # await self.Services_Two_save(Services_Two_)
         await self.count_dates(True)
 
-        if not await self.total_costs():
+        if not await self.total_costs(new_service):
             await self.count_dates(True)
 
             await sync_to_async(new_service.delete)()
