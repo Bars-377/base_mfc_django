@@ -68,7 +68,7 @@ document.addEventListener('blur', (e) => {
     }
 }, true);
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
     console.log("Старт script_add_edit.js");
     checkMandatoryFields();
     initializeEmptyFields();

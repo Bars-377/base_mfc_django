@@ -34,14 +34,20 @@
                 </div>
                 <div class="form-item">
                     <label for="status">Статус</label>
-                    <select class="form-control" id="status" onchange="checkMandatoryFields()" name="status" required title="Выберите статус" value="{{ status }}">
-                        <option value="" {% if status == "" %}selected{% endif %}>Выберите статус</option>
+                    <select class="form-control" id="status" onchange="checkMandatoryFields()" name="status" required title="Выберите статус">
+                        {% with current_status=status %}
+                        <option value="" {% if current_status == "" %}selected{% endif %}>Выберите статус</option>
+                        <option value="{{ current_status }}" {% if current_status != "" %}selected{% endif %}>{{ current_status }}
+                        {% endwith %}
                     </select>
                 </div>
                 <div class="form-item">
                     <label for="way">Способ закупки</label>
-                    <select class="form-control" id="way" name="way" required title="Выберите cпособ закупки" value="{{ way }}">
-                        <option value="" {% if way == "" %}selected{% endif %}>Выберите cпособ закупки</option>
+                    <select class="form-control" id="way" name="way" required title="Выберите cпособ закупки">
+                        {% with current_way=way %}
+                        <option value="" {% if current_way == "" %}selected{% endif %}>Выберите cпособ закупки</option>
+                        <option value="{{ current_way }}" {% if current_way != "" %}selected{% endif %}>{{ current_way }}
+                        {% endwith %}
                     </select>
                 </div>
                 <div class="form-item">
@@ -50,25 +56,34 @@
                 </div>
                 <div class="form-item">
                     <label for="KTSSR">КЦСР</label>
-                    <select class="form-control" id="KTSSR" name="KTSSR" required title="Выберите КЦСР" value="{{ KTSSR }}">
-                        <option value="" {% if KTSSR == "" %}selected{% endif %}>Выберите КЦСР</option>
+                    <select class="form-control" id="KTSSR" name="KTSSR" required title="Выберите КЦСР">
+                        {% with current_KTSSR=KTSSR %}
+                        <option value="" {% if current_KTSSR == "" %}selected{% endif %}>Выберите КЦСР</option>
+                        <option value="{{ current_KTSSR }}" {% if current_KTSSR != "" %}selected{% endif %}>{{ current_KTSSR }}
+                        {% endwith %}
                     </select>
                 </div>
                 <div class="form-item">
                     <label for="KOSGU">КОСГУ</label>
-                    <select class="form-control" id="KOSGU" name="KOSGU" required title="Выберите КОСГУ" value="{{ KOSGU }}">
-                        <option value="" {% if KOSGU == "" %}selected{% endif %}>Выберите КОСГУ</option>
+                    <select class="form-control" id="KOSGU" name="KOSGU" required title="Выберите КОСГУ">
+                        {% with current_KOSGU=KOSGU %}
+                        <option value="" {% if current_KOSGU == "" %}selected{% endif %}>Выберите КОСГУ</option>
+                        <option value="{{ current_KOSGU }}" {% if current_KOSGU != "" %}selected{% endif %}>{{ current_KOSGU }}
+                        {% endwith %}
                     </select>
                 </div>
                 <div class="form-item">
                     <label for="DopFC">ДопФК</label>
-                    <select class="form-control" id="DopFC" name="DopFC" required title="Выберите ДопФК" value="{{ DopFC }}">
-                        <option value="" {% if DopFC == "" %}selected{% endif %}>Выберите ДопФК</option>
+                    <select class="form-control" id="DopFC" name="DopFC" required title="Выберите ДопФК">
+                        {% with current_DopFC=DopFC %}
+                        <option value="" {% if current_DopFC == "" %}selected{% endif %}>Выберите ДопФК</option>
+                        <option value="{{ current_DopFC }}" {% if current_DopFC != "" %}selected{% endif %}>{{ current_DopFC }}
+                        {% endwith %}
                     </select>
                 </div>
                 <div class="form-item">
                     <label for="NMCC">НМЦК</label>
-                    <input type="text" class="num-field form-control" id="NMCC" name="NMCC" required value="{{ number }}">
+                    <input type="text" class="num-field form-control" id="NMCC" name="NMCC" required value="{{ NMCC }}">
                 </div>
                 <div class="form-item">
                     <label for="counterparty">Контрагент</label>

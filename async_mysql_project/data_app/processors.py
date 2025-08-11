@@ -863,6 +863,12 @@ class ContractProcessor:
 
             return render(self.request, 'edit.html', self.context_data)
 
+        for key, value in context_data_cache.items():
+            if key in self.context_data:
+                self.context_data[key] = value
+
+        await self.count_dates(True)
+
         await log_user_action(self.request.user, f'Отредактировал запись в "Закупки" с ID {self.context_data['id_id']},\nСтало: {self.context_data}')
 
         await self.message_service_update()
