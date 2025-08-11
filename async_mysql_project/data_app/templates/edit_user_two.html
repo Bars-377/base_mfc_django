@@ -33,24 +33,20 @@
             <!-- Поле для ввода названия услуги -->
             <div class="form-item">
                 <label for="budget_planned_old">Бюджет (Запланировано)</label>
-                <input type="number" class="form-control form-control-neverov" id="budget_planned_old" name="budget_planned_old" value="{% if service.budget_planned_old %}{{ service.budget_planned_old }}{% else %}{{ budget_planned_old }}{% endif %}"
-                    step="0.01" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="text" class="num-field form-control form-control-neverov" id="budget_planned_old" name="budget_planned_old" value="{% if service.budget_planned_old %}{{ service.budget_planned_old }}{% else %}{{ budget_planned_old }}{% endif %}">
             </div>
             <div class="form-item">
                 <label for="off_budget_planned_old">Внебюджет (Запланировано)</label>
-                <input type="number" class="form-control form-control-neverov" id="off_budget_planned_old" name="off_budget_planned_old" value="{% if service.off_budget_planned_old %}{{ service.off_budget_planned_old }}{% else %}{{ off_budget_planned_old }}{% endif %}"
-                    step="0.01" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="text" class="num-field form-control form-control-neverov" id="off_budget_planned_old" name="off_budget_planned_old" value="{% if service.off_budget_planned_old %}{{ service.off_budget_planned_old }}{% else %}{{ off_budget_planned_old }}{% endif %}">
             </div>
 
             <div class="form-item">
                 <label for="budget_planned">Бюджет (Запланировано)</label>
-                <input type="number" class="form-control form-control-neverov" id="budget_planned" name="budget_planned" value="{% if service.budget_planned %}{{ service.budget_planned }}{% else %}{{ budget_planned }}{% endif %}"
-                    step="0.01" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="text" class="num-field form-control form-control-neverov" id="budget_planned" name="budget_planned" value="{% if service.budget_planned %}{{ service.budget_planned }}{% else %}{{ budget_planned }}{% endif %}">
             </div>
             <div class="form-item">
                 <label for="off_budget_planned">Внебюджет (Запланировано)</label>
-                <input type="number" class="form-control form-control-neverov" id="off_budget_planned" name="off_budget_planned" value="{% if service.off_budget_planned %}{{ service.off_budget_planned }}{% else %}{{ off_budget_planned }}{% endif %}"
-                    step="0.01" min="0" max="99999999.99" title="Максимальное значение 99999999.99">
+                <input type="text" class="num-field form-control form-control-neverov" id="off_budget_planned" name="off_budget_planned" value="{% if service.off_budget_planned %}{{ service.off_budget_planned }}{% else %}{{ off_budget_planned }}{% endif %}">
             </div>
 
             <input type="hidden" name="id_id" value="{{ service.id_id }}">  <!-- Скрытое поле цвета -->
@@ -73,6 +69,7 @@
 
     <script src="{% bust_static 'js/jquery-3.5.1.slim.min.js' %}"></script>
     <script src="{% bust_static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% bust_static 'script_add_edit.js' %}"></script>  <!-- Добавьте ваш JS файл -->
 
 </body>
 

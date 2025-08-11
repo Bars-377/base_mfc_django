@@ -9,51 +9,70 @@ function formatDate(input) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    console.log("Старт script_add_edit.js");
-    checkMandatoryFields(); // Вызов функции при загрузке страницы
+const MAX_VALUE = 10_000_000_000;
+
+function formatInputValue(val) {
+    val = val.replace(',', '.');               // Заменяем запятую на точку
+    val = val.replace(/[^0-9.]/g, '');         // Оставляем только цифры и точки
+
+    let parts = val.split('.');
+    if (parts.length > 2) {
+        val = parts[0] + '.' + parts.slice(1).join('');
+        parts = val.split('.');
+    }
+
+    if (parts[1]?.length > 2) {
+        parts[1] = parts[1].slice(0, 2);
+        val = parts.join('.');
+    }
+
+    let num = parseFloat(val);
+    if (!isNaN(num) && num > MAX_VALUE) {
+        val = MAX_VALUE.toString();
+    }
+
+    return val;
+}
+
+function formatOnBlur(val) {
+    if (val === '' || val === '.') return '0.00';
+
+    let num = parseFloat(val);
+    if (isNaN(num)) return '0.00';
+
+    if (num > MAX_VALUE) num = MAX_VALUE;
+
+    return num.toFixed(2);
+}
+
+function initializeEmptyFields() {
+    document.querySelectorAll('.num-field').forEach(input => {
+        if (input.value.trim() === '' || input.value.trim() === '.') {
+            input.value = '0.00';
+        } else {
+            // Приводим сразу к корректному формату
+            input.value = formatOnBlur(input.value);
+        }
+    });
+}
+
+document.addEventListener('input', (e) => {
+    if (e.target.classList.contains('num-field')) {
+        e.target.value = formatInputValue(e.target.value);
+    }
 });
 
-// function checkMandatoryFields() {
-//     const statusSelect = document.getElementById('status');
-//     const selectedStatus = statusSelect.value;
+document.addEventListener('blur', (e) => {
+    if (e.target.classList.contains('num-field')) {
+        e.target.value = formatOnBlur(e.target.value);
+    }
+}, true);
 
-//     const statusWay = document.getElementById('way');
-//     const selectedStatusWay = statusWay.value;
-
-//     const statusKTSSR = document.getElementById('KTSSR');
-//     const selectedStatusKTSSR = statusKTSSR.value;
-
-//     const statusDopFC = document.getElementById('DopFC');
-//     const selectedStatusDopFC = statusDopFC.value;
-
-//     const statusKOSGU = document.getElementById('KOSGU');
-//     const selectedStatusKOSGU = statusKOSGU.value;
-
-//     // Потом достаём нужные поля
-//     const statusesList = statuses.list || [];
-//     const statusesBlocking = statuses.blocking || [];
-//     const statusesMandatory = statuses.mandatory || [];
-//     const statusesPurchasing_method = statuses.purchasing_method || [];
-//     const statusesKTSSR = statuses.KTSSR || [];
-//     const statusesDopFC = statuses.DopFC || [];
-//     const statusesKOSGU = statuses.KOSGU || [];
-
-//     const currentStatus = selectedStatus || "{{ status }}";
-//     const currentWay = selectedStatusWay || "{{ way }}";
-//     const currentKTSSR = selectedStatusKTSSR || "{{ KTSSR }}";
-//     const currentDopFC = selectedStatusDopFC || "{{ DopFC }}";
-//     const currentKOSGU = selectedStatusKOSGU || "{{ KOSGU }}";
-
-//     updateStatusSelect(statusWay, statusesPurchasing_method, currentWay);
-//     updateStatusSelect(statusSelect, statusesList, currentStatus);
-//     updateStatusSelect(statusKTSSR, statusesKTSSR, currentKTSSR);
-//     updateStatusSelect(statusDopFC, statusesDopFC, currentDopFC);
-//     updateStatusSelect(statusKOSGU, statusesKOSGU, currentKOSGU);
-//     updateMandatoryFields(currentStatus, statusesMandatory);
-//     updateBlockingFields(currentStatus, statusesBlocking);
-//     console.log("Завершение script_add_edit.js");
-// }
+document.addEventListener('DOMContentLoaded', function () {
+    console.log("Старт script_add_edit.js");
+    checkMandatoryFields();
+    initializeEmptyFields();
+});
 
 function checkMandatoryFields() {
     // Функция для безопасного получения value

@@ -563,11 +563,11 @@ class ContractProcessor:
         # services = self.context_data['service']
 
         if services.KTSSR == '2046102280':
-            if total_costs_calc['total_cost_1'] < (total_costs_calc['total_cost_3'] or total_costs_calc['total_cost_5'] or total_costs_calc['total_cost_7'] or total_costs_calc['total_cost_9']):
+            if total_costs_calc['total_cost_1'] < (await format_number(total_costs_calc['total_cost_3']) + await format_number(total_costs_calc['total_cost_5']) + await format_number(total_costs_calc['total_cost_7']) + await format_number(total_costs_calc['total_cost_9'])):
                 return False
 
         if services.KTSSR == '2046100092':
-            if total_costs_calc['total_cost_2'] < (total_costs_calc['total_cost_4'] or total_costs_calc['total_cost_6'] or total_costs_calc['total_cost_8'] or total_costs_calc['total_cost_10']):
+            if total_costs_calc['total_cost_2'] < (await format_number(total_costs_calc['total_cost_4']) + await format_number(total_costs_calc['total_cost_6']) + await format_number(total_costs_calc['total_cost_8']) + await format_number(total_costs_calc['total_cost_10'])):
                 return False
 
         return True

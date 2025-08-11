@@ -12,7 +12,12 @@ async def format_number(value):
         except ValueError:
             # Если преобразование в число не удалось, возвращаем 0.00
             number_final = 0.00
-    return number_final
+
+    # Переводим в "копейки" (целое число)
+    number_int = int(round(number_final * 100))
+
+    # Возвращаем обратно в рубли с двумя знаками
+    return number_int / 100
 
 def errors(e):
     """Вывод подробной информации об ошибке"""
