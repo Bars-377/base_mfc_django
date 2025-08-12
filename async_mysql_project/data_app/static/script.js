@@ -523,6 +523,9 @@ document.addEventListener("DOMContentLoaded", function () {
 					}, 2000);
 				})
 				.catch(error => {
+					if (overlay) overlay.style.display = 'none';
+					document.body.style.overflow = ''; // восстанавливаем скролл
+
 					flashMessage.textContent = 'У вас недостаточно прав для этого действия!';
 					flashMessage.style.display = 'block';
 					flashMessage.classList.remove('alert-success');

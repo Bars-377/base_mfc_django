@@ -576,7 +576,7 @@ async def register_view(request):
             messages.error(request, "Пароли не совпадают")
     return render(request, 'register.html')  # Ваш шаблон для регистрации
 
-@group_required('Администратор', 'Полный')
+@group_required('Администратор', 'Полный', 'Редактирование-Закупки')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_color(request, row_id):
     await log_user_action(request.user, f'Обновил цвет записи в "Закупки" с ID {row_id}')
@@ -597,9 +597,10 @@ async def update_color(request, row_id):
             return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
     return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
 
+@group_required('Администратор', 'Полный', 'Редактирование-Свод')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_color_user(request, row_id):
-    await log_user_action(request.user, f'Обновил цвет записи в "План-график" с ID {row_id}')
+    await log_user_action(request.user, f'Обновил цвет записи в "Свод" с ID {row_id}')
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -617,6 +618,7 @@ async def update_color_user(request, row_id):
             return JsonResponse({'success': False, 'error': 'Invalid JSON.'}, status=400)
     return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
 
+@group_required('Администратор', 'Полный', 'Редактирование-План-график')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def update_color_user_two(request, row_id):
     await log_user_action(request.user, f'Обновил цвет записи в "План-график" с ID {row_id}')
@@ -685,7 +687,7 @@ async def edit_user(request, row_id):
 
     return await sync_to_async(render)(request, 'edit_user.html', context)
 
-@group_required('Администратор', 'Полный')
+@group_required('Администратор', 'Полный', 'Редактирование-План-график')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def edit_user_two(request, row_id):
     await log_user_action(request.user, f'Перешёл на страницу редактирования записи в "План-график" с ID {row_id}')
