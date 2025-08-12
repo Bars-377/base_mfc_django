@@ -69,7 +69,7 @@ function showFlashMessage(event) {
 
 	const fileInput = document.getElementById("file-input");
 	const submitButton = document.getElementById("submit-button");
-	const loadingIndicator = document.getElementById("loading");
+	// const loadingIndicator = document.getElementById("loading");
 	const message = document.getElementById("flash-message-import");
 
 	if (fileInput.files.length === 0) {
@@ -145,15 +145,15 @@ function showFlashMessage(event) {
 		});
 }
 
-// Восстанавливаем прокрутку после загрузки страницы
-window.onload = function () {
-	// Восстановление для scrollPosition
-	const scrollPosition = sessionStorage.getItem('scrollPosition');
-	if (scrollPosition !== null) {
-		window.scrollTo(0, parseInt(scrollPosition, 10));
-		sessionStorage.removeItem('scrollPosition');
-	}
-};
+// // Восстанавливаем прокрутку после загрузки страницы
+// window.onload = function () {
+// 	// Восстановление для scrollPosition
+// 	const scrollPosition = sessionStorage.getItem('scrollPosition');
+// 	if (scrollPosition !== null) {
+// 		window.scrollTo(0, parseInt(scrollPosition, 10));
+// 		sessionStorage.removeItem('scrollPosition');
+// 	}
+// };
 
 // Универсальная функция сброса фильтров и прокрутки
 function resetFiltersGeneric({ pageParam, totalPagesParam, filters = [] }) {
@@ -281,10 +281,10 @@ function confirmDelete() {
 	return confirm('Вы уверены, что хотите удалить этот элемент?');
 }
 
-window.addEventListener('beforeunload', function () {
-	// Сохранение позиции скролла
-	localStorage.setItem('scrollPosition', window.scrollY);
-});
+// window.addEventListener('beforeunload', function () {
+// 	// Сохранение позиции скролла
+// 	localStorage.setItem('scrollPosition', window.scrollY);
+// });
 
 // Функция для установки обработчика сброса фильтров
 function addResetHandler(buttonId, resetFunction) {
@@ -782,4 +782,40 @@ document.addEventListener("DOMContentLoaded", function () {
 		'.service-row-user'
 	);
 
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+	// Прокрутка страницы по scroll_position из URL при загрузке
+	const urlParams = new URLSearchParams(window.location.search);
+	const scrollPos = urlParams.get('scroll_position');
+
+	if (scrollPos !== null && !isNaN(parseInt(scrollPos, 10))) {
+		// Если есть scroll_position в URL — прокрутить по нему
+		window.scrollTo({
+			top: parseInt(scrollPos, 10),
+			behavior: 'instant' // можно 'smooth', если нужно плавно
+		});
+	} else {
+		// Если scroll_position нет — пытаемся восстановить из sessionStorage
+		const savedPos = sessionStorage.getItem('scrollPosition');
+		if (savedPos !== null && !isNaN(parseInt(savedPos, 10))) {
+			window.scrollTo(0, parseInt(savedPos, 10));
+			sessionStorage.removeItem('scrollPosition');
+		}
+	}
+
+	// Обработчик для ссылок с классом .edit-link
+	document.querySelectorAll('.edit-link').forEach(function (link) {
+		link.addEventListener('click', function (event) {
+			// Получаем текущую позицию скролла
+			const currentScroll = window.scrollY || document.documentElement.scrollTop;
+
+			// Добавляем/обновляем параметр scroll_position в href
+			const url = new URL(link.href, window.location.origin);
+			url.searchParams.set('scroll_position', currentScroll);
+
+			// Обновляем ссылку
+			link.href = url.toString();
+		});
+	});
 });

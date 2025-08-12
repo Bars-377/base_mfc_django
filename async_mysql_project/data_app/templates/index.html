@@ -62,13 +62,13 @@
             <div class="container-fluid-neverov">
                 <h1>Государственные закупки</h1>
 
-                {% if messages %}
+                {% comment %} {% if messages %}
                     {% for message in messages %}
                         <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} mt-3">
                             {{ message }}
                         </div>
                     {% endfor %}
-                {% endif %}
+                {% endif %} {% endcomment %}
 
                 <div class="center-content">
                     <ul class="navbar-nav ml-auto">
@@ -122,6 +122,121 @@
     ">
         В процессе...
     </div>
+
+    {% comment %} <div id="message-overlay" style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 10000;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+    "></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const messages = [
+                {% if messages %}
+                    {% for message in messages %}
+                        {
+                            text: "{{ message|escapejs }}",
+                            tags: "{{ message.tags }}"
+                        }{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                {% else %}
+                    // Нет сообщений
+                {% endif %}
+            ];
+
+            if (messages.length > 0) {
+                const overlay = document.getElementById('message-overlay');
+
+                let fullText = "";
+                messages.forEach(msg => {
+                    fullText += msg.text + "\n";
+                });
+
+                overlay.textContent = fullText.trim();
+                overlay.style.display = "flex";
+
+                setTimeout(() => {
+                    overlay.style.display = "none";
+                }, 2000);
+            }
+        });
+    </script> {% endcomment %}
+
+    <div id="message-overlay" style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 10000;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+        flex-direction: column;
+    "></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const messages = [
+                {% if messages %}
+                    {% for message in messages %}
+                        {
+                            text: `{{ message|escapejs }}`,
+                            tags: `{{ message.tags }}`
+                        }{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                {% else %}
+                    // Нет сообщений
+                {% endif %}
+            ];
+
+            if (messages.length > 0) {
+                const overlay = document.getElementById('message-overlay');
+
+                // Формируем HTML для каждого сообщения с нужными классами
+                let fullHTML = "";
+                messages.forEach(msg => {
+                    // Определяем класс для цвета
+                    let alertClass = "";
+                    if (msg.tags.includes('error')) {
+                        alertClass = 'alert-danger';
+                    } else if (msg.tags) {
+                        alertClass = 'alert-' + msg.tags; // например alert-success, alert-warning и т.п.
+                    } else {
+                        alertClass = 'alert-info';
+                    }
+
+                    // Вставляем разметку с классами Bootstrap
+                    fullHTML += `<div class="alert ${alertClass} mt-3" style="margin: 5px 0;">${msg.text}</div>`;
+                });
+
+                overlay.innerHTML = fullHTML;
+                overlay.style.display = "flex";
+
+                setTimeout(() => {
+                    overlay.style.display = "none";
+                }, 2000);
+            }
+        });
+    </script>
 
 </body>
 </html>

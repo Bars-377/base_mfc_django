@@ -178,7 +178,8 @@ async def skeleton(request, user,
                     params,
                     page,
                     page_user,
-                    page_user_two):
+                    page_user_two,
+                    scroll_position):
 
     # Извлечь значения после знака "="
     values_params = re.findall(r'=(.*?)(&|$)', params)
@@ -436,6 +437,7 @@ async def skeleton(request, user,
 
     # Подготовка контекста для шаблона
     context = {
+        'scroll_position': scroll_position or '0',
         'data': services,
         'data_user': services_user,
         'data_user_two': services_user_two,
@@ -537,7 +539,10 @@ async def data_table_view(request):
         page_user_two = (total_services_full_user_two + per_page - 1) // per_page
         SSR[-1] = page_user_two
 
-    return await skeleton(*SSR)
+    # Восстанавливаем позицию скролла из сессии
+    scroll_position = request.session.pop('scroll_position', None)
+
+    return await skeleton(*SSR, scroll_position)
 
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -1140,6 +1145,10 @@ def copy_service_to_model(service):
     fields = {f.name: getattr(service, f.name) for f in service._meta.fields if f.name != 'id'}
     return fields  # Возвращаем данные для bulk_create
 
+from urllib.parse import urlencode
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+
 # Асинхронная функция для резервного копирования из Services_backup_one в Services
 @group_required('Администратор', 'Полный')
 async def backup_to_backup_one(request):
@@ -1162,7 +1171,17 @@ async def backup_to_backup_one(request):
         await processor.count_dates(False)
 
         await log_user_action(request.user, 'Резервное копирование в Services из Services_backup_one завершено!')
-        return JsonResponse({'success': True})
+
+        await messages.error(request, "Успех!")
+
+        params = request.GET.copy()  # копируем QueryDict, чтобы не изменять оригинал
+
+        redirect_url = f"{reverse('data_table_view')}?{urlencode(params)}"
+
+        # Перенаправляем пользователя
+        return HttpResponseRedirect(redirect_url)
+
+        # return JsonResponse({'success': True})
     except Exception as e:
         errors(e)
         await log_user_action(request.user, f'Ошибка при резервном копировании: {str(e)}')

@@ -24,7 +24,8 @@ def key_no_deleting(context_data):
         # 'selected_column_four',
         # 'contract_date',
         # 'end_date',
-        'params'
+        'params',
+        'scroll_position'
     ]
 
 
@@ -628,13 +629,18 @@ class ContractProcessor:
 
         await self.message_service_update()
 
+        # Восстанавливаем позицию скролла из сессии
+        scroll_position = self.request.POST.get('scroll_position')
+
+        self.context_data['scroll_position'] = scroll_position
+
         self.context_data = key_no_deleting(self.context_data)
 
         # # Кодируем query-параметры
         # query_string = urlencode(self.context_data)
 
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}&scroll_position={self.context_data['scroll_position']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)
@@ -645,13 +651,18 @@ class ContractProcessor:
 
         await self.message_service_update()
 
+        # Восстанавливаем позицию скролла из сессии
+        scroll_position = self.request.POST.get('scroll_position')
+
+        self.context_data['scroll_position'] = scroll_position
+
         self.context_data = key_no_deleting(self.context_data)
 
         # # Кодируем query-параметры
         # query_string = urlencode(self.context_data)
 
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}&scroll_position={self.context_data['scroll_position']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)
@@ -873,13 +884,18 @@ class ContractProcessor:
 
         await self.message_service_update()
 
+        # Восстанавливаем позицию скролла из сессии
+        scroll_position = self.request.POST.get('scroll_position')
+
+        self.context_data['scroll_position'] = scroll_position
+
         self.context_data = key_no_deleting(self.context_data)
 
         # # Кодируем query-параметры
         # query_string = urlencode(self.context_data)
 
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}&scroll_position={self.context_data['scroll_position']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)
@@ -929,13 +945,18 @@ class ContractProcessor:
 
         await self.message_service_add()
 
+        # Восстанавливаем позицию скролла из сессии
+        scroll_position = self.request.POST.get('scroll_position')
+
+        self.context_data['scroll_position'] = scroll_position
+
         self.context_data = key_no_deleting(self.context_data)
 
         # # Кодируем query-параметры
         # query_string = urlencode(self.context_data)
 
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}&scroll_position={self.context_data['scroll_position']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)
@@ -949,13 +970,18 @@ class ContractProcessor:
 
         await self.message_service_add()
 
+        # Восстанавливаем позицию скролла из сессии
+        scroll_position = self.request.POST.get('scroll_position')
+
+        self.context_data['scroll_position'] = scroll_position
+
         self.context_data = key_no_deleting(self.context_data)
 
         # # Кодируем query-параметры
         # query_string = urlencode(self.context_data)
 
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}&scroll_position={self.context_data['scroll_position']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)

@@ -191,3 +191,20 @@ function updateBlockingFields(status, statusesBlocking) {
         }
     });
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Читаем scroll_position из текущего URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const scrollPos = urlParams.get('scroll_position') || 0;
+
+    // 1. Для кнопки "Внести изменения" — добавляем в скрытое поле формы
+    document.getElementById('scroll_position_input').value = scrollPos;
+
+    // 2. Для кнопки "Вернуться назад" — добавляем в href
+    const backLink = document.getElementById('backLink');
+    if (backLink) {
+        const url = new URL(backLink.href, window.location.origin);
+        url.searchParams.set('scroll_position', scrollPos);
+        backLink.href = url.toString();
+    }
+});
