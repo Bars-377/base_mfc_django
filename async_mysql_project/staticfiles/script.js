@@ -423,6 +423,41 @@ function addScrollSaveOnSubmit(formId) {
 ['filter-form', 'filter-form-user', 'filter-form-user-two'].forEach(addScrollSaveOnSubmit);
 
 document.addEventListener("DOMContentLoaded", function () {
+
+	// Прокрутка страницы по scroll_position из URL при загрузке
+	const urlParams = new URLSearchParams(window.location.search);
+	const scrollPos = urlParams.get('scroll_position');
+
+	if (scrollPos !== null && !isNaN(parseInt(scrollPos, 10))) {
+		// Если есть scroll_position в URL — прокрутить по нему
+		window.scrollTo({
+			top: parseInt(scrollPos, 10),
+			behavior: 'instant' // можно 'smooth', если нужно плавно
+		});
+	} else {
+		// Если scroll_position нет — пытаемся восстановить из sessionStorage
+		const savedPos = sessionStorage.getItem('scrollPosition');
+		if (savedPos !== null && !isNaN(parseInt(savedPos, 10))) {
+			window.scrollTo(0, parseInt(savedPos, 10));
+			sessionStorage.removeItem('scrollPosition');
+		}
+	}
+
+	// Обработчик для ссылок с классом .edit-link
+	document.querySelectorAll('.edit-link').forEach(function (link) {
+		link.addEventListener('click', function (event) {
+			// Получаем текущую позицию скролла
+			const currentScroll = window.scrollY || document.documentElement.scrollTop;
+
+			// Добавляем/обновляем параметр scroll_position в href
+			const url = new URL(link.href, window.location.origin);
+			url.searchParams.set('scroll_position', currentScroll);
+
+			// Обновляем ссылку
+			link.href = url.toString();
+		});
+	});
+
 	const exportButton = document.getElementById("export-button");
 	const message = document.getElementById("flash-message-export");
 	const form = document.getElementById("export-form");
@@ -894,38 +929,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-	// Прокрутка страницы по scroll_position из URL при загрузке
-	const urlParams = new URLSearchParams(window.location.search);
-	const scrollPos = urlParams.get('scroll_position');
+// document.addEventListener('DOMContentLoaded', function () {
+// 	// Прокрутка страницы по scroll_position из URL при загрузке
+// 	const urlParams = new URLSearchParams(window.location.search);
+// 	const scrollPos = urlParams.get('scroll_position');
 
-	if (scrollPos !== null && !isNaN(parseInt(scrollPos, 10))) {
-		// Если есть scroll_position в URL — прокрутить по нему
-		window.scrollTo({
-			top: parseInt(scrollPos, 10),
-			behavior: 'instant' // можно 'smooth', если нужно плавно
-		});
-	} else {
-		// Если scroll_position нет — пытаемся восстановить из sessionStorage
-		const savedPos = sessionStorage.getItem('scrollPosition');
-		if (savedPos !== null && !isNaN(parseInt(savedPos, 10))) {
-			window.scrollTo(0, parseInt(savedPos, 10));
-			sessionStorage.removeItem('scrollPosition');
-		}
-	}
+// 	if (scrollPos !== null && !isNaN(parseInt(scrollPos, 10))) {
+// 		// Если есть scroll_position в URL — прокрутить по нему
+// 		window.scrollTo({
+// 			top: parseInt(scrollPos, 10),
+// 			behavior: 'instant' // можно 'smooth', если нужно плавно
+// 		});
+// 	} else {
+// 		// Если scroll_position нет — пытаемся восстановить из sessionStorage
+// 		const savedPos = sessionStorage.getItem('scrollPosition');
+// 		if (savedPos !== null && !isNaN(parseInt(savedPos, 10))) {
+// 			window.scrollTo(0, parseInt(savedPos, 10));
+// 			sessionStorage.removeItem('scrollPosition');
+// 		}
+// 	}
 
-	// Обработчик для ссылок с классом .edit-link
-	document.querySelectorAll('.edit-link').forEach(function (link) {
-		link.addEventListener('click', function (event) {
-			// Получаем текущую позицию скролла
-			const currentScroll = window.scrollY || document.documentElement.scrollTop;
+// 	// Обработчик для ссылок с классом .edit-link
+// 	document.querySelectorAll('.edit-link').forEach(function (link) {
+// 		link.addEventListener('click', function (event) {
+// 			// Получаем текущую позицию скролла
+// 			const currentScroll = window.scrollY || document.documentElement.scrollTop;
 
-			// Добавляем/обновляем параметр scroll_position в href
-			const url = new URL(link.href, window.location.origin);
-			url.searchParams.set('scroll_position', currentScroll);
+// 			// Добавляем/обновляем параметр scroll_position в href
+// 			const url = new URL(link.href, window.location.origin);
+// 			url.searchParams.set('scroll_position', currentScroll);
 
-			// Обновляем ссылку
-			link.href = url.toString();
-		});
-	});
-});
+// 			// Обновляем ссылку
+// 			link.href = url.toString();
+// 		});
+// 	});
+// });
