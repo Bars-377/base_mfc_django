@@ -29,7 +29,7 @@
 
             <!-- Форма для редактирования услуги -->
             {% comment %} <form method="POST" action="{% url 'update_record' row_id=row_id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" class="form-group"> {% endcomment %}
-                <form method="POST" action="{% url 'update_record' row_id=row_id %}?page={{ page }}{{ params }}" class="form-group">
+            <form method="POST" id="myForm" novalidate action="{% url 'update_record' row_id=row_id %}?page={{ page }}{{ params }}" class="form-group">
                 <!-- Поле для ввода названия услуги -->
                 <div class="form-item">
                     <label for="id_id">№ п/п</label>
@@ -112,12 +112,12 @@
                 <div class="form-item">
                     <label for="contract_date">Дата контракта</label>
                     <input type="text" class="form-control form-control-neverov" id="contract_date" name="contract_date"
-                        value="{% if service.contract_date %}{{ service.contract_date }}{% else %}{{ contract_date }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+                        value="{% if service.contract_date %}{{ service.contract_date }}{% else %}{{ contract_date }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="end_date">Окончание даты исполнения</label>
                     <input type="text" class="form-control form-control-neverov" id="end_date" name="end_date" value="{% if service.end_date %}{{ service.end_date }}{% else %}{{ end_date }}{% endif %}"
-                        title="Введите дату в формате ДД.ММ.ГГГГ" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)">
+                        title="Введите дату в формате ДД.ММ.ГГГГ" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10">
                 </div>
                 <div class="form-item">
                     <label for="contract_price">Цена контракта</label>
@@ -187,7 +187,7 @@
                 <input type="hidden" name="execution_contract_fact" value="{{ '' }}">  <!-- Скрытое поле для Исполнение контракта (факт) (формула) -->
                 <div class="form-item">
                     <label for="date_january_one">Дата оплаты Январь (факт)</label>
-                    <input type="text" class="form-control" id="date_january_one" name="date_january_one" value="{% if service.date_january_one %}{{ service.date_january_one }}{% else %}{{ date_january_one }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_january_one" name="date_january_one" value="{% if service.date_january_one %}{{ service.date_january_one }}{% else %}{{ date_january_one }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_january_one">Сумма оплаты Январь (факт)</label>
@@ -195,7 +195,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_february">Дата оплаты Февраль (факт)</label>
-                    <input type="text" class="form-control" id="date_february" name="date_february" value="{% if service.date_february %}{{ service.date_february }}{% else %}{{ date_february }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_february" name="date_february" value="{% if service.date_february %}{{ service.date_february }}{% else %}{{ date_february }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_february">Сумма оплаты Февраль (факт)</label>
@@ -203,7 +203,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_march">Дата оплаты Март (факт)</label>
-                    <input type="text" class="form-control" id="date_march" name="date_march" value="{% if service.date_march %}{{ service.date_march }}{% else %}{{ date_march }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_march" name="date_march" value="{% if service.date_march %}{{ service.date_march }}{% else %}{{ date_march }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_march">Сумма оплаты Март (факт)</label>
@@ -211,7 +211,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_april">Дата оплаты Апрель (факт)</label>
-                    <input type="text" class="form-control" id="date_april" name="date_april" value="{% if service.date_april %}{{ service.date_april }}{% else %}{{ date_april }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_april" name="date_april" value="{% if service.date_april %}{{ service.date_april }}{% else %}{{ date_april }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_april">Сумма оплаты Апрель (факт)</label>
@@ -219,7 +219,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_may">Дата оплаты Май (факт)</label>
-                    <input type="text" class="form-control" id="date_may" name="date_may" value="{% if service.date_may %}{{ service.date_may }}{% else %}{{ date_may }}{% endif %}" maxlength="255" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_may" name="date_may" value="{% if service.date_may %}{{ service.date_may }}{% else %}{{ date_may }}{% endif %}" maxlength="255" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_may">Сумма оплаты Май (факт)</label>
@@ -227,7 +227,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_june">Дата оплаты Июнь (факт)</label>
-                    <input type="text" class="form-control" id="date_june" name="date_june" value="{% if service.date_june %}{{ service.date_june }}{% else %}{{ date_june }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_june" name="date_june" value="{% if service.date_june %}{{ service.date_june }}{% else %}{{ date_june }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_june">Сумма оплаты Июнь (факт)</label>
@@ -235,7 +235,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_july">Дата оплаты Июль (факт)</label>
-                    <input type="text" class="form-control" id="date_july" name="date_july" value="{% if service.date_july %}{{ service.date_july }}{% else %}{{ date_july }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_july" name="date_july" value="{% if service.date_july %}{{ service.date_july }}{% else %}{{ date_july }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_july">Сумма оплаты Июль (факт)</label>
@@ -243,7 +243,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_august">Дата оплаты Август (факт)</label>
-                    <input type="text" class="form-control" id="date_august" name="date_august" value="{% if service.date_august %}{{ service.date_august }}{% else %}{{ date_august }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_august" name="date_august" value="{% if service.date_august %}{{ service.date_august }}{% else %}{{ date_august }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_august">Сумма оплаты Август (факт)</label>
@@ -251,7 +251,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_september">Дата оплаты Сентябрь (факт)</label>
-                    <input type="text" class="form-control" id="date_september" name="date_september" value="{% if service.date_september %}{{ service.date_september }}{% else %}{{ date_september }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_september" name="date_september" value="{% if service.date_september %}{{ service.date_september }}{% else %}{{ date_september }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_september">Сумма оплаты Сентябрь (факт)</label>
@@ -259,7 +259,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_october">Дата оплаты Октябрь (факт)</label>
-                    <input type="text" class="form-control" id="date_october" name="date_october" value="{% if service.date_october %}{{ service.date_october }}{% else %}{{ date_october }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_october" name="date_october" value="{% if service.date_october %}{{ service.date_october }}{% else %}{{ date_october }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_october">Сумма оплаты Октябрь (факт)</label>
@@ -267,7 +267,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_november">Дата оплаты Ноябрь (факт)</label>
-                    <input type="text" class="form-control" id="date_november" name="date_november" value="{% if service.date_november %}{{ service.date_november }}{% else %}{{ date_november }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_november" name="date_november" value="{% if service.date_november %}{{ service.date_november }}{% else %}{{ date_november }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_november">Сумма оплаты Ноябрь (факт)</label>
@@ -275,7 +275,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_december">Дата оплаты Декабрь (факт)</label>
-                    <input type="text" class="form-control" id="date_december" name="date_december" value="{% if service.date_december %}{{ service.date_december }}{% else %}{{ date_december }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_december" name="date_december" value="{% if service.date_december %}{{ service.date_december }}{% else %}{{ date_december }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_december">Сумма оплаты Декабрь (факт)</label>
@@ -283,7 +283,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_january_two">Дата оплаты Январь (факт)</label>
-                    <input type="text" class="form-control" id="date_january_two" name="date_january_two" value="{% if service.date_january_two %}{{ service.date_january_two }}{% else %}{{ date_january_two }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_january_two" name="date_january_two" value="{% if service.date_january_two %}{{ service.date_january_two }}{% else %}{{ date_january_two }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_january_two">Сумма оплаты Январь (факт)</label>

@@ -64,26 +64,160 @@ function updateFileName() {
 	}
 }
 
+// function showFlashMessage(event) {
+// 	event.preventDefault();
+
+// 	const fileInput = document.getElementById("file-input");
+// 	const submitButton = document.getElementById("submit-button");
+// 	// const loadingIndicator = document.getElementById("loading");
+// 	const message = document.getElementById("flash-message-import");
+
+// 	if (fileInput.files.length === 0) {
+// 		alert("Выберите файл перед отправкой!");
+// 		return;
+// 	}
+
+// 	// Скрываем кнопку отправки и показываем загрузку
+// 	submitButton.style.display = 'none';
+// 	// loadingIndicator.style.display = "block";
+// 	const overlay = document.getElementById('deletion-overlay');
+// 	// console.log(overlay ? "Элемент найден" : "Элемент не найден");
+// 	if (overlay) overlay.style.display = 'flex';
+// 	document.body.style.overflow = 'hidden'; // блокируем скролл
+
+// 	const formData = new FormData();
+// 	formData.append("file", fileInput.files[0]);
+
+// 	fetch("/upload/", {
+// 		method: "POST",
+// 		body: formData,
+// 		headers: {
+// 			"X-CSRFToken": getCookie("csrftoken")
+// 		}
+// 	})
+// 		.then(response => response.json())
+// 		.then(data => {
+// 			// setTimeout(() => {
+// 			// 	if (overlay) overlay.style.display = 'none';
+// 			// 	loadingIndicator.style.display = "none";
+// 			// 	submitButton.style.display = 'inline-block';
+// 			// }, 500);
+
+// 			if (overlay) overlay.style.display = 'none';
+// 			document.body.style.overflow = ''; // восстанавливаем скролл
+// 			// loadingIndicator.style.display = "none";
+// 			submitButton.style.display = 'inline-block';
+
+// 			message.textContent = data.message || "Ответ без сообщения от сервера";
+
+// 			// Обновляем классы в зависимости от статуса
+// 			message.classList.remove("alert-success", "alert-danger");
+
+// 			if (data.status === "success") {
+// 				message.classList.add("alert-success");
+// 			} else {
+// 				message.classList.add("alert-danger");
+// 			}
+
+// 			message.style.display = "block";
+
+// 			if (data.success) {
+// 				// Перезагружаем страницу через 4 секунды
+// 				setTimeout(() => {
+// 					window.location.assign(window.location.href);
+// 				}, 2000);
+// 			} else {
+// 				const fileNameDisplay = document.getElementById('file-name');
+// 				const submitButton = document.getElementById('submit-button');
+			
+// 				fileNameDisplay.textContent = '';
+		
+// 				Object.assign(fileNameDisplay.style, {
+// 					display: '',
+// 					verticalAlign: '',
+// 					border: '',
+// 					padding: '',
+// 					borderRadius: '',
+// 					margin: ''
+// 				});
+		
+// 				submitButton.style.display = 'none';
+				
+// 				console.error("Ошибка сервера:", data);
+// 			}
+// 		})
+// 		.catch(error => {
+// 			if (overlay) overlay.style.display = 'none';
+// 			document.body.style.overflow = ''; // восстанавливаем скролл
+// 			// loadingIndicator.style.display = "none";
+// 			submitButton.style.display = 'inline-block';
+
+// 			message.textContent = "У вас недостаточно прав для этого действия!";
+// 			message.classList.remove("alert-success");
+// 			message.classList.add("alert-danger");
+// 			message.style.display = "block";
+
+// 			const fileNameDisplay = document.getElementById('file-name');
+// 			const submitButton = document.getElementById('submit-button');
+		
+// 			fileNameDisplay.textContent = '';
+	
+// 			Object.assign(fileNameDisplay.style, {
+// 				display: '',
+// 				verticalAlign: '',
+// 				border: '',
+// 				padding: '',
+// 				borderRadius: '',
+// 				margin: ''
+// 			});
+	
+// 			submitButton.style.display = 'none';
+
+// 			console.error("Ошибка загрузки файла:", error);
+// 		});
+// }
+
 function showFlashMessage(event) {
 	event.preventDefault();
 
 	const fileInput = document.getElementById("file-input");
 	const submitButton = document.getElementById("submit-button");
-	// const loadingIndicator = document.getElementById("loading");
 	const message = document.getElementById("flash-message-import");
+	const overlay = document.getElementById('deletion-overlay');
+	const fileNameDisplay = document.getElementById('file-name');
 
 	if (fileInput.files.length === 0) {
 		alert("Выберите файл перед отправкой!");
 		return;
 	}
 
-	// Скрываем кнопку отправки и показываем загрузку
-	submitButton.style.display = 'none';
-	// loadingIndicator.style.display = "block";
-	const overlay = document.getElementById('deletion-overlay');
-	// console.log(overlay ? "Элемент найден" : "Элемент не найден");
-	if (overlay) overlay.style.display = 'flex';
-	document.body.style.overflow = 'hidden'; // блокируем скролл
+	// Вспомогательные функции
+	const toggleLoading = (isLoading) => {
+		submitButton.style.display = isLoading ? 'none' : 'inline-block';
+		if (overlay) overlay.style.display = isLoading ? 'flex' : 'none';
+		document.body.style.overflow = isLoading ? 'hidden' : '';
+	};
+
+	const resetFileNameDisplay = () => {
+		fileNameDisplay.textContent = '';
+		Object.assign(fileNameDisplay.style, {
+			display: '',
+			verticalAlign: '',
+			border: '',
+			padding: '',
+			borderRadius: '',
+			margin: ''
+		});
+	};
+
+	const showMessage = (text, isSuccess) => {
+		message.textContent = text;
+		message.classList.remove("alert-success", "alert-danger");
+		message.classList.add(isSuccess ? "alert-success" : "alert-danger");
+		message.style.display = "block";
+	};
+
+	toggleLoading(true);
 
 	const formData = new FormData();
 	formData.append("file", fileInput.files[0]);
@@ -97,49 +231,25 @@ function showFlashMessage(event) {
 	})
 		.then(response => response.json())
 		.then(data => {
-			// setTimeout(() => {
-			// 	if (overlay) overlay.style.display = 'none';
-			// 	loadingIndicator.style.display = "none";
-			// 	submitButton.style.display = 'inline-block';
-			// }, 500);
-
-			if (overlay) overlay.style.display = 'none';
-			document.body.style.overflow = ''; // восстанавливаем скролл
-			// loadingIndicator.style.display = "none";
-			submitButton.style.display = 'inline-block';
-
-			message.textContent = data.message || "Ответ без сообщения от сервера";
-
-			// Обновляем классы в зависимости от статуса
-			message.classList.remove("alert-success", "alert-danger");
-
-			if (data.status === "success") {
-				message.classList.add("alert-success");
-			} else {
-				message.classList.add("alert-danger");
-			}
-
-			message.style.display = "block";
+			toggleLoading(false);
+			showMessage(data.message || "Ответ без сообщения от сервера", data.status === "success");
 
 			if (data.success) {
-				// Перезагружаем страницу через 4 секунды
 				setTimeout(() => {
-					window.location.assign(window.location.href);
+					window.location.reload();
 				}, 2000);
 			} else {
+				resetFileNameDisplay();
+				submitButton.style.display = 'none';
 				console.error("Ошибка сервера:", data);
 			}
 		})
 		.catch(error => {
-			if (overlay) overlay.style.display = 'none';
-			document.body.style.overflow = ''; // восстанавливаем скролл
-			// loadingIndicator.style.display = "none";
-			submitButton.style.display = 'inline-block';
+			toggleLoading(false);
+			showMessage("У вас недостаточно прав для этого действия!", false);
 
-			message.textContent = "У вас недостаточно прав для этого действия!";
-			message.classList.remove("alert-success");
-			message.classList.add("alert-danger");
-			message.style.display = "block";
+			resetFileNameDisplay();
+			submitButton.style.display = 'none';
 
 			console.error("Ошибка загрузки файла:", error);
 		});

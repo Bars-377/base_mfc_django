@@ -26,7 +26,7 @@
             {% endif %}
 
             <!-- Форма для добавления новой услуги -->
-            <form method="POST" action="{% url 'add_record' %}?page={{ total_pages }}" class="form-group">
+            <form method="POST" id="myForm" action="{% url 'add_record' %}?page={{ total_pages }}" class="form-group">
                 <!-- Пример изменения отступов в форме с помощью классов -->
                 <div class="form-item">
                     <label for="name">Наименование закупки</label>
@@ -99,11 +99,11 @@
                 </div>
                 <div class="form-item">
                     <label for="contract_date">Дата контракта</label>
-                    <input type="text" class="form-control" id="contract_date" name="contract_date" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ contract_date }}">
+                    <input type="text" class="form-control" id="contract_date" name="contract_date" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ contract_date }}">
                 </div>
                 <div class="form-item">
                     <label for="end_date">Окончание даты исполнения</label>
-                    <input type="text" class="form-control" id="end_date" name="end_date" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ end_date }}">
+                    <input type="text" class="form-control" id="end_date" name="end_date" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ end_date }}">
                 </div>
                 <!-- Скрытое поле для передачи цены контракта -->
                 <input type="hidden" id="contract_price" name="contract_price" value="{{ contract_price }}">
@@ -171,7 +171,7 @@
                 <input type="hidden" name="execution_contract_fact" value="{{ '' }}">  <!-- Скрытое поле для Исполнение контракта (факт) (формула) -->
                 <div class="form-item">
                     <label for="date_january_one">Дата оплаты Январь (факт)</label>
-                    <input type="text" class="form-control" id="date_january_one" name="date_january_one" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_january_one }}">
+                    <input type="text" class="form-control" id="date_january_one" name="date_january_one" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_january_one }}">
                 </div>
                 <div class="form-item">
                     <label for="sum_january_one">Сумма оплаты Январь (факт)</label>
@@ -179,7 +179,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_february">Дата оплаты Февраль (факт)</label>
-                    <input type="text" class="form-control" id="date_february" name="date_february" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_february }}">
+                    <input type="text" class="form-control" id="date_february" name="date_february" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_february }}">
                 </div>
                 <div class="form-item">
                     <label for="sum_february">Сумма оплаты Февраль (факт)</label>
@@ -187,7 +187,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_march">Дата оплаты Март (факт)</label>
-                    <input type="text" class="form-control" id="date_march" name="date_march" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_march }}">
+                    <input type="text" class="form-control" id="date_march" name="date_march" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_march }}">
                 </div>
                 <div class="form-item">
                     <label for="sum_march">Сумма оплаты Март (факт)</label>
@@ -195,7 +195,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_april">Дата оплаты Апрель (факт)</label>
-                    <input type="text" class="form-control" id="date_april" name="date_april" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_april }}">
+                    <input type="text" class="form-control" id="date_april" name="date_april" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_april }}">
                 </div>
                 <div class="form-item">
                     <label for="sum_april">Сумма оплаты Апрель (факт)</label>
@@ -203,7 +203,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_may">Дата оплаты Май (факт)</label>
-                    <input type="text" class="form-control" id="date_may" name="date_may" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_may }}">
+                    <input type="text" class="form-control" id="date_may" name="date_may" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_may }}">
                 </div>
                 <div class="form-item">
                     <label for="sum_may">Сумма оплаты Май (факт)</label>
@@ -211,7 +211,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_june">Дата оплаты Июнь (факт)</label>
-                    <input type="text" class="form-control" id="date_june" name="date_june" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_june }}">
+                    <input type="text" class="form-control" id="date_june" name="date_june" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_june }}">
                 </div>
                 <div class="form-item">
                     <label for="sum_june">Сумма оплаты Июнь (факт)</label>
@@ -219,7 +219,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_july">Дата оплаты Июль (факт)</label>
-                    <input type="text" class="form-control" id="date_july" name="date_july" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_july }}">
+                    <input type="text" class="form-control" id="date_july" name="date_july" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_july }}">
                 </div>
                 <div class="form-item">
                     <label for="sum_july">Сумма оплаты Июль (факт)</label>
@@ -227,7 +227,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_august">Дата оплаты Август (факт)</label>
-                    <input type="text" class="form-control" id="date_august" name="date_august" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_august }}">
+                    <input type="text" class="form-control" id="date_august" name="date_august" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_august }}">
                 </div>
                 <div class="form-item">
                     <label for="sum_august">Сумма оплаты Август (факт)</label>
@@ -235,7 +235,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_september">Дата оплаты Сентябрь (факт)</label>
-                    <input type="text" class="form-control" id="date_september" name="date_september" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_september }}">
+                    <input type="text" class="form-control" id="date_september" name="date_september" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_september }}">
                 </div>
                 <div class="form-item">
                     <label for="sum_september">Сумма оплаты Сентябрь (факт)</label>
@@ -243,7 +243,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_october">Дата оплаты Октябрь (факт)</label>
-                    <input type="text" class="form-control" id="date_october" name="date_october" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_october }}">
+                    <input type="text" class="form-control" id="date_october" name="date_october" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_october }}">
                 </div>
                 <div class="form-item">
                     <label for="sum_october">Сумма оплаты Октябрь (факт)</label>
@@ -251,7 +251,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_november">Дата оплаты Ноябрь (факт)</label>
-                    <input type="text" class="form-control" id="date_november" name="date_november" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_november }}">
+                    <input type="text" class="form-control" id="date_november" name="date_november" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_november }}">
                 </div>
                 <div class="form-item">
                     <label for="sum_november">Сумма оплаты Ноябрь (факт)</label>
@@ -259,7 +259,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_december">Дата оплаты Декабрь (факт)</label>
-                    <input type="text" class="form-control" id="date_december" name="date_december" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_december }}">
+                    <input type="text" class="form-control" id="date_december" name="date_december" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_december }}">
                 </div>
                 <div class="form-item">
                     <label for="sum_december">Сумма оплаты Декабрь (факт)</label>
@@ -267,7 +267,7 @@
                 </div>
                 <div class="form-item">
                     <label for="date_january_two">Дата оплаты Январь (факт)</label>
-                    <input type="text" class="form-control" id="date_january_two" name="date_january_two" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this)" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_january_two }}">
+                    <input type="text" class="form-control" id="date_january_two" name="date_january_two" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ" value="{{ date_january_two }}">
                 </div>
                 <div class="form-item">
                     <label for="sum_january_two">Сумма оплаты Январь (факт)</label>

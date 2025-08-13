@@ -205,29 +205,105 @@ async def upload_file_(request):
 
                         return '', str(value)
 
-                    def safe_date_conversion(value):
-                        """Извлекаем дату"""
-                        # Если value является Series, извлекаем первое значение
-                        if isinstance(value, pd.Series):
-                            # Применяем конвертацию ко всем элементам Series
-                            return value.apply(lambda x: convert_to_float(x))
+                    from typing import Optional, List
 
-                        elif pd.isna(value):
-                            return ''  # Возвращаем None для недопустимых значений
+                    class DateConversionError(Exception):
+                        pass
 
-                        # Попробуем извлечь дату в формате ДД.ММ.ГГГГ или ГГГГ-ММ-ДД
-                        date_match = re.search(r"\b(\d{2}\.\d{2}\.\d{4})\b|\b(\d{4}-\d{2}-\d{2})\b", str(value))
-                        if date_match:
-                            date_value = date_match.group(0)
+                    def safe_date_conversion(
+                        value: pd.Series,
+                        status: pd.Series,
+                        column_name: pd.Series,
+                        condition: bool,
+                        mandatory: Optional[List[str]] = None
+                    ) -> pd.Series:
+                        if not isinstance(value, pd.Series):
+                            raise DateConversionError("Ошибка: передан не Series в value")
 
+                        date_patterns = [r"\b(\d{2}\.\d{2}\.\d{4})\b", r"\b(\d{4}-\d{2}-\d{2})\b"]
+                        date_formats = ['%d.%m.%Y', '%Y-%m-%d']
+
+                        def parse_date_str(date_str: str) -> str:
+                            if pd.isna(date_str) or str(date_str).strip() == '':
+                                return ''
+                            for pattern in date_patterns:
+                                match = re.search(pattern, str(date_str))
+                                if match:
+                                    date_value = match.group(1)
+                                    for fmt in date_formats:
+                                        try:
+                                            parsed_date = datetime.strptime(date_value, fmt)
+                                            return parsed_date.strftime('%d.%m.%Y')
+                                        except ValueError:
+                                            continue
+                            return ''
+
+                        if condition:
+                            # Если условие истинно — просто применяем парсер ко всем значениям
+                            return value.apply(parse_date_str)
+
+                        if mandatory is None:
+                            raise DateConversionError("Не передан список обязательных статусов mandatory")
+
+                        mask = status.isin(mandatory)
+                        result = value.astype(str).copy()
+
+                        def process_date_cell(cell_value: str, idx: int) -> str:
+                            col_name = column_name.loc[idx] if idx in column_name.index else 'UNKNOWN_COLUMN'
+
+                            if pd.isna(cell_value) or str(cell_value).strip() == '':
+                                raise DateConversionError(
+                                    f"Не указана дата контракта и окончание даты исполнения в колонке {col_name} в строке {idx+1} таблицы Excel."
+                                )
+
+                            for pattern in date_patterns:
+                                match = re.search(pattern, str(cell_value))
+                                if match:
+                                    date_value = match.group(1)
+                                    for fmt in date_formats:
+                                        try:
+                                            parsed_date = datetime.strptime(date_value, fmt)
+                                            return parsed_date.strftime('%d.%m.%Y')
+                                        except ValueError:
+                                            continue
+
+                            # Если дата не распарсилась, возвращаем пустую строку (или можно выбросить ошибку)
+                            return ''
+
+                        for idx in value[mask].index:
                             try:
-                                # Преобразуем строку даты в объект datetime
-                                parsed_date = datetime.strptime(date_value, '%Y-%m-%d')
-                                # Возвращаем дату в нужном формате
-                                return parsed_date.strftime('%d.%m.%Y')
-                            except ValueError:
-                                return date_value  # Возвращаем исходную строку, если не удаётся распарсить
-                        return str(value)
+                                result.loc[idx] = process_date_cell(value.loc[idx], idx)
+                            except DateConversionError as e:
+                                raise e
+
+                        return result
+
+                        # print('POPAL 1', status)
+                        # mandatory = json_object['statuses']['mandatory']
+                        # print('POPAL 2', mandatory)
+
+                        # """Извлекаем дату"""
+                        # # Если value является Series, извлекаем первое значение
+                        # if isinstance(value, pd.Series):
+                        #     # Применяем конвертацию ко всем элементам Series
+                        #     return value.apply(lambda x: convert_to_float(x))
+
+                        # elif pd.isna(value):
+                        #     return ''  # Возвращаем None для недопустимых значений
+
+                        # # Попробуем извлечь дату в формате ДД.ММ.ГГГГ или ГГГГ-ММ-ДД
+                        # date_match = re.search(r"\b(\d{2}\.\d{2}\.\d{4})\b|\b(\d{4}-\d{2}-\d{2})\b", str(value))
+                        # if date_match:
+                        #     date_value = date_match.group(0)
+
+                        #     try:
+                        #         # Преобразуем строку даты в объект datetime
+                        #         parsed_date = datetime.strptime(date_value, '%Y-%m-%d')
+                        #         # Возвращаем дату в нужном формате
+                        #         return parsed_date.strftime('%d.%m.%Y')
+                        #     except ValueError:
+                        #         return date_value  # Возвращаем исходную строку, если не удаётся распарсить
+                        # return str(value)
 
                     async def safe_conversion(value):
                         """Для преобразования данных"""
@@ -267,13 +343,14 @@ async def upload_file_(request):
                     df = df.drop(index=[0, 1])  # Удаляем первые две строки
 
                     # Колонки по типам конвертации
-                    to_safe_conversion = [0, 1, 2, 3, 4, 7, 10, 11, 12, 13, 14]
+                    to_safe_conversion = [0, 1, 2, 3, 4, 7, 10, 11, 12]
                     to_safe_int_conversion = [5, 6]
                     to_safe_float_conversion = [
                         8, 9, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
                         28, 29, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58
                     ]
-                    to_safe_date_conversion = [33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57]
+                    to_false_safe_date_conversion = [13, 14]
+                    to_true_safe_date_conversion = [33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57]
 
                     # Обработка safe_conversion
                     for idx in to_safe_conversion:
@@ -287,9 +364,27 @@ async def upload_file_(request):
                     for idx in to_safe_float_conversion:
                         df[f'{list[idx]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[idx]}']])
 
+                    mandatory = json_object['statuses']['mandatory']
+
                     # Обработка safe_date_conversion
-                    for idx in to_safe_date_conversion:
-                        df[f'{list[idx]}'] = df[f'{list[idx]}'].apply(safe_date_conversion)
+                    try:
+                        for idx in to_false_safe_date_conversion:
+                            df[list[idx]] = safe_date_conversion(df[list[idx]], df[list[2]], df[list[1]], False, mandatory)
+                    except DateConversionError as e:
+                        # Возвращаем JsonResponse с ошибкой, например, в Django view
+                        return JsonResponse({
+                            "message": str(e),
+                            "status": "error",
+                            "success": False
+                        }, status=400)
+
+                    for idx in to_true_safe_date_conversion:
+                        df[list[idx]] = safe_date_conversion(df[list[idx]], df[list[2]], df[list[1]], True, mandatory)
+                    # for idx in to_safe_date_conversion:
+                    #     # df[f'{list[idx]}'] = df[f'{list[idx]}'].apply(lambda x: safe_date_conversion(x, df[f'{list[2]}']))
+                    #     # df[f'{list[idx]}'] = safe_date_conversion(df[f'{list[idx]}'], df[f'{list[2]}'])
+                    #     col_name = list[idx]
+                    #     df[col_name] = safe_date_conversion(df[col_name], df[list[2]], col_name)
 
                     # df[f'{list[0]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[0]}']])
                     # df[f'{list[1]}'] = await asyncio.gather(*[safe_conversion(val) for val in df[f'{list[1]}']])

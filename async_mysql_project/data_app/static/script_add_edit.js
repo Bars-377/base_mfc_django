@@ -1,13 +1,79 @@
-function formatDate(input) {
-    let value = input.value.replace(/\D/g, '');  // Убираем все нецифровые символы
-    if (value.length >= 5) {
-        input.value = value.substring(0, 2) + '.' + value.substring(2, 4) + (value.length > 4 ? '.' + value.substring(4, 8) : '');
-    } else if (value.length >= 3) {
-        input.value = value.substring(0, 2) + '.' + value.substring(2, 4);
-    } else {
-        input.value = value;
+// function formatDate(input) {
+//     let value = input.value.replace(/\D/g, '');  // Убираем все нецифровые символы
+//     if (value.length >= 5) {
+//         input.value = value.substring(0, 2) + '.' + value.substring(2, 4) + (value.length > 4 ? '.' + value.substring(4, 8) : '');
+//     } else if (value.length >= 3) {
+//         input.value = value.substring(0, 2) + '.' + value.substring(2, 4);
+//     } else {
+//         input.value = value;
+//     }
+// }
+
+function formatDate(input, event) {
+    const originalCursorPos = input.selectionStart;
+    let digits = input.value.replace(/\D/g, '').slice(0, 8);
+  
+    // Форматируем строку как DD.MM.YYYY
+    let formatted = '';
+    for (let i = 0; i < digits.length; i++) {
+      if (i === 2 || i === 4) formatted += '.';
+      formatted += digits[i];
     }
-}
+  
+    input.value = formatted;
+  
+    // Управление позицией курсора
+    let cursorPos = originalCursorPos;
+  
+    if (event.inputType !== 'deleteContentBackward') {
+      if (cursorPos === 3 || cursorPos === 6) cursorPos++;
+    }
+    input.setSelectionRange(cursorPos, cursorPos);
+  
+    validateDate(input);
+  }
+  
+  function validateDate(input) {
+    if (input.value.length !== 10) {
+      clearValidation(input);
+      return;
+    }
+  
+    const [day, month, year] = input.value.split('.').map(Number);
+  
+    const isValidYear = year >= 1900 && year <= 2100;
+    const isValidMonth = month >= 1 && month <= 12;
+    const maxDay = isValidYear && isValidMonth ? new Date(year, month, 0).getDate() : 31;
+    const isValidDay = day >= 1 && day <= maxDay;
+  
+    if (isValidYear && isValidMonth && isValidDay) {
+      clearValidation(input);
+    } else {
+      setInvalid(input);
+    }
+  }
+  
+  function setInvalid(input) {
+    input.style.borderColor = 'red';
+    input.setCustomValidity('Некорректная дата');
+  }
+  
+  function clearValidation(input) {
+    input.style.borderColor = '';
+    input.setCustomValidity('');
+  }
+  
+  document.getElementById('dateInput').addEventListener('input', function(event) {
+    formatDate(this, event);
+  });
+  
+  document.getElementById('myForm').addEventListener('submit', function(e) {
+    const input = document.getElementById('dateInput');
+    if (!input.checkValidity()) {
+      e.preventDefault();
+      input.reportValidity();
+    }
+  });
 
 const MAX_VALUE = 10_000_000_000;
 
