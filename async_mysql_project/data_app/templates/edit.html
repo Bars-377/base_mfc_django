@@ -41,22 +41,16 @@
                     <input type="text" class="form-control form-control-neverov" id="name" name="name" value="{% if service.name %}{{ service.name }}{% else %}{{ name }}{% endif %}"
                         maxlength="255" required title="Максимальное количество значений 255">
                 </div>
-                <div class="form-item">
+                <div class="form-item" id="status-container" data-current-status="{{ service.status|default:status }}">
                     <label for="status">Статус</label>
                     <select class="form-control" id="status" onchange="checkMandatoryFields()" name="status" required title="Выберите статус">
-                        {% with current_status=service.status|default:status %}
-                        <option value="" {% if current_status == "" %}selected{% endif %}>Выберите статус</option>
-                        <option value="{{ current_status }}" {% if current_status != "" %}selected{% endif %}>{{ current_status }}
-                        {% endwith %}
+                     
                     </select>
                 </div>
-                <div class="form-item">
+                <div class="form-item" id="way-container" data-current-way="{{ service.way|default:way }}">
                     <label for="way">Способ закупки</label>
                     <select class="form-control" id="way" name="way" required title="Выберите cпособ закупки">
-                        {% with current_way=service.way|default:way %}
-                        <option value="" {% if current_way == "" %}selected{% endif %}>Выберите cпособ закупки</option>
-                        <option value="{{ current_way }}" {% if current_way != "" %}selected{% endif %}>{{ current_way }}
-                        {% endwith %}
+                
                     </select>
                 </div>
                 <div class="form-item">
@@ -64,31 +58,22 @@
                     <input type="text" class="form-control form-control-neverov" id="initiator" name="initiator" value="{% if service.initiator %}{{ service.initiator }}{% else %}{{ initiator }}{% endif %}"
                         maxlength="255" title="Максимальное количество значений 255">
                 </div>
-                <div class="form-item">
+                <div class="form-item" id="KTSSR-container" data-current-KTSSR="{{ service.KTSSR|default:KTSSR }}">
                     <label for="KTSSR">КЦСР</label>
                     <select class="form-control" id="KTSSR" name="KTSSR" required title="Выберите КЦСР">
-                        {% with current_KTSSR=service.KTSSR|default:KTSSR %}
-                        <option value="" {% if current_KTSSR == "" %}selected{% endif %}>Выберите КЦСР</option>
-                        <option value="{{ current_KTSSR }}" {% if current_KTSSR != "" %}selected{% endif %}>{{ current_KTSSR }}
-                        {% endwith %}
+                       
                     </select>
                 </div>
-                <div class="form-item">
+                <div class="form-item" id="KOSGU-container" data-current-KOSGU="{{ service.KOSGU|default:KOSGU }}">
                     <label for="KOSGU">КОСГУ</label>
                     <select class="form-control" id="KOSGU" name="KOSGU" required title="Выберите КОСГУ">
-                        {% with current_KOSGU=service.KOSGU|default:KOSGU %}
-                        <option value="" {% if current_KOSGU == "" %}selected{% endif %}>Выберите КОСГУ</option>
-                        <option value="{{ current_KOSGU }}" {% if current_KOSGU != "" %}selected{% endif %}>{{ current_KOSGU }}
-                        {% endwith %}
+                        
                     </select>
                 </div>
-                <div class="form-item">
+                <div class="form-item" id="DopFC-container" data-current-DopFC="{{ service.DopFC|default:DopFC }}">
                     <label for="DopFC">ДопФК</label>
                     <select class="form-control" id="DopFC" name="DopFC" required title="Выберите ДопФК">
-                        {% with current_DopFC=service.DopFC|default:DopFC %}
-                        <option value="" {% if current_DopFC == "" %}selected{% endif %}>Выберите ДопФК</option>
-                        <option value="{{ current_DopFC }}" {% if current_DopFC != "" %}selected{% endif %}>{{ current_DopFC }}
-                        {% endwith %}
+                        
                     </select>
                 </div>
                 <div class="form-item">
@@ -315,7 +300,8 @@
     <script src="{% bust_static 'js/bootstrap.bundle.min.js' %}"></script>
     <script>
         // Сначала парсим весь объект statuses
-        const statuses = {{ statuses|default:"{}"|safe }};
+        {% comment %} const statuses = {{ statuses|default:"{}"|safe }}; {% endcomment %}
+        const statuses = JSON.parse('{{ statuses|default:"{}"|escapejs }}');
     </script>
     <script src="{% bust_static 'script_add_edit.js' %}"></script>  <!-- Добавьте ваш JS файл -->
 

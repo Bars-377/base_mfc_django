@@ -12,61 +12,61 @@
 // function formatDate(input, event) {
 //     const originalCursorPos = input.selectionStart;
 //     let digits = input.value.replace(/\D/g, '').slice(0, 8);
-  
+
 //     // Форматируем строку как DD.MM.YYYY
 //     let formatted = '';
 //     for (let i = 0; i < digits.length; i++) {
 //       if (i === 2 || i === 4) formatted += '.';
 //       formatted += digits[i];
 //     }
-  
+
 //     input.value = formatted;
-  
+
 //     // Управление позицией курсора
 //     let cursorPos = originalCursorPos;
-  
+
 //     if (event.inputType !== 'deleteContentBackward') {
 //       if (cursorPos === 3 || cursorPos === 6) cursorPos++;
 //     }
 //     input.setSelectionRange(cursorPos, cursorPos);
-  
+
 //     validateDate(input);
 //   }
-  
+
 //   function validateDate(input) {
 //     if (input.value.length !== 10) {
 //       clearValidation(input);
 //       return;
 //     }
-  
+
 //     const [day, month, year] = input.value.split('.').map(Number);
-  
+
 //     const isValidYear = year >= 1900 && year <= 2100;
 //     const isValidMonth = month >= 1 && month <= 12;
 //     const maxDay = isValidYear && isValidMonth ? new Date(year, month, 0).getDate() : 31;
 //     const isValidDay = day >= 1 && day <= maxDay;
-  
+
 //     if (isValidYear && isValidMonth && isValidDay) {
 //       clearValidation(input);
 //     } else {
 //       setInvalid(input);
 //     }
 //   }
-  
+
 //   function setInvalid(input) {
 //     input.style.borderColor = 'red';
 //     input.setCustomValidity('Некорректная дата');
 //   }
-  
+
 //   function clearValidation(input) {
 //     input.style.borderColor = '';
 //     input.setCustomValidity('');
 //   }
-  
+
 // //   document.getElementById('dateInput').addEventListener('input', function(event) {
 // //     formatDate(this, event);
 // //   });
-  
+
 // //   document.getElementById('myForm').addEventListener('submit', function(e) {
 // //     const input = document.getElementById('dateInput');
 // //     if (!input.checkValidity()) {
@@ -136,7 +136,7 @@
 
 // document.addEventListener('DOMContentLoaded', () => {
 //     console.log("Старт script_add_edit.js");
-    
+
 //     const dateInput = document.getElementById('dateInput');
 //     if (dateInput) {
 //         dateInput.addEventListener('input', function(event) {
@@ -153,7 +153,7 @@
 //             }
 //         });
 //     }
-    
+
 //     checkMandatoryFields();
 //     initializeEmptyFields();
 
@@ -398,7 +398,10 @@ function updateStatusSelect(selectElement, statuses, currentStatus) {
     selectElement.appendChild(defaultOption);
 
     statuses.forEach(status => {
-        const option = new Option(status, status, status === currentStatus);
+        const option = document.createElement('option');
+        option.value = status;
+        option.text = status;
+        option.selected = (status === currentStatus);
         selectElement.appendChild(option);
     });
 }
@@ -417,11 +420,11 @@ function updateMandatoryFields(status, statusesMandatory) {
 function updateBlockingFields(status, statusesBlocking) {
     const isBlocked = statusesBlocking.includes(status);
     const fieldsToBlock = [
-        'date_january_one','sum_january_one','date_february','sum_february',
-        'date_march','sum_march','date_april','sum_april','date_may','sum_may',
-        'date_june','sum_june','date_july','sum_july','date_august','sum_august',
-        'date_september','sum_september','date_october','sum_october','date_november','sum_november',
-        'date_december','sum_december','date_january_two','sum_january_two'
+        'date_january_one', 'sum_january_one', 'date_february', 'sum_february',
+        'date_march', 'sum_march', 'date_april', 'sum_april', 'date_may', 'sum_may',
+        'date_june', 'sum_june', 'date_july', 'sum_july', 'date_august', 'sum_august',
+        'date_september', 'sum_september', 'date_october', 'sum_october', 'date_november', 'sum_november',
+        'date_december', 'sum_december', 'date_january_two', 'sum_january_two'
     ];
 
     fieldsToBlock.forEach(fieldId => {
@@ -438,12 +441,17 @@ function updateBlockingFields(status, statusesBlocking) {
     });
 }
 
+function getCurrentFromDiv(divId, dataAttr) {
+    const div = document.getElementById(divId);
+    return div ? div.getAttribute(`data-${dataAttr}`) || '' : '';
+}
+
 function checkMandatoryFields() {
-    const currentStatus = safeValue('status') || "{{ status }}";
-    const currentWay = safeValue('way') || "{{ way }}";
-    const currentKTSSR = safeValue('KTSSR') || "{{ KTSSR }}";
-    const currentDopFC = safeValue('DopFC') || "{{ DopFC }}";
-    const currentKOSGU = safeValue('KOSGU') || "{{ KOSGU }}";
+    const currentStatus = safeValue('status') || getCurrentFromDiv('status-container', 'current-status');
+    const currentWay = safeValue('way') || getCurrentFromDiv('way-container', 'current-way');
+    const currentKTSSR = safeValue('KTSSR') || getCurrentFromDiv('KTSSR-container', 'current-KTSSR');
+    const currentDopFC = safeValue('DopFC') || getCurrentFromDiv('DopFC-container', 'current-DopFC');
+    const currentKOSGU = safeValue('KOSGU') || getCurrentFromDiv('KOSGU-container', 'current-KOSGU');
 
     if (document.getElementById('status')) updateStatusSelect(document.getElementById('status'), statuses.list || [], currentStatus);
     if (document.getElementById('way')) updateStatusSelect(document.getElementById('way'), statuses.purchasing_method || [], currentWay);

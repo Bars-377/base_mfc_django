@@ -129,9 +129,9 @@ function updateFileName() {
 // 			} else {
 // 				const fileNameDisplay = document.getElementById('file-name');
 // 				const submitButton = document.getElementById('submit-button');
-			
+
 // 				fileNameDisplay.textContent = '';
-		
+
 // 				Object.assign(fileNameDisplay.style, {
 // 					display: '',
 // 					verticalAlign: '',
@@ -140,9 +140,9 @@ function updateFileName() {
 // 					borderRadius: '',
 // 					margin: ''
 // 				});
-		
+
 // 				submitButton.style.display = 'none';
-				
+
 // 				console.error("Ошибка сервера:", data);
 // 			}
 // 		})
@@ -159,9 +159,9 @@ function updateFileName() {
 
 // 			const fileNameDisplay = document.getElementById('file-name');
 // 			const submitButton = document.getElementById('submit-button');
-		
+
 // 			fileNameDisplay.textContent = '';
-	
+
 // 			Object.assign(fileNameDisplay.style, {
 // 				display: '',
 // 				verticalAlign: '',
@@ -170,7 +170,7 @@ function updateFileName() {
 // 				borderRadius: '',
 // 				margin: ''
 // 			});
-	
+
 // 			submitButton.style.display = 'none';
 
 // 			console.error("Ошибка загрузки файла:", error);
