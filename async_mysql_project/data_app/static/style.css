@@ -17,6 +17,13 @@ h1 {
     /* Центрирует кнопку по горизонтали */
 }
 
+/* Красная рамка для ошибок */
+.invalid {
+    border: 2px solid red !important;
+    background-color: #ffe6e6;
+    /* мягкий красный фон, чтобы заметно было */
+}
+
 /* Контейнер для страницы */
 .container-fluid-neverov {
     padding: 15px;

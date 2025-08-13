@@ -29,7 +29,7 @@
 
             <!-- Форма для редактирования услуги -->
             {% comment %} <form method="POST" action="{% url 'update_record' row_id=row_id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" class="form-group"> {% endcomment %}
-            <form method="POST" id="myForm" novalidate action="{% url 'update_record' row_id=row_id %}?page={{ page }}{{ params }}" class="form-group">
+            <form method="POST" novalidate onsubmit="return validateForm()" action="{% url 'update_record' row_id=row_id %}?page={{ page }}{{ params }}" class="form-group">
                 <!-- Поле для ввода названия услуги -->
                 <div class="form-item">
                     <label for="id_id">№ п/п</label>
@@ -43,13 +43,13 @@
                 </div>
                 <div class="form-item" id="status-container" data-current-status="{{ service.status|default:status }}">
                     <label for="status">Статус</label>
-                    <select class="form-control" id="status" onchange="checkMandatoryFields()" name="status" required title="Выберите статус">
+                    <select class="form-control" id="status" onchange="checkMandatoryFields()" name="status" title="Выберите статус">
                      
                     </select>
                 </div>
                 <div class="form-item" id="way-container" data-current-way="{{ service.way|default:way }}">
                     <label for="way">Способ закупки</label>
-                    <select class="form-control" id="way" name="way" required title="Выберите cпособ закупки">
+                    <select class="form-control" id="way" name="way" title="Выберите cпособ закупки">
                 
                     </select>
                 </div>
@@ -60,19 +60,19 @@
                 </div>
                 <div class="form-item" id="KTSSR-container" data-current-KTSSR="{{ service.KTSSR|default:KTSSR }}">
                     <label for="KTSSR">КЦСР</label>
-                    <select class="form-control" id="KTSSR" name="KTSSR" required title="Выберите КЦСР">
+                    <select class="form-control" id="KTSSR" name="KTSSR" title="Выберите КЦСР">
                        
                     </select>
                 </div>
                 <div class="form-item" id="KOSGU-container" data-current-KOSGU="{{ service.KOSGU|default:KOSGU }}">
                     <label for="KOSGU">КОСГУ</label>
-                    <select class="form-control" id="KOSGU" name="KOSGU" required title="Выберите КОСГУ">
+                    <select class="form-control" id="KOSGU" name="KOSGU" title="Выберите КОСГУ">
                         
                     </select>
                 </div>
                 <div class="form-item" id="DopFC-container" data-current-DopFC="{{ service.DopFC|default:DopFC }}">
                     <label for="DopFC">ДопФК</label>
-                    <select class="form-control" id="DopFC" name="DopFC" required title="Выберите ДопФК">
+                    <select class="form-control" id="DopFC" name="DopFC" title="Выберите ДопФК">
                         
                     </select>
                 </div>
