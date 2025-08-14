@@ -102,10 +102,27 @@ function updateMandatoryFields(status, statusesMandatory) {
     const isMandatory = statusesMandatory.includes(status);
     const mandatoryFields = ['counterparty', 'contract_number', 'contract_date', 'end_date'];
 
+    // Проверка обязательных полей
     mandatoryFields.forEach(fieldId => {
         const field = document.getElementById(fieldId);
         if (!field) return;
-        isMandatory ? field.setAttribute('required', 'required') : field.removeAttribute('required');
+
+        if (isMandatory) {
+            if (field.id.includes('date')) {
+                // Для дат — проверка через validateDate
+                if (!validateDate(field)) allValid = false;
+            } else {
+                // Для текстовых/других полей
+                if (!field.value.trim()) {
+                    setInvalid(field, 'Поле обязательно для заполнения');
+                    allValid = false;
+                } else {
+                    clearValidation(field);
+                }
+            }
+        } else {
+            clearValidation(field); // Снимаем ошибку, если поле не обязательно
+        }
     });
 }
 
@@ -165,22 +182,12 @@ function validateForm() {
         { el: document.getElementById('KTSSR'), msg: 'Выберите КЦСР' },
         { el: document.getElementById('KOSGU'), msg: 'Выберите КОСГУ' },
         { el: document.getElementById('DopFC'), msg: 'Выберите ДопФК' },
-        { el: document.getElementById('contract_date'), msg: 'Некорректная дата' },
-        { el: document.getElementById('end_date'), msg: 'Некорректная дата' }
     ];
 
     fieldsToCheck.forEach(({ el, msg }) => {
         if (!el) return;
 
-        if (el.classList.contains('num-field')) {
-            // Для числовых полей проверка делается на blur
-            if (el.value.trim() === '' || isNaN(parseFloat(el.value))) {
-                setInvalid(el, 'Введите число');
-                allValid = false;
-            } else {
-                clearValidation(el);
-            }
-        } else if (el.type === 'text' && el.id.includes('date')) {
+        if (el.type === 'text' && el.id.includes('date')) {
             // Дата
             if (!validateDate(el)) allValid = false;
         } else {
