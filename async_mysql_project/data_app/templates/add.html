@@ -30,7 +30,7 @@
                 <!-- Пример изменения отступов в форме с помощью классов -->
                 <div class="form-item">
                     <label for="name">Наименование закупки</label>
-                    <input type="text" class="form-control" id="name" name="name" maxlength="255" required title="Максимальное количество значений 255" value="{{ name }}">
+                    <input type="text" class="form-control" id="name" name="name" maxlength="255" title="Максимальное количество значений 255" value="{{ name }}">
                 </div>
                 <div class="form-item" id="status-container" data-current-status="{{ status }}">
                     <label for="status">Статус</label>
@@ -68,7 +68,7 @@
                 </div>
                 <div class="form-item">
                     <label for="NMCC">НМЦК</label>
-                    <input type="text" class="num-field form-control" id="NMCC" name="NMCC" required value="{{ NMCC }}">
+                    <input type="text" class="num-field form-control" id="NMCC" name="NMCC" value="{{ NMCC }}">
                 </div>
                 <div class="form-item">
                     <label for="counterparty">Контрагент</label>

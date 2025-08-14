@@ -64,119 +64,6 @@ function updateFileName() {
 	}
 }
 
-// function showFlashMessage(event) {
-// 	event.preventDefault();
-
-// 	const fileInput = document.getElementById("file-input");
-// 	const submitButton = document.getElementById("submit-button");
-// 	// const loadingIndicator = document.getElementById("loading");
-// 	const message = document.getElementById("flash-message-import");
-
-// 	if (fileInput.files.length === 0) {
-// 		alert("Выберите файл перед отправкой!");
-// 		return;
-// 	}
-
-// 	// Скрываем кнопку отправки и показываем загрузку
-// 	submitButton.style.display = 'none';
-// 	// loadingIndicator.style.display = "block";
-// 	const overlay = document.getElementById('deletion-overlay');
-// 	// console.log(overlay ? "Элемент найден" : "Элемент не найден");
-// 	if (overlay) overlay.style.display = 'flex';
-// 	document.body.style.overflow = 'hidden'; // блокируем скролл
-
-// 	const formData = new FormData();
-// 	formData.append("file", fileInput.files[0]);
-
-// 	fetch("/upload/", {
-// 		method: "POST",
-// 		body: formData,
-// 		headers: {
-// 			"X-CSRFToken": getCookie("csrftoken")
-// 		}
-// 	})
-// 		.then(response => response.json())
-// 		.then(data => {
-// 			// setTimeout(() => {
-// 			// 	if (overlay) overlay.style.display = 'none';
-// 			// 	loadingIndicator.style.display = "none";
-// 			// 	submitButton.style.display = 'inline-block';
-// 			// }, 500);
-
-// 			if (overlay) overlay.style.display = 'none';
-// 			document.body.style.overflow = ''; // восстанавливаем скролл
-// 			// loadingIndicator.style.display = "none";
-// 			submitButton.style.display = 'inline-block';
-
-// 			message.textContent = data.message || "Ответ без сообщения от сервера";
-
-// 			// Обновляем классы в зависимости от статуса
-// 			message.classList.remove("alert-success", "alert-danger");
-
-// 			if (data.status === "success") {
-// 				message.classList.add("alert-success");
-// 			} else {
-// 				message.classList.add("alert-danger");
-// 			}
-
-// 			message.style.display = "block";
-
-// 			if (data.success) {
-// 				// Перезагружаем страницу через 4 секунды
-// 				setTimeout(() => {
-// 					window.location.assign(window.location.href);
-// 				}, 2000);
-// 			} else {
-// 				const fileNameDisplay = document.getElementById('file-name');
-// 				const submitButton = document.getElementById('submit-button');
-
-// 				fileNameDisplay.textContent = '';
-
-// 				Object.assign(fileNameDisplay.style, {
-// 					display: '',
-// 					verticalAlign: '',
-// 					border: '',
-// 					padding: '',
-// 					borderRadius: '',
-// 					margin: ''
-// 				});
-
-// 				submitButton.style.display = 'none';
-
-// 				console.error("Ошибка сервера:", data);
-// 			}
-// 		})
-// 		.catch(error => {
-// 			if (overlay) overlay.style.display = 'none';
-// 			document.body.style.overflow = ''; // восстанавливаем скролл
-// 			// loadingIndicator.style.display = "none";
-// 			submitButton.style.display = 'inline-block';
-
-// 			message.textContent = "У вас недостаточно прав для этого действия!";
-// 			message.classList.remove("alert-success");
-// 			message.classList.add("alert-danger");
-// 			message.style.display = "block";
-
-// 			const fileNameDisplay = document.getElementById('file-name');
-// 			const submitButton = document.getElementById('submit-button');
-
-// 			fileNameDisplay.textContent = '';
-
-// 			Object.assign(fileNameDisplay.style, {
-// 				display: '',
-// 				verticalAlign: '',
-// 				border: '',
-// 				padding: '',
-// 				borderRadius: '',
-// 				margin: ''
-// 			});
-
-// 			submitButton.style.display = 'none';
-
-// 			console.error("Ошибка загрузки файла:", error);
-// 		});
-// }
-
 function showFlashMessage(event) {
 	event.preventDefault();
 
@@ -254,16 +141,6 @@ function showFlashMessage(event) {
 			console.error("Ошибка загрузки файла:", error);
 		});
 }
-
-// // Восстанавливаем прокрутку после загрузки страницы
-// window.onload = function () {
-// 	// Восстановление для scrollPosition
-// 	const scrollPosition = sessionStorage.getItem('scrollPosition');
-// 	if (scrollPosition !== null) {
-// 		window.scrollTo(0, parseInt(scrollPosition, 10));
-// 		sessionStorage.removeItem('scrollPosition');
-// 	}
-// };
 
 // Универсальная функция сброса фильтров и прокрутки
 function resetFiltersGeneric({ pageParam, totalPagesParam, filters = [] }) {
@@ -928,39 +805,3 @@ document.addEventListener("DOMContentLoaded", function () {
 	);
 
 });
-
-// document.addEventListener('DOMContentLoaded', function () {
-// 	// Прокрутка страницы по scroll_position из URL при загрузке
-// 	const urlParams = new URLSearchParams(window.location.search);
-// 	const scrollPos = urlParams.get('scroll_position');
-
-// 	if (scrollPos !== null && !isNaN(parseInt(scrollPos, 10))) {
-// 		// Если есть scroll_position в URL — прокрутить по нему
-// 		window.scrollTo({
-// 			top: parseInt(scrollPos, 10),
-// 			behavior: 'instant' // можно 'smooth', если нужно плавно
-// 		});
-// 	} else {
-// 		// Если scroll_position нет — пытаемся восстановить из sessionStorage
-// 		const savedPos = sessionStorage.getItem('scrollPosition');
-// 		if (savedPos !== null && !isNaN(parseInt(savedPos, 10))) {
-// 			window.scrollTo(0, parseInt(savedPos, 10));
-// 			sessionStorage.removeItem('scrollPosition');
-// 		}
-// 	}
-
-// 	// Обработчик для ссылок с классом .edit-link
-// 	document.querySelectorAll('.edit-link').forEach(function (link) {
-// 		link.addEventListener('click', function (event) {
-// 			// Получаем текущую позицию скролла
-// 			const currentScroll = window.scrollY || document.documentElement.scrollTop;
-
-// 			// Добавляем/обновляем параметр scroll_position в href
-// 			const url = new URL(link.href, window.location.origin);
-// 			url.searchParams.set('scroll_position', currentScroll);
-
-// 			// Обновляем ссылку
-// 			link.href = url.toString();
-// 		});
-// 	});
-// });

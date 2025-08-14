@@ -310,7 +310,6 @@
     </div>
 
     <div class="container-fluid-neverov">
-        {% comment %} <a href="{% url 'add' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить закупку</a> {% endcomment %}
         <a href="{% url 'add' %}?page={{ page }}{{ params }}" class="btn btn-warning edit-link">Добавить закупку</a>
     </div>
 
@@ -410,7 +409,6 @@
                         <td class="stretch-width">
                             <!-- Управление -->
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                {% comment %} <a href="{% url 'edit' row_id=item.id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" {% endcomment %}
                                 <a href="{% url 'edit' row_id=item.id %}?page={{ page }}{{ params }}"
                                 class="btn btn-sm btn-warning edit-link">Edit</a>
                                 <form class="delete-form"
@@ -518,7 +516,6 @@
 
     <script>
         // Создаем строку с подстановкой значений
-        {% comment %} const query_string = `contract_date={{selected_contract_date}}&keyword_one={{keyword_one}}&keyword_two={{keyword_two}}&keyword_three={{keyword_three}}&keyword_four={{keyword_four}}&selected_column_one={{selected_column_one}}&selected_column_two={{selected_column_two}}&selected_column_three={{selected_column_three}}&selected_column_four={{selected_column_four}}&end_date={{selected_end_date}}`; {% endcomment %}
         const raw_query_string = `{{ params|safe }}`;
         // Удаляем первый символ (например, &)
         const query_string = raw_query_string.startsWith('&') ? raw_query_string.slice(1) : raw_query_string;
@@ -612,7 +609,7 @@
             <div>
                 <span id="file-name"></span>
             </div>
-            {% comment %} <div id="loading" style="display: none;">Загрузка...</div> {% endcomment %}
+
             <div>
                 <button type="submit" class="btn btn-success" style="display: none;" id="submit-button">Отправить</button>
             </div>
@@ -643,89 +640,9 @@
     </div>
 
     <div class="container-fluid-neverov">
-        {% comment %} <a href="{% url 'add_two' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить свод</a> {% endcomment %}
         <a href="{% url 'add_two' %}?page={{ page }}{{ params }}" class="btn btn-warning edit-link">Добавить свод</a>
     </div>
 
-    <!--<div class="container-fluid-neverov">-->
-        <!--<form method="GET" action="/" id="filter-form-user" class="form-group">-->
-            <!--<div class="form-item">-->
-            <!--    <label for="keyword_one_user">Поиск по ключевому слову 1:</label>-->
-            <!--    <input type="text" class="form-control" id="keyword_one_user" name="keyword_one_user" placeholder="Ключевое слово"-->
-            <!--        value="{% if request.GET.keyword_one_user == 'None' %}{% else %}{{ request.GET.keyword_one_user }}{% endif %}">-->
-            <!--</div>-->
-            <!--<div class="form-item">-->
-            <!--    <label for="selected_column_one_user">Выберите столбец 1:</label>-->
-            <!--    <select name="selected_column_one_user" id="selected_column_one_user" class="form-control">-->
-            <!--        <option value="">Столбец</option>-->
-            <!--        <option value="id_id" {% if selected_column_one_user == 'id_id' %}selected{% endif %}>№ п/п</option>-->
-            <!--        <option value="name" {% if selected_column_one_user == 'name' %}selected{% endif %}>Наименование</option>-->
-            <!--        <option value="KOSGU" {% if selected_column_one_user == 'KOSGU' %}selected{% endif %}>КОСГУ</option>-->
-            <!--        <option value="DopFC" {% if selected_column_one_user == 'DopFC' %}selected{% endif %}>ДопФК</option>-->
-            <!--        <option value="budget_limit" {% if selected_column_one_user == 'budget_limit' %}selected{% endif %}>Бюджет (Лимиты)</option>-->
-            <!--        <option value="off_budget_limit" {% if selected_column_one_user == 'off_budget_limit' %}selected{% endif %}>Внебюджет (Лимиты)</option>-->
-            <!--        <option value="budget_planned" {% if selected_column_one_user == 'budget_planned' %}selected{% endif %}>Бюджет (Запланировано)</option>-->
-            <!--        <option value="off_budget_planned" {% if selected_column_one_user == 'off_budget_planned' %}selected{% endif %}>Внебюджет (Запланировано)</option>-->
-            <!--        <option value="budget_concluded" {% if selected_column_one_user == 'budget_concluded' %}selected{% endif %}>Бюджет (Заключено)</option>-->
-            <!--        <option value="off_budget_concluded" {% if selected_column_one_user == 'off_budget_concluded' %}selected{% endif %}>Внебюджет (Заключено)</option>-->
-            <!--        <option value="budget_completed" {% if selected_column_one_user == 'budget_completed' %}selected{% endif %}>Бюджет (Исполнено)</option>-->
-            <!--        <option value="off_budget_completed" {% if selected_column_one_user == 'off_budget_completed' %}selected{% endif %}>Внебюджет (Исполнено)</option>-->
-            <!--        <option value="budget_execution" {% if selected_column_one_user == 'budget_execution'%}selected{% endif %}>Бюджет (Кассовое исполнение)</option>-->
-            <!--        <option value="off_budget_execution" {% if selected_column_one_user == 'off_budget_execution' %}selected{% endif %}>Внебюджет (Кассовое исполнение)</option>-->
-            <!--        <option value="budget_remainder" {% if selected_column_one_user == 'budget_remainder' %}selected{% endif %}>Бюджет (Остаток)</option>-->
-            <!--        <option value="off_budget_remainder" {% if selected_column_one_user == 'off_budget_remainder' %}selected{% endif %}>Внебюджет (Остаток)</option>-->
-            <!--        <option value="budget_plans" {% if selected_column_one_user == 'budget_plans' %}selected{% endif %}>Бюджет (Остаток с учетом планов)</option>-->
-            <!--        <option value="off_budget_plans" {% if selected_column_one_user == 'off_budget_plans' %}selected{% endif %}>Внебюджет (Остаток с учетом планов)</option>-->
-            <!--    </select>-->
-            <!--</div>-->
-            <!--<div class="form-item">-->
-            <!--    <label for="keyword_two_user">Поиск по ключевому слову 2:</label>-->
-            <!--    <input type="text" class="form-control" id="keyword_two_user" name="keyword_two_user" placeholder="Ключевое слово"-->
-            <!--        value="{% if request.GET.keyword_two_user == 'None' %}{% else %}{{ request.GET.keyword_two_user }}{% endif %}">-->
-            <!--</div>-->
-            <!--<div class="form-item">-->
-            <!--    <label for="selected_column_two_user">Выберите столбец 2:</label>-->
-            <!--    <select name="selected_column_two_user" id="selected_column_two_user" class="form-control">-->
-            <!--        <option value="">Столбец</option>-->
-            <!--        <option value="id_id" {% if selected_column_two_user == 'id_id' %}selected{% endif %}>№ п/п</option>-->
-            <!--        <option value="name" {% if selected_column_two_user == 'name' %}selected{% endif %}>Наименование</option>-->
-            <!--        <option value="KOSGU" {% if selected_column_two_user == 'KOSGU' %}selected{% endif %}>КОСГУ</option>-->
-            <!--        <option value="DopFC" {% if selected_column_two_user == 'DopFC' %}selected{% endif %}>ДопФК</option>-->
-            <!--        <option value="budget_limit" {% if selected_column_two_user == 'budget_limit' %}selected{% endif %}>Бюджет (Лимиты)</option>-->
-            <!--        <option value="off_budget_limit" {% if selected_column_two_user == 'off_budget_limit' %}selected{% endif %}>Внебюджет (Лимиты)</option>-->
-            <!--        <option value="budget_planned" {% if selected_column_two_user == 'budget_planned' %}selected{% endif %}>Бюджет (Запланировано)</option>-->
-            <!--        <option value="off_budget_planned" {% if selected_column_two_user == 'off_budget_planned' %}selected{% endif %}>Внебюджет (Запланировано)</option>-->
-            <!--        <option value="budget_concluded" {% if selected_column_two_user == 'budget_concluded' %}selected{% endif %}>Бюджет (Заключено)</option>-->
-            <!--        <option value="off_budget_concluded" {% if selected_column_two_user == 'off_budget_concluded' %}selected{% endif %}>Внебюджет (Заключено)</option>-->
-            <!--        <option value="budget_completed" {% if selected_column_two_user == 'budget_completed' %}selected{% endif %}>Бюджет (Исполнено)</option>-->
-            <!--        <option value="off_budget_completed" {% if selected_column_two_user == 'off_budget_completed' %}selected{% endif %}>Внебюджет (Исполнено)</option>-->
-            <!--        <option value="budget_execution" {% if selected_column_two_user == 'budget_execution'%}selected{% endif %}>Бюджет (Кассовое исполнение)</option>-->
-            <!--        <option value="off_budget_execution" {% if selected_column_two_user == 'off_budget_execution' %}selected{% endif %}>Внебюджет (Кассовое исполнение)</option>-->
-            <!--        <option value="budget_remainder" {% if selected_column_two_user == 'budget_remainder' %}selected{% endif %}>Бюджет (Остаток)</option>-->
-            <!--        <option value="off_budget_remainder" {% if selected_column_two_user == 'off_budget_remainder' %}selected{% endif %}>Внебюджет (Остаток)</option>-->
-            <!--        <option value="budget_plans" {% if selected_column_two_user == 'budget_plans' %}selected{% endif %}>Бюджет (Остаток с учетом планов)</option>-->
-            <!--        <option value="off_budget_plans" {% if selected_column_two_user == 'off_budget_plans' %}selected{% endif %}>Внебюджет (Остаток с учетом планов)</option>-->
-            <!--    </select>-->
-            <!--</div>-->
-
-            <!--<div class="form-item">-->
-            <!--    <label for="KOSGU_user">КОСГУ:</label>-->
-            <!--    <select name="KOSGU_user" id="KOSGU_user" class="form-control form-control-year">-->
-            <!--        <option value="No">Номер</option>-->
-            <!--        {% for KOSGU_user in service_KOSGU_user %}-->
-            <!--        <option value="{{ KOSGU_user }}" {% if KOSGU_user == selected_KOSGU_user %}selected{% endif %}>-->
-            <!--            {{ KOSGU_user }}-->
-            <!--        </option>-->
-            <!--        {% endfor %}-->
-            <!--    </select>-->
-            <!--</div>-->
-
-            <!--<div class="form-item-neverov">-->
-            <!--    <button type="submit" class="btn btn-primary">Фильтровать</button>-->
-            <!--    <button type="button" class="btn btn-secondary" id="reset-filters-user">Сбросить всё</button>-->
-            <!--</div>-->
-        <!--</form>-->
-    <!--</div>-->
     <div class="container-fluid-neverov">
 
         <div class="scroll-container top-scroll">
@@ -777,8 +694,6 @@
                         <td class="stretch-width">
                             <!-- Управление -->
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                {% comment %} <a href="{% url 'edit_user' row_id=item.id %}?page_user={{ page_user }}" {% endcomment %}
-                                {% comment %} <a href="{% url 'edit_user' row_id=item.id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" {% endcomment %}
                                 <a href="{% url 'edit_user' row_id=item.id %}?page={{ page }}{{ params }}"
                                 class="btn btn-sm btn-warning edit-link">Edit</a>
                                 <form class="delete-form-user"
@@ -866,99 +781,8 @@
         </div>
     </div>
 
-    <!--<div class="container-fluid-neverov"> -->
-    <!--    <div style="display: flex; justify-content: flex-end;"> -->
-            <!-- Pagination Controls -->
-    <!--        <nav aria-label="Page navigation"> -->
-    <!--            <ul class="pagination"> -->
-    <!--                {% if page_user > 1 %} -->
-    <!--                <li class="page-item"> -->
-    <!--                    <a class="page-link" -->
-    <!--                        href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ page_user|add:"-1" }}" -->
-    <!--                        aria-label="Previous"> -->
-    <!--                        <span aria-hidden="true">&laquo;</span> -->
-    <!--                    </a> -->
-    <!--                </li> -->
-    <!--                {% endif %} -->
-
-                    <!-- Show "Previous" button if not on the first page group -->
-    <!--                {% if start_page_user > 1 %} -->
-    <!--                <li class="page-item"> -->
-    <!--                    <a class="page-link" -->
-    <!--                        href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user=1">1</a> -->
-    <!--                </li> -->
-    <!--                    {% if start_page_user > 2 %} -->
-    <!--                    <li class="page-item disabled"><span class="page-link">...</span></li> -->
-    <!--                    {% endif %} -->
-    <!--                {% endif %} -->
-
-                    <!-- Show a few pages around the current page -->
-    <!--                {% for p in pages_user %} -->
-    <!--                <li class="page-item {% if p == page_user %}active{% endif %}"> -->
-    <!--                    <a class="page-link" -->
-    <!--                        href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ p }}">{{ p }}</a> -->
-    <!--                </li> -->
-    <!--                {% endfor %} -->
-
-                    <!-- Show "Next" button if not on the last page group -->
-    <!--                {% if end_page_user < total_pages_user %} -->
-    <!--                    {% load custom_tags %} -->
-    <!--                    {% if end_page_user < total_pages_user|subtract:1 %} -->
-    <!--                    <li class="page-item disabled"><span class="page-link">...</span></li> -->
-    <!--                    {% endif %} -->
-    <!--                <li class="page-item"> -->
-    <!--                    <a class="page-link" -->
-    <!--                        href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ total_pages_user }}">{{ total_pages_user }}</a> -->
-    <!--                </li> -->
-    <!--                {% endif %} -->
-
-    <!--                {% if page_user < total_pages_user %} -->
-    <!--                <li class="page-item"> -->
-    <!--                    <a class="page-link" -->
-    <!--                        href="{% url 'data_table_view' %}?KOSGU_user={{ selected_KOSGU_user }}&keyword_one_user={{ keyword_one_user }}&keyword_two_user={{ keyword_two_user }}&selected_column_one_user={{ selected_column_one_user }}&selected_column_two_user={{ selected_column_two_user }}&page_user={{ page_user|add:"1" }}" -->
-    <!--                        aria-label="Next"> -->
-    <!--                        <span aria-hidden="true">&raquo;</span> -->
-    <!--                    </a> -->
-    <!--                </li> -->
-    <!--                {% endif %} -->
-    <!--            </ul> -->
-    <!--        </nav> -->
-    <!--    </div> -->
-    <!--</div> -->
-
     <div class="container-fluid-neverov">
-    <!--    <h4>Итого Лимиты (Бюджет): {{ total_cost_1 }}</h4> -->
-    <!--    <h4>Итого Лимиты (Внебюджет): {{ total_cost_2 }}</h4> -->
-    <!--    <h4>Итого Запланировано (Бюджет): {{ total_cost_3 }}</h4> -->
-    <!--    <h4>Итого Запланировано (Внебюджет): {{ total_cost_4 }}</h4> -->
-    <!--    <h4>Итого В торгах (Бюджет): {{ total_cost_5 }}</h4> -->
-    <!--    <h4>Итого В торгах (Внебюджет): {{ total_cost_6 }}</h4> -->
-    <!--    <h4>Итого Заключено (Бюджет): {{ total_cost_7 }}</h4> -->
-    <!--    <h4>Итого Заключено (Внебюджет): {{ total_cost_8 }}</h4> -->
-    <!--    <h4>Итого Исполнено (Бюджет): {{ total_cost_9 }}</h4> -->
-    <!--    <h4>Итого Исполнено (Внебюджет): {{ total_cost_10 }}</h4> -->
-    <!--    <h4>Итого Кассовое исполнение (Бюджет): {{ total_cost_11 }}</h4> -->
-    <!--    <h4>Итого Кассовое исполнение (Внебюджет): {{ total_cost_12 }}</h4> -->
-    <!--    <h4>Итого Остаток (Бюджет): {{ total_cost_13 }}</h4> -->
-    <!--    <h4>Итого Остаток (Внебюджет): {{ total_cost_14 }}</h4> -->
-    <!--    <h4>Итого Остаток с учетом планов (Бюджет): {{ total_cost_15 }}</h4> -->
-    <!--    <h4>Итого Остаток с учетом планов (Внебюджет): {{ total_cost_16 }}</h4> -->
-
-    <!--    <h4>Итого СГОЗ: {{ total_cost_17 }}</h4> -->
-    <!--    <h4>Итого Кассовое исполнение: {{ total_cost_18 }}</h4> -->
-
-        <!-- <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4> -->
-        <!-- <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4> -->
-
-        <!-- <h1>Экспорт услуг в Excel</h1> -->
-        <!-- <br> -->
-
-        <!-- <form id="export-form" onsubmit="showFlashMessage(event)"> -->
-        <!--     <input type="hidden" name="contract_date" value="{% if selected_contract_date %}{{ selected_contract_date }}{% else %}No{% endif %}"> -->
-        <!--     <input type="hidden" name="end_date" value="{% if selected_end_date %}{{ selected_end_date }}{% else %}No{% endif %}"> -->
-        <!--     <div class="alert alert-success" id="flash-message" style="display: none;"></div> -->
-        <!--     <button type="submit" class="btn btn-info" id="export-button">Экспорт в Excel</button> -->
-        <!-- </form> -->
+    
     </div>
 {% endblock %}
 
@@ -966,65 +790,7 @@
     <div class="container-fluid-neverov">
         <h3>План-график</h3>
     </div>
-    <!--<div class="container-fluid-neverov">-->
-        <!--<form method="GET" action="/" id="filter-form-user-two" class="form-group">-->
-            <!--<div class="form-item">-->
-            <!--    <label for="keyword_one_user_two">Поиск по ключевому слову 1:</label>-->
-            <!--    <input type="text" class="form-control" id="keyword_one_user_two" name="keyword_one_user_two" placeholder="Ключевое слово"-->
-            <!--        value="{% if request.GET.keyword_one_user_two == 'None' %}{% else %}{{ request.GET.keyword_one_user_two }}{% endif %}">-->
-            <!--</div>-->
-            <!--<div class="form-item">-->
-            <!--    <label for="selected_column_one_user_two">Выберите столбец 1:</label>-->
-            <!--    <select name="selected_column_one_user_two" id="selected_column_one_user_two" class="form-control">-->
-            <!--        <option value="">Столбец</option>-->
-            <!--        <option value="KOSGU" {% if selected_column_one_user_two == 'KOSGU' %}selected{% endif %}>КОСГУ</option>-->
-            <!--        <option value="DopFC" {% if selected_column_one_user_two == 'DopFC' %}selected{% endif %}>ДопФК</option>-->
-            <!--        <option value="budget_planned" {% if selected_column_one_user_two == 'budget_planned' %}selected{% endif %}>Бюджет (Запланировано)</option>-->
-            <!--        <option value="off_budget_planned" {% if selected_column_one_user_two == 'off_budget_planned' %}selected{% endif %}>Внебюджет (Запланировано)</option>-->
-            <!--        <option value="budget_concluded" {% if selected_column_one_user_two == 'budget_concluded' %}selected{% endif %}>Бюджет (Заключено)</option>-->
-            <!--        <option value="off_budget_concluded" {% if selected_column_one_user_two == 'off_budget_concluded' %}selected{% endif %}>Внебюджет (Заключено)</option>-->
-            <!--        <option value="budget_remainder" {% if selected_column_one_user_two == 'budget_remainder' %}selected{% endif %}>Бюджет (Остаток)</option>-->
-            <!--        <option value="off_budget_remainder" {% if selected_column_one_user_two == 'off_budget_remainder' %}selected{% endif %}>Внебюджет (Остаток)</option>-->
-            <!--    </select>-->
-            <!--</div>-->
-            <!--<div class="form-item">-->
-            <!--    <label for="keyword_two_user_two">Поиск по ключевому слову 2:</label>-->
-            <!--    <input type="text" class="form-control" id="keyword_two_user_two" name="keyword_two_user_two" placeholder="Ключевое слово"-->
-            <!--        value="{% if request.GET.keyword_two_user_two == 'None' %}{% else %}{{ request.GET.keyword_two_user_two }}{% endif %}">-->
-            <!--</div>-->
-            <!--<div class="form-item">-->
-            <!--    <label for="selected_column_two_user_two">Выберите столбец 2:</label>-->
-            <!--    <select name="selected_column_two_user_two" id="selected_column_two_user_two" class="form-control">-->
-            <!--        <option value="">Столбец</option>-->
-            <!--        <option value="KOSGU" {% if selected_column_two_user_two == 'KOSGU' %}selected{% endif %}>КОСГУ</option>-->
-            <!--        <option value="DopFC" {% if selected_column_two_user_two == 'DopFC' %}selected{% endif %}>ДопФК</option>-->
-            <!--        <option value="budget_planned" {% if selected_column_two_user_two == 'budget_planned' %}selected{% endif %}>Бюджет (Запланировано)</option>-->
-            <!--        <option value="off_budget_planned" {% if selected_column_two_user_two == 'off_budget_planned' %}selected{% endif %}>Внебюджет (Запланировано)</option>-->
-            <!--        <option value="budget_concluded" {% if selected_column_two_user_two == 'budget_concluded' %}selected{% endif %}>Бюджет (Заключено)</option>-->
-            <!--        <option value="off_budget_concluded" {% if selected_column_two_user_two == 'off_budget_concluded' %}selected{% endif %}>Внебюджет (Заключено)</option>-->
-            <!--        <option value="budget_remainder" {% if selected_column_two_user_two == 'budget_remainder' %}selected{% endif %}>Бюджет (Остаток)</option>-->
-            <!--        <option value="off_budget_remainder" {% if selected_column_two_user_two == 'off_budget_remainder' %}selected{% endif %}>Внебюджет (Остаток)</option>-->
-            <!--    </select>-->
-            <!--</div>-->
-
-            <!--<div class="form-item">-->
-            <!--    <label for="KOSGU_user_two">КОСГУ:</label>-->
-            <!--    <select name="KOSGU_user_two" id="KOSGU_user_two" class="form-control form-control-year">-->
-            <!--        <option value="No">Номер</option>-->
-            <!--        {% for KOSGU_user_two in service_KOSGU_user_two %}-->
-            <!--        <option value="{{ KOSGU_user_two }}" {% if KOSGU_user_two == selected_KOSGU_user_two %}selected{% endif %}>-->
-            <!--            {{ KOSGU_user_two }}-->
-            <!--        </option>-->
-            <!--        {% endfor %}-->
-            <!--    </select>-->
-            <!--</div>-->
-
-            <!--<div class="form-item-neverov">-->
-            <!--    <button type="submit" class="btn btn-primary">Фильтровать</button>-->
-            <!--    <button type="button" class="btn btn-secondary" id="reset-filters-user-two">Сбросить всё</button>-->
-            <!--</div>-->
-        <!--</form>-->
-    <!--</div>-->
+    
     <div class="container-fluid-neverov">
 
         <div class="scroll-container top-scroll">
@@ -1060,8 +826,6 @@
                         <td class="stretch-width">
                             <!-- Управление -->
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                {% comment %} <a href="{% url 'edit_user_two' row_id=item.id %}?page_user_two={{ page_user_two }}" {% endcomment %}
-                                {% comment %} <a href="{% url 'edit_user_two' row_id=item.id %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&keyword_three={{ keyword_three }}&keyword_four={{ keyword_four }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&contract_date={{ selected_contract_date }}&end_date={{ selected_end_date }}" {% endcomment %}
                                 <a href="{% url 'edit_user_two' row_id=item.id %}?page={{ page }}{{ params }}"
                                 class="btn btn-sm btn-warning edit-link">Edit</a>
 
@@ -1112,83 +876,7 @@
         </div>
     </div>
 
-    <!--<div class="container-fluid-neverov"> -->
-    <!--    <div style="display: flex; justify-content: flex-end;"> -->
-            <!-- Pagination Controls -->
-    <!--        <nav aria-label="Page navigation"> -->
-    <!--            <ul class="pagination"> -->
-    <!--                {% if page_user_two > 1 %} -->
-    <!--                <li class="page-item"> -->
-    <!--                    <a class="page-link" -->
-    <!--                        href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two={{ page_user_two|add:"-1" }}" -->
-    <!--                        aria-label="Previous"> -->
-    <!--                        <span aria-hidden="true">&laquo;</span> -->
-    <!--                    </a> -->
-    <!--                </li> -->
-    <!--                {% endif %} -->
-
-                    <!-- Show "Previous" button if not on the first page group -->
-    <!--                {% if start_page_user_two > 1 %} -->
-    <!--                <li class="page-item"> -->
-    <!--                    <a class="page-link" -->
-    <!--                        href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two=1">1</a> -->
-    <!--                </li> -->
-    <!--                    {% if start_page_user_two > 2 %} -->
-    <!--                    <li class="page-item disabled"><span class="page-link">...</span></li> -->
-    <!--                    {% endif %} -->
-    <!--                {% endif %} -->
-
-                    <!-- Show a few pages around the current page -->
-    <!--                {% for p in pages_user_two %} -->
-    <!--                <li class="page-item {% if p == page_user_two %}active{% endif %}"> -->
-    <!--                    <a class="page-link" -->
-    <!--                        href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two={{ p }}">{{ p }}</a> -->
-    <!--                </li> -->
-    <!--                {% endfor %} -->
-
-                    <!-- Show "Next" button if not on the last page group -->
-    <!--                {% if end_page_user_two < total_pages_user_two %} -->
-    <!--                    {% load custom_tags %} -->
-    <!--                    {% if end_page_user_two < total_pages_user_two|subtract:1 %} -->
-    <!--                    <li class="page-item disabled"><span class="page-link">...</span></li> -->
-    <!--                    {% endif %} -->
-    <!--                <li class="page-item"> -->
-    <!--                    <a class="page-link" -->
-    <!--                        href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two={{ total_pages_user_two }}">{{ total_pages_user_two }}</a> -->
-    <!--                </li> -->
-    <!--                {% endif %} -->
-
-    <!--                {% if page_user_two < total_pages_user_two %} -->
-    <!--                <li class="page-item"> -->
-    <!--                    <a class="page-link" -->
-    <!--                        href="{% url 'data_table_view' %}?KOSGU_user_two={{ selected_KOSGU_user_two }}&keyword_one_user_two={{ keyword_one_user_two }}&keyword_two_user_two={{ keyword_two_user_two }}&selected_column_one_user_two={{ selected_column_one_user_two }}&selected_column_two_user_two={{ selected_column_two_user_two }}&page_user_two={{ page_user_two|add:"1" }}" -->
-    <!--                        aria-label="Next"> -->
-    <!--                        <span aria-hidden="true">&raquo;</span> -->
-    <!--                    </a> -->
-    <!--                </li> -->
-    <!--                {% endif %} -->
-    <!--            </ul> -->
-    <!--        </nav> -->
-    <!--    </div> -->
-    <!--</div> -->
-
     <div class="container-fluid-neverov">
 
-        <!-- <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4> -->
-        <!-- <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4> -->
-        <!-- <br> -->
-
-        <!-- <a href="{% url 'add' %}?page={{ page }}&keyword_one={{ keyword_one }}&keyword_two={{ keyword_two }}&selected_column_one={{ selected_column_one }}&selected_column_two={{ selected_column_two }}&selected_contract_date={{ selected_contract_date }}&selected_end_date={{ selected_end_date }}&total_pages={{ total_pages }}" class="btn btn-warning">Добавить данные</a> -->
-
-        <!-- <br> -->
-        <!-- <h1>Экспорт услуг в Excel</h1> -->
-        <!-- <br> -->
-
-        <!-- <form id="export-form" onsubmit="showFlashMessage(event)"> -->
-        <!--     <input type="hidden" name="contract_date" value="{% if selected_contract_date %}{{ selected_contract_date }}{% else %}No{% endif %}"> -->
-        <!--     <input type="hidden" name="end_date" value="{% if selected_end_date %}{{ selected_end_date }}{% else %}No{% endif %}"> -->
-        <!--     <div class="alert alert-success" id="flash-message" style="display: none;"></div> -->
-        <!--     <button type="submit" class="btn btn-info" id="export-button">Экспорт в Excel</button> -->
-        <!-- </form> -->
     </div>
 {% endblock %}

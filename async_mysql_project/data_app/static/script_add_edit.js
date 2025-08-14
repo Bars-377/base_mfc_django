@@ -159,6 +159,9 @@ function validateForm() {
     let allValid = true;
 
     const fieldsToCheck = [
+        { el: document.getElementById('id_id'), msg: 'Выберите номер закупки' },
+        { el: document.getElementById('name'), msg: 'Выберите Наименование закупки' },
+        { el: document.getElementById('NMCC'), msg: 'Выберите НМЦК' },
         { el: document.getElementById('KTSSR'), msg: 'Выберите КЦСР' },
         { el: document.getElementById('KOSGU'), msg: 'Выберите КОСГУ' },
         { el: document.getElementById('DopFC'), msg: 'Выберите ДопФК' },
@@ -194,24 +197,46 @@ function validateForm() {
     return allValid;
 }
 
+// Общая функция для проверки select
+function validateSelectField(el, msg) {
+    if (!el.value) {
+        setInvalid(el, msg);
+    } else {
+        clearValidation(el);
+    }
+}
+
 document.addEventListener('change', e => {
     if (['KTSSR', 'KOSGU', 'DopFC'].includes(e.target.id)) {
         const msg = e.target.id === 'KTSSR' ? 'Выберите КЦСР' :
             e.target.id === 'KOSGU' ? 'Выберите КОСГУ' :
                 'Выберите ДопФК';
-        if (!e.target.value) {
-            setInvalid(e.target, msg);
-        } else {
-            clearValidation(e.target);
-        }
+        validateSelectField(e.target, msg);
+    }
+
+    if (['id_id', 'name', 'NMCC'].includes(e.target.id)) {
+        const msg = e.target.id === 'id_id' ? 'Выберите номер закупки' :
+            e.target.id === 'name' ? 'Выберите Наименование закупки' :
+                'Выберите НМЦК';
+        validateSelectField(e.target, msg);
     }
 });
+
+// Ограничение ввода только чисел для id_id (если элемент существует)
+const idInput = document.getElementById('id_id');
+if (idInput) {
+    idInput.addEventListener('input', function () {
+        this.value = this.value.replace(/\D/g, '');
+    });
+}
 
 // ==================== Инициализация событий ====================
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Старт script_add_edit.js");
 
-    checkMandatoryFields();
+    if (typeof statuses !== 'undefined') {
+        checkMandatoryFields();
+    }
     initializeEmptyFields();
 
     // Validate the form immediately on page load

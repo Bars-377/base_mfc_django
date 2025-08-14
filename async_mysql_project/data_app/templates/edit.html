@@ -34,12 +34,12 @@
                 <div class="form-item">
                     <label for="id_id">№ п/п</label>
                     <input type="text" class="form-control form-control-neverov" id="id_id" name="id_id" value="{% if service.id_id %}{{ service.id_id }}{% else %}{{ id_id }}{% endif %}"
-                        pattern="\d{1,4}" maxlength="4" required title="Максимальное значение 9999">
+                        pattern="\d{1,4}" maxlength="4" title="Максимальное значение 9999">
                 </div>
                 <div class="form-item">
                     <label for="name">Наименование закупки</label>
                     <input type="text" class="form-control form-control-neverov" id="name" name="name" value="{% if service.name %}{{ service.name }}{% else %}{{ name }}{% endif %}"
-                        maxlength="255" required title="Максимальное количество значений 255">
+                        maxlength="255" title="Максимальное количество значений 255">
                 </div>
                 <div class="form-item" id="status-container" data-current-status="{{ service.status|default:status }}">
                     <label for="status">Статус</label>
@@ -78,8 +78,7 @@
                 </div>
                 <div class="form-item">
                     <label for="NMCC">НМЦК</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="NMCC" name="NMCC" value="{% if service.NMCC %}{{ service.NMCC }}{% else %}{{ NMCC }}{% endif %}"
-                        required>
+                    <input type="text" class="num-field form-control form-control-neverov" id="NMCC" name="NMCC" value="{% if service.NMCC %}{{ service.NMCC }}{% else %}{{ NMCC }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="counterparty">Контрагент</label>
