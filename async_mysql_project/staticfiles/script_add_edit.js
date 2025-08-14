@@ -98,33 +98,33 @@ function updateStatusSelect(selectElement, statuses, currentStatus) {
     });
 }
 
-function updateMandatoryFields(status, statusesMandatory) {
-    const isMandatory = statusesMandatory.includes(status);
-    const mandatoryFields = ['counterparty', 'contract_number', 'contract_date', 'end_date'];
+// function updateMandatoryFields(status, statusesMandatory) {
+//     const isMandatory = statusesMandatory.includes(status);
+//     const mandatoryFields = ['counterparty', 'contract_number', 'contract_date', 'end_date'];
 
-    // Проверка обязательных полей
-    mandatoryFields.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
-        if (!field) return;
+//     // Проверка обязательных полей
+//     mandatoryFields.forEach(fieldId => {
+//         const field = document.getElementById(fieldId);
+//         if (!field) return;
 
-        if (isMandatory) {
-            if (field.id.includes('date')) {
-                // Для дат — проверка через validateDate
-                if (!validateDate(field)) allValid = false;
-            } else {
-                // Для текстовых/других полей
-                if (!field.value.trim()) {
-                    setInvalid(field, 'Поле обязательно для заполнения');
-                    allValid = false;
-                } else {
-                    clearValidation(field);
-                }
-            }
-        } else {
-            clearValidation(field); // Снимаем ошибку, если поле не обязательно
-        }
-    });
-}
+//         if (isMandatory) {
+//             if (field.id.includes('date')) {
+//                 // Для дат — проверка через validateDate
+//                 if (!validateDate(field)) allValid = false;
+//             } else {
+//                 // Для текстовых/других полей
+//                 if (!field.value.trim()) {
+//                     setInvalid(field, 'Поле обязательно для заполнения');
+//                     allValid = false;
+//                 } else {
+//                     clearValidation(field);
+//                 }
+//             }
+//         } else {
+//             clearValidation(field); // Снимаем ошибку, если поле не обязательно
+//         }
+//     });
+// }
 
 function updateBlockingFields(status, statusesBlocking) {
     const isBlocked = statusesBlocking.includes(status);
@@ -168,7 +168,8 @@ function checkMandatoryFields() {
     if (document.getElementById('DopFC')) updateStatusSelect(document.getElementById('DopFC'), statuses.DopFC || [], currentDopFC);
     if (document.getElementById('KOSGU')) updateStatusSelect(document.getElementById('KOSGU'), statuses.KOSGU || [], currentKOSGU);
 
-    updateMandatoryFields(currentStatus, statuses.mandatory || []);
+    // updateMandatoryFields(currentStatus, statuses.mandatory || []);
+    validateForm();
     updateBlockingFields(currentStatus, statuses.blocking || []);
 }
 
@@ -176,28 +177,56 @@ function validateForm() {
     let allValid = true;
 
     const fieldsToCheck = [
-        { el: document.getElementById('id_id'), msg: 'Выберите номер закупки' },
-        { el: document.getElementById('name'), msg: 'Выберите Наименование закупки' },
-        { el: document.getElementById('NMCC'), msg: 'Выберите НМЦК' },
-        { el: document.getElementById('KTSSR'), msg: 'Выберите КЦСР' },
-        { el: document.getElementById('KOSGU'), msg: 'Выберите КОСГУ' },
-        { el: document.getElementById('DopFC'), msg: 'Выберите ДопФК' },
+        { id: 'id_id', msg: 'Выберите номер закупки' },
+        { id: 'name', msg: 'Выберите Наименование закупки' },
+        { id: 'NMCC', msg: 'Выберите НМЦК' },
+        { id: 'KTSSR', msg: 'Выберите КЦСР' },
+        { id: 'KOSGU', msg: 'Выберите КОСГУ' },
+        { id: 'DopFC', msg: 'Выберите ДопФК' },
     ];
 
-    fieldsToCheck.forEach(({ el, msg }) => {
+    // Проверка основных полей
+    fieldsToCheck.forEach(({ id, msg }) => {
+        const el = document.getElementById(id);
         if (!el) return;
 
-        if (el.type === 'text' && el.id.includes('date')) {
-            // Дата
+        if (el.type === 'text' && id.includes('date')) {
             if (!validateDate(el)) allValid = false;
+        } else if (!el.value) {
+            setInvalid(el, msg);
+            allValid = false;
         } else {
-            // Select
-            if (!el.value) {
-                setInvalid(el, msg);
+            clearValidation(el);
+        }
+    });
+
+    // Получаем статус
+    const status = safeValue('status') || getCurrentFromDiv('status-container', 'current-status');
+
+    // Безопасно получаем список обязательных статусов
+    const statusesMandatory = (typeof statuses !== 'undefined' && Array.isArray(statuses.mandatory))
+        ? statuses.mandatory
+        : [];
+
+    const isMandatory = statusesMandatory.includes(status);
+    const mandatoryFields = ['counterparty', 'contract_number', 'contract_date', 'end_date'];
+
+    // Проверка обязательных полей по статусу
+    mandatoryFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (!field) return;
+
+        if (isMandatory) {
+            if (fieldId.includes('date')) {
+                if (!validateDate(field)) allValid = false;
+            } else if (!field.value.trim()) {
+                setInvalid(field, 'Поле обязательно для заполнения');
                 allValid = false;
             } else {
-                clearValidation(el);
+                clearValidation(field);
             }
+        } else {
+            clearValidation(field);
         }
     });
 
@@ -214,6 +243,7 @@ function validateSelectField(el, msg) {
 }
 
 document.addEventListener('change', e => {
+    // Блок для KTSSR, KOSGU, DopFC
     if (['KTSSR', 'KOSGU', 'DopFC'].includes(e.target.id)) {
         const msg = e.target.id === 'KTSSR' ? 'Выберите КЦСР' :
             e.target.id === 'KOSGU' ? 'Выберите КОСГУ' :
@@ -221,11 +251,35 @@ document.addEventListener('change', e => {
         validateSelectField(e.target, msg);
     }
 
+    // Блок для id_id, name, NMCC
     if (['id_id', 'name', 'NMCC'].includes(e.target.id)) {
         const msg = e.target.id === 'id_id' ? 'Выберите номер закупки' :
             e.target.id === 'name' ? 'Выберите Наименование закупки' :
                 'Выберите НМЦК';
         validateSelectField(e.target, msg);
+    }
+
+    // Блок для counterparty, contract_number, contract_date, end_date
+    if (['counterparty', 'contract_number', 'contract_date', 'end_date'].includes(e.target.id)) {
+        // Получаем статус
+        const status = safeValue('status') || getCurrentFromDiv('status-container', 'current-status');
+
+        // Безопасно получаем список обязательных статусов
+        const statusesMandatory = (typeof statuses !== 'undefined' && Array.isArray(statuses.mandatory))
+            ? statuses.mandatory
+            : [];
+
+        const isMandatory = statusesMandatory.includes(status);
+        const mandatoryFields = ['counterparty', 'contract_number', 'contract_date', 'end_date'];
+
+        // Проверяем условие
+        if (isMandatory && mandatoryFields.includes(e.target.id)) {
+            const msg = e.target.id === 'counterparty' ? 'Выберите контрагента' :
+                e.target.id === 'contract_number' ? 'Укажите номер договора' :
+                    e.target.id === 'contract_date' ? 'Выберите дату договора' :
+                        'Выберите дату окончания договора';
+            validateSelectField(e.target, msg);
+        }
     }
 });
 
