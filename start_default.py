@@ -29,6 +29,21 @@ if __name__ == "__main__":
     t4.start()
     time.sleep(2)
 
+    t5 = threading.Thread(
+        target=run_command,
+        args=(
+            [
+                venv_python,
+                "manage.py",
+                "collectstatic",
+                "--noinput"
+            ],
+            async_mysql_project_dir
+        )
+    )
+    t5.start()
+    t5.join()  # ждём пока соберёт статику
+
     t5 = threading.Thread(target=run_command, args=(["uvicorn", "async_mysql_project.asgi:application", "--host", "127.0.0.1", "--port", "8400"], async_mysql_project_dir))
     t5.start()
     time.sleep(2)

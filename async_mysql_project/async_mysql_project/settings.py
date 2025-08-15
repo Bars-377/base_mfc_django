@@ -125,8 +125,13 @@ STATICFILES_DIRS = [
 # Папка для сбора статических файлов в продакшн (если необходимо)
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    # "django.contrib.staticfiles.finders.AppDirectoriesFinder",  # убрали
+]
+
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+# MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Если хотите хранить файлы в папке 'file' внутри проекта:
 MEDIA_ROOT = os.path.join(BASE_DIR, "")
