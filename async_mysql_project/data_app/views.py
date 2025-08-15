@@ -199,8 +199,8 @@ async def skeleton(request, user,
     async def format_input_remove(variable):
         return None if variable == 'None' or variable == None else await remove_spaces_if_numeric(str(variable).strip())
 
-    contract_date = await format_input(contract_date)
-    end_date = await format_input(end_date)
+    # contract_date = await format_input(contract_date)
+    # end_date = await format_input(end_date)
     keyword_one = await format_input_remove(keyword_one)
     keyword_two = await format_input_remove(keyword_two)
 
