@@ -36,6 +36,7 @@ if __name__ == "__main__":
                 venv_python,
                 "manage.py",
                 "collectstatic",
+                "--clear",
                 "--noinput"
             ],
             async_mysql_project_dir
