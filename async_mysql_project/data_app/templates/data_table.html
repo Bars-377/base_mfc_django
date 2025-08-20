@@ -10,7 +10,7 @@
                 <input type="text" class="form-control" id="keyword_one" name="keyword_one" placeholder="Ключевое слово 1"
                     value="{% if request.GET.keyword_one == 'None' %}{% else %}{{ request.GET.keyword_one }}{% endif %}">
             <br>
-                <select name="selected_column_one" id="selected_column_one" class="form-control">
+                {% comment %} <select name="selected_column_one" id="selected_column_one" class="form-control">
                     <option data-type="no_format" value="">Столбец 1</option>
                     <option data-type="no_format" value="id_id" {% if selected_column_one == 'id_id' %}selected{% endif %}>№ п/п</option>
                     <option data-type="no_format" value="name" {% if selected_column_one == 'name' %}selected{% endif %}>Наименование закупки</option>
@@ -73,13 +73,21 @@
                     <option data-type="no_format" value="sum_january_two" {% if selected_column_one == 'sum_january_two' %}selected{% endif %}>Сумма оплаты Январь (факт 2)</option>
                     <option data-type="no_format" value="execution" {% if selected_column_one == 'execution' %}selected{% endif %}>% исполнения (формула)</option>
                     <option data-type="no_format" value="contract_balance" {% if selected_column_one == 'contract_balance' %}selected{% endif %}>Остаток по контракту (формула)</option>
+                </select> {% endcomment %}
+                <select name="selected_column_one" id="selected_column_one" class="form-control">
+                    <option data-type="no_format" value="">Столбец 1</option>
+                    {% for value, label in options %}
+                        <option data-type="no_format" value="{{ value }}" {% if selected_column_one == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="form-item">
                 <input type="text" class="form-control" id="keyword_two" name="keyword_two" placeholder="Ключевое слово 2"
                     value="{% if request.GET.keyword_two == 'None' %}{% else %}{{ request.GET.keyword_two }}{% endif %}">
             <br>
-                <select name="selected_column_two" id="selected_column_two" class="form-control">
+                {% comment %} <select name="selected_column_two" id="selected_column_two" class="form-control">
                     <option data-type="no_format" value="">Столбец 2</option>
                     <option data-type="no_format" value="id_id" {% if selected_column_two == 'id_id' %}selected{% endif %}>№ п/п</option>
                     <option data-type="no_format" value="name" {% if selected_column_two == 'name' %}selected{% endif %}>Наименование закупки</option>
@@ -142,13 +150,21 @@
                     <option data-type="no_format" value="sum_january_two" {% if selected_column_two == 'sum_january_two' %}selected{% endif %}>Сумма оплаты Январь (факт 2)</option>
                     <option data-type="no_format" value="execution" {% if selected_column_two == 'execution' %}selected{% endif %}>% исполнения (формула)</option>
                     <option data-type="no_format" value="contract_balance" {% if selected_column_two == 'contract_balance' %}selected{% endif %}>Остаток по контракту (формула)</option>
+                </select> {% endcomment %}
+                <select name="selected_column_two" id="selected_column_two" class="form-control">
+                    <option data-type="no_format" value="">Столбец 2</option>                  
+                    {% for value, label in options %}
+                        <option data-type="no_format" value="{{ value }}" {% if selected_column_two == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="form-item">
                 <input type="text" class="form-control" id="keyword_three" name="keyword_three" placeholder="Ключевое слово 3"
                     value="{% if request.GET.keyword_three == 'None' %}{% else %}{{ request.GET.keyword_three }}{% endif %}">
             <br>
-                <select name="selected_column_three" id="selected_column_three" class="form-control">
+                {% comment %} <select name="selected_column_three" id="selected_column_three" class="form-control">
                     <option data-type="no_format" value="">Столбец 3</option>
                     <option data-type="no_format" value="id_id" {% if selected_column_three == 'id_id' %}selected{% endif %}>№ п/п</option>
                     <option data-type="no_format" value="name" {% if selected_column_three == 'name' %}selected{% endif %}>Наименование закупки</option>
@@ -211,13 +227,19 @@
                     <option data-type="no_format" value="sum_january_two" {% if selected_column_three == 'sum_january_two' %}selected{% endif %}>Сумма оплаты Январь (факт 2)</option>
                     <option data-type="no_format" value="execution" {% if selected_column_three == 'execution' %}selected{% endif %}>% исполнения (формула)</option>
                     <option data-type="no_format" value="contract_balance" {% if selected_column_three == 'contract_balance' %}selected{% endif %}>Остаток по контракту (формула)</option>
+                </select> {% endcomment %}
+                <select name="selected_column_three" id="selected_column_three" class="form-control">
+                    <option data-type="no_format" value="">Столбец 3</option>
+                    {% for value, label in options %}
+                        <option data-type="no_format" value="{{ value }}" {% if selected_column_three == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="form-item">
                 <input type="text" class="form-control" id="keyword_four" name="keyword_four" placeholder="Ключевое слово 4"
                     value="{% if request.GET.keyword_four == 'None' %}{% else %}{{ request.GET.keyword_four }}{% endif %}">
             <br>
-                <select name="selected_column_four" id="selected_column_four" class="form-control">
+                {% comment %} <select name="selected_column_four" id="selected_column_four" class="form-control">
                     <option data-type="no_format" value="">Столбец 4</option>
                     <option data-type="no_format" value="id_id" {% if selected_column_four == 'id_id' %}selected{% endif %}>№ п/п</option>
                     <option data-type="no_format" value="name" {% if selected_column_four == 'name' %}selected{% endif %}>Наименование закупки</option>
@@ -280,6 +302,14 @@
                     <option data-type="no_format" value="sum_january_two" {% if selected_column_four == 'sum_january_two' %}selected{% endif %}>Сумма оплаты Январь (факт 2)</option>
                     <option data-type="no_format" value="execution" {% if selected_column_four == 'execution' %}selected{% endif %}>% исполнения (формула)</option>
                     <option data-type="no_format" value="contract_balance" {% if selected_column_four == 'contract_balance' %}selected{% endif %}>Остаток по контракту (формула)</option>
+                </select> {% endcomment %}
+                <select name="selected_column_four" id="selected_column_four" class="form-control">
+                    <option data-type="no_format" value="">Столбец 4</option>
+                    {% for value, label in options %}
+                        <option data-type="no_format" value="{{ value }}" {% if selected_column_four == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="form-item">
