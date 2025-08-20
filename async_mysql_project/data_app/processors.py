@@ -52,7 +52,7 @@ class ContractProcessor:
         # print(f"{execution_contract_plan:.2f}")
         # print(f"{float(self.context_data['contract_price']):.2f}")
         if self.context_data['contract_price']:
-            if f"{execution_contract_plan:.2f}" != f"{float(self.context_data['contract_price']):.2f}":
+            if f"{execution_contract_plan:.2f}" != f"{await format_number(self.context_data['contract_price']):.2f}":
                 return False
         return True
 

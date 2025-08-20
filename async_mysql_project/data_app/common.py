@@ -1,5 +1,13 @@
 async def format_number(value):
     """Форматируем число"""
+
+    def prepare_for_submit(value: str) -> str:
+        import re
+        value = re.sub(r'\s+', '', value)       # убрать пробелы
+        value = value.replace(',', '.')         # заменить запятую на точку
+        value = re.sub(r'[^0-9.]', '', value)  # убрать всё, кроме цифр и точки
+        return value
+
     if isinstance(value, (int, float)):
         number_final = float(value)
     elif value is None or not value or str(value).strip() == '' or str(value) == 'None':
@@ -7,7 +15,7 @@ async def format_number(value):
     else:
         try:
             # Удаляем пробелы и заменяем запятую на точку
-            value_str = str(value).replace(' ', '').replace(',', '.')
+            value_str = prepare_for_submit(str(value))
             number_final = float(value_str)
         except ValueError:
             # Если преобразование в число не удалось, возвращаем 0.00

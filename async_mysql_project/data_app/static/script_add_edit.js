@@ -52,21 +52,45 @@ function clearValidation(el) {
 const MAX_VALUE = 10_000_000_000;
 
 function formatInputValue(val) {
-    val = val.replace(',', '.').replace(/[^0-9.]/g, '');
+    if (!val) return '';
+
+    // Заменяем запятую на точку
+    val = val.replace(',', '.');
+
+    // Разрешаем временно вводить только точку
+    if (val === '.') return '.';
+
+    // Убираем все кроме цифр и точки
+    val = val.replace(/[^0-9.]/g, '');
+
+    // Разрешаем только одну точку
     const parts = val.split('.');
     if (parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
 
+    // Ограничиваем число десятичных знаков до 2
     const [intPart, decPart] = val.split('.');
     const formattedDec = decPart?.slice(0, 2) || '';
-    let num = parseFloat(intPart + (formattedDec ? '.' + formattedDec : ''));
 
+    // Ограничение максимального значения
+    let num = parseFloat(intPart + (formattedDec ? '.' + formattedDec : ''));
     if (!isNaN(num) && num > MAX_VALUE) num = MAX_VALUE;
 
-    return isNaN(num) ? '' : (intPart + (formattedDec ? '.' + formattedDec : ''));
+    // Если пользователь ввёл только точку после цифр — оставляем её
+    if (val.endsWith('.') && !formattedDec) return intPart + '.';
+
+    return intPart + (formattedDec ? '.' + formattedDec : '');
+}
+
+function prepareForSubmit(value) {
+    return value
+        .replace(/\s+/g, '')        // убрать пробелы
+        .replace(/,/g, '.')         // заменить запятую на точку
+        .replace(/[^0-9.]/g, '');   // убрать всё, кроме цифр и точки
 }
 
 function formatOnBlur(val) {
-    let num = parseFloat(val);
+    let cleanStr = prepareForSubmit(val);  // сначала чистим строку
+    let num = parseFloat(cleanStr);        // потом парсим в число
     if (isNaN(num) || val === '' || val === '.') return '0.00';
     if (num > MAX_VALUE) num = MAX_VALUE;
     return num.toFixed(2);
@@ -314,12 +338,13 @@ document.addEventListener('DOMContentLoaded', () => {
         url.searchParams.set('scroll_position', scrollPos);
         backLink.href = url.toString();
     }
-});
 
-document.addEventListener('input', e => {
-    if (e.target.classList.contains('num-field')) e.target.value = formatInputValue(e.target.value);
-});
+    document.addEventListener('input', e => {
+        if (e.target.classList.contains('num-field')) e.target.value = formatInputValue(e.target.value);
+    });
 
-document.addEventListener('blur', e => {
-    if (e.target.classList.contains('num-field')) e.target.value = formatOnBlur(e.target.value);
-}, true);
+    document.addEventListener('blur', e => {
+        if (e.target.classList.contains('num-field')) e.target.value = formatOnBlur(e.target.value);
+    }, true);
+
+});
