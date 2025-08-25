@@ -728,6 +728,48 @@ async def add(request):
 
 @group_required('Администратор', 'Полный')
 @csrf_exempt  # Необходимо, если вы не используете CSRF-токены
+async def copy(request, row_id):
+    await log_user_action(request.user, f'Перешёл в дублирование записи {row_id} в "Закупки"')
+
+    # Получаем объект service по id
+    service = await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id)
+
+    context = link_generation(request, False, 'page', 'page_user', 'page_user_two', service=service, row_id=row_id)
+
+    # context['status'] = ''
+    # context['way'] = ''
+    # context['KTSSR'] = ''
+    # context['KOSGU'] = ''
+    # context['DopFC'] = ''
+
+    params_post = [
+        'name', 'status', 'way', 'initiator', 'KTSSR',
+        'KOSGU', 'DopFC', 'NMCC', 'counterparty',
+        'registration_number', 'contract_number', 'contract_date',
+        'end_date', 'contract_price', 'january_one',
+        'february', 'march', 'april', 'may', 'june', 'july',
+        'august', 'september', 'october', 'november', 'december',
+        'january_two', 'date_january_one', 'sum_january_one',
+        'date_february', 'sum_february', 'date_march', 'sum_march',
+        'date_april', 'sum_april', 'date_may', 'sum_may',
+        'date_june', 'sum_june', 'date_july', 'sum_july',
+        'date_august', 'sum_august', 'date_september', 'sum_september',
+        'date_october', 'sum_october', 'date_november', 'sum_november',
+        'date_december', 'sum_december', 'date_january_two', 'sum_january_two',
+        'execution', 'contract_balance', 'execution_contract_fact', 'execution_contract_plan',
+        'saving', 'color', 'remainder_old_year', 'paid_last_year'
+    ]
+
+    for param in params_post:
+        context[param] = getattr(service, param, None)
+
+    context['params'] += f'&scroll_position={request.GET.get('scroll_position', '')}'
+
+    processor = ContractProcessor(context, request)
+    return await processor.process_add()
+
+@group_required('Администратор', 'Полный')
+@csrf_exempt  # Необходимо, если вы не используете CSRF-токены
 async def add_two(request):
     await log_user_action(request.user, f'Перешёл на страницу добавления записи в "Свод"')
 

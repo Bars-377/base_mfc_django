@@ -383,7 +383,10 @@ class ContractProcessor:
         filters = Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=KTSSR)
 
         if status:
-            filters &= Q(status=status)
+            if status == "Запланировано":
+                filters &= Q(status__in=["Запланировано", "В работе", "Проблема"])
+            elif status:
+                filters &= Q(status=status)
             # field_to_sum = 'contract_price'
 
             months_contract_price = (
@@ -857,6 +860,9 @@ class ContractProcessor:
             # print(self.context_data['KTSSR'])
             # print('-----------------------------')
 
+            import copy
+            context_data = copy.copy(self.context_data)
+
             for key, value in context_data_cache.items():
                 if key in self.context_data:
                     self.context_data[key] = value
@@ -872,7 +878,7 @@ class ContractProcessor:
 
             await self.total_costs_message()
 
-            return render(self.request, 'edit.html', self.context_data)
+            return render(self.request, 'edit.html', context_data)
 
         for key, value in context_data_cache.items():
             if key in self.context_data:
@@ -934,6 +940,9 @@ class ContractProcessor:
         # await self.Services_Two_save(Services_Two_)
         await self.count_dates(True)
 
+        # self.context_data['contract_date'] = ''
+        # self.context_data['end_date'] = ''
+
         if not await self.total_costs(new_service):
             await self.count_dates(True)
 
@@ -941,6 +950,7 @@ class ContractProcessor:
             await log_user_action(self.request.user, f'Отменилось добавление записи в "Закупки" с ID {new_service.id_id}')
 
             await self.total_costs_message()
+            print('POPAL_POPAL', self.context_data)
             return render(self.request, 'add.html', self.context_data)
 
         await self.message_service_add()

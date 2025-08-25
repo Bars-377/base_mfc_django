@@ -350,7 +350,7 @@
         </div>
 
         <div class="scroll-container main-scroll">
-            <table class="table table-bordered">
+            <table id="myTable" class="table table-bordered">
                 <thead>
                     <tr>
                         <th rowspan="2" class="fixed-width">Управление</th>
@@ -441,6 +441,8 @@
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
                                 <a href="{% url 'edit' row_id=item.id %}?page={{ page }}{{ params }}"
                                 class="btn btn-sm btn-warning edit-link">Edit</a>
+                                <a href="{% url 'copy' row_id=item.id %}?page={{ page }}{{ params }}"
+                                class="btn btn-sm btn-warning edit-link">Copy</a>
                                 <form class="delete-form"
                                     data-id="{{ item.id }}"
                                     data-page="{{ page }}"
@@ -680,7 +682,7 @@
         </div>
 
         <div class="scroll-container main-scroll">
-            <table class="table table-bordered">
+            <table id="myTable" class="table table-bordered">
                 <thead>
                     <tr>
                         <th rowspan="2" class="fixed-width">Управление</th>
@@ -828,7 +830,7 @@
         </div>
 
         <div class="scroll-container main-scroll">
-            <table class="table table-bordered">
+            <table id="myTable" class="table table-bordered">
                 <thead>
                     <tr>
                         <th rowspan="2" class="fixed-width">Управление</th>

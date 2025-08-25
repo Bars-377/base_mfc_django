@@ -26,7 +26,7 @@
             {% endif %}
 
             <!-- Форма для добавления новой услуги -->
-            <form method="POST" novalidate onsubmit="return validateForm()" action="{% url 'add_record' %}?page={{ total_pages }}" class="form-group">
+            <form method="POST" novalidate onsubmit="return validateForm()" action="{% url 'add_record' %}?page={{ total_pages }}{{ params }}" class="form-group">
                 <!-- Пример изменения отступов в форме с помощью классов -->
                 <div class="form-item">
                     <label for="name">Наименование закупки</label>

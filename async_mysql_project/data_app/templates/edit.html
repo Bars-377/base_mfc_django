@@ -33,21 +33,21 @@
                 <!-- Поле для ввода названия услуги -->
                 <div class="form-item">
                     <label for="id_id">№ п/п</label>
-                    <input type="text" class="form-control form-control-neverov" id="id_id" name="id_id" value="{% if service.id_id %}{{ service.id_id }}{% else %}{{ id_id }}{% endif %}"
+                    <input type="text" class="form-control form-control-neverov" id="id_id" name="id_id" value="{% if id_id %}{{ id_id }}{% else %}{{ service.id_id }}{% endif %}"
                         pattern="\d{1,4}" maxlength="4" title="Максимальное значение 9999">
                 </div>
                 <div class="form-item">
                     <label for="name">Наименование закупки</label>
-                    <input type="text" class="form-control form-control-neverov" id="name" name="name" value="{% if service.name %}{{ service.name }}{% else %}{{ name }}{% endif %}"
+                    <input type="text" class="form-control form-control-neverov" id="name" name="name" value="{% if name %}{{ name }}{% else %}{{ service.name }}{% endif %}"
                         maxlength="255" title="Максимальное количество значений 255">
                 </div>
-                <div class="form-item" id="status-container" data-current-status="{{ service.status|default:status }}">
+                <div class="form-item" id="status-container" data-current-status="{{ status|default:service.status }}">
                     <label for="status">Статус</label>
                     <select class="form-control" id="status" onchange="checkMandatoryFields()" name="status" title="Выберите статус">
                      
                     </select>
                 </div>
-                <div class="form-item" id="way-container" data-current-way="{{ service.way|default:way }}">
+                <div class="form-item" id="way-container" data-current-way="{{ way|default:service.way }}">
                     <label for="way">Способ закупки</label>
                     <select class="form-control" id="way" name="way" title="Выберите cпособ закупки">
                 
@@ -55,22 +55,22 @@
                 </div>
                 <div class="form-item">
                     <label for="initiator">Инициатор закупки (ИТ/АХО)</label>
-                    <input type="text" class="form-control form-control-neverov" id="initiator" name="initiator" value="{% if service.initiator %}{{ service.initiator }}{% else %}{{ initiator }}{% endif %}"
+                    <input type="text" class="form-control form-control-neverov" id="initiator" name="initiator" value="{% if initiator %}{{ initiator }}{% else %}{{ service.initiator }}{% endif %}"
                         maxlength="255" title="Максимальное количество значений 255">
                 </div>
-                <div class="form-item" id="KTSSR-container" data-current-KTSSR="{{ service.KTSSR|default:KTSSR }}">
+                <div class="form-item" id="KTSSR-container" data-current-KTSSR="{{ KTSSR|default:service.KTSSR }}">
                     <label for="KTSSR">КЦСР</label>
                     <select class="form-control" id="KTSSR" name="KTSSR" title="Выберите КЦСР">
                        
                     </select>
                 </div>
-                <div class="form-item" id="KOSGU-container" data-current-KOSGU="{{ service.KOSGU|default:KOSGU }}">
+                <div class="form-item" id="KOSGU-container" data-current-KOSGU="{{ KOSGU|default:service.KOSGU }}">
                     <label for="KOSGU">КОСГУ</label>
                     <select class="form-control" id="KOSGU" name="KOSGU" title="Выберите КОСГУ">
                         
                     </select>
                 </div>
-                <div class="form-item" id="DopFC-container" data-current-DopFC="{{ service.DopFC|default:DopFC }}">
+                <div class="form-item" id="DopFC-container" data-current-DopFC="{{ DopFC|default:service.DopFC }}">
                     <label for="DopFC">ДопФК</label>
                     <select class="form-control" id="DopFC" name="DopFC" title="Выберите ДопФК">
                         
@@ -78,200 +78,200 @@
                 </div>
                 <div class="form-item">
                     <label for="NMCC">НМЦК</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="NMCC" name="NMCC" value="{% if service.NMCC %}{{ service.NMCC }}{% else %}{{ NMCC }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="NMCC" name="NMCC" value="{% if NMCC %}{{ NMCC }}{% else %}{{ service.NMCC }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="counterparty">Контрагент</label>
-                    <input type="text" class="form-control" id="counterparty" name="counterparty" value="{% if service.counterparty %}{{ service.counterparty }}{% else %}{{ counterparty }}{% endif %}" maxlength="255" title="Максимальное количество значений 255">
+                    <input type="text" class="form-control" id="counterparty" name="counterparty" value="{% if counterparty %}{{ counterparty }}{% else %}{{ service.counterparty }}{% endif %}" maxlength="255" title="Максимальное количество значений 255">
                 </div>
                 <div class="form-item">
                     <label for="registration_number">Реестровый номер контракта (ЕИС)</label>
-                    <input type="text" class="form-control" id="registration_number" name="registration_number" value="{% if service.registration_number %}{{ service.registration_number }}{% else %}{{ registration_number }}{% endif %}" pattern="\d{1,20}" maxlength="20" title="Максимальное значение 20 чисел">
+                    <input type="text" class="form-control" id="registration_number" name="registration_number" value="{% if registration_number %}{{ registration_number }}{% else %}{{ service.registration_number }}{% endif %}" pattern="\d{1,20}" maxlength="20" title="Максимальное значение 20 чисел">
                 </div>
                 <div class="form-item">
                     <label for="contract_number">Номер контракта</label>
                     <input type="text" class="form-control form-control-neverov" id="contract_number" name="contract_number"
-                        value="{% if service.contract_number %}{{ service.contract_number }}{% else %}{{ contract_number }}{% endif %}" maxlength="255" title="Максимальное количество значений 255">
+                        value="{% if contract_number %}{{ contract_number }}{% else %}{{ service.contract_number }}{% endif %}" maxlength="255" title="Максимальное количество значений 255">
                 </div>
                 <div class="form-item">
                     <label for="contract_date">Дата контракта</label>
                     <input type="text" class="form-control form-control-neverov" id="contract_date" name="contract_date"
-                        value="{% if service.contract_date %}{{ service.contract_date }}{% else %}{{ contract_date }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
+                        value="{% if contract_date %}{{ contract_date }}{% else %}{{ service.contract_date }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="end_date">Окончание даты исполнения</label>
-                    <input type="text" class="form-control form-control-neverov" id="end_date" name="end_date" value="{% if service.end_date %}{{ service.end_date }}{% else %}{{ end_date }}{% endif %}"
+                    <input type="text" class="form-control form-control-neverov" id="end_date" name="end_date" value="{% if end_date %}{{ end_date }}{% else %}{{ service.end_date }}{% endif %}"
                         title="Введите дату в формате ДД.ММ.ГГГГ" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10">
                 </div>
                 <div class="form-item">
                     <label for="contract_price">Цена контракта</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="contract_price" name="contract_price" value="{% if service.contract_price %}{{ service.contract_price }}{% else %}{{ contract_price }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="contract_price" name="contract_price" value="{% if contract_price %}{{ contract_price }}{% else %}{{ service.contract_price }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="remainder_old_year">Остаток контракта с предыдущего года</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="remainder_old_year" name="remainder_old_year" value="{% if service.remainder_old_year %}{{ service.remainder_old_year }}{% else %}{{ remainder_old_year }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="remainder_old_year" name="remainder_old_year" value="{% if remainder_old_year %}{{ remainder_old_year }}{% else %}{{ service.remainder_old_year }}{% endif %}">
                 </div>
                 <input type="hidden" name="execution_contract_plan" value="{{ '' }}">  <!-- Скрытое поле для Исполнение контракта (план) (формула) -->
                 <div class="form-item">
                     <label for="january_one">Январь (план)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="january_one" name="january_one" value="{% if service.january_one %}{{ service.january_one }}{% else %}{{ january_one }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="january_one" name="january_one" value="{% if january_one %}{{ january_one }}{% else %}{{ service.january_one }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="february">Февраль (план)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="february" name="february" value="{% if service.february %}{{ service.february }}{% else %}{{ february }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="february" name="february" value="{% if february %}{{ february }}{% else %}{{ service.february }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="march">Март (план)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="march" name="march" value="{% if service.march %}{{ service.march }}{% else %}{{ march }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="march" name="march" value="{% if march %}{{ march }}{% else %}{{ service.march }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="april">Апрель (план)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="april" name="april" value="{% if service.april %}{{ service.april }}{% else %}{{ april }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="april" name="april" value="{% if april %}{{ april }}{% else %}{{ service.april }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="may">Май (план)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="may" name="may" value="{% if service.may %}{{ service.may }}{% else %}{{ may }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="may" name="may" value="{% if may %}{{ may }}{% else %}{{ service.may }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="june">Июнь (план)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="june" name="june" value="{% if service.june %}{{ service.june }}{% else %}{{ june }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="june" name="june" value="{% if june %}{{ june }}{% else %}{{ service.june }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="july">Июль (план)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="july" name="july" value="{% if service.july %}{{ service.july }}{% else %}{{ july }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="july" name="july" value="{% if july %}{{ july }}{% else %}{{ service.july }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="august">Август (план)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="august" name="august" value="{% if service.august %}{{ service.august }}{% else %}{{ august }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="august" name="august" value="{% if august %}{{ august }}{% else %}{{ service.august }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="september">Сентябрь (план)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="september" name="september" value="{% if service.september %}{{ service.september }}{% else %}{{ september }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="september" name="september" value="{% if september %}{{ september }}{% else %}{{ service.september }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="october">Октябрь (план)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="october" name="october" value="{% if service.october %}{{ service.october }}{% else %}{{ october }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="october" name="october" value="{% if october %}{{ october }}{% else %}{{ service.october }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="november">Ноябрь (план)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="november" name="november" value="{% if service.november %}{{ service.november }}{% else %}{{ november }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="november" name="november" value="{% if november %}{{ november }}{% else %}{{ service.november }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="december">Декабрь (план)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="december" name="december" value="{% if service.december %}{{ service.december }}{% else %}{{ december }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="december" name="december" value="{% if december %}{{ december }}{% else %}{{ service.december }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="january_two">Остаток контракта на следующий год</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="january_two" name="january_two" value="{% if service.january_two %}{{ service.january_two }}{% else %}{{ january_two }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="january_two" name="january_two" value="{% if january_two %}{{ january_two }}{% else %}{{ service.january_two }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="paid_last_year">Оплачено в предыдущем году</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="paid_last_year" name="paid_last_year" value="{% if service.paid_last_year %}{{ service.paid_last_year }}{% else %}{{ paid_last_year }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="paid_last_year" name="paid_last_year" value="{% if paid_last_year %}{{ paid_last_year }}{% else %}{{ service.paid_last_year }}{% endif %}">
                 </div>
                 <input type="hidden" name="execution_contract_fact" value="{{ '' }}">  <!-- Скрытое поле для Исполнение контракта (факт) (формула) -->
                 <div class="form-item">
                     <label for="date_january_one">Дата оплаты Январь (факт)</label>
-                    <input type="text" class="form-control" id="date_january_one" name="date_january_one" value="{% if service.date_january_one %}{{ service.date_january_one }}{% else %}{{ date_january_one }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_january_one" name="date_january_one" value="{% if date_january_one %}{{ date_january_one }}{% else %}{{ service.date_january_one }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_january_one">Сумма оплаты Январь (факт)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="sum_january_one" name="sum_january_one" value="{% if service.sum_january_one %}{{ service.sum_january_one }}{% else %}{{ sum_january_one }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="sum_january_one" name="sum_january_one" value="{% if sum_january_one %}{{ sum_january_one }}{% else %}{{ service.sum_january_one }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="date_february">Дата оплаты Февраль (факт)</label>
-                    <input type="text" class="form-control" id="date_february" name="date_february" value="{% if service.date_february %}{{ service.date_february }}{% else %}{{ date_february }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_february" name="date_february" value="{% if date_february %}{{ date_february }}{% else %}{{ service.date_february }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_february">Сумма оплаты Февраль (факт)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="sum_february" name="sum_february" value="{% if service.sum_february %}{{ service.sum_february }}{% else %}{{ sum_february }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="sum_february" name="sum_february" value="{% if sum_february %}{{ sum_february }}{% else %}{{ service.sum_february }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="date_march">Дата оплаты Март (факт)</label>
-                    <input type="text" class="form-control" id="date_march" name="date_march" value="{% if service.date_march %}{{ service.date_march }}{% else %}{{ date_march }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_march" name="date_march" value="{% if date_march %}{{ date_march }}{% else %}{{ service.date_march }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_march">Сумма оплаты Март (факт)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="sum_march" name="sum_march" value="{% if service.sum_march %}{{ service.sum_march }}{% else %}{{ sum_march }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="sum_march" name="sum_march" value="{% if sum_march %}{{ sum_march }}{% else %}{{ service.sum_march }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="date_april">Дата оплаты Апрель (факт)</label>
-                    <input type="text" class="form-control" id="date_april" name="date_april" value="{% if service.date_april %}{{ service.date_april }}{% else %}{{ date_april }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_april" name="date_april" value="{% if date_april %}{{ date_april }}{% else %}{{ service.date_april }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_april">Сумма оплаты Апрель (факт)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="sum_april" name="sum_april" value="{% if service.sum_april %}{{ service.sum_april }}{% else %}{{ sum_april }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="sum_april" name="sum_april" value="{% if sum_april %}{{ sum_april }}{% else %}{{ service.sum_april }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="date_may">Дата оплаты Май (факт)</label>
-                    <input type="text" class="form-control" id="date_may" name="date_may" value="{% if service.date_may %}{{ service.date_may }}{% else %}{{ date_may }}{% endif %}" maxlength="255" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_may" name="date_may" value="{% if date_may %}{{ date_may }}{% else %}{{ service.date_may }}{% endif %}" maxlength="255" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_may">Сумма оплаты Май (факт)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="sum_may" name="sum_may" value="{% if service.sum_may %}{{ service.sum_may }}{% else %}{{ sum_may }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="sum_may" name="sum_may" value="{% if sum_may %}{{ sum_may }}{% else %}{{ service.sum_may }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="date_june">Дата оплаты Июнь (факт)</label>
-                    <input type="text" class="form-control" id="date_june" name="date_june" value="{% if service.date_june %}{{ service.date_june }}{% else %}{{ date_june }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_june" name="date_june" value="{% if date_june %}{{ date_june }}{% else %}{{ service.date_june }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_june">Сумма оплаты Июнь (факт)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="sum_june" name="sum_june" value="{% if service.sum_june %}{{ service.sum_june }}{% else %}{{ sum_june }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="sum_june" name="sum_june" value="{% if sum_june %}{{ sum_june }}{% else %}{{ service.sum_june }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="date_july">Дата оплаты Июль (факт)</label>
-                    <input type="text" class="form-control" id="date_july" name="date_july" value="{% if service.date_july %}{{ service.date_july }}{% else %}{{ date_july }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_july" name="date_july" value="{% if date_july %}{{ date_july }}{% else %}{{ service.date_july }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_july">Сумма оплаты Июль (факт)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="sum_july" name="sum_july" value="{% if service.sum_july %}{{ service.sum_july }}{% else %}{{ sum_july }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="sum_july" name="sum_july" value="{% if sum_july %}{{ sum_july }}{% else %}{{ service.sum_july }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="date_august">Дата оплаты Август (факт)</label>
-                    <input type="text" class="form-control" id="date_august" name="date_august" value="{% if service.date_august %}{{ service.date_august }}{% else %}{{ date_august }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_august" name="date_august" value="{% if date_august %}{{ date_august }}{% else %}{{ service.date_august }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_august">Сумма оплаты Август (факт)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="sum_august" name="sum_august" value="{% if service.sum_august %}{{ service.sum_august }}{% else %}{{ sum_august }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="sum_august" name="sum_august" value="{% if sum_august %}{{ sum_august }}{% else %}{{ service.sum_august }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="date_september">Дата оплаты Сентябрь (факт)</label>
-                    <input type="text" class="form-control" id="date_september" name="date_september" value="{% if service.date_september %}{{ service.date_september }}{% else %}{{ date_september }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_september" name="date_september" value="{% if date_september %}{{ date_september }}{% else %}{{ service.date_september }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_september">Сумма оплаты Сентябрь (факт)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="sum_september" name="sum_september" value="{% if service.sum_september %}{{ service.sum_september }}{% else %}{{ sum_september }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="sum_september" name="sum_september" value="{% if sum_september %}{{ sum_september }}{% else %}{{ service.sum_september }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="date_october">Дата оплаты Октябрь (факт)</label>
-                    <input type="text" class="form-control" id="date_october" name="date_october" value="{% if service.date_october %}{{ service.date_october }}{% else %}{{ date_october }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_october" name="date_october" value="{% if date_october %}{{ date_october }}{% else %}{{ service.date_october }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_october">Сумма оплаты Октябрь (факт)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="sum_october" name="sum_october" value="{% if service.sum_october %}{{ service.sum_october }}{% else %}{{ sum_october }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="sum_october" name="sum_october" value="{% if sum_october %}{{ sum_october }}{% else %}{{ service.sum_october }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="date_november">Дата оплаты Ноябрь (факт)</label>
-                    <input type="text" class="form-control" id="date_november" name="date_november" value="{% if service.date_november %}{{ service.date_november }}{% else %}{{ date_november }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_november" name="date_november" value="{% if date_november %}{{ date_november }}{% else %}{{ service.date_november }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_november">Сумма оплаты Ноябрь (факт)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="sum_november" name="sum_november" value="{% if service.sum_november %}{{ service.sum_november }}{% else %}{{ sum_november }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="sum_november" name="sum_november" value="{% if sum_november %}{{ sum_november }}{% else %}{{ service.sum_november }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="date_december">Дата оплаты Декабрь (факт)</label>
-                    <input type="text" class="form-control" id="date_december" name="date_december" value="{% if service.date_december %}{{ service.date_december }}{% else %}{{ date_december }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_december" name="date_december" value="{% if date_december %}{{ date_december }}{% else %}{{ service.date_december }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_december">Сумма оплаты Декабрь (факт)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="sum_december" name="sum_december" value="{% if service.sum_december %}{{ service.sum_december }}{% else %}{{ sum_december }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="sum_december" name="sum_december" value="{% if sum_december %}{{ sum_december }}{% else %}{{ service.sum_december }}{% endif %}">
                 </div>
                 <div class="form-item">
                     <label for="date_january_two">Дата оплаты Январь (факт)</label>
-                    <input type="text" class="form-control" id="date_january_two" name="date_january_two" value="{% if service.date_january_two %}{{ service.date_january_two }}{% else %}{{ date_january_two }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
+                    <input type="text" class="form-control" id="date_january_two" name="date_january_two" value="{% if date_january_two %}{{ date_january_two }}{% else %}{{ service.date_january_two }}{% endif %}" placeholder="ДД.ММ.ГГГГ" oninput="formatDate(this, event)" maxlength="10" title="Введите дату в формате ДД.ММ.ГГГГ">
                 </div>
                 <div class="form-item">
                     <label for="sum_january_two">Сумма оплаты Январь (факт)</label>
-                    <input type="text" class="num-field form-control form-control-neverov" id="sum_january_two" name="sum_january_two" value="{% if service.sum_january_two %}{{ service.sum_january_two }}{% else %}{{ sum_january_two }}{% endif %}">
+                    <input type="text" class="num-field form-control form-control-neverov" id="sum_january_two" name="sum_january_two" value="{% if sum_january_two %}{{ sum_january_two }}{% else %}{{ service.sum_january_two }}{% endif %}">
                 </div>
 
                 <input type="hidden" name="execution" value="{{ '' }}">  <!-- Скрытое поле для % исполнения (формула) -->
