@@ -10,30 +10,30 @@ from django.shortcuts import render
 from django.db.models import Sum
 from django.db.models import Q
 
-def key_no_deleting(context_data):
-    """Список нужных ключей, которые оставить в словаре."""
+# def key_no_deleting(context_data):
+#     """Список нужных ключей, которые оставить в словаре."""
 
-    key_deleting = [
-        # 'keyword_one',
-        # 'keyword_two',
-        # 'keyword_three',
-        # 'keyword_four',
-        # 'selected_column_one',
-        # 'selected_column_two',
-        # 'selected_column_three',
-        # 'selected_column_four',
-        # 'contract_date',
-        # 'end_date',
-        'params',
-        'scroll_position'
-    ]
+#     key_deleting = [
+#         # 'keyword_one',
+#         # 'keyword_two',
+#         # 'keyword_three',
+#         # 'keyword_four',
+#         # 'selected_column_one',
+#         # 'selected_column_two',
+#         # 'selected_column_three',
+#         # 'selected_column_four',
+#         # 'contract_date',
+#         # 'end_date',
+#         'params',
+#         'scroll_position',
+#         'page'
+#     ]
 
+#     context_data = {
+#         k: v for k, v in context_data.items() if k in key_deleting
+#     }
 
-    context_data = {
-        k: v for k, v in context_data.items() if k in key_deleting
-    }
-
-    return context_data
+#     return context_data
 
 from dataclasses import dataclass
 from django.http import HttpRequest
@@ -49,8 +49,7 @@ class ContractProcessor:
 
     async def validate_execution_plan(self):
         execution_contract_plan = await self.calculate_execution_plan()
-        # print(f"{execution_contract_plan:.2f}")
-        # print(f"{float(self.context_data['contract_price']):.2f}")
+
         if self.context_data['contract_price']:
             if f"{execution_contract_plan:.2f}" != f"{await format_number(self.context_data['contract_price']):.2f}":
                 return False
@@ -71,8 +70,6 @@ class ContractProcessor:
 
     async def validate_Services_Two(self):
         try:
-            # from django.db.models import Q
-
             Services_Two_ = await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(
                 Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
             )
@@ -207,18 +204,6 @@ class ContractProcessor:
 
         await sync_to_async(service.save)()
 
-        # print('-----------------------------')
-        # print(self.context_data['KTSSR'])
-        # print('-----------------------------')
-
-        # # for key, value in context_data_cache.items():
-        # #     if key in self.context_data:
-        # #         self.context_data[key] = value
-
-        # print('-----------------------------')
-        # print(self.context_data['KTSSR'])
-        # print('-----------------------------')
-
         return context_data_cache
 
     async def creation_new_service(self, saving, execution_contract_plan, execution_contract_fact, new_service):
@@ -320,18 +305,6 @@ class ContractProcessor:
         id_id_two = id_id_new(latest_service_two)
         id_id_three = id_id_new(latest_service_three)
 
-        # try:
-        #     id_id_two = (int(latest_service_two[0]) + 1) if latest_service_two and latest_service_two[0].isdigit() else 1
-        # except ValueError:
-        #     # В случае некорректного значения установить id_id на 1
-        #     id_id_two = 1
-
-        # try:
-        #     id_id_three = (int(latest_service_three[0]) + 1) if latest_service_three and latest_service_three[0].isdigit() else 1
-        # except ValueError:
-        #     # В случае некорректного значения установить id_id на 1
-        #     id_id_three = 1
-
         # --- НОВОЕ: проверяем, есть ли уже такая запись ---
         kosgu_value = self.context_data.get('KOSGU')
         dopfc_value = self.context_data.get('DopFC')
@@ -348,7 +321,6 @@ class ContractProcessor:
 
             if exists_two or exists_three:
                 # Можно залогировать или выбросить исключение
-
                 await log_user_action(
                     self.request.user,
                     f'Попытка добавить дубликат записи с KOSGU={kosgu_value} и DopFC={dopfc_value}'
@@ -377,8 +349,6 @@ class ContractProcessor:
 
     async def calculate_contract_sums(self, KTSSR, status):
         """Получаем сумму всех contract_price либо execution_contract_fact"""
-        # from django.db.models import Q
-
         # Общий фильтр для обоих случаев
         filters = Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=KTSSR)
 
@@ -387,7 +357,6 @@ class ContractProcessor:
                 filters &= Q(status__in=["Запланировано", "В работе", "Проблема"])
             elif status:
                 filters &= Q(status=status)
-            # field_to_sum = 'contract_price'
 
             months_contract_price = (
                 'january_one', 'february', 'march', 'april', 'may', 'june',
@@ -462,9 +431,6 @@ class ContractProcessor:
     async def process_budget_services_three(self, budget_concluded):
         """Обновление третьей базы"""
         try:
-
-            # from django.db.models import Q
-
             try:
                 Services_Three_ = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(
                     Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC'])
@@ -564,8 +530,6 @@ class ContractProcessor:
         else:
             services = self.context_data['service']
 
-        # services = self.context_data['service']
-
         if services.KTSSR == '2046102280':
             if total_costs_calc['total_cost_1'] < (await format_number(total_costs_calc['total_cost_3']) + await format_number(total_costs_calc['total_cost_5']) + await format_number(total_costs_calc['total_cost_7']) + await format_number(total_costs_calc['total_cost_9'])):
                 return False
@@ -581,8 +545,6 @@ class ContractProcessor:
 
     async def Services_way(self):
         """Подсчёт Цена контракта если есть way='п.4 ч.1 ст.93'"""
-        # from django.db.models import Q
-
         # Общий фильтр для обоих случаев
         filters = Q(KOSGU=self.context_data['KOSGU']) & Q(DopFC=self.context_data['DopFC']) & Q(KTSSR=self.context_data['KTSSR']) & ~Q(status='Запланировано') & Q(way='п.4 ч.1 ст.93')
 
@@ -624,10 +586,6 @@ class ContractProcessor:
 
         Services_Two_ = await self.validate_Services_Two()
 
-        # if not await self.validate_Services_Two():
-        #     await self.validate_Services_Two_message()
-        #     return render(self.request, 'edit.html', self.context_data)
-
         await self.process_budget_services_two(Services_Two_)
 
         await self.message_service_update()
@@ -637,13 +595,13 @@ class ContractProcessor:
 
         self.context_data['scroll_position'] = scroll_position
 
-        self.context_data = key_no_deleting(self.context_data)
+        # self.context_data = key_no_deleting(self.context_data)
 
         # # Кодируем query-параметры
         # query_string = urlencode(self.context_data)
 
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}&scroll_position={self.context_data['scroll_position']}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?page={self.context_data['page']}{self.context_data['params']}&scroll_position={self.context_data['scroll_position']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)
@@ -659,13 +617,13 @@ class ContractProcessor:
 
         self.context_data['scroll_position'] = scroll_position
 
-        self.context_data = key_no_deleting(self.context_data)
+        # self.context_data = key_no_deleting(self.context_data)
 
         # # Кодируем query-параметры
         # query_string = urlencode(self.context_data)
 
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}&scroll_position={self.context_data['scroll_position']}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?page={self.context_data['page']}{self.context_data['params']}&scroll_position={self.context_data['scroll_position']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)
@@ -763,28 +721,8 @@ class ContractProcessor:
 
         elif mode:
 
-            # context_data = {}
-
-            # # Добавляем ключ и значение в context_data
-            # context_data.update({'KOSGU': self.context_data['KOSGU']})
-            # context_data.update({'DopFC': self.context_data['DopFC']})
-            # context_data.update({'KTSSR': self.context_data['KTSSR']})
-            # context_data.update({'status': self.context_data['status']})
-
-            # # Инициализация и обработка контекста
-            # # processor = ContractProcessor(self.context_data, self.request)
-            # if not (self.context_data.get('KTSSR') and self.context_data.get('status')):
-            #     # print('POPALO SUDA')
-            #     await handle_multiple_statuses(self.context_data, self.request, mode)
-            # else:
-            #     await self.process_count_dates()
-            #     await self.process_count_dates_services_three()
-
             await self.process_count_dates_services_two()
-            # print('----------------------------')
-            # print(self.context_data)
-            # print('----------------------------')
-            # exit()
+
             await handle_multiple_statuses(self.context_data, self.request, mode)
 
     async def process_count_dates_services_two(self):
@@ -842,24 +780,6 @@ class ContractProcessor:
         await self.count_dates(True)
 
         if not await self.total_costs():
-
-            # self.context_data['contract_price'] = '0'
-
-            # months_contract_price = (
-            #                 'january_one', 'february', 'march', 'april', 'may', 'june',
-            #                 'july', 'august', 'september', 'october', 'november', 'december',
-            #                 # 'january_two'
-            #             )
-
-            # for contract_price in months_contract_price:
-            #     self.context_data[contract_price] = '0'
-
-            # await self.update_service(saving, execution_contract_plan, execution_contract_fact)
-
-            # print('-----------------------------')
-            # print(self.context_data['KTSSR'])
-            # print('-----------------------------')
-
             import copy
             context_data = copy.copy(self.context_data)
 
@@ -867,12 +787,7 @@ class ContractProcessor:
                 if key in self.context_data:
                     self.context_data[key] = value
 
-            # print('-----------------------------')
-            # print(self.context_data['KTSSR'])
-            # print('-----------------------------')
-
             await self.update_service(saving, execution_contract_plan, execution_contract_fact)
-            # await sync_to_async(service_cache.save)()
 
             await self.count_dates(True)
 
@@ -895,13 +810,13 @@ class ContractProcessor:
 
         self.context_data['scroll_position'] = scroll_position
 
-        self.context_data = key_no_deleting(self.context_data)
+        # self.context_data = key_no_deleting(self.context_data)
 
         # # Кодируем query-параметры
         # query_string = urlencode(self.context_data)
 
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}&scroll_position={self.context_data['scroll_position']}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?page={self.context_data['page']}{self.context_data['params']}&scroll_position={self.context_data['scroll_position']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)
@@ -925,23 +840,15 @@ class ContractProcessor:
         new_service = Services()
         new_service = await self.creation_new_service(saving, execution_contract_plan, execution_contract_fact, new_service)
 
-        # # Services_Two_ = await sync_to_async(lambda: Services_Two.objects.all())()
-        # Services_Two_ = await sync_to_async(list, thread_sensitive=True)(Services_Two.objects.all())
-
         await sync_to_async(new_service.save)()
 
-        # Services_Two_ = await self.validate_Services_Two()
-
-        # НЕ ЗНАЮ РАСКОМЕНТИТЬ ИЛИ НЕТ
-        # if not await self.validate_Services_Two():
-        #     await self.validate_Services_Two_message()
-        #     return render(self.request, 'data_table.html', self.context_data)
-
-        # await self.Services_Two_save(Services_Two_)
         await self.count_dates(True)
 
-        # self.context_data['contract_date'] = ''
-        # self.context_data['end_date'] = ''
+        # Восстанавливаем позицию скролла из сессии
+        scroll_position = self.request.POST.get('scroll_position')
+
+        if scroll_position:
+            self.context_data['scroll_position'] = scroll_position
 
         if not await self.total_costs(new_service):
             await self.count_dates(True)
@@ -950,23 +857,19 @@ class ContractProcessor:
             await log_user_action(self.request.user, f'Отменилось добавление записи в "Закупки" с ID {new_service.id_id}')
 
             await self.total_costs_message()
-            print('POPAL_POPAL', self.context_data)
             return render(self.request, 'add.html', self.context_data)
 
         await self.message_service_add()
 
-        # Восстанавливаем позицию скролла из сессии
-        scroll_position = self.request.POST.get('scroll_position')
-
-        self.context_data['scroll_position'] = scroll_position
-
-        self.context_data = key_no_deleting(self.context_data)
+        # self.context_data = key_no_deleting(self.context_data)
 
         # # Кодируем query-параметры
         # query_string = urlencode(self.context_data)
 
+        # print(self.context_data['scroll_position'])
+
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}&scroll_position={self.context_data['scroll_position']}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?page={self.context_data['page']}{self.context_data['params']}&scroll_position={self.context_data['scroll_position']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)
@@ -985,13 +888,13 @@ class ContractProcessor:
 
         self.context_data['scroll_position'] = scroll_position
 
-        self.context_data = key_no_deleting(self.context_data)
+        # self.context_data = key_no_deleting(self.context_data)
 
         # # Кодируем query-параметры
         # query_string = urlencode(self.context_data)
 
         # Формируем URL с query-параметрами
-        redirect_url = f"{reverse('data_table_view')}?{self.context_data['params']}&scroll_position={self.context_data['scroll_position']}"  # Замените 'index' на имя вашего URL-шаблона
+        redirect_url = f"{reverse('data_table_view')}?page={self.context_data['page']}{self.context_data['params']}&scroll_position={self.context_data['scroll_position']}"  # Замените 'index' на имя вашего URL-шаблона
 
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)

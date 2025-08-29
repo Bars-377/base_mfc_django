@@ -70,26 +70,11 @@ folder_path = os.path.abspath(folder_path)
 with open(f'{folder_path}//general_settings.json', 'r', encoding='utf-8-sig') as file:
     json_object = json.load(file)
 
-# from urllib.parse import parse_qs
-
-# def get_query_param(params_str, key):
-#     """
-#     Возвращает значение параметра key из query строки params_str.
-#     Например: get_query_param("&a=1&b=2", "a") → "1"
-#     """
-#     if not params_str:
-#         return ""
-#     # Удалим ведущий &
-#     if params_str.startswith("&"):
-#         params_str = params_str[1:]
-#     parsed = parse_qs(params_str)
-#     return parsed.get(key, [""])[0]
-
-def link_generation(request, mode, page, page_user='', page_user_two='', service=None, row_id=None):
+def link_generation(request, mode, service=None, row_id=None):
     """Создание передаваемых параметров с их значениями"""
 
     # Списки имён параметров для получения из GET-запроса
-    params_with_int_default_1 = [page, page_user, page_user_two]
+    params_with_int_default_1 = ['page', 'page_user', 'page_user_two']
     params_with_int_default_1 = [p for p in params_with_int_default_1 if p != '']
 
     user = request.user
@@ -109,13 +94,6 @@ def link_generation(request, mode, page, page_user='', page_user_two='', service
 
     # Создаем словарь для хранения результатов
     params = {}
-
-    # # Получаем остальные параметры без преобразования
-    # for param in params_optional:
-    #     if param in ('contract_date', 'end_date'):
-    #         params[f'selected_{param}'] = request.GET.get(param, "No")
-    #     else:
-    #         params[param] = request.GET.get(param, None)
 
     params_view = ''
 
@@ -164,15 +142,6 @@ def link_generation(request, mode, page, page_user='', page_user_two='', service
             context[key] = params[key]
 
         return context
-
-# async def skeleton(request, user,
-#                     keyword_one, keyword_two, keyword_three,
-#                     keyword_four, selected_column_one, selected_column_two,
-#                     selected_column_three, selected_column_four,
-#                     contract_date, end_date,
-#                     page,
-#                     page_user,
-#                     page_user_two):
 
 async def skeleton(request, user,
                     params,
@@ -583,11 +552,12 @@ async def skeleton(request, user,
 
 @login_required
 async def data_table_view(request):
+    """Достаём все total_pages_full во время сброса фильтров в JS"""
     total_pages_full = request.GET.get('total_pages_full', None)
     total_pages_full_user = request.GET.get('total_pages_full_user', None)
     total_pages_full_user_two = request.GET.get('total_pages_full_user_two', None)
 
-    SSR = link_generation(request, True, 'page', 'page_user', 'page_user_two')
+    SSR = link_generation(request, True)
 
     per_page = 20
 
@@ -722,7 +692,9 @@ async def update_color_user_two(request, row_id):
 async def add(request):
     await log_user_action(request.user, f'Перешёл на страницу добавления записи в "Закупки"')
 
-    context = link_generation(request, False, 'page', 'total_pages')
+    context = link_generation(request, False)
+
+    context['total_pages'] = request.GET.get('total_pages', '1')
 
     return await sync_to_async(render)(request, 'add.html', context)
 
@@ -734,13 +706,9 @@ async def copy(request, row_id):
     # Получаем объект service по id
     service = await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id)
 
-    context = link_generation(request, False, 'page', 'page_user', 'page_user_two', service=service, row_id=row_id)
+    context = link_generation(request, False, service=service, row_id=row_id)
 
-    # context['status'] = ''
-    # context['way'] = ''
-    # context['KTSSR'] = ''
-    # context['KOSGU'] = ''
-    # context['DopFC'] = ''
+    context['page'] = request.GET.get('total_pages', '1')
 
     params_post = [
         'name', 'status', 'way', 'initiator', 'KTSSR',
@@ -763,7 +731,9 @@ async def copy(request, row_id):
     for param in params_post:
         context[param] = getattr(service, param, None)
 
-    context['params'] += f'&scroll_position={request.GET.get('scroll_position', '')}'
+    context['scroll_position'] = request.GET.get('scroll_position')
+
+    context['name'] += '_new'
 
     processor = ContractProcessor(context, request)
     return await processor.process_add()
@@ -773,7 +743,7 @@ async def copy(request, row_id):
 async def add_two(request):
     await log_user_action(request.user, f'Перешёл на страницу добавления записи в "Свод"')
 
-    context = link_generation(request, False, 'page', 'total_pages')
+    context = link_generation(request, False)
 
     return await sync_to_async(render)(request, 'add_two.html', context)
 
@@ -785,7 +755,7 @@ async def edit(request, row_id):
     # Получаем объект service по id
     service = await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id)
 
-    context = link_generation(request, False, 'page', 'page_user', 'page_user_two', service=service, row_id=row_id)
+    context = link_generation(request, False, service=service, row_id=row_id)
 
     context['status'] = ''
     context['way'] = ''
@@ -803,7 +773,7 @@ async def edit_user(request, row_id):
     # Получаем объект service_user по id
     service_user = await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id)
 
-    context = link_generation(request, False, 'page', 'page_user', 'page_user_two', service=service_user, row_id=row_id)
+    context = link_generation(request, False, service=service_user, row_id=row_id)
 
     return await sync_to_async(render)(request, 'edit_user.html', context)
 
@@ -815,7 +785,7 @@ async def edit_user_two(request, row_id):
     # Получаем объект service_user_two по id
     service_user_two = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(id=row_id)
 
-    context = link_generation(request, False, 'page', 'page_user', 'page_user_two', service=service_user_two, row_id=row_id)
+    context = link_generation(request, False, service=service_user_two, row_id=row_id)
 
     return await sync_to_async(render)(request, 'edit_user_two.html', context)
 
@@ -823,31 +793,9 @@ async def edit_user_two(request, row_id):
 async def update_record(request, row_id):
     if request.method == 'POST':
         try:
-            # # Возвращаем данные формы обратно в шаблон
-            # context_data = {
-            #     'service': await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id),
-            #     'row_id': row_id,
-            #     'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-            #     'page_user': 1,
-            #     'page_user_two': 1,
-            #     'connection_websocket': settings.DATABASES['default']['HOST'],
-            #     'statuses': json.dumps(json_object['statuses'])
-            # }
-
-            # params = [
-            #     'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
-            #     'selected_column_one', 'selected_column_two',
-            #     'contract_date', 'selected_end_date'
-            # ]
-
             # Получаем объект service по id
             service = await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id)
-            context = link_generation(request, False, 'page', 'page_user', 'page_user_two', service=service, row_id=row_id)
-
-            # print(request.GET.get('keyword_one'))
-            # print('------------------')
-            # # print(get_query_param(request.GET.get(params), 'keyword_one'))
-            # print('------------------')
+            context = link_generation(request, False, service=service, row_id=row_id)
 
             params_post = [
                 'id_id', 'name', 'status', 'way', 'initiator', 'KTSSR',
@@ -867,9 +815,6 @@ async def update_record(request, row_id):
                 'saving', 'color', 'remainder_old_year', 'paid_last_year'
             ]
 
-            # for param in params:
-            #     context[param] = request.GET.get(param, None)
-
             for param in params_post:
                 context[param] = request.POST.get(param, None)
 
@@ -886,26 +831,9 @@ async def update_record(request, row_id):
 async def update_record_user(request, row_id):
     if request.method == 'POST':
         try:
-            # # Возвращаем данные формы обратно в шаблон
-            # context_data = {
-            #     'service_user': await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id),
-            #     'row_id': row_id,
-            #     'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-            #     'connection_websocket': settings.DATABASES['default']['HOST'],
-            #     'statuses': json.dumps(json_object['statuses']),
-            #     'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
-            #     'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1
-            # }
-
-            # params = [
-            #     'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
-            #     'selected_column_one', 'selected_column_two',
-            #     'contract_date', 'selected_end_date'
-            # ]
-
             # Получаем объект service_user по id
             service_user = await sync_to_async(Services_Two.objects.get, thread_sensitive=True)(id=row_id)
-            context = link_generation(request, False, 'page', 'page_user', 'page_user_two', service=service_user, row_id=row_id)
+            context = link_generation(request, False, service=service_user, row_id=row_id)
 
             params_post = [
                 'id_id', 'name', 'KOSGU', 'DopFC', 'budget_limit',
@@ -917,29 +845,12 @@ async def update_record_user(request, row_id):
                 'off_budget_plans', 'color',
             ]
 
-            # print('---------------')
-            # print(context['params'])
-            # print('---------------')
-
-            # for param in params:
-            #     context[param] = request.GET.get(param, None)
-
             for param in params_post:
                 context[param] = request.POST.get(param, None)
 
             from django.forms.models import model_to_dict
             service_dict = model_to_dict(context['service'])
             await log_user_action(request.user, f'Отредактировал запись в "Свод" с ID {service_dict['id_id']},\nБыло: budget_limit: {service_dict['budget_limit']}, off_budget_limit: {service_dict['off_budget_limit']}')
-
-            # fields_to_copy = [
-            #     'id_id', 'name', 'KOSGU', 'DopFC', 'budget_limit',
-            #     'off_budget_limit', 'budget_planned', 'off_budget_planned',
-            #     'budget_bargaining', 'off_budget_bargaining', 'budget_concluded',
-            #     'off_budget_concluded', 'budget_completed', 'off_budget_completed',
-            #     'budget_execution', 'off_budget_execution',
-            #     'budget_remainder', 'off_budget_remainder', 'budget_plans',
-            #     'off_budget_plans', 'color'
-            # ]
 
             for field in params_post:
                 setattr(context['service'], field, context[field])
@@ -960,26 +871,9 @@ async def update_record_user(request, row_id):
 async def update_record_user_two(request, row_id):
     if request.method == 'POST':
         try:
-            # # Возвращаем данные формы обратно в шаблон
-            # context_data = {
-            #     'service_user_two': await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(id=row_id),
-            #     'row_id': row_id,
-            #     'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-            #     'connection_websocket': settings.DATABASES['default']['HOST'],
-            #     'statuses': json.dumps(json_object['statuses']),
-            #     'page_user': int(request.GET.get('page_user', '1')) if request.GET.get('page', '1').strip() else 1,
-            #     'page_user_two': int(request.GET.get('page_user_two', '1')) if request.GET.get('page', '1').strip() else 1
-            # }
-
-            # params = [
-            #     'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
-            #     'selected_column_one', 'selected_column_two',
-            #     'contract_date', 'selected_end_date'
-            # ]
-
             # Получаем объект service_user по id
             service_user_two = await sync_to_async(Services_Three.objects.get, thread_sensitive=True)(id=row_id)
-            context = link_generation(request, False, 'page', 'page_user', 'page_user_two', service=service_user_two, row_id=row_id)
+            context = link_generation(request, False, service=service_user_two, row_id=row_id)
 
             params_post = [
                 'id_id', 'KOSGU', 'DopFC', 'budget_planned_old',
@@ -988,22 +882,12 @@ async def update_record_user_two(request, row_id):
                 'budget_remainder', 'off_budget_remainder', 'color',
             ]
 
-            # for param in params:
-            #     context_data[param] = request.GET.get(param, None)
-
             for param in params_post:
                 context[param] = request.POST.get(param, None)
 
             from django.forms.models import model_to_dict
             service_dict = model_to_dict(context['service'])
             await log_user_action(request.user, f'Отредактировал запись в "План-график" с ID {service_dict['id_id']},\nБыло: budget_planned: {service_dict['budget_planned']}, off_budget_planned: {service_dict['off_budget_planned']}')
-
-            # fields_to_copy = [
-            #     'id_id', 'KOSGU', 'DopFC', 'budget_planned_old',
-            #     'off_budget_planned_old', 'budget_planned', 'off_budget_planned',
-            #     'budget_concluded', 'off_budget_concluded',
-            #     'budget_remainder', 'off_budget_remainder', 'color'
-            # ]
 
             for field in params_post:
                 setattr(context['service'], field, context[field])
@@ -1024,22 +908,7 @@ async def update_record_user_two(request, row_id):
 async def add_record(request):
     if request.method == 'POST':
         try:
-            # # Возвращаем данные формы обратно в шаблон
-            # context_data = {
-            #     'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-            #     'page_user': 1,
-            #     'page_user_two': 1,
-            #     'connection_websocket': settings.DATABASES['default']['HOST'],
-            #     'statuses': json.dumps(json_object['statuses'])
-            # }
-
-            # params = [
-            #     'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
-            #     'selected_column_one', 'selected_column_two',
-            #     'contract_date', 'selected_end_date'
-            # ]
-
-            context = link_generation(request, False, 'page', 'page_user', 'page_user_two')
+            context = link_generation(request, False)
 
             params_post = [
                 'name', 'status', 'way', 'initiator', 'KTSSR',
@@ -1059,9 +928,6 @@ async def add_record(request):
                 'saving', 'color', 'remainder_old_year', 'paid_last_year'
             ]
 
-            # for param in params:
-            #     context[param] = request.GET.get(param, None)
-
             for param in params_post:
                 context[param] = request.POST.get(param, None)
 
@@ -1077,27 +943,11 @@ async def add_record(request):
 async def add_record_two(request):
     if request.method == 'POST':
         try:
-            # # Возвращаем данные формы обратно в шаблон
-            # context_data = {
-            #     'page': int(request.GET.get('page', '1')) if request.GET.get('page', '1').strip() else 1,
-            #     'page_user': 1,
-            #     'page_user_two': 1
-            # }
-
-            # params = [
-            #     'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
-            #     'selected_column_one', 'selected_column_two',
-            #     'contract_date', 'selected_end_date'
-            # ]
-
-            context = link_generation(request, False, 'page', 'page_user', 'page_user_two')
+            context = link_generation(request, False)
 
             params_post = [
                 'name', 'KOSGU', 'DopFC',
             ]
-
-            # for param in params:
-            #     context[param] = request.GET.get(param, None)
 
             for param in params_post:
                 context[param] = request.POST.get(param, None)
@@ -1118,36 +968,15 @@ async def delete_record(request):
             body_unicode = request.body.decode('utf-8')
             body_data = json.loads(body_unicode)
             row_id = body_data.get('id')
+
             # Найдите запись по ID и обновите цвет
             service = await sync_to_async(Services.objects.get, thread_sensitive=True)(id=row_id)
 
-            # # Возвращаем данные формы обратно в шаблон
-            # context_data = {
-            #     'KOSGU': service.KOSGU,
-            #     'DopFC': service.DopFC,
-            #     'KTSSR': service.KTSSR,
-            #     'status': service.status,
-            #     'page': int(body_data.get('page', '1')),
-            #     'page_user': 1,
-            #     'page_user_two': 1,
-            #     'connection_websocket': settings.DATABASES['default']['HOST'],
-            #     'statuses': json.dumps(json_object['statuses'])
-            # }
-
-            # params = [
-            #     'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
-            #     'selected_column_one', 'selected_column_two',
-            #     'contract_date', 'selected_end_date'
-            # ]
-
-            context = link_generation(request, False, 'page', 'page_user', 'page_user_two')
+            context = link_generation(request, False)
             context['KOSGU'] = service.KOSGU
             context['DopFC'] = service.DopFC
             context['KTSSR'] = service.KTSSR
             context['status'] = service.status
-
-            # for param in params:
-            #     context[param] = body_data.get(param, None)
 
             # Удаляем объект
             await sync_to_async(service.delete, thread_sensitive=True)()
@@ -1187,29 +1016,9 @@ async def delete_record_two(request):
                 thread_sensitive=True
             )()
 
-            # # Возвращаем данные формы обратно в шаблон
-            # context_data = {
-            #     'KOSGU': service_two.KOSGU,
-            #     'DopFC': service_two.DopFC,
-            #     'page': int(body_data.get('page', '1')),
-            #     'page_user': 1,
-            #     'page_user_two': 1,
-            #     'connection_websocket': settings.DATABASES['default']['HOST'],
-            #     'statuses': json.dumps(json_object['statuses'])
-            # }
-
-            # params = [
-            #     'keyword_one', 'keyword_two', 'keyword_three', 'keyword_four',
-            #     'selected_column_one', 'selected_column_two',
-            #     'contract_date', 'selected_end_date'
-            # ]
-
-            context = link_generation(request, False, 'page', 'page_user', 'page_user_two')
+            context = link_generation(request, False)
             context['KOSGU'] = service_two.KOSGU
             context['DopFC'] = service_two.DopFC
-
-            # for param in params:
-            #     context[param] = body_data.get(param, None)
 
             # Удаляем объект
             await sync_to_async(service_two.delete, thread_sensitive=True)()

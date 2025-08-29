@@ -340,7 +340,7 @@
     </div>
 
     <div class="container-fluid-neverov">
-        <a href="{% url 'add' %}?page={{ page }}{{ params }}" class="btn btn-warning edit-link">Добавить закупку</a>
+        <a href="{% url 'add' %}?page={{ page }}{{ params }}&total_pages={{ total_pages }}" class="btn btn-warning edit-link">Добавить закупку</a>
     </div>
 
     <div class="container-fluid-neverov">
@@ -441,7 +441,7 @@
                             <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
                                 <a href="{% url 'edit' row_id=item.id %}?page={{ page }}{{ params }}"
                                 class="btn btn-sm btn-warning edit-link">Edit</a>
-                                <a href="{% url 'copy' row_id=item.id %}?page={{ page }}{{ params }}"
+                                <a href="{% url 'copy' row_id=item.id %}?page={{ page }}{{ params }}&total_pages={{ total_pages }}"
                                 class="btn btn-sm btn-warning edit-link">Copy</a>
                                 <form class="delete-form"
                                     data-id="{{ item.id }}"
