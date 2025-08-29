@@ -419,7 +419,9 @@ async def upload_file_(request):
                     # df[f'{list[30]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[30]}']])
                     # df[f'{list[32]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[32]}']])
 
-                    df[f'{list[16]}'] = df[f'{list[17]}'].astype(float) + df[f'{list[30]}'].astype(float) + df[f'{list[18]}'].astype(float) + df[f'{list[19]}'].astype(float) + df[f'{list[20]}'].astype(float) + df[f'{list[21]}'].astype(float) + df[f'{list[22]}'].astype(float) + df[f'{list[23]}'].astype(float) + df[f'{list[24]}'].astype(float) + df[f'{list[25]}'].astype(float) + df[f'{list[26]}'].astype(float) + df[f'{list[27]}'].astype(float) + df[f'{list[28]}'].astype(float) + df[f'{list[29]}'].astype(float)
+                    df[f'{list[17]}'] = df[f'{list[18]}'].astype(float) + df[f'{list[19]}'].astype(float) + df[f'{list[20]}'].astype(float) + df[f'{list[21]}'].astype(float) + df[f'{list[22]}'].astype(float) + df[f'{list[23]}'].astype(float) + df[f'{list[24]}'].astype(float) + df[f'{list[25]}'].astype(float) + df[f'{list[26]}'].astype(float) + df[f'{list[27]}'].astype(float) + df[f'{list[28]}'].astype(float) + df[f'{list[29]}'].astype(float)
+
+                    df[f'{list[16]}'] = df[f'{list[17]}'].astype(float) + df[f'{list[30]}'].astype(float) + df[f'{list[32]}'].astype(float)
 
                     # df[f'{list[33]}'] = df[f'{list[33]}'].apply(safe_date_conversion)
                     # df[f'{list[34]}'] = await asyncio.gather(*[safe_float_conversion(val) for val in df[f'{list[34]}']])

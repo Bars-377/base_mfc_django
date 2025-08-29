@@ -92,10 +92,10 @@
                 </div>
                 <!-- Скрытое поле для передачи цены контракта -->
                 <input type="hidden" id="contract_price" name="contract_price" value="{{ contract_price }}">
-                <div class="form-item">
+                {% comment %} <div class="form-item">
                     <label for="remainder_old_year">Остаток контракта с предыдущего года</label>
                     <input type="text" class="num-field form-control" id="remainder_old_year" name="remainder_old_year" value="{{ remainder_old_year }}">
-                </div>
+                </div> {% endcomment %}
                 <input type="hidden" name="execution_contract_plan" value="{{ '' }}">  <!-- Скрытое поле для Исполнение контракта (план) (формула) -->
                 <div class="form-item">
                     <label for="january_one">Январь (план)</label>
@@ -264,6 +264,8 @@
                 <input type="hidden" name="execution_contract_fact" value="{{ '' }}">
                 <input type="hidden" name="execution_contract_plan" value="{{ '' }}">
                 <input type="hidden" name="saving" value="{{ '' }}">
+
+                <input type="hidden" name="remainder_old_year" value="{{ '' }}">
 
                 <input type="hidden" name="color" value="{{ '' }}">  <!-- Скрытое поле для цвета -->
 

@@ -48,7 +48,7 @@ class ContractProcessor:
     request: HttpRequest = None
 
     async def validate_execution_plan(self):
-        execution_contract_plan = await self.calculate_execution_plan()
+        execution_contract_plan, cleaned_numbers_plan = await self.calculate_execution_plan()
 
         if self.context_data['contract_price']:
             if f"{execution_contract_plan:.2f}" != f"{await format_number(self.context_data['contract_price']):.2f}":
@@ -59,7 +59,7 @@ class ContractProcessor:
         messages.error(self.request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
 
     async def validate_execution_fact(self):
-        execution_contract_plan = await self.calculate_execution_plan()
+        execution_contract_plan, cleaned_numbers_plan = await self.calculate_execution_plan()
         execution_contract_fact = await self.calculate_execution_fact()
         if execution_contract_plan != execution_contract_fact and self.context_data['status'] == 'Исполнено':
             return False
@@ -133,13 +133,18 @@ class ContractProcessor:
 
     async def calculate_execution_plan(self):
         """Суммирование исполнение контракта (план)"""
-        months = [self.context_data[month] for month in [
+        all_months = [self.context_data[month] for month in [
             'january_one', 'february', 'march', 'april', 'may', 'june',
             'july', 'august', 'september', 'october', 'november', 'december',
-            'remainder_old_year', 'january_two'
+            'paid_last_year', 'january_two'
         ]]
-        cleaned_numbers = await asyncio.gather(*(format_number(month) for month in months))
-        return sum(cleaned_numbers)
+        plan_months = [self.context_data[month] for month in [
+            'january_one', 'february', 'march', 'april', 'may', 'june',
+            'july', 'august', 'september', 'october', 'november', 'december'
+        ]]
+        cleaned_numbers = await asyncio.gather(*(format_number(month) for month in all_months))
+        cleaned_numbers_plan = await asyncio.gather(*(format_number(month) for month in plan_months))
+        return sum(cleaned_numbers), sum(cleaned_numbers_plan)
 
     async def calculate_execution_fact(self):
         """Суммирование исполнение контракта (факт)"""
@@ -150,11 +155,12 @@ class ContractProcessor:
         cleaned_numbers = await asyncio.gather(*(format_number(month) for month in sum_months))
         return sum(cleaned_numbers) + await format_number(self.context_data['paid_last_year'])
 
-    async def update_service(self, saving, execution_contract_plan, execution_contract_fact):
+    async def update_service(self, saving, execution_contract_plan, execution_contract_fact, cleaned_numbers_plan):
         """Подсчёт Исполнение контракта (план) (формула) и Исполнение контракта (факт) (формула) и обновление записи"""
         service = self.context_data['service']
 
         # Обновляем значения в self.context_data
+        self.context_data['remainder_old_year'] = cleaned_numbers_plan
         self.context_data['saving'] = saving
         self.context_data['execution_contract_plan'] = execution_contract_plan
         self.context_data['execution_contract_fact'] = execution_contract_fact
@@ -745,7 +751,7 @@ class ContractProcessor:
 
     async def execution_balance_saving_calculation(self):
         """Расчет контракта исполнения, баланса контракта и сбережений"""
-        execution_contract_plan = await self.calculate_execution_plan()
+        execution_contract_plan, cleaned_numbers_plan = await self.calculate_execution_plan()
         execution_contract_fact = await self.calculate_execution_fact()
         saving = round(await format_number(self.context_data['NMCC']) - await format_number(self.context_data['contract_price']), 2)
 
@@ -755,7 +761,7 @@ class ContractProcessor:
             self.context_data['execution'] = round(await format_number(execution_contract_fact) / await format_number(self.context_data['contract_price']), 2) * 100
 
         self.context_data['contract_balance'] = round(await format_number(self.context_data['contract_price']) - await format_number(execution_contract_fact), 2)
-        return execution_contract_plan, execution_contract_fact, saving
+        return execution_contract_plan, execution_contract_fact, saving, cleaned_numbers_plan
 
     async def process_update(self):
         if not await self.validate_Services_Two():
@@ -768,14 +774,14 @@ class ContractProcessor:
             await self.validate_execution_fact_message()
             return render(self.request, 'edit.html', self.context_data)
 
-        execution_contract_plan, execution_contract_fact, saving = await self.execution_balance_saving_calculation()
+        execution_contract_plan, execution_contract_fact, saving, cleaned_numbers_plan = await self.execution_balance_saving_calculation()
 
         from django.forms.models import model_to_dict
         service_dict = model_to_dict(self.context_data['service'])
 
         await log_user_action(self.request.user, f'Отредактировал запись в "Закупки" с ID {service_dict['id_id']},\nБыло: {service_dict}')
 
-        context_data_cache = await self.update_service(saving, execution_contract_plan, execution_contract_fact)
+        context_data_cache = await self.update_service(saving, execution_contract_plan, execution_contract_fact, cleaned_numbers_plan)
 
         await self.count_dates(True)
 
@@ -835,7 +841,7 @@ class ContractProcessor:
             await self.validate_execution_fact_message()
             return render(self.request, 'add.html', self.context_data)
 
-        execution_contract_plan, execution_contract_fact, saving = await self.execution_balance_saving_calculation()
+        execution_contract_plan, execution_contract_fact, saving, cleaned_numbers_plan = await self.execution_balance_saving_calculation()
 
         new_service = Services()
         new_service = await self.creation_new_service(saving, execution_contract_plan, execution_contract_fact, new_service)
