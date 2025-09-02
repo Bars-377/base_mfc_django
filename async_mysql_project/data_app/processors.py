@@ -48,10 +48,10 @@ class ContractProcessor:
     request: HttpRequest = None
 
     async def validate_execution_plan(self):
-        execution_contract_plan, cleaned_numbers_plan = await self.calculate_execution_plan()
+        await self.calculate_execution_plan()
 
         if self.context_data['contract_price']:
-            if f"{execution_contract_plan:.2f}" != f"{await format_number(self.context_data['contract_price']):.2f}":
+            if f"{self.context_data['execution_contract_plan']:.2f}" != f"{await format_number(self.context_data['contract_price']):.2f}":
                 return False
         return True
 
@@ -59,9 +59,9 @@ class ContractProcessor:
         messages.error(self.request, 'Значение поля «Исполнение контракта (план) должно равняться полю «Цена контракта»')
 
     async def validate_execution_fact(self):
-        execution_contract_plan, cleaned_numbers_plan = await self.calculate_execution_plan()
-        execution_contract_fact = await self.calculate_execution_fact()
-        if execution_contract_plan != execution_contract_fact and self.context_data['status'] == 'Исполнено':
+        await self.calculate_execution_plan()
+        await self.calculate_execution_fact()
+        if self.context_data['execution_contract_plan'] != self.context_data['execution_contract_fact'] and self.context_data['status'] == 'Исполнено':
             return False
         return True
 
@@ -142,9 +142,13 @@ class ContractProcessor:
             'january_one', 'february', 'march', 'april', 'may', 'june',
             'july', 'august', 'september', 'october', 'november', 'december'
         ]]
-        cleaned_numbers = await asyncio.gather(*(format_number(month) for month in all_months))
-        cleaned_numbers_plan = await asyncio.gather(*(format_number(month) for month in plan_months))
-        return sum(cleaned_numbers), sum(cleaned_numbers_plan)
+        execution_contract_plan = await asyncio.gather(*(format_number(month) for month in all_months))
+        remainder_old_year = await asyncio.gather(*(format_number(month) for month in plan_months))
+
+        self.context_data['execution_contract_plan'] = sum(execution_contract_plan)
+        self.context_data['remainder_old_year'] = sum(remainder_old_year)
+
+        return
 
     async def calculate_execution_fact(self):
         """Суммирование исполнение контракта (факт)"""
@@ -153,17 +157,19 @@ class ContractProcessor:
             'sum_july', 'sum_august', 'sum_september', 'sum_october', 'sum_november', 'sum_december'
         ]]
         cleaned_numbers = await asyncio.gather(*(format_number(month) for month in sum_months))
-        return sum(cleaned_numbers) + await format_number(self.context_data['paid_last_year'])
 
-    async def update_service(self, saving, execution_contract_plan, execution_contract_fact, cleaned_numbers_plan):
+        self.context_data['execution_contract_fact'] = sum(cleaned_numbers) + await format_number(self.context_data['paid_last_year'])
+        return
+
+    async def update_service(self):
         """Подсчёт Исполнение контракта (план) (формула) и Исполнение контракта (факт) (формула) и обновление записи"""
         service = self.context_data['service']
 
-        # Обновляем значения в self.context_data
-        self.context_data['remainder_old_year'] = cleaned_numbers_plan
-        self.context_data['saving'] = saving
-        self.context_data['execution_contract_plan'] = execution_contract_plan
-        self.context_data['execution_contract_fact'] = execution_contract_fact
+        # # Обновляем значения в self.context_data
+        # self.context_data['remainder_old_year'] = cleaned_numbers_plan
+        # self.context_data['saving'] = saving
+        # self.context_data['execution_contract_plan'] = execution_contract_plan
+        # self.context_data['execution_contract_fact'] = execution_contract_fact
 
         params_post = [
             'name', 'status', 'way', 'initiator', 'KTSSR',
@@ -212,7 +218,7 @@ class ContractProcessor:
 
         return context_data_cache
 
-    async def creation_new_service(self, saving, execution_contract_plan, execution_contract_fact, new_service):
+    async def creation_new_service(self, new_service):
         """Формируем запрос для новой записи"""
         from django.db import connection
 
@@ -240,17 +246,17 @@ class ContractProcessor:
 
         await log_user_action(self.request.user, f'Добавил запись в "Закупки" с ID {id_id}')
 
-        contract_balance = await format_number(self.context_data['contract_price']) - await format_number(execution_contract_fact)
+        contract_balance = await format_number(self.context_data['contract_price']) - await format_number(self.context_data['execution_contract_fact'])
 
         # Добавляем id_id в объект new_service
         setattr(new_service, 'id_id', id_id)
         for key, value in self.context_data.items():
-            if key == saving:
-                setattr(new_service, key, saving)
-            elif key == execution_contract_plan:
-                setattr(new_service, key, execution_contract_plan)
-            elif key == execution_contract_fact:
-                setattr(new_service, key, execution_contract_fact)
+            if key == self.context_data['saving']:
+                setattr(new_service, key, self.context_data['saving'])
+            elif key == self.context_data['execution_contract_plan']:
+                setattr(new_service, key, self.context_data['execution_contract_plan'])
+            elif key == self.context_data['execution_contract_fact']:
+                setattr(new_service, key, self.context_data['execution_contract_fact'])
             else:
                 setattr(new_service, key, value)
 
@@ -751,17 +757,25 @@ class ContractProcessor:
 
     async def execution_balance_saving_calculation(self):
         """Расчет контракта исполнения, баланса контракта и сбережений"""
-        execution_contract_plan, cleaned_numbers_plan = await self.calculate_execution_plan()
-        execution_contract_fact = await self.calculate_execution_fact()
+        await self.calculate_execution_plan()
+        await self.calculate_execution_fact()
         saving = round(await format_number(self.context_data['NMCC']) - await format_number(self.context_data['contract_price']), 2)
 
         if await format_number(self.context_data['contract_price']) == 0:
             self.context_data['execution'] = 0  # Или любое другое значение по умолчанию, например `None` или сообщение об ошибке
         else:
-            self.context_data['execution'] = round(await format_number(execution_contract_fact) / await format_number(self.context_data['contract_price']), 2) * 100
+            self.context_data['execution'] = round(await format_number(self.context_data['execution_contract_fact']) / await format_number(self.context_data['contract_price']), 2) * 100
 
-        self.context_data['contract_balance'] = round(await format_number(self.context_data['contract_price']) - await format_number(execution_contract_fact), 2)
-        return execution_contract_plan, execution_contract_fact, saving, cleaned_numbers_plan
+        self.context_data['contract_balance'] = round(await format_number(self.context_data['contract_price']) - await format_number(self.context_data['execution_contract_fact']), 2)
+
+        # self.context_data['remainder_old_year'] = cleaned_numbers_plan
+        # self.context_data['execution_contract_plan'] = execution_contract_plan
+
+        # Обновляем значения в self.context_data
+        self.context_data['saving'] = saving
+        # self.context_data['execution_contract_fact'] = execution_contract_fact
+
+        return
 
     async def process_update(self):
         if not await self.validate_Services_Two():
@@ -774,14 +788,20 @@ class ContractProcessor:
             await self.validate_execution_fact_message()
             return render(self.request, 'edit.html', self.context_data)
 
-        execution_contract_plan, execution_contract_fact, saving, cleaned_numbers_plan = await self.execution_balance_saving_calculation()
+        await self.execution_balance_saving_calculation()
 
         from django.forms.models import model_to_dict
         service_dict = model_to_dict(self.context_data['service'])
 
         await log_user_action(self.request.user, f'Отредактировал запись в "Закупки" с ID {service_dict['id_id']},\nБыло: {service_dict}')
 
-        context_data_cache = await self.update_service(saving, execution_contract_plan, execution_contract_fact, cleaned_numbers_plan)
+        # # Обновляем значения в self.context_data
+        # self.context_data['remainder_old_year'] = cleaned_numbers_plan
+        # self.context_data['saving'] = saving
+        # self.context_data['execution_contract_plan'] = execution_contract_plan
+        # self.context_data['execution_contract_fact'] = execution_contract_fact
+
+        context_data_cache = await self.update_service()
 
         await self.count_dates(True)
 
@@ -793,7 +813,13 @@ class ContractProcessor:
                 if key in self.context_data:
                     self.context_data[key] = value
 
-            await self.update_service(saving, execution_contract_plan, execution_contract_fact)
+            # # Обновляем значения в self.context_data
+            # self.context_data['remainder_old_year'] = cleaned_numbers_plan
+            # self.context_data['saving'] = saving
+            # self.context_data['execution_contract_plan'] = execution_contract_plan
+            # self.context_data['execution_contract_fact'] = execution_contract_fact
+
+            await self.update_service()
 
             await self.count_dates(True)
 
@@ -841,10 +867,10 @@ class ContractProcessor:
             await self.validate_execution_fact_message()
             return render(self.request, 'add.html', self.context_data)
 
-        execution_contract_plan, execution_contract_fact, saving, cleaned_numbers_plan = await self.execution_balance_saving_calculation()
+        await self.execution_balance_saving_calculation()
 
         new_service = Services()
-        new_service = await self.creation_new_service(saving, execution_contract_plan, execution_contract_fact, new_service)
+        new_service = await self.creation_new_service(new_service)
 
         await sync_to_async(new_service.save)()
 
