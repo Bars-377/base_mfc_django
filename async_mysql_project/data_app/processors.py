@@ -640,7 +640,7 @@ class ContractProcessor:
         # Перенаправляем пользователя
         return HttpResponseRedirect(redirect_url)
 
-    async def count_dates(self, mode):
+    async def count_dates(self, mode, cache_KOSGU=None, cache_DopFC=None):
         """Предварительные вычислительные операции после обновления или добавления записей"""
 
         @sync_to_async(thread_sensitive=True)
@@ -733,9 +733,30 @@ class ContractProcessor:
 
         elif mode:
 
-            await self.process_count_dates_services_two()
+            # print('POPAL 1')
 
-            await handle_multiple_statuses(self.context_data, self.request, mode)
+            async def count_services_two_services_three():
+                await self.process_count_dates_services_two()
+
+                import copy
+                context_data = copy.copy(self.context_data)
+
+                await handle_multiple_statuses(context_data, self.request, mode)
+
+            await count_services_two_services_three()
+
+            if cache_KOSGU and cache_DopFC:
+
+                # print('self.context_data["KOSGU"] 1', self.context_data['KOSGU'])
+                # print('self.context_data["DopFC"] 1', self.context_data['DopFC'])
+
+                self.context_data['KOSGU'] = cache_KOSGU
+                self.context_data['DopFC'] = cache_DopFC
+
+                # print('self.context_data["KOSGU"] 2', self.context_data['KOSGU'])
+                # print('self.context_data["DopFC"] 2', self.context_data['DopFC'])
+
+                await count_services_two_services_three()
 
     async def process_count_dates_services_two(self):
         """Предварительные вычислительния операций во второй таблице после обновления или добавления записей"""
@@ -801,13 +822,18 @@ class ContractProcessor:
         # self.context_data['execution_contract_plan'] = execution_contract_plan
         # self.context_data['execution_contract_fact'] = execution_contract_fact
 
-        context_data_cache = await self.update_service()
+        import copy
+        context_data_cache = copy.copy(await self.update_service())
+
+        # print('context_data_cache', context_data_cache)
+
+        # print('self.context_data 1', self.context_data)
 
         await self.count_dates(True)
 
+        # print('self.context_data 2', self.context_data)
+
         if not await self.total_costs():
-            import copy
-            context_data = copy.copy(self.context_data)
 
             for key, value in context_data_cache.items():
                 if key in self.context_data:
@@ -822,20 +848,23 @@ class ContractProcessor:
             await self.update_service()
 
             await self.count_dates(True)
-
+           
             await self.total_costs_message()
 
-            return render(self.request, 'edit.html', context_data)
+            return render(self.request, 'edit.html', self.context_data)
 
-        for key, value in context_data_cache.items():
-            if key in self.context_data:
-                self.context_data[key] = value
+        cache_KOSGU = context_data_cache['KOSGU']
+        cache_DopFC = context_data_cache['DopFC']
 
-        await self.count_dates(True)
+        await self.count_dates(True, cache_KOSGU, cache_DopFC)
 
         await log_user_action(self.request.user, f'Отредактировал запись в "Закупки" с ID {self.context_data['id_id']},\nСтало: {self.context_data}')
 
         await self.message_service_update()
+
+        # for key, value in context_data_cache.items():
+        #     if key in self.context_data:
+        #         self.context_data[key] = value
 
         # Восстанавливаем позицию скролла из сессии
         scroll_position = self.request.POST.get('scroll_position')
