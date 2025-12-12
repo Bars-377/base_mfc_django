@@ -1,8 +1,9 @@
 ﻿{
-    "host": "172.18.11.104",
+    "host_ws": "localhost",
+    "host": "172.30.54.31",
     "user": "root",
     "password": "enigma1418",
-    "base_name": "basemfcdjango",
+    "base_name": "basemfcdjango_2025",
     "statuses": {
         "blocking": [
             "Запланировано",

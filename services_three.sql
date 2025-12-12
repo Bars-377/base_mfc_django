@@ -15,11 +15,11 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Дамп структуры базы данных basemfcdjango
-CREATE DATABASE IF NOT EXISTS `basemfcdjango` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `basemfcdjango`;
+-- Дамп структуры базы данных basemfcdjango_2025
+CREATE DATABASE IF NOT EXISTS `basemfcdjango_2025` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `basemfcdjango_2025`;
 
--- Дамп структуры для таблица basemfcdjango.services_two
+-- Дамп структуры для таблица basemfcdjango_2025.services_two
 CREATE TABLE IF NOT EXISTS `services_three` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `id_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `services_three` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Дамп данных таблицы basemfcdjango.services_two: ~26 rows (приблизительно)
+-- Дамп данных таблицы basemfcdjango_2025.services_two: ~26 rows (приблизительно)
 INSERT INTO `services_three` (`id`, `id_id`, `KOSGU`, `DopFC`, `budget_planned_old`, `off_budget_planned_old`, `budget_planned`, `off_budget_planned`, `budget_concluded`, `off_budget_concluded`, `budget_remainder`, `off_budget_remainder`, `color`) VALUES
 	(1, '1', '221', '0000000', '', '', '', '', '', '', '', '', ''),
 	(2, '2', '222', '0000000', '', '', '', '', '', '', '', '', ''),
