@@ -15,11 +15,11 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Дамп структуры базы данных basemfcdjango
-CREATE DATABASE IF NOT EXISTS `basemfcdjango` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `basemfcdjango`;
+-- Дамп структуры базы данных basemfcdjango_2025
+CREATE DATABASE IF NOT EXISTS `basemfcdjango_2025` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `basemfcdjango_2025`;
 
--- Дамп структуры для таблица basemfcdjango.auth_user
+-- Дамп структуры для таблица basemfcdjango_2025.auth_user
 CREATE TABLE IF NOT EXISTS `auth_user` (
   `id` int NOT NULL AUTO_INCREMENT,
   `password` varchar(128) COLLATE utf8mb4_general_ci NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `auth_user` (
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Дамп данных таблицы basemfcdjango.auth_user: ~10 rows (приблизительно)
+-- Дамп данных таблицы basemfcdjango_2025.auth_user: ~10 rows (приблизительно)
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
 	(4, 'pbkdf2_sha256$870000$Hbab3vIXks3P91BjPO38nA$IT98nqTCP/5c4TP/BXgAUQv2LkaYjllZTvOngO1eLCI=', '2025-02-13 07:49:17.584795', 1, 'bars_377', '', '', 'rollerkrick@gmail.com', 1, 1, '2024-10-24 08:00:42.000000'),
 	(13, 'pbkdf2_sha256$870000$ingYWJFsqgkloR5kSa4LPO$+98XFAQL7tYArfhY0on7w5HRJBj9uz7t9OJMmeygKCA=', NULL, 0, 'gavrilov', '', '', 'gavrilov@mail.ru', 0, 1, '2025-02-13 07:39:22.000000'),

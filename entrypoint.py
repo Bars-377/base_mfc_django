@@ -14,9 +14,9 @@ def check_tables_exist():
     # Получаем параметры подключения из переменных окружения
     db_config = {
         "host": os.getenv("DB_HOST", f"{json_object['host']}"),
-        "user": os.getenv("DB_USER", "root"),
-        "password": os.getenv("DB_PASSWORD", "enigma1418"),
-        "database": os.getenv("DB_NAME", "basemfcdjango"),
+        "user": os.getenv("DB_USER", f"{json_object['user']}"),
+        "password": os.getenv("DB_PASSWORD", f"{json_object['password']}"),
+        "database": os.getenv("DB_NAME", f"{json_object['base_name']}"),
     }
 
     try:
@@ -35,6 +35,7 @@ def check_tables_exist():
 def main():
     manage_py_path = os.path.abspath("async_mysql_project/manage.py")
     venv_python = os.path.join(os.getenv("VIRTUAL_ENV", ""), "Scripts", "python")
+
     # Проверяем наличие таблиц
     if check_tables_exist():
         print("Таблицы найдены. Пропускаем миграции.")

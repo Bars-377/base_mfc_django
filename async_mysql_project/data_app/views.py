@@ -127,15 +127,15 @@ def link_generation(request, mode, service=None, row_id=None):
             context = {
                 'service': service,
                 'row_id': row_id,
-                'connection_websocket': settings.DATABASES['default']['HOST'],
-                'statuses': json.dumps(json_object['statuses'])
+                'connection_websocket': json_object['host_ws'],
+                'statuses': json_object['statuses']
             }
         else:
             # Подготовка контекста для шаблона
             context = {
                 'user': user,
-                'connection_websocket': settings.DATABASES['default']['HOST'],
-                'statuses': json.dumps(json_object['statuses'])
+                'connection_websocket': json_object['host_ws'],
+                'statuses': json_object['statuses']
             }
 
         for key in params:
@@ -544,7 +544,7 @@ async def skeleton(request, user,
         'end_page_user_two': end_page_user_two,
         'service_years': service_years,
         'service_end_date': service_end_date,
-        'connection_websocket': settings.DATABASES['default']['HOST'],
+        'connection_websocket': json_object['host_ws'],
         'statuses': json.dumps(json_object['statuses'])
     }
 
@@ -583,7 +583,8 @@ async def data_table_view(request):
         SSR[-1] = page_user_two
 
     # Восстанавливаем позицию скролла из сессии
-    scroll_position = request.session.pop('scroll_position', None)
+    # scroll_position = request.session.pop('scroll_position', None)
+    scroll_position = await sync_to_async(request.session.pop)('scroll_position', None)
 
     return await skeleton(*SSR, scroll_position)
 
